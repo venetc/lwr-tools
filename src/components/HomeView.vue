@@ -12,7 +12,7 @@ const store = useCounterStore();
 </script>
 
 <template>
-  <div :class="$style.test_class">
+  <div :class="s.test_class">
     <div>home</div>
 
     <Camera
@@ -26,20 +26,20 @@ const store = useCounterStore();
         Increment
       </button>
 
-      <span :class="$style.count"> {{ store.count }}</span>
+      <span :class="s.count"> {{ store.count }}</span>
 
       <button @click="store.decrement">
         Decrement
       </button>
     </div>
 
-    <div>
-      <div :class="$style.inter">
+    <div :class="s.panel">
+      <div :class="s.ox">
         Lorem ipsum dolor sit amet.
       </div>
 
-      <div :class="$style.ox">
-        Lorem ipsum dolor sit amet.
+      <div :class="s.inter">
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sequi illum natus eos, maxime fuga unde rerum, iste ad autem incidunt optio saepe ipsa ea rem necessitatibus.
       </div>
     </div>
 
@@ -47,8 +47,10 @@ const store = useCounterStore();
   </div>
 </template>
 
-<style lang="scss" module>
+<style lang="scss" module="s">
 @use 'sass:color';
+@use 'styles/colors';
+@use 'styles/mixins';
 
 .test_class {
   display: flex;
@@ -64,14 +66,21 @@ const store = useCounterStore();
 }
 
 .inter {
-  font-family: 'Inter', sans-serif;
-  font-size: 60px;
-  font-weight: 400;
+  @include mixins.font-body-md;
+  color: #dbe4e8;
 }
 
 .ox {
-  font-family: 'Oxanium', sans-serif;
-  font-size: 60px;
-  font-weight: 400;
+  @include mixins.font-ui-xl;
+  color: #2fd1de;
+  margin-bottom: 10px;
+}
+
+.panel {
+  background-color: #252e34;
+  padding-block: 20px;
+  padding-inline: 30px;
+  max-width: 600px;
+  box-sizing: border-box;
 }
 </style>

@@ -1,0 +1,63 @@
+@use 'typography';
+
+@mixin font-ui(
+  $size: typography.$font-ui-md-size,
+  $line-height: typography.$font-ui-md-line-height,
+  $weight: typography.$font-ui-md-weight
+) {
+  font-family: typography.$font-ui;
+  font-size: $size;
+  line-height: $line-height;
+  font-weight: $weight;
+}
+
+@mixin font-ui-xs {
+  @include font-ui(typography.$font-ui-xs-size, typography.$font-ui-xs-line-height, typography.$font-ui-xs-weight);
+}
+
+@mixin font-ui-sm {
+  @include font-ui(typography.$font-ui-sm-size, typography.$font-ui-sm-line-height, typography.$font-ui-sm-weight);
+}
+
+@mixin font-ui-md {
+  @include font-ui;
+}
+
+@mixin font-ui-lg {
+  @include font-ui(typography.$font-ui-lg-size, typography.$font-ui-lg-line-height, typography.$font-ui-lg-weight);
+}
+
+@mixin font-ui-xl {
+  @include font-ui(typography.$font-ui-xl-size, typography.$font-ui-xl-line-height, typography.$font-ui-xl-weight);
+}
+
+@mixin font-body(
+  $size: typography.$font-body-md-size,
+  $line-height: typography.$font-body-md-line-height,
+  $weight: typography.$font-body-md-weight
+) {
+  font-family: typography.$font-body;
+  font-size: $size;
+  line-height: $line-height;
+  font-weight: $weight;
+}
+
+@mixin font-body-sm {
+  @include font-body(
+    typography.$font-body-sm-size,
+    typography.$font-body-sm-line-height,
+    typography.$font-body-sm-weight
+  );
+}
+
+@mixin font-body-md {
+  @include font-body;
+}
+
+@mixin font-body-lg {
+  @include font-body(
+    typography.$font-body-lg-size,
+    typography.$font-body-lg-line-height,
+    typography.$font-body-lg-weight
+  );
+}

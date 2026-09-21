@@ -1,0 +1,114 @@
+@use 'sass:map';
+
+$colors: (
+  slate: (
+    50: #e5f0f0,
+    100: #c6d6d6,
+    200: #a6b9ba,
+    300: #869b9d,
+    400: #667d80,
+    500: #4d6467,
+    600: #3a5053,
+    700: #293c40,
+    800: #1b2a2e,
+    900: #101a1e,
+    950: #080d10,
+  ),
+
+  cyan: (
+    50: #e8fffd,
+    100: #c6f9f5,
+    200: #9deee9,
+    300: #74e2de,
+    400: #50d8d4,
+    500: #35ccc8,
+    600: #21b6b3,
+    700: #148f8d,
+    800: #0f6f70,
+    900: #0b4a4d,
+    950: #062c30,
+  ),
+
+  blue: (
+    50: #edf6ff,
+    100: #d4e8fb,
+    200: #b0d0f3,
+    300: #86b5e9,
+    400: #6199dd,
+    500: #467fcb,
+    600: #3469b0,
+    700: #28538f,
+    800: #1f426f,
+    900: #17324f,
+    950: #0e2034,
+  ),
+
+  green: (
+    50: #edfff5,
+    100: #c8f6db,
+    200: #99e9ba,
+    300: #68d99a,
+    400: #46ca7e,
+    500: #2fbf73,
+    600: #25a461,
+    700: #1c8051,
+    800: #176340,
+    900: #10482f,
+    950: #08291c,
+  ),
+
+  amber: (
+    50: #fff8e7,
+    100: #ffeebf,
+    200: #fbdc8d,
+    300: #f3c356,
+    400: #e5aa2e,
+    500: #d99816,
+    600: #bc7a0f,
+    700: #975e0d,
+    800: #70460d,
+    900: #4b300b,
+    950: #291b08,
+  ),
+
+  red: (
+    50: #fff0f0,
+    100: #fad7d7,
+    200: #f1b3b5,
+    300: #e58c90,
+    400: #d86c73,
+    500: #c95059,
+    600: #ae3e47,
+    700: #8c3038,
+    800: #68242b,
+    900: #451a20,
+    950: #270e12,
+  ),
+);
+
+@function color($family, $shade) {
+  @return map.get(map.get($colors, $family), $shade);
+}
+
+$color-border: color(cyan, 800);
+$color-border-subtle: color(cyan, 950);
+$color-border-active: color(cyan, 300);
+
+$color-text-primary: color(slate, 100);
+$color-text-secondary: color(slate, 300);
+$color-text-muted: color(slate, 400);
+$color-text-disabled: color(slate, 600);
+
+$color-primary: color(cyan, 400);
+$color-primary-hover: color(cyan, 300);
+$color-primary-active: color(cyan, 500);
+$color-primary-muted: color(cyan, 950);
+
+$color-info: color(blue, 400);
+$color-success: color(green, 400);
+$color-warning: color(amber, 400);
+$color-danger: color(red, 400);
+
+$color-icon: color(slate, 200);
+$color-icon-muted: color(slate, 400);
+$color-icon-active: color(cyan, 300);

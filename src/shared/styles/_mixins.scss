@@ -1,63 +1,85 @@
+@use 'sass:list';
 @use 'typography';
 
-@mixin font-ui(
-  $size: typography.$font-ui-md-size,
-  $line-height: typography.$font-ui-md-line-height,
-  $weight: typography.$font-ui-md-weight
-) {
-  font-family: typography.$font-ui;
-  font-size: $size;
-  line-height: $line-height;
-  font-weight: $weight;
+// --- ядро ------------------------------------------------------------------
+
+// Общий миксин. Тянет все значения из мапов $type-scale / $families.
+// $weight — опционально переопределяет вес токена (для body-medium/semibold).
+@mixin type($family: 'ui', $size: 'md', $weight: null) {
+  $token: typography.type-token($family, $size);
+
+  font-family: typography.family($family);
+  font-size: list.nth($token, 1) * 1px;
+  line-height: list.nth($token, 2);
+
+  @if $weight {
+    font-weight: $weight;
+  } @else {
+    font-weight: list.nth($token, 3);
+  }
 }
 
+// --- техническая нотеция (обратная совместимость) --------------------------
 @mixin font-ui-xs {
-  @include font-ui(typography.$font-ui-xs-size, typography.$font-ui-xs-line-height, typography.$font-ui-xs-weight);
+  @include type(ui, xs);
 }
-
 @mixin font-ui-sm {
-  @include font-ui(typography.$font-ui-sm-size, typography.$font-ui-sm-line-height, typography.$font-ui-sm-weight);
+  @include type(ui, sm);
 }
-
 @mixin font-ui-md {
-  @include font-ui;
+  @include type(ui, md);
 }
-
 @mixin font-ui-lg {
-  @include font-ui(typography.$font-ui-lg-size, typography.$font-ui-lg-line-height, typography.$font-ui-lg-weight);
+  @include type(ui, lg);
 }
-
 @mixin font-ui-xl {
-  @include font-ui(typography.$font-ui-xl-size, typography.$font-ui-xl-line-height, typography.$font-ui-xl-weight);
-}
-
-@mixin font-body(
-  $size: typography.$font-body-md-size,
-  $line-height: typography.$font-body-md-line-height,
-  $weight: typography.$font-body-md-weight
-) {
-  font-family: typography.$font-body;
-  font-size: $size;
-  line-height: $line-height;
-  font-weight: $weight;
+  @include type(ui, xl);
 }
 
 @mixin font-body-sm {
-  @include font-body(
-    typography.$font-body-sm-size,
-    typography.$font-body-sm-line-height,
-    typography.$font-body-sm-weight
-  );
+  @include type(body, sm);
 }
-
 @mixin font-body-md {
-  @include font-body;
+  @include type(body, md);
+}
+@mixin font-body-lg {
+  @include type(body, lg);
 }
 
-@mixin font-body-lg {
-  @include font-body(
-    typography.$font-body-lg-size,
-    typography.$font-body-lg-line-height,
-    typography.$font-body-lg-weight
-  );
+// --- семантический слой ----------------------------------------------------
+@mixin heading {
+  @include type(ui, xl);
+}
+@mixin heading-lg {
+  @include type(ui, lg);
+}
+@mixin heading-md {
+  @include type(ui, md);
+}
+
+// Метка/подпись: UI-шрифт, 500, прописные + лёгкий трекинг.
+@mixin label {
+  @include type(ui, sm, typography.$font-body-medium-weight);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+// Мелкая эпиграф-подпись: 12px, 600, прописные, широкий трекинг.
+@mixin overline {
+  @include type(ui, xs, 600);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+@mixin caption {
+  @include overline;
+}
+
+@mixin body {
+  @include type(body, md);
+}
+@mixin body-lg {
+  @include type(body, lg);
+}
+@mixin body-sm {
+  @include type(body, sm);
 }

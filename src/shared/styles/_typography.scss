@@ -1,37 +1,84 @@
-$font-ui: 'Oxanium', sans-serif;
-$font-body: 'Inter', sans-serif;
+@use 'sass:map';
 
-$font-ui-xs-size: 12px;
-$font-ui-xs-line-height: 16px;
-$font-ui-xs-weight: 500;
+/* Семьи шрифтов с системным фоллбэком.
+   system-ui → дефолтный UI-шрифт ОС, далее sans-serif. */
+$families: (
+  ui: (
+    'Oxanium',
+    'system-ui',
+    sans-serif,
+  ),
+  body: (
+    'Inter',
+    'system-ui',
+    sans-serif,
+  ),
+);
 
-$font-ui-sm-size: 14px;
-$font-ui-sm-line-height: 18px;
-$font-ui-sm-weight: 600;
+/* Шкала типографики: family → size → (size-px, line-height-ratio, weight).
+   line-hight безразмерный (относит. к size) — при zoom / rem / clamp /
+   наследовании строки не «плывут». Значения = текущие px / size. */
+$type-scale: (
+  ui: (
+    xs: (
+      12,
+      1.33,
+      500,
+    ),
+    sm: (
+      14,
+      1.3,
+      600,
+    ),
+    md: (
+      16,
+      1.25,
+      600,
+    ),
+    lg: (
+      20,
+      1.2,
+      700,
+    ),
+    xl: (
+      28,
+      1.14,
+      700,
+    ),
+  ),
+  body: (
+    sm: (
+      14,
+      1.43,
+      400,
+    ),
+    md: (
+      16,
+      1.5,
+      400,
+    ),
+    lg: (
+      18,
+      1.33,
+      400,
+    ),
+  ),
+);
 
-$font-ui-md-size: 16px;
-$font-ui-md-line-height: 20px;
-$font-ui-md-weight: 600;
-
-$font-ui-lg-size: 20px;
-$font-ui-lg-line-height: 24px;
-$font-ui-lg-weight: 700;
-
-$font-ui-xl-size: 28px;
-$font-ui-xl-line-height: 32px;
-$font-ui-xl-weight: 700;
-
-$font-body-sm-size: 14px;
-$font-body-sm-line-height: 20px;
-$font-body-sm-weight: 400;
-
-$font-body-md-size: 16px;
-$font-body-md-line-height: 24px;
-$font-body-md-weight: 400;
-
-$font-body-lg-size: 18px;
-$font-body-lg-line-height: 24px;
-$font-body-lg-weight: 400;
-
+/* Дополнительные веса font-body — заготовка на будущее
+   (через `type('body', $size, $weight: ...)`). Пока не подключены. */
 $font-body-medium-weight: 500;
 $font-body-semibold-weight: 600;
+
+// --- helper-функции --------------------------------------------------------
+
+// Тройка (size, line-height, weight) для размера.
+@function type-token($family, $size) {
+  $row: map.get($type-scale, $family);
+  @return map.get($row, $size);
+}
+
+// Семейство (список с фоллбэками).
+@function family($name) {
+  @return map.get($families, $name);
+}

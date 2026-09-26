@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useEventListener, usePreferredReducedMotion, useRafFn } from '@vueuse/core';
+import { useElementVisibility, useEventListener, usePreferredReducedMotion, useRafFn, useResizeObserver } from '@vueuse/core';
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
-import { computed, useTemplateRef, watch } from 'vue';
+import { computed, shallowRef, useTemplateRef, watch } from 'vue';
 
 interface Props {
   autoScroll?: boolean
@@ -22,8 +22,14 @@ type Phase = 'top' | 'down' | 'bottom' | 'up';
 const MAX_FRAME_DELTA = 100;
 
 const scrollAreaRoot = useTemplateRef<InstanceType<typeof ScrollAreaRoot>>('scrollAreaRoot');
+const content = useTemplateRef<HTMLElement>('content');
+const rootElement = computed(() => scrollAreaRoot.value?.$el ?? null);
 const viewport = computed(() => scrollAreaRoot.value?.viewport ?? null);
+
 const reducedMotion = usePreferredReducedMotion();
+const isVisible = useElementVisibility(rootElement);
+const isOverflowing = shallowRef(false);
+const isStoppedByUser = shallowRef(false);
 
 let phase: Phase = 'top';
 let phaseElapsed = 0;
@@ -71,10 +77,19 @@ const { pause, resume } = useRafFn(({ delta }) => {
   }
 }, { immediate: false });
 
-const isAutoScrollEnabled = computed(() => props.autoScroll && reducedMotion.value !== 'reduce');
+function measureOverflow() {
+  const viewportElement = viewport.value;
+  if (!viewportElement) return;
+
+  isOverflowing.value = viewportElement.scrollHeight > viewportElement.clientHeight;
+}
+
+useResizeObserver([viewport, content], measureOverflow);
+
+const isAutoScrollAllowed = computed(() => props.autoScroll && reducedMotion.value !== 'reduce' && isOverflowing.value);
+const isAutoScrollActive = computed(() => isAutoScrollAllowed.value && isVisible.value && !isStoppedByUser.value);
 
 function reset() {
-  pause();
   setPhase('top');
   scrollPosition = 0;
 
@@ -83,14 +98,25 @@ function reset() {
   }
 }
 
-watch(isAutoScrollEnabled, (isEnabled) => {
-  if (isEnabled) return resume();
-  reset();
+watch(isAutoScrollActive, (isActive) => {
+  if (!isActive) {
+    pause();
+    return;
+  }
+
+  resume();
 }, { immediate: true });
 
-const rootElement = computed(() => scrollAreaRoot.value?.$el ?? null);
+watch(isAutoScrollAllowed, (isAllowed) => {
+  if (isAllowed) return;
+  reset();
+});
 
-useEventListener(rootElement, ['wheel', 'touchstart', 'pointerdown'], pause, { passive: true });
+function stopByUser() {
+  isStoppedByUser.value = true;
+}
+
+useEventListener(rootElement, ['wheel', 'touchstart', 'pointerdown'], stopByUser, { passive: true });
 </script>
 
 <template>
@@ -100,7 +126,9 @@ useEventListener(rootElement, ['wheel', 'touchstart', 'pointerdown'], pause, { p
     type="auto"
   >
     <ScrollAreaViewport :class="$style.viewport">
-      <slot />
+      <div ref="content">
+        <slot />
+      </div>
     </ScrollAreaViewport>
 
     <ScrollAreaScrollbar :class="$style.scrollbar" orientation="vertical">

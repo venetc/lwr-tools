@@ -16,8 +16,8 @@ const model = defineModel<AcceptableValue | null>({ default: null });
 
 const rootModel = computed({
   get: () => model.value,
-  set: (value: AcceptableValue | undefined) => {
-    model.value = value ?? null;
+  set: (toggledValue: AcceptableValue | undefined) => {
+    model.value = toggledValue ?? null;
   },
 });
 </script>

@@ -1,14 +1,5 @@
 {
   "files": [],
-  "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
-    "paths": {
-      "@assets": [
-        "./src/assets/*"
-      ]
-    }
-  },
   "references": [
     {
       "path": "./tsconfig.app.json"

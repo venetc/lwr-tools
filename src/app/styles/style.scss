@@ -1,0 +1,96 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+@layer reset, base, components, utilities;
+
+@layer reset {
+  :where(*, *::before, *::after) {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    min-width: 0;
+  }
+
+  :where(html) {
+    block-size: 100%;
+    text-size-adjust: none;
+    interpolate-size: allow-keywords;
+  }
+
+  :where(body) {
+    min-block-size: 100vh;
+    line-height: 1.5;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :where(h1, h2, h3, h4, h5, h6) {
+    text-wrap: balance;
+    font-weight: bold;
+    margin-block: 0;
+  }
+
+  :where(p) {
+    text-wrap: pretty;
+    margin-block-end: 1em;
+  }
+
+  :where(img, svg, video, canvas) {
+    display: block;
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+
+  :where(input, textarea, select, button) {
+    font: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    color: currentColor;
+  }
+
+  :where(textarea, select, input) {
+    field-sizing: content;
+  }
+
+  :where(select) {
+    appearance: base-select;
+  }
+
+  :where(:focus-visible) {
+    outline: 2px solid canvasText;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    @include typography.body-1;
+
+    background: colors.$surface-base;
+    color: colors.$text-primary;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline-color: colors.$focus-ring;
+  }
+
+  ::selection {
+    background: colors.$accent-subtle;
+    color: colors.$text-primary;
+  }
+}

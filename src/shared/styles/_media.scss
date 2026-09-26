@@ -1,0 +1,11 @@
+@mixin with-hover {
+  @media (hover: hover) {
+    @content;
+  }
+}
+
+@mixin with-touch {
+  @media (hover: none) {
+    @content;
+  }
+}

@@ -1,114 +1,71 @@
-@use 'sass:map';
+@use 'sass:color';
 
-$colors: (
-  slate: (
-    50: #e5f0f0,
-    100: #c6d6d6,
-    200: #a6b9ba,
-    300: #869b9d,
-    400: #667d80,
-    500: #4d6467,
-    600: #3a5053,
-    700: #293c40,
-    800: #1b2a2e,
-    900: #101a1e,
-    950: #080d10,
-  ),
+// Базовые цвета палитры. Приватные: снаружи используются только семантические токены ниже.
+$-slate: #2c4a50;
+$-cyan: #67d3e2;
+$-gold: #e6c04a;
+$-lime: #8fce3a;
+$-red: #ea3b32;
 
-  cyan: (
-    50: #e8fffd,
-    100: #c6f9f5,
-    200: #9deee9,
-    300: #74e2de,
-    400: #50d8d4,
-    500: #35ccc8,
-    600: #21b6b3,
-    700: #148f8d,
-    800: #0f6f70,
-    900: #0b4a4d,
-    950: #062c30,
-  ),
+// Шаг палитры 50–900 от базового цвета: < 500 — светлее, > 500 — темнее, 500 — сам цвет.
+@function -shade($base, $step) {
+  @if $step < 500 {
+    @return color.to-space(color.mix(white, $base, (500 - $step) * 0.2%, $method: oklch), oklch);
+  }
 
-  blue: (
-    50: #edf6ff,
-    100: #d4e8fb,
-    200: #b0d0f3,
-    300: #86b5e9,
-    400: #6199dd,
-    500: #467fcb,
-    600: #3469b0,
-    700: #28538f,
-    800: #1f426f,
-    900: #17324f,
-    950: #0e2034,
-  ),
-
-  green: (
-    50: #edfff5,
-    100: #c8f6db,
-    200: #99e9ba,
-    300: #68d99a,
-    400: #46ca7e,
-    500: #2fbf73,
-    600: #25a461,
-    700: #1c8051,
-    800: #176340,
-    900: #10482f,
-    950: #08291c,
-  ),
-
-  amber: (
-    50: #fff8e7,
-    100: #ffeebf,
-    200: #fbdc8d,
-    300: #f3c356,
-    400: #e5aa2e,
-    500: #d99816,
-    600: #bc7a0f,
-    700: #975e0d,
-    800: #70460d,
-    900: #4b300b,
-    950: #291b08,
-  ),
-
-  red: (
-    50: #fff0f0,
-    100: #fad7d7,
-    200: #f1b3b5,
-    300: #e58c90,
-    400: #d86c73,
-    500: #c95059,
-    600: #ae3e47,
-    700: #8c3038,
-    800: #68242b,
-    900: #451a20,
-    950: #270e12,
-  ),
-);
-
-@function color($family, $shade) {
-  @return map.get(map.get($colors, $family), $shade);
+  @return color.to-space(color.mix(black, $base, ($step - 500) * 0.16%, $method: oklch), oklch);
 }
 
-$color-border: color(cyan, 800);
-$color-border-subtle: color(cyan, 950);
-$color-border-active: color(cyan, 300);
+// Фоны: base — страница, 1 → 3 — вложенность (панель, строка внутри панели, элемент поверх).
+// translucent — полупрозрачная панель, overlay — затемнение под модалкой.
+$surface-base: -shade($-slate, 900);
+$surface-1: -shade($-slate, 850);
+$surface-2: -shade($-slate, 800);
+$surface-3: -shade($-slate, 700);
+$surface-translucent: color.change($surface-1, $alpha: 0.78);
+$surface-overlay: color.change($surface-base, $alpha: 0.85);
 
-$color-text-primary: color(slate, 100);
-$color-text-secondary: color(slate, 300);
-$color-text-muted: color(slate, 400);
-$color-text-disabled: color(slate, 600);
+// Рамки: subtle — разделители, border — по умолчанию, strong — акцентированная граница.
+$border-subtle: -shade($-slate, 700);
+$border: -shade($-slate, 650);
+$border-strong: -shade($-slate, 500);
 
-$color-primary: color(cyan, 400);
-$color-primary-hover: color(cyan, 300);
-$color-primary-active: color(cyan, 500);
-$color-primary-muted: color(cyan, 950);
+// Текст: primary — заголовки и основной текст, secondary — описания, tertiary — подписи и мелочь,
+// disabled — недоступное, accent — циановый акцентный, inverse — на светлом/акцентном фоне.
+$text-primary: -shade($-slate, 50);
+$text-secondary: -shade($-slate, 200);
+$text-tertiary: -shade($-slate, 300);
+$text-disabled: -shade($-slate, 400);
+$text-accent: -shade($-cyan, 250);
+$text-inverse: -shade($-slate, 900);
 
-$color-info: color(blue, 400);
-$color-success: color(green, 400);
-$color-warning: color(amber, 400);
-$color-danger: color(red, 400);
+// Акцент (циан) — интерактив и рамки. accent — базовый, hover/pressed — состояния,
+// light — светлый вариант, muted/dim — приглушённые (неактивное), subtle — фон, glow — свечение.
+$accent-light: -shade($-cyan, 250);
+$accent-hover: -shade($-cyan, 350);
+$accent: -shade($-cyan, 500);
+$accent-pressed: -shade($-cyan, 550);
+$accent-muted: -shade($-cyan, 650);
+$accent-dim: -shade($-cyan, 750);
+$accent-subtle: -shade($-cyan, 900);
+$accent-glow: color.change($accent, $alpha: 0.4);
 
-$color-icon: color(slate, 200);
-$color-icon-muted: color(slate, 400);
-$color-icon-active: color(cyan, 300);
+// Highlight (золото) — доступное для выбора, бонусы, максимум. Суффиксы — как у accent.
+$highlight-light: -shade($-gold, 400);
+$highlight: -shade($-gold, 500);
+$highlight-muted: -shade($-gold, 650);
+$highlight-subtle: -shade($-gold, 900);
+$highlight-glow: color.change($highlight, $alpha: 0.4);
+
+// Статусы: success — активное/успех, danger — ошибки и разрушительные действия.
+// muted — рамка, subtle — фон.
+$success: -shade($-lime, 500);
+$success-muted: -shade($-lime, 650);
+$success-subtle: -shade($-lime, 900);
+
+$danger: -shade($-red, 500);
+$danger-muted: -shade($-red, 650);
+$danger-subtle: -shade($-red, 900);
+
+// Обводка :focus-visible.
+$focus-ring: -shade($-cyan, 350);

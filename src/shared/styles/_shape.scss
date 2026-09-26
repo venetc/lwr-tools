@@ -1,0 +1,61 @@
+@use 'colors';
+
+$cut-sm: 6px;
+$cut-md: 12px;
+$cut-lg: 20px;
+
+@function cut-polygon($size) {
+  @return polygon(#{$size} 0, 100% 0, 100% calc(100% - #{$size}), calc(100% - #{$size}) 100%, 0 100%, 0 #{$size});
+}
+
+@mixin frame(
+  $size: $cut-md,
+  $width: 2px,
+  $line: colors.$accent,
+  $fill: colors.$surface-1,
+  $glow: colors.$accent-glow,
+  $blur: 8px
+) {
+  position: relative;
+  isolation: isolate;
+  border: 0;
+  background: none;
+
+  @include frame-state($line, $fill, $glow, $blur);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &::before {
+    inset: 0;
+    clip-path: cut-polygon($size);
+  }
+
+  &::after {
+    inset: $width;
+    clip-path: cut-polygon($size - $width * 0.586);
+  }
+}
+
+@mixin frame-state($line: null, $fill: null, $glow: null, $blur: 8px) {
+  @if $glow {
+    filter: drop-shadow(0 0 #{$blur} #{$glow});
+  }
+
+  @if $line {
+    &::before {
+      background: $line;
+    }
+  }
+
+  @if $fill {
+    &::after {
+      background: $fill;
+    }
+  }
+}

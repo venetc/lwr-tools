@@ -1,6 +1,6 @@
+import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
@@ -8,7 +8,12 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@assets': resolve(import.meta.dirname, './src/assets'),
+      '@app': resolve(import.meta.dirname, './src/app'),
+      '@pages': resolve(import.meta.dirname, './src/pages'),
+      '@widgets': resolve(import.meta.dirname, './src/widgets'),
+      '@features': resolve(import.meta.dirname, './src/features'),
+      '@entities': resolve(import.meta.dirname, './src/entities'),
+      '@shared': resolve(import.meta.dirname, './src/shared'),
     },
   },
   css: {

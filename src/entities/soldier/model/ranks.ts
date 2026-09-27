@@ -1,12 +1,12 @@
 import type { SoldierRank } from './types';
 
-import rankCaptainIcon from '@shared/assets/images/ranks/rank_captain.png';
-import rankColonelIcon from '@shared/assets/images/ranks/rank_colonel.png';
-import rankCorporalIcon from '@shared/assets/images/ranks/rank_corporal.png';
-import rankLieutenantIcon from '@shared/assets/images/ranks/rank_lieutenant.png';
-import rankMajorIcon from '@shared/assets/images/ranks/rank_major.png';
-import rankSergeantIcon from '@shared/assets/images/ranks/rank_sergeant.png';
-import rankSquaddieIcon from '@shared/assets/images/ranks/rank_squaddie.png';
+import rankCaptainIcon from '@shared/assets/images/ranks/rank_captain.svg';
+import rankColonelIcon from '@shared/assets/images/ranks/rank_colonel.svg';
+import rankCorporalIcon from '@shared/assets/images/ranks/rank_corporal.svg';
+import rankLieutenantIcon from '@shared/assets/images/ranks/rank_lieutenant.svg';
+import rankMajorIcon from '@shared/assets/images/ranks/rank_major.svg';
+import rankSergeantIcon from '@shared/assets/images/ranks/rank_sergeant.svg';
+import rankSquaddieIcon from '@shared/assets/images/ranks/rank_squaddie.svg';
 
 import { SOLDIER_RANK_ID } from './soldier-rank-id';
 

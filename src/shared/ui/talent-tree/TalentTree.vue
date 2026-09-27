@@ -3,7 +3,7 @@ import type { AcceptableValue } from 'reka-ui';
 import type { TalentBuild, TalentTreeData } from './model/types';
 import type { RankEntry, TalentEntry } from './model/useTalentRanks';
 
-import { useCssModule } from 'vue';
+import { computed, useCssModule } from 'vue';
 
 import { ScrollArea } from '@shared/ui/scroll-area';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
@@ -39,8 +39,14 @@ function onRankUpdate(rankIndex: number, toggledValue: AcceptableValue | null) {
   selectTalent(build.value, rankIndex, talentId);
 }
 
+const classIconStyle = computed(() => ({ maskImage: `url("${props.tree.icon}")` }));
+
 function getRankClass(rankEntry: RankEntry) {
   return [style.rank, style[rankEntry.state]];
+}
+
+function getRankIconStyle(rankEntry: RankEntry) {
+  return { maskImage: `url("${rankEntry.rank.icon}")` };
 }
 
 function getAriaDisabled(rankEntry: RankEntry) {
@@ -55,11 +61,11 @@ function getTalentStyle(talentEntry: TalentEntry) {
 <template>
   <section :class="$style.panel" :aria-label="tree.name">
     <header :class="$style.header">
-      <img
+      <span
         :class="$style.classIcon"
-        :src="tree.icon"
-        alt=""
-      >
+        :style="classIconStyle"
+        aria-hidden="true"
+      />
       <h2 :class="$style.title">
         {{ tree.name }}
       </h2>
@@ -72,11 +78,11 @@ function getTalentStyle(talentEntry: TalentEntry) {
         :class="getRankClass(rankEntry)"
       >
         <span :class="$style.rankTitle">
-          <img
+          <span
             :class="$style.rankIcon"
-            :src="rankEntry.rank.icon"
-            alt=""
-          >
+            :style="getRankIconStyle(rankEntry)"
+            aria-hidden="true"
+          />
           <span :class="$style.rankName">{{ rankEntry.rank.name }}</span>
         </span>
 
@@ -176,6 +182,9 @@ $badge: 38px;
   flex: none;
   width: $badge;
   height: $badge;
+  background: colors.$accent;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
 }
 
 .title {
@@ -242,8 +251,12 @@ $badge: 38px;
 }
 
 .rankIcon {
+  flex: none;
   width: 30px;
   height: 30px;
+  background: colors.$accent;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
 }
 
 .talents {

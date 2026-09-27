@@ -1,13 +1,13 @@
 import type { SoldierClass } from './types';
 
-import assaultIcon from '@shared/assets/images/classes/class_assault.png';
-import engineerIcon from '@shared/assets/images/classes/class_engineer_long_war.png';
-import gunnerIcon from '@shared/assets/images/classes/class_heavy.png';
-import infantryIcon from '@shared/assets/images/classes/class_infantry_long_war.png';
-import rocketeerIcon from '@shared/assets/images/classes/class_rocketeer_long_war.png';
-import scoutIcon from '@shared/assets/images/classes/class_scout_long_war.png';
-import sniperIcon from '@shared/assets/images/classes/class_sniper.png';
-import medicIcon from '@shared/assets/images/classes/class_support.png';
+import assaultIcon from '@shared/assets/images/classes/class_assault.svg';
+import engineerIcon from '@shared/assets/images/classes/class_engineer_long_war.svg';
+import gunnerIcon from '@shared/assets/images/classes/class_heavy.svg';
+import infantryIcon from '@shared/assets/images/classes/class_infantry_long_war.svg';
+import rocketeerIcon from '@shared/assets/images/classes/class_rocketeer_long_war.svg';
+import scoutIcon from '@shared/assets/images/classes/class_scout_long_war.svg';
+import sniperIcon from '@shared/assets/images/classes/class_sniper.svg';
+import medicIcon from '@shared/assets/images/classes/class_support.svg';
 
 import { ABILITY_ID } from './ability-id';
 import { SOLDIER_CLASS_ID } from './soldier-class-id';

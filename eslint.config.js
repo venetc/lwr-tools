@@ -12,14 +12,9 @@ export default antfu({
     'no-console': 'off',
     'perfectionist/sort-imports': ['error', {
       groups: [
-        ['type-builtin', 'type-external'],
-        { newlinesBetween: 0 },
-        'type-internal',
-        { newlinesBetween: 0 },
-        ['type-parent', 'type-sibling', 'type-index'],
-        ['value-builtin', 'value-external'],
-        'value-internal',
-        ['value-parent', 'value-sibling', 'value-index'],
+        ['type-builtin', 'value-builtin', 'type-external', 'value-external'],
+        ['type-internal', 'value-internal'],
+        ['type-parent', 'value-parent', 'type-sibling', 'value-sibling', 'type-index', 'value-index'],
         'side-effect',
         'unknown',
       ],

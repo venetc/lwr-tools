@@ -1,5 +1,3 @@
-import type { SoldierRank } from './types';
-
 import rankCaptainIcon from '@shared/assets/images/ranks/rank_captain.svg?component';
 import rankColonelIcon from '@shared/assets/images/ranks/rank_colonel.svg?component';
 import rankCorporalIcon from '@shared/assets/images/ranks/rank_corporal.svg?component';
@@ -8,6 +6,7 @@ import rankMajorIcon from '@shared/assets/images/ranks/rank_major.svg?component'
 import rankSergeantIcon from '@shared/assets/images/ranks/rank_sergeant.svg?component';
 import rankSquaddieIcon from '@shared/assets/images/ranks/rank_squaddie.svg?component';
 
+import type { SoldierRank } from '../../model/types';
 import { SOLDIER_RANK_ID } from './soldier-rank-id';
 
 export const SOLDIER_RANKS: SoldierRank[] = [

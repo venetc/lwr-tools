@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { AcceptableValue } from 'reka-ui';
-
 import { ToggleGroupRoot } from 'reka-ui';
 import { computed } from 'vue';
 

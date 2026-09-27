@@ -1,21 +1,17 @@
-import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue';
-import type { Talent, TalentBuild, TalentTreeData } from './types';
-
+import type { MaybeRefOrGetter, Ref } from 'vue';
 import { computed, shallowRef, toValue } from 'vue';
 
 import { lastSelectedTalent } from './build';
 import { firstTalent } from './tree';
+import type { Talent, TalentBuild, TalentTreeData } from './types';
 
-export interface UseDescribedTalent {
-  descriptionName: ComputedRef<string>
-  descriptionText: ComputedRef<string>
-  descriptionKey: ComputedRef<string>
-  descriptionGrants: ComputedRef<Talent[]>
-  hasDescriptionGrants: ComputedRef<boolean>
-  describe: (talent: Talent) => void
-}
-
-export function useDescribedTalent(tree: MaybeRefOrGetter<TalentTreeData>, build: Ref<TalentBuild>): UseDescribedTalent {
+/**
+ * Талант в панели описания: последний осмотренный, иначе последний выбранный, иначе первый в дереве.
+ *
+ * @param tree дерево талантов класса.
+ * @param build выбранные таланты по рангам.
+ */
+export function useDescribedTalent(tree: MaybeRefOrGetter<TalentTreeData>, build: Ref<TalentBuild>) {
   const inspectedTalent = shallowRef<Talent | null>(null);
 
   const describedTalent = computed(() => {
@@ -23,15 +19,16 @@ export function useDescribedTalent(tree: MaybeRefOrGetter<TalentTreeData>, build
     return inspectedTalent.value ?? lastSelectedTalent(treeValue, build.value) ?? firstTalent(treeValue);
   });
 
-  const descriptionName = computed(() => describedTalent.value?.name ?? '');
-  const descriptionText = computed(() => describedTalent.value?.description ?? '');
-  const descriptionKey = computed(() => describedTalent.value?.id ?? 'none');
-  const descriptionGrants = computed(() => describedTalent.value?.grants ?? []);
-  const hasDescriptionGrants = computed(() => descriptionGrants.value.length > 0);
+  const hasGrants = computed(() => (describedTalent.value?.grants.length ?? 0) > 0);
 
+  /**
+   * Показывает талант в панели описания.
+   *
+   * @param talent осмотренный пользователем талант.
+   */
   function describe(talent: Talent) {
     inspectedTalent.value = talent;
   }
 
-  return { descriptionName, descriptionText, descriptionKey, descriptionGrants, hasDescriptionGrants, describe };
+  return { describedTalent, hasGrants, describe };
 }

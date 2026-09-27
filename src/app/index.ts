@@ -1,5 +1,4 @@
 import type { PiniaPluginContext } from 'pinia';
-
 import { createPinia } from 'pinia';
 import { createApp, markRaw } from 'vue';
 

@@ -1,5 +1,3 @@
-import type { SoldierClass } from './types';
-
 import assaultIcon from '@shared/assets/images/classes/class_assault.svg?component';
 import engineerIcon from '@shared/assets/images/classes/class_engineer_long_war.svg?component';
 import gunnerIcon from '@shared/assets/images/classes/class_heavy.svg?component';
@@ -9,6 +7,7 @@ import scoutIcon from '@shared/assets/images/classes/class_scout_long_war.svg?co
 import sniperIcon from '@shared/assets/images/classes/class_sniper.svg?component';
 import medicIcon from '@shared/assets/images/classes/class_support.svg?component';
 
+import type { SoldierClass } from '../../model/types';
 import { ABILITY_ID } from './ability-id';
 import { SOLDIER_CLASS_ID } from './soldier-class-id';
 import { SOLDIER_RANK_ID } from './soldier-rank-id';

@@ -1,5 +1,4 @@
 import type { Router } from 'vue-router';
-
 import { createRouter, createWebHistory } from 'vue-router';
 
 export const router: Router = createRouter({

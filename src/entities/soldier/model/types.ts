@@ -1,8 +1,9 @@
 import type { SvgIcon } from '@shared/types';
 import type { TalentRank } from '@shared/ui/talent-tree';
-import type { ABILITY_ID } from './ability-id';
-import type { SOLDIER_CLASS_ID } from './soldier-class-id';
-import type { SOLDIER_RANK_ID } from './soldier-rank-id';
+
+import type { ABILITY_ID } from '../config/constants/ability-id';
+import type { SOLDIER_CLASS_ID } from '../config/constants/soldier-class-id';
+import type { SOLDIER_RANK_ID } from '../config/constants/soldier-rank-id';
 
 export type AbilityId = (typeof ABILITY_ID)[keyof typeof ABILITY_ID];
 
@@ -31,6 +32,4 @@ export interface SoldierClass {
   abilities: Record<SoldierRankId, AbilityId[]>
 }
 
-export interface SoldierTalentRank extends TalentRank {
-  soldierRank: SoldierRank
-}
+export type SoldierTalentRank = SoldierRank & TalentRank;

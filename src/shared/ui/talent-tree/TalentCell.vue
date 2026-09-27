@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { TalentRankState } from './model/types';
-
 import { computed, useCssModule } from 'vue';
+
+import type { TalentRankState } from './model/types';
 
 interface Props {
   icon: string

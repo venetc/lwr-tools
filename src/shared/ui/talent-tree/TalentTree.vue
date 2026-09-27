@@ -1,16 +1,15 @@
 <script setup lang="ts" generic="Rank extends TalentRank">
 import type { AcceptableValue } from 'reka-ui';
 import type { VNode } from 'vue';
-import type { TalentBuild, TalentRank, TalentRankState, TalentTreeData } from './model/types';
-import type { RankEntry, TalentEntry } from './model/useTalentRanks';
-
 import { computed, useCssModule } from 'vue';
 
 import { ScrollArea } from '@shared/ui/scroll-area';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
 import { selectTalent } from './model/build';
+import type { TalentBuild, TalentRank, TalentRankState, TalentTreeData } from './model/types';
 import { useDescribedTalent } from './model/useDescribedTalent';
+import type { RankEntry, TalentEntry } from './model/useTalentRanks';
 import { useTalentRanks } from './model/useTalentRanks';
 import TalentCell from './TalentCell.vue';
 
@@ -34,32 +33,46 @@ const build = defineModel<TalentBuild>({ required: true });
 
 const style = useCssModule();
 
-const { rankEntries } = useTalentRanks(() => props.tree, build);
+const rankEntries = useTalentRanks(() => props.tree, build);
 
 const hasHeader = computed(() => slots.header !== undefined);
 
-const {
-  descriptionName,
-  descriptionText,
-  descriptionKey,
-  descriptionGrants,
-  hasDescriptionGrants,
-  describe,
-} = useDescribedTalent(() => props.tree, build);
+const { describedTalent, hasGrants, describe } = useDescribedTalent(() => props.tree, build);
 
+/**
+ * Применяет выбор таланта на ранге к билду.
+ *
+ * @param rankIndex индекс ранга в дереве.
+ * @param toggledValue id выбранного таланта; null или пусто — выбор снят.
+ */
 function onRankUpdate(rankIndex: number, toggledValue: AcceptableValue | null) {
   const talentId = typeof toggledValue === 'string' ? toggledValue : null;
   selectTalent(build.value, rankIndex, talentId);
 }
 
+/**
+ * Классы ранга по его состоянию.
+ *
+ * @param rankEntry ранг с состоянием.
+ */
 function getRankClass(rankEntry: RankEntry<Rank>) {
   return [style.rank, style[rankEntry.state]];
 }
 
+/**
+ * aria-disabled для закрытого ранга.
+ *
+ * @param rankEntry ранг с состоянием.
+ */
 function getAriaDisabled(rankEntry: RankEntry<Rank>) {
   return rankEntry.state === 'locked' ? 'true' : null;
 }
 
+/**
+ * Колонка сетки для таланта.
+ *
+ * @param talentEntry талант с рассчитанной колонкой.
+ */
 function getTalentStyle(talentEntry: TalentEntry) {
   return { gridColumn: talentEntry.column };
 }
@@ -73,7 +86,7 @@ function getTalentStyle(talentEntry: TalentEntry) {
 
     <ol :class="$style.ranks">
       <li
-        v-for="rankEntry in rankEntries"
+        v-for="(rankEntry, rankIndex) in rankEntries"
         :key="rankEntry.rank.id"
         :class="getRankClass(rankEntry)"
       >
@@ -90,7 +103,7 @@ function getTalentStyle(talentEntry: TalentEntry) {
           :model-value="rankEntry.selectedId"
           :roving-focus="false"
           :aria-label="rankEntry.rank.name"
-          @update:model-value="onRankUpdate(rankEntry.rankIndex, $event)"
+          @update:model-value="onRankUpdate(rankIndex, $event)"
         >
           <ToggleGroupOption
             v-for="talentEntry in rankEntry.talentEntries"
@@ -113,23 +126,27 @@ function getTalentStyle(talentEntry: TalentEntry) {
       </li>
     </ol>
 
-    <div :class="$style.description" aria-live="polite">
+    <div
+      v-if="describedTalent"
+      :class="$style.description"
+      aria-live="polite"
+    >
       <p :class="$style.descriptionName">
-        {{ descriptionName }}
+        {{ describedTalent.name }}
       </p>
 
       <ScrollArea
-        :key="descriptionKey"
+        :key="describedTalent.id"
         :class="$style.descriptionScroll"
         auto-scroll
       >
         <p :class="$style.descriptionText">
-          {{ descriptionText }}
+          {{ describedTalent.description }}
         </p>
 
-        <ul v-if="hasDescriptionGrants" :class="$style.grants">
+        <ul v-if="hasGrants" :class="$style.grants">
           <li
-            v-for="grantedTalent in descriptionGrants"
+            v-for="grantedTalent in describedTalent.grants"
             :key="grantedTalent.id"
             :class="$style.grant"
           >

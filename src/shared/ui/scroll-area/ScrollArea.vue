@@ -3,6 +3,8 @@ import { useElementVisibility, useEventListener, usePreferredReducedMotion, useR
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
 import { computed, shallowRef, useTemplateRef, watch } from 'vue';
 
+import { MAX_FRAME_DELTA } from './config/constants';
+
 interface Props {
   autoScroll?: boolean
   autoScrollDelay?: number
@@ -19,8 +21,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 type Phase = 'top' | 'down' | 'bottom' | 'up';
 
-const MAX_FRAME_DELTA = 100;
-
 const scrollAreaRoot = useTemplateRef<InstanceType<typeof ScrollAreaRoot>>('scrollAreaRoot');
 const content = useTemplateRef<HTMLElement>('content');
 const rootElement = computed(() => scrollAreaRoot.value?.$el ?? null);
@@ -35,11 +35,23 @@ let phase: Phase = 'top';
 let phaseElapsed = 0;
 let scrollPosition = 0;
 
+/**
+ * Переключает фазу автопрокрутки и обнуляет её таймер.
+ *
+ * @param nextPhase новая фаза.
+ */
 function setPhase(nextPhase: Phase) {
   phase = nextPhase;
   phaseElapsed = 0;
 }
 
+/**
+ * Сдвигает прокрутку в пределах контента.
+ *
+ * @param viewportElement прокручиваемый элемент.
+ * @param offset сдвиг в пикселях, отрицательный — вверх.
+ * @param maxScrollTop наибольшая позиция прокрутки.
+ */
 function scrollBy(viewportElement: HTMLElement, offset: number, maxScrollTop: number) {
   scrollPosition = Math.min(maxScrollTop, Math.max(0, scrollPosition + offset));
   viewportElement.scrollTop = scrollPosition;
@@ -77,6 +89,7 @@ const { pause, resume } = useRafFn(({ delta }) => {
   }
 }, { immediate: false });
 
+/** Проверяет, выходит ли контент за высоту области. */
 function measureOverflow() {
   const viewportElement = viewport.value;
   if (!viewportElement) return;
@@ -89,6 +102,7 @@ useResizeObserver([viewport, content], measureOverflow);
 const isAutoScrollAllowed = computed(() => props.autoScroll && reducedMotion.value !== 'reduce' && isOverflowing.value);
 const isAutoScrollActive = computed(() => isAutoScrollAllowed.value && isVisible.value && !isStoppedByUser.value);
 
+/** Возвращает автопрокрутку и область в начало. */
 function reset() {
   setPhase('top');
   scrollPosition = 0;
@@ -112,6 +126,7 @@ watch(isAutoScrollAllowed, (isAllowed) => {
   reset();
 });
 
+/** Выключает автопрокрутку, как только пользователь сам взаимодействует с областью. */
 function stopByUser() {
   isStoppedByUser.value = true;
 }

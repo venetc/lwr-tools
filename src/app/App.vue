@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ToastHost } from '@shared/ui/toast';
 import { SiteFooter } from '@widgets/site-footer';
 </script>
 
@@ -8,6 +9,7 @@ import { SiteFooter } from '@widgets/site-footer';
       <RouterView />
     </div>
     <SiteFooter />
+    <ToastHost />
   </div>
 </template>
 

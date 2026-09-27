@@ -1,43 +1,42 @@
 <script setup lang="ts">
-import type { SoldierClassId } from '@entities/soldier';
-import type { TalentBuild } from '@shared/ui/talent-tree';
+import { ref } from 'vue';
 
-import { computed, ref } from 'vue';
-
+import type { SoldierClass, SoldierTalentRank } from '@entities/soldier';
 import { SOLDIER_CLASSES, SoldierClassHeading, soldierClassTree, SoldierRankLabel } from '@entities/soldier';
+import type { TalentBuild, TalentTreeData } from '@shared/ui/talent-tree';
 import { TalentTree } from '@shared/ui/talent-tree';
 
-const builds = ref(new Map<SoldierClassId, TalentBuild>(
-  SOLDIER_CLASSES.map(soldierClass => [soldierClass.id, []]),
-));
+interface BuildPanel {
+  soldierClass: SoldierClass
+  tree: TalentTreeData<SoldierTalentRank>
+  talents: TalentBuild
+  name: string
+}
 
-const classTrees = SOLDIER_CLASSES.map(soldierClass => ({
-  id: soldierClass.id,
+const panels = ref<BuildPanel[]>(SOLDIER_CLASSES.map(soldierClass => ({
   soldierClass,
   tree: soldierClassTree(soldierClass),
-  build: computed<TalentBuild>({
-    get: () => builds.value.get(soldierClass.id) ?? [],
-    set: (build) => {
-      builds.value.set(soldierClass.id, build);
-    },
-  }),
-}));
+  talents: [],
+  name: soldierClass.name,
+})));
 </script>
 
 <template>
   <main :class="$style.page">
     <TalentTree
-      v-for="classTree in classTrees"
-      :key="classTree.id"
-      v-model="classTree.build.value"
-      :tree="classTree.tree"
+      v-for="panel in panels"
+      :key="panel.soldierClass.id"
+      v-model="panel.talents"
+      :tree="panel.tree"
     >
       <template #header>
-        <SoldierClassHeading :soldier-class="classTree.soldierClass" />
+        <div :class="$style.header">
+          <SoldierClassHeading v-model:name="panel.name" :soldier-class="panel.soldierClass" />
+        </div>
       </template>
 
       <template #rank="{ rank }">
-        <SoldierRankLabel :rank="rank.soldierRank" />
+        <SoldierRankLabel :rank="rank" />
       </template>
     </TalentTree>
   </main>
@@ -51,5 +50,13 @@ const classTrees = SOLDIER_CLASSES.map(soldierClass => ({
   align-items: start;
   gap: 24px;
   padding: 24px 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  inline-size: 100%;
 }
 </style>

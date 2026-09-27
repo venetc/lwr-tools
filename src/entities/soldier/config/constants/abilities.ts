@@ -1,5 +1,3 @@
-import type { Ability, AbilityId } from './types';
-
 import aceHoleIcon from '@shared/assets/images/abilities/ace_hole@4x.png';
 import adaptiveBoneMarrowGeneModEu2012Icon from '@shared/assets/images/abilities/adaptive_bone_marrow_gene_mod_eu2012@4x.png';
 import alienBullrushIcon from '@shared/assets/images/abilities/alien_bullrush@4x.png';
@@ -59,6 +57,7 @@ import supportSmokemirrorsIcon from '@shared/assets/images/abilities/support_smo
 import supportSprinterIcon from '@shared/assets/images/abilities/support_sprinter@4x.png';
 import urbanCombatBadge2Eu2012Icon from '@shared/assets/images/abilities/urban_combat_badge_2_eu2012@4x.png';
 
+import type { Ability, AbilityId } from '../../model/types';
 import { ABILITY_ID } from './ability-id';
 
 export const ABILITIES: Record<AbilityId, Ability> = {

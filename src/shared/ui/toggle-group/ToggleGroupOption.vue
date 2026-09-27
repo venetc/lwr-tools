@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { AcceptableValue } from 'reka-ui';
-
 import { ToggleGroupItem } from 'reka-ui';
 
 interface Props {

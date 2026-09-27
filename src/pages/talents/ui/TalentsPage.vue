@@ -4,7 +4,7 @@ import type { TalentBuild } from '@shared/ui/talent-tree';
 
 import { computed, ref } from 'vue';
 
-import { SOLDIER_CLASSES, soldierClassTree } from '@entities/soldier';
+import { SOLDIER_CLASSES, SoldierClassHeading, soldierClassTree, SoldierRankLabel } from '@entities/soldier';
 import { TalentTree } from '@shared/ui/talent-tree';
 
 const builds = ref(new Map<SoldierClassId, TalentBuild>(
@@ -13,6 +13,7 @@ const builds = ref(new Map<SoldierClassId, TalentBuild>(
 
 const classTrees = SOLDIER_CLASSES.map(soldierClass => ({
   id: soldierClass.id,
+  soldierClass,
   tree: soldierClassTree(soldierClass),
   build: computed<TalentBuild>({
     get: () => builds.value.get(soldierClass.id) ?? [],
@@ -30,7 +31,15 @@ const classTrees = SOLDIER_CLASSES.map(soldierClass => ({
       :key="classTree.id"
       v-model="classTree.build.value"
       :tree="classTree.tree"
-    />
+    >
+      <template #header>
+        <SoldierClassHeading :soldier-class="classTree.soldierClass" />
+      </template>
+
+      <template #rank="{ rank }">
+        <SoldierRankLabel :rank="rank.soldierRank" />
+      </template>
+    </TalentTree>
   </main>
 </template>
 

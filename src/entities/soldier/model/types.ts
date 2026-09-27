@@ -1,3 +1,5 @@
+import type { SvgIcon } from '@shared/types';
+import type { TalentRank } from '@shared/ui/talent-tree';
 import type { ABILITY_ID } from './ability-id';
 import type { SOLDIER_CLASS_ID } from './soldier-class-id';
 import type { SOLDIER_RANK_ID } from './soldier-rank-id';
@@ -17,7 +19,7 @@ export type SoldierRankId = (typeof SOLDIER_RANK_ID)[keyof typeof SOLDIER_RANK_I
 export interface SoldierRank {
   id: SoldierRankId
   name: string
-  icon: string
+  icon: SvgIcon
 }
 
 export type SoldierClassId = (typeof SOLDIER_CLASS_ID)[keyof typeof SOLDIER_CLASS_ID];
@@ -25,6 +27,10 @@ export type SoldierClassId = (typeof SOLDIER_CLASS_ID)[keyof typeof SOLDIER_CLAS
 export interface SoldierClass {
   id: SoldierClassId
   name: string
-  icon: string
+  icon: SvgIcon
   abilities: Record<SoldierRankId, AbilityId[]>
+}
+
+export interface SoldierTalentRank extends TalentRank {
+  soldierRank: SoldierRank
 }

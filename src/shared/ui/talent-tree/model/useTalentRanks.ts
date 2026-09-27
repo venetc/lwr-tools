@@ -12,20 +12,23 @@ export interface TalentEntry {
   column: number
 }
 
-export interface RankEntry {
-  rank: TalentRank
+export interface RankEntry<Rank extends TalentRank = TalentRank> {
+  rank: Rank
   rankIndex: number
   state: TalentRankState
   selectedId: string | null
   talentEntries: TalentEntry[]
 }
 
-export interface UseTalentRanks {
-  rankEntries: ComputedRef<RankEntry[]>
+export interface UseTalentRanks<Rank extends TalentRank> {
+  rankEntries: ComputedRef<RankEntry<Rank>[]>
 }
 
-export function useTalentRanks(tree: MaybeRefOrGetter<TalentTreeData>, build: Ref<TalentBuild>): UseTalentRanks {
-  const rankEntries = computed(() => toValue(tree).ranks.map((rank, rankIndex): RankEntry => {
+export function useTalentRanks<Rank extends TalentRank>(
+  tree: MaybeRefOrGetter<TalentTreeData<Rank>>,
+  build: Ref<TalentBuild>,
+): UseTalentRanks<Rank> {
+  const rankEntries = computed(() => toValue(tree).ranks.map((rank, rankIndex): RankEntry<Rank> => {
     const state = rankState(build.value, rankIndex);
     const selectedId = selectedTalentId(build.value, rankIndex);
 

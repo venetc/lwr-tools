@@ -1,5 +1,5 @@
 import type { Talent, TalentTreeData } from '@shared/ui/talent-tree';
-import type { Ability, SoldierClass } from '../model/types';
+import type { Ability, SoldierClass, SoldierTalentRank } from '../model/types';
 
 import { ABILITIES } from '../model/abilities';
 import { SOLDIER_RANKS } from '../model/ranks';
@@ -14,14 +14,13 @@ function toTalent(ability: Ability): Talent {
   };
 }
 
-export function soldierClassTree(soldierClass: SoldierClass): TalentTreeData {
+export function soldierClassTree(soldierClass: SoldierClass): TalentTreeData<SoldierTalentRank> {
   return {
     name: soldierClass.name,
-    icon: soldierClass.icon,
     ranks: SOLDIER_RANKS.map(rank => ({
       id: rank.id,
       name: rank.name,
-      icon: rank.icon,
+      soldierRank: rank,
       talents: soldierClass.abilities[rank.id].map(abilityId => toTalent(ABILITIES[abilityId])),
     })),
   };

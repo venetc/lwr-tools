@@ -9,14 +9,12 @@ export interface Talent {
 export interface TalentRank {
   id: string
   name: string
-  icon: string
   talents: Talent[]
 }
 
-export interface TalentTreeData {
+export interface TalentTreeData<Rank extends TalentRank = TalentRank> {
   name: string
-  icon: string
-  ranks: TalentRank[]
+  ranks: Rank[]
 }
 
 export type TalentBuild = Talent['id'][];

@@ -1,6 +1,7 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="Rank extends TalentRank">
 import type { AcceptableValue } from 'reka-ui';
-import type { TalentBuild, TalentTreeData } from './model/types';
+import type { VNode } from 'vue';
+import type { TalentBuild, TalentRank, TalentRankState, TalentTreeData } from './model/types';
 import type { RankEntry, TalentEntry } from './model/useTalentRanks';
 
 import { computed, useCssModule } from 'vue';
@@ -14,16 +15,28 @@ import { useTalentRanks } from './model/useTalentRanks';
 import TalentCell from './TalentCell.vue';
 
 interface Props {
-  tree: TalentTreeData
+  tree: TalentTreeData<Rank>
+}
+
+interface RankSlotProps {
+  rank: Rank
+  state: TalentRankState
 }
 
 const props = defineProps<Props>();
+
+const slots = defineSlots<{
+  header?: () => VNode[]
+  rank?: (props: RankSlotProps) => VNode[]
+}>();
 
 const build = defineModel<TalentBuild>({ required: true });
 
 const style = useCssModule();
 
 const { rankEntries } = useTalentRanks(() => props.tree, build);
+
+const hasHeader = computed(() => slots.header !== undefined);
 
 const {
   descriptionName,
@@ -39,17 +52,11 @@ function onRankUpdate(rankIndex: number, toggledValue: AcceptableValue | null) {
   selectTalent(build.value, rankIndex, talentId);
 }
 
-const classIconStyle = computed(() => ({ maskImage: `url("${props.tree.icon}")` }));
-
-function getRankClass(rankEntry: RankEntry) {
+function getRankClass(rankEntry: RankEntry<Rank>) {
   return [style.rank, style[rankEntry.state]];
 }
 
-function getRankIconStyle(rankEntry: RankEntry) {
-  return { maskImage: `url("${rankEntry.rank.icon}")` };
-}
-
-function getAriaDisabled(rankEntry: RankEntry) {
+function getAriaDisabled(rankEntry: RankEntry<Rank>) {
   return rankEntry.state === 'locked' ? 'true' : null;
 }
 
@@ -60,15 +67,8 @@ function getTalentStyle(talentEntry: TalentEntry) {
 
 <template>
   <section :class="$style.panel" :aria-label="tree.name">
-    <header :class="$style.header">
-      <span
-        :class="$style.classIcon"
-        :style="classIconStyle"
-        aria-hidden="true"
-      />
-      <h2 :class="$style.title">
-        {{ tree.name }}
-      </h2>
+    <header v-if="hasHeader" :class="$style.header">
+      <slot name="header" />
     </header>
 
     <ol :class="$style.ranks">
@@ -77,13 +77,12 @@ function getTalentStyle(talentEntry: TalentEntry) {
         :key="rankEntry.rank.id"
         :class="getRankClass(rankEntry)"
       >
-        <span :class="$style.rankTitle">
-          <span
-            :class="$style.rankIcon"
-            :style="getRankIconStyle(rankEntry)"
-            aria-hidden="true"
+        <span :class="$style.rankLabel">
+          <slot
+            name="rank"
+            :rank="rankEntry.rank"
+            :state="rankEntry.state"
           />
-          <span :class="$style.rankName">{{ rankEntry.rank.name }}</span>
         </span>
 
         <ToggleGroup
@@ -159,7 +158,6 @@ function getTalentStyle(talentEntry: TalentEntry) {
 @use 'styles/media';
 
 $cell: 44px;
-$badge: 38px;
 
 .panel {
   @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
@@ -174,23 +172,6 @@ $badge: 38px;
 .header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-height: $badge;
-}
-
-.classIcon {
-  flex: none;
-  width: $badge;
-  height: $badge;
-  background: colors.$accent;
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-}
-
-.title {
-  @include typography.caps-1;
-  color: colors.$text-primary;
-  text-box: trim-both cap alphabetic;
 }
 
 .ranks {
@@ -217,7 +198,7 @@ $badge: 38px;
 .completed {
   border-color: colors.$border;
 
-  .rankTitle {
+  .rankLabel {
     color: colors.$text-secondary;
   }
 }
@@ -226,7 +207,7 @@ $badge: 38px;
   border-color: colors.$highlight-muted;
   box-shadow: 0 0 8px colors.$highlight-glow;
 
-  .rankTitle {
+  .rankLabel {
     color: colors.$highlight;
   }
 }
@@ -234,29 +215,15 @@ $badge: 38px;
 .locked {
   border-color: colors.$border;
 
-  .rankTitle {
+  .rankLabel {
     color: colors.$text-disabled;
   }
 }
 
-.rankTitle {
-  @include typography.caps-2;
+.rankLabel {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.rankName {
-  text-box: trim-both cap alphabetic;
-}
-
-.rankIcon {
-  flex: none;
-  width: 30px;
-  height: 30px;
-  background: colors.$accent;
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
+  min-width: 0;
 }
 
 .talents {

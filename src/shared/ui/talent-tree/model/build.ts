@@ -8,11 +8,11 @@ import type { Talent, TalentBuild, TalentRankState, TalentTreeData } from './typ
  * @param rankIndex rank index in the tree.
  * @param readonly readonly build: no rank is available for selection.
  */
-export function rankState(build: TalentBuild, rankIndex: number, readonly: boolean): TalentRankState {
+export const rankState = (build: TalentBuild, rankIndex: number, readonly: boolean): TalentRankState => {
   if (rankIndex < build.length) return 'completed';
   if (rankIndex === build.length && !readonly) return 'available';
   return 'locked';
-}
+};
 
 /**
  * Id of the talent selected on the rank, or null.
@@ -20,9 +20,9 @@ export function rankState(build: TalentBuild, rankIndex: number, readonly: boole
  * @param build selected talents by rank.
  * @param rankIndex rank index in the tree.
  */
-export function selectedTalentId(build: TalentBuild, rankIndex: number): string | null {
+export const selectedTalentId = (build: TalentBuild, rankIndex: number): string | null => {
   return build[rankIndex] ?? null;
-}
+};
 
 /**
  * Talent selected on the last completed rank, or null for an empty build.
@@ -30,10 +30,10 @@ export function selectedTalentId(build: TalentBuild, rankIndex: number): string 
  * @param tree class talent tree.
  * @param build selected talents by rank.
  */
-export function lastSelectedTalent(tree: TalentTreeData, build: TalentBuild): Talent | null {
+export const lastSelectedTalent = (tree: TalentTreeData, build: TalentBuild): Talent | null => {
   const lastRankIndex = build.length - 1;
   return findRankTalent(tree, lastRankIndex, selectedTalentId(build, lastRankIndex));
-}
+};
 
 /**
  * Whether the rank belongs to the tree base build: its talent is granted and cannot change.
@@ -41,9 +41,9 @@ export function lastSelectedTalent(tree: TalentTreeData, build: TalentBuild): Ta
  * @param tree class talent tree.
  * @param rankIndex rank index in the tree.
  */
-export function isRankGranted(tree: TalentTreeData, rankIndex: number): boolean {
+export const isRankGranted = (tree: TalentTreeData, rankIndex: number): boolean => {
   return rankIndex < tree.baseBuild.length;
-}
+};
 
 /**
  * Selects a talent on the rank and clears the selection on all higher ranks. Leaves ranks after the available one and granted ranks untouched.
@@ -53,9 +53,9 @@ export function isRankGranted(tree: TalentTreeData, rankIndex: number): boolean 
  * @param rankIndex rank index in the tree.
  * @param talentId selected talent id, or null to clear the rank selection.
  */
-export function selectTalent(tree: TalentTreeData, build: TalentBuild, rankIndex: number, talentId: string | null): void {
+export const selectTalent = (tree: TalentTreeData, build: TalentBuild, rankIndex: number, talentId: string | null): void => {
   if (isRankGranted(tree, rankIndex)) return;
   if (rankIndex > build.length) return;
   build.length = rankIndex;
   if (talentId !== null) build.push(talentId);
-}
+};

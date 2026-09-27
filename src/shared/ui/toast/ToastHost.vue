@@ -11,10 +11,10 @@ import { dismissToast, toastMessages } from './model/toast-queue';
  * @param id notification id.
  * @param isOpen whether the notification is open after the change.
  */
-function onOpenUpdate(id: number, isOpen: boolean) {
+const onOpenUpdate = (id: number, isOpen: boolean) => {
   if (isOpen) return;
   dismissToast(id);
-}
+};
 </script>
 
 <template>

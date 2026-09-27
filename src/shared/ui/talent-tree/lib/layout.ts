@@ -7,6 +7,6 @@ import { COLUMNS } from '../config/constants';
  * @param talentIndex talent index in the rank.
  * @returns one-based column number.
  */
-export function talentColumn(talentsInRank: number, talentIndex: number): number {
+export const talentColumn = (talentsInRank: number, talentIndex: number): number => {
   return COLUMNS[talentsInRank]?.[talentIndex] ?? talentIndex + 1;
-}
+};

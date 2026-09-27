@@ -28,7 +28,7 @@ defineProps<Props>();
   @include typography.caps-2;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .name {
@@ -37,8 +37,8 @@ defineProps<Props>();
 
 .icon {
   flex: none;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   color: colors.$accent;
 }
 </style>

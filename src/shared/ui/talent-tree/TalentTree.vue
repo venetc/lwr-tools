@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="Rank extends TalentRank">
 import type { AcceptableValue } from 'reka-ui';
 import type { VNode } from 'vue';
-import { computed, useCssModule } from 'vue';
+import { useCssModule } from 'vue';
 
 import { ScrollArea } from '@shared/ui/scroll-area';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<Props>(), {
   readonly: false,
 });
 
-const slots = defineSlots<{
+defineSlots<{
   header?: () => VNode[]
   rank?: (props: RankSlotProps) => VNode[]
 }>();
@@ -41,8 +41,6 @@ const style = useCssModule();
 
 const rankEntries = useTalentRanks(() => props.tree, build, () => props.readonly);
 
-const hasHeader = computed(() => slots.header !== undefined);
-
 const { describedTalent, hasGrants, describe } = useDescribedTalent(() => props.tree, build);
 
 /**
@@ -51,44 +49,44 @@ const { describedTalent, hasGrants, describe } = useDescribedTalent(() => props.
  * @param rankIndex rank index in the tree.
  * @param toggledValue selected talent id; null or empty means the selection was cleared.
  */
-function onRankUpdate(rankIndex: number, toggledValue: AcceptableValue | null) {
+const onRankUpdate = (rankIndex: number, toggledValue: AcceptableValue | null) => {
   if (props.readonly) return;
   const talentId = typeof toggledValue === 'string' ? toggledValue : null;
   selectTalent(props.tree, build.value, rankIndex, talentId);
-}
+};
 
 /**
  * Rank classes based on its state.
  *
  * @param rankEntry rank with its state.
  */
-function getRankClass(rankEntry: RankEntry<Rank>) {
+const getRankClass = (rankEntry: RankEntry<Rank>) => {
   return [style.rank, style[rankEntry.state]];
-}
+};
 
 /**
  * aria-disabled for granted and locked ranks, and for the whole tree in readonly mode.
  *
  * @param rankEntry rank with its state.
  */
-function getAriaDisabled(rankEntry: RankEntry<Rank>) {
+const getAriaDisabled = (rankEntry: RankEntry<Rank>) => {
   const isDisabled = props.readonly || rankEntry.isGranted || rankEntry.state === 'locked';
   return isDisabled ? 'true' : null;
-}
+};
 
 /**
  * Grid column for a talent.
  *
  * @param talentEntry talent with its computed column.
  */
-function getTalentStyle(talentEntry: TalentEntry) {
+const getTalentStyle = (talentEntry: TalentEntry) => {
   return { gridColumn: talentEntry.column };
-}
+};
 </script>
 
 <template>
   <section :class="$style.panel" :aria-label="tree.name">
-    <header v-if="hasHeader" :class="$style.header">
+    <header :class="$style.header">
       <slot name="header" />
     </header>
 
@@ -143,10 +141,7 @@ function getTalentStyle(talentEntry: TalentEntry) {
         {{ describedTalent.name }}
       </p>
 
-      <ScrollArea
-        :class="$style.descriptionScroll"
-        auto-scroll
-      >
+      <ScrollArea :class="$style.descriptionScroll">
         <p :class="$style.descriptionText">
           {{ describedTalent.description }}
         </p>
@@ -181,27 +176,29 @@ function getTalentStyle(talentEntry: TalentEntry) {
 @use 'styles/shape';
 @use 'styles/media';
 
-$cell: 44px;
+$cell: 40px;
 
 .panel {
   @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
-  max-width: 480px;
-  padding: 14px 16px 20px;
+  max-width: 440px;
+  padding: 12px 14px 18px;
 }
 
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .ranks {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -211,8 +208,8 @@ $cell: 44px;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 16px;
-  padding: 5px 10px 5px 12px;
+  gap: 12px;
+  padding: 4px 8px 4px 10px;
   background: colors.$surface-2;
   border-width: 1px;
   border-style: solid;
@@ -253,7 +250,7 @@ $cell: 44px;
 .talents {
   display: grid;
   grid-template-columns: repeat(3, $cell);
-  gap: 12px;
+  gap: 10px;
 }
 
 .talent {

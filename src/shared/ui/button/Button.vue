@@ -38,8 +38,7 @@ const buttonClass = computed(() => [style.button, style[props.variant]]);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 18px;
+  padding: 0;
 
   &:enabled {
     cursor: pointer;

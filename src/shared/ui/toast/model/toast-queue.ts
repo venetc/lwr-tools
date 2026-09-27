@@ -18,19 +18,19 @@ export const toastMessages = readonly(messages);
  *
  * @param content notification title and text.
  */
-export function showToast(content: ToastContent): void {
+export const showToast = (content: ToastContent): void => {
   messages.value.push({ ...content, id: nextId++ });
   triggerRef(messages);
-}
+};
 
 /**
  * Removes the notification from the queue.
  *
  * @param id notification id returned when it was shown.
  */
-export function dismissToast(id: number): void {
+export const dismissToast = (id: number): void => {
   const index = messages.value.findIndex(message => message.id === id);
   if (index === -1) return;
   messages.value.splice(index, 1);
   triggerRef(messages);
-}
+};

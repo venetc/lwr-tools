@@ -11,7 +11,7 @@ import type { Talent, TalentBuild, TalentTreeData } from './types';
  * @param tree class talent tree.
  * @param build selected talents by rank.
  */
-export function useDescribedTalent(tree: MaybeRefOrGetter<TalentTreeData>, build: Ref<TalentBuild>) {
+export const useDescribedTalent = (tree: MaybeRefOrGetter<TalentTreeData>, build: Ref<TalentBuild>) => {
   const inspectedTalent = shallowRef<Talent | null>(null);
 
   const describedTalent = computed(() => {
@@ -26,9 +26,9 @@ export function useDescribedTalent(tree: MaybeRefOrGetter<TalentTreeData>, build
    *
    * @param talent talent inspected by the user.
    */
-  function describe(talent: Talent) {
+  const describe = (talent: Talent) => {
     inspectedTalent.value = talent;
-  }
+  };
 
   return { describedTalent, hasGrants, describe };
-}
+};

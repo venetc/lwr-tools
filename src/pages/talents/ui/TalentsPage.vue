@@ -1,76 +1,95 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { Plus } from '@lucide/vue';
+import { storeToRefs } from 'pinia';
 
-import type { SoldierClass, SoldierTalentRank } from '@entities/soldier';
-import { SOLDIER_CLASSES, SoldierClassHeading, soldierClassTree, SoldierRankLabel } from '@entities/soldier';
-import type { TalentBuild, TalentTreeData } from '@shared/ui/talent-tree';
-import { TalentTree } from '@shared/ui/talent-tree';
+import { SOLDIER_CLASSES } from '@entities/soldier';
+import { Button } from '@shared/ui/button';
 
-import LockToggle from './LockToggle.vue';
+import { useTalentsStore } from '../model/talents';
+import SoldierBuildTree from './SoldierBuildTree.vue';
 
-interface BuildPanel {
-  soldierClass: SoldierClass
-  tree: TalentTreeData<SoldierTalentRank>
-  talents: TalentBuild
-  name: string
-  readonly: boolean
-}
+const talentsStore = useTalentsStore();
 
-const panels = ref<BuildPanel[]>(SOLDIER_CLASSES.map((soldierClass) => {
-  const tree = soldierClassTree(soldierClass);
-
-  return {
-    soldierClass,
-    tree,
-    talents: [...tree.baseBuild],
-    name: soldierClass.name,
-    readonly: false,
-  };
-}));
+const { builds } = storeToRefs(talentsStore);
 </script>
 
 <template>
   <main :class="$style.page">
-    <TalentTree
-      v-for="panel in panels"
-      :key="panel.soldierClass.id"
-      v-model="panel.talents"
-      :tree="panel.tree"
-      :readonly="panel.readonly"
-    >
-      <template #header>
-        <div :class="$style.header">
-          <SoldierClassHeading
-            v-model:name="panel.name"
-            :soldier-class="panel.soldierClass"
-            :readonly="panel.readonly"
+    <div :class="$style.toolbar">
+      <Button
+        v-for="soldierClass in SOLDIER_CLASSES"
+        :key="soldierClass.id"
+        @click="talentsStore.addBuild(soldierClass)"
+      >
+        <span :class="$style.addContent">
+          <Plus :class="$style.plusIcon" aria-hidden="true" />
+          <component
+            :is="soldierClass.icon"
+            :class="$style.classIcon"
+            aria-hidden="true"
           />
-          <LockToggle v-model="panel.readonly" />
-        </div>
-      </template>
+          <span :class="$style.visuallyHidden">Add {{ soldierClass.name }}</span>
+        </span>
+      </Button>
+    </div>
 
-      <template #rank="{ rank }">
-        <SoldierRankLabel :rank="rank" />
-      </template>
-    </TalentTree>
+    <div :class="$style.builds">
+      <SoldierBuildTree
+        v-for="build in builds"
+        :key="build.id"
+        :build="build"
+        @remove="talentsStore.removeBuild"
+      />
+    </div>
   </main>
 </template>
 
 <style lang="scss" module>
 .page {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 480px));
-  justify-content: center;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
   padding: 24px 16px;
 }
 
-.header {
+.toolbar {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: center;
+  gap: 8px;
+}
+
+.addContent {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  inline-size: 100%;
+  gap: 2px;
+  padding: 8px 14px;
+}
+
+.plusIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.classIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.builds {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 440px));
+  justify-content: center;
+  align-items: start;
+  gap: 24px;
 }
 </style>

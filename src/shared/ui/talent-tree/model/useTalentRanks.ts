@@ -26,11 +26,11 @@ export interface RankEntry<Rank extends TalentRank = TalentRank> {
  * @param build selected talents by rank.
  * @param readonly whether the build is readonly.
  */
-export function useTalentRanks<Rank extends TalentRank>(
+export const useTalentRanks = <Rank extends TalentRank>(
   tree: MaybeRefOrGetter<TalentTreeData<Rank>>,
   build: Ref<TalentBuild>,
   readonly: MaybeRefOrGetter<boolean>,
-): ComputedRef<RankEntry<Rank>[]> {
+): ComputedRef<RankEntry<Rank>[]> => {
   return computed(() => {
     const treeValue = toValue(tree);
 
@@ -51,4 +51,4 @@ export function useTalentRanks<Rank extends TalentRank>(
       };
     });
   });
-}
+};

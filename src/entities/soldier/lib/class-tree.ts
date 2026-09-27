@@ -10,19 +10,19 @@ import type { Ability, SoldierClass, SoldierTalentRank } from '../model/types';
  *
  * @param ability soldier ability.
  */
-function toTalent(ability: Ability): Talent {
+const toTalent = (ability: Ability): Talent => {
   return {
     ...ability,
     grants: (ability.grants ?? []).map(abilityId => toTalent(ABILITIES[abilityId])),
   };
-}
+};
 
 /**
  * Soldier class talent tree by rank. The only first-rank talent is granted with the class.
  *
  * @param soldierClass soldier class.
  */
-export function soldierClassTree(soldierClass: SoldierClass): TalentTreeData<SoldierTalentRank> {
+export const soldierClassTree = (soldierClass: SoldierClass): TalentTreeData<SoldierTalentRank> => {
   return {
     name: soldierClass.name,
     ranks: SOLDIER_RANKS.map(rank => ({
@@ -31,4 +31,4 @@ export function soldierClassTree(soldierClass: SoldierClass): TalentTreeData<Sol
     })),
     baseBuild: [soldierClass.abilities[SOLDIER_RANK_ID.SPECIALIST][0]],
   };
-}
+};

@@ -7,16 +7,16 @@ import type { Talent, TalentTreeData } from './types';
  * @param rankIndex rank index in the tree.
  * @param talentId id of the talent to find, or null.
  */
-export function findRankTalent(tree: TalentTreeData, rankIndex: number, talentId: string | null): Talent | null {
+export const findRankTalent = (tree: TalentTreeData, rankIndex: number, talentId: string | null): Talent | null => {
   const rankTalents = tree.ranks[rankIndex]?.talents ?? [];
   return rankTalents.find(talent => talent.id === talentId) ?? null;
-}
+};
 
 /**
  * First talent of the first rank, or null for an empty tree.
  *
  * @param tree class talent tree.
  */
-export function firstTalent(tree: TalentTreeData): Talent | null {
+export const firstTalent = (tree: TalentTreeData): Talent | null => {
   return tree.ranks[0]?.talents[0] ?? null;
-}
+};

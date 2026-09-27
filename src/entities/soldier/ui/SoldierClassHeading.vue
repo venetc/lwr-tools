@@ -25,19 +25,19 @@ const inputId = useId();
 const isEditable = computed(() => !props.readonly);
 
 /** Restores the class name if the name field was left blank. */
-function restoreBlankName() {
+const restoreBlankName = () => {
   if (name.value.trim() !== '') return;
   name.value = props.soldierClass.name;
-}
+};
 
 /**
  * Finishes name editing by removing focus.
  *
  * @param event key press in the field.
  */
-function commit(event: KeyboardEvent) {
+const commit = (event: KeyboardEvent) => {
   if (event.target instanceof HTMLInputElement) event.target.blur();
-}
+};
 </script>
 
 <template>
@@ -77,12 +77,12 @@ function commit(event: KeyboardEvent) {
 @use 'styles/typography';
 @use 'styles/media';
 
-$badge: 38px;
+$badge: 34px;
 
 .heading {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
   min-height: $badge;
 }

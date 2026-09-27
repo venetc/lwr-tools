@@ -1,1 +1,1 @@
-export { default as TalentsPage } from './ui/TalentsPage.vue';
+export { talentsPageRoute } from './config/route';

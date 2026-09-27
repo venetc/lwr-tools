@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ToastHost } from '@shared/ui/toast';
 import { SiteFooter } from '@widgets/site-footer';
+import { SiteHeader } from '@widgets/site-header';
 </script>
 
 <template>
   <div :class="$style.layout">
+    <SiteHeader />
     <div :class="$style.content">
       <RouterView />
     </div>

@@ -1,21 +1,20 @@
 import type { Router } from 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
 
+import { talentsPageRoute } from '@pages/talents';
+import { ROUTES } from '@shared/config/routes';
+
 export const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      redirect: { name: 'talents' },
+      ...ROUTES.HOME,
+      redirect: { name: ROUTES.TALENTS.name },
     },
-    {
-      path: '/talents/',
-      name: 'talents',
-      component: () => import('@pages/talents').then(talentsPageModule => talentsPageModule.TalentsPage),
-    },
+    talentsPageRoute,
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/',
+      redirect: { name: ROUTES.TALENTS.name },
     },
   ],
 });

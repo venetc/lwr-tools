@@ -75,7 +75,8 @@
 @layer base {
   :root {
     color-scheme: dark;
-    scrollbar-gutter: stable;
+    overflow-y: scroll;
+    scrollbar-width: thin;
   }
 
   body {

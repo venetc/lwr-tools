@@ -45,25 +45,33 @@ const { builds } = storeToRefs(talentsStore);
 </template>
 
 <style lang="scss" module>
+@use 'styles/colors';
+@use 'styles/layout';
+
 .page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px 16px;
 }
 
 .toolbar {
+  position: sticky;
+  inset-block-start: layout.$site-header-height;
+  z-index: 4;
   display: grid;
   grid-template-columns: repeat(4, auto);
   justify-content: center;
   gap: 8px;
+  padding: 8px 16px;
+  background: colors.$surface-translucent;
+  backdrop-filter: blur(8px);
+  border-block-end: 1px solid colors.$border-subtle;
 }
 
 .addContent {
   display: flex;
   align-items: center;
   gap: 2px;
-  padding: 8px 14px;
+  padding: 4px 14px;
 }
 
 .plusIcon {
@@ -72,8 +80,8 @@ const { builds } = storeToRefs(talentsStore);
 }
 
 .classIcon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 
 .visuallyHidden {
@@ -87,6 +95,7 @@ const { builds } = storeToRefs(talentsStore);
 
 .builds {
   display: grid;
+  padding: 24px 16px;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 440px));
   justify-content: center;
   align-items: start;

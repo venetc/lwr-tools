@@ -18,6 +18,7 @@ $cut-lg: 20px;
 ) {
   position: relative;
   isolation: isolate;
+  will-change: filter;
   border: 0;
   background: none;
 

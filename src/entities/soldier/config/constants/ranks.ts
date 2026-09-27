@@ -1,3 +1,5 @@
+import { markRaw } from 'vue';
+
 import rankCaptainIcon from '@shared/assets/images/ranks/rank_captain.svg?component';
 import rankColonelIcon from '@shared/assets/images/ranks/rank_colonel.svg?component';
 import rankCorporalIcon from '@shared/assets/images/ranks/rank_corporal.svg?component';
@@ -10,11 +12,11 @@ import type { SoldierRank } from '../../model/types';
 import { SOLDIER_RANK_ID } from './soldier-rank-id';
 
 export const SOLDIER_RANKS: SoldierRank[] = [
-  { id: SOLDIER_RANK_ID.SPECIALIST, name: 'Specialist', icon: rankSquaddieIcon },
-  { id: SOLDIER_RANK_ID.LANCE_CORPORAL, name: 'Lance Corporal', icon: rankCorporalIcon },
-  { id: SOLDIER_RANK_ID.CORPORAL, name: 'Corporal', icon: rankSergeantIcon },
-  { id: SOLDIER_RANK_ID.SERGEANT, name: 'Sergeant', icon: rankLieutenantIcon },
-  { id: SOLDIER_RANK_ID.TECH_SERGEANT, name: 'Tech Sergeant', icon: rankCaptainIcon },
-  { id: SOLDIER_RANK_ID.GUNNERY_SERGEANT, name: 'Gunnery Sergeant', icon: rankMajorIcon },
-  { id: SOLDIER_RANK_ID.MASTER_SERGEANT, name: 'Master Sergeant', icon: rankColonelIcon },
+  { id: SOLDIER_RANK_ID.SPECIALIST, name: 'Specialist', icon: markRaw(rankSquaddieIcon) },
+  { id: SOLDIER_RANK_ID.LANCE_CORPORAL, name: 'Lance Corporal', icon: markRaw(rankCorporalIcon) },
+  { id: SOLDIER_RANK_ID.CORPORAL, name: 'Corporal', icon: markRaw(rankSergeantIcon) },
+  { id: SOLDIER_RANK_ID.SERGEANT, name: 'Sergeant', icon: markRaw(rankLieutenantIcon) },
+  { id: SOLDIER_RANK_ID.TECH_SERGEANT, name: 'Tech Sergeant', icon: markRaw(rankCaptainIcon) },
+  { id: SOLDIER_RANK_ID.GUNNERY_SERGEANT, name: 'Gunnery Sergeant', icon: markRaw(rankMajorIcon) },
+  { id: SOLDIER_RANK_ID.MASTER_SERGEANT, name: 'Master Sergeant', icon: markRaw(rankColonelIcon) },
 ];

@@ -4,6 +4,7 @@ import { ToggleGroupRoot } from 'reka-ui';
 import { computed } from 'vue';
 
 interface Props {
+  /** Whether arrow keys move focus between options. */
   rovingFocus?: boolean
 }
 
@@ -11,6 +12,7 @@ withDefaults(defineProps<Props>(), {
   rovingFocus: true,
 });
 
+/** Selected option value, or null when nothing is selected. */
 const model = defineModel<AcceptableValue | null>({ default: null });
 
 const rootModel = computed({

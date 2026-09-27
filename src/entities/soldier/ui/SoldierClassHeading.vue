@@ -1,32 +1,39 @@
 <script setup lang="ts">
 import { SquarePen } from '@lucide/vue';
-import { useId } from 'vue';
+import { computed, useId } from 'vue';
 
 import { Label } from '@shared/ui/label';
 
 import type { SoldierClass } from '../model/types';
 
 interface Props {
+  /** Soldier class of the build. */
   soldierClass: SoldierClass
+  /** Whether the build name cannot be edited. */
+  readonly?: boolean
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  readonly: false,
+});
 
-/** Имя билда; по умолчанию и после очистки поля — название класса. */
+/** Build name; defaults to the class name, also when the field is cleared. */
 const name = defineModel<string>('name', { required: true });
 
 const inputId = useId();
 
-/** Возвращает название класса, если поле имени оставили пустым. */
+const isEditable = computed(() => !props.readonly);
+
+/** Restores the class name if the name field was left blank. */
 function restoreBlankName() {
   if (name.value.trim() !== '') return;
   name.value = props.soldierClass.name;
 }
 
 /**
- * Завершает редактирование имени снятием фокуса.
+ * Finishes name editing by removing focus.
  *
- * @param event нажатие клавиши в поле.
+ * @param event key press in the field.
  */
 function commit(event: KeyboardEvent) {
   if (event.target instanceof HTMLInputElement) event.target.blur();
@@ -48,11 +55,16 @@ function commit(event: KeyboardEvent) {
         type="text"
         spellcheck="false"
         autocomplete="off"
+        :readonly="readonly"
         :placeholder="soldierClass.name"
         @blur="restoreBlankName"
         @keydown.enter="commit"
       >
-      <Label :class="$style.edit" :for="inputId">
+      <Label
+        v-if="isEditable"
+        :class="$style.edit"
+        :for="inputId"
+      >
         <SquarePen :class="$style.editIcon" aria-hidden="true" />
         <span :class="$style.visuallyHidden">Rename build</span>
       </Label>
@@ -102,7 +114,11 @@ $badge: 38px;
     color: colors.$text-disabled;
   }
 
-  &:focus-visible {
+  &:read-only {
+    cursor: default;
+  }
+
+  &:read-write:focus-visible {
     outline-width: 1px;
     outline-offset: 0;
   }

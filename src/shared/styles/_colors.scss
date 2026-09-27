@@ -1,13 +1,13 @@
 @use 'sass:color';
 
-// Базовые цвета палитры. Приватные: снаружи используются только семантические токены ниже.
+// Base palette colors. Private: only the semantic tokens below are used outside.
 $-slate: #2c4a50;
 $-cyan: #67d3e2;
 $-gold: #e6c04a;
 $-lime: #8fce3a;
 $-red: #ea3b32;
 
-// Шаг палитры 50–900 от базового цвета: < 500 — светлее, > 500 — темнее, 500 — сам цвет.
+// Palette step 50–900 from the base color: < 500 is lighter, > 500 is darker, 500 is the color itself.
 @function -shade($base, $step) {
   @if $step < 500 {
     @return color.to-space(color.mix(white, $base, (500 - $step) * 0.2%, $method: oklch), oklch);
@@ -16,8 +16,8 @@ $-red: #ea3b32;
   @return color.to-space(color.mix(black, $base, ($step - 500) * 0.16%, $method: oklch), oklch);
 }
 
-// Фоны: base — страница, 1 → 3 — вложенность (панель, строка внутри панели, элемент поверх).
-// translucent — полупрозрачная панель, overlay — затемнение под модалкой.
+// Surfaces: base is the page, 1 → 3 is nesting (panel, row inside a panel, element on top).
+// translucent is a semi-transparent panel, overlay is the dimming under a modal.
 $surface-base: -shade($-slate, 900);
 $surface-1: -shade($-slate, 850);
 $surface-2: -shade($-slate, 800);
@@ -25,13 +25,13 @@ $surface-3: -shade($-slate, 700);
 $surface-translucent: color.change($surface-1, $alpha: 0.78);
 $surface-overlay: color.change($surface-base, $alpha: 0.85);
 
-// Рамки: subtle — разделители, border — по умолчанию, strong — акцентированная граница.
+// Borders: subtle is dividers, border is the default, strong is an emphasized border.
 $border-subtle: -shade($-slate, 700);
 $border: -shade($-slate, 650);
 $border-strong: -shade($-slate, 500);
 
-// Текст: primary — заголовки и основной текст, secondary — описания, tertiary — подписи и мелочь,
-// disabled — недоступное, accent — циановый акцентный, inverse — на светлом/акцентном фоне.
+// Text: primary is headings and body text, secondary is descriptions, tertiary is captions and fine print,
+// disabled is unavailable, accent is cyan accent, inverse is on light/accent backgrounds.
 $text-primary: -shade($-slate, 50);
 $text-secondary: -shade($-slate, 200);
 $text-tertiary: -shade($-slate, 300);
@@ -39,8 +39,8 @@ $text-disabled: -shade($-slate, 400);
 $text-accent: -shade($-cyan, 250);
 $text-inverse: -shade($-slate, 900);
 
-// Акцент (циан) — интерактив и рамки. accent — базовый, hover/pressed — состояния,
-// light — светлый вариант, muted/dim — приглушённые (неактивное), subtle — фон, glow — свечение.
+// Accent (cyan) is interactive elements and borders. accent is the base, hover/pressed are states,
+// light is the light variant, muted/dim are toned down (inactive), subtle is the background, glow is the glow.
 $accent-light: -shade($-cyan, 250);
 $accent-hover: -shade($-cyan, 350);
 $accent: -shade($-cyan, 500);
@@ -50,15 +50,15 @@ $accent-dim: -shade($-cyan, 750);
 $accent-subtle: -shade($-cyan, 900);
 $accent-glow: color.change($accent, $alpha: 0.4);
 
-// Highlight (золото) — доступное для выбора, бонусы, максимум. Суффиксы — как у accent.
+// Highlight (gold) is selectable items, bonuses, maximums. Suffixes are the same as for accent.
 $highlight-light: -shade($-gold, 400);
 $highlight: -shade($-gold, 500);
 $highlight-muted: -shade($-gold, 650);
 $highlight-subtle: -shade($-gold, 900);
 $highlight-glow: color.change($highlight, $alpha: 0.4);
 
-// Статусы: success — активное/успех, danger — ошибки и разрушительные действия.
-// muted — рамка, subtle — фон.
+// Statuses: success is active/success, danger is errors and destructive actions.
+// muted is the border, subtle is the background.
 $success: -shade($-lime, 500);
 $success-muted: -shade($-lime, 650);
 $success-subtle: -shade($-lime, 900);
@@ -67,5 +67,5 @@ $danger: -shade($-red, 500);
 $danger-muted: -shade($-red, 650);
 $danger-subtle: -shade($-red, 900);
 
-// Обводка :focus-visible.
+// :focus-visible outline.
 $focus-ring: -shade($-cyan, 350);

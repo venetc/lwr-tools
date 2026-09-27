@@ -6,19 +6,27 @@ import { SOLDIER_CLASSES, SoldierClassHeading, soldierClassTree, SoldierRankLabe
 import type { TalentBuild, TalentTreeData } from '@shared/ui/talent-tree';
 import { TalentTree } from '@shared/ui/talent-tree';
 
+import LockToggle from './LockToggle.vue';
+
 interface BuildPanel {
   soldierClass: SoldierClass
   tree: TalentTreeData<SoldierTalentRank>
   talents: TalentBuild
   name: string
+  readonly: boolean
 }
 
-const panels = ref<BuildPanel[]>(SOLDIER_CLASSES.map(soldierClass => ({
-  soldierClass,
-  tree: soldierClassTree(soldierClass),
-  talents: [],
-  name: soldierClass.name,
-})));
+const panels = ref<BuildPanel[]>(SOLDIER_CLASSES.map((soldierClass) => {
+  const tree = soldierClassTree(soldierClass);
+
+  return {
+    soldierClass,
+    tree,
+    talents: [...tree.baseBuild],
+    name: soldierClass.name,
+    readonly: false,
+  };
+}));
 </script>
 
 <template>
@@ -28,10 +36,16 @@ const panels = ref<BuildPanel[]>(SOLDIER_CLASSES.map(soldierClass => ({
       :key="panel.soldierClass.id"
       v-model="panel.talents"
       :tree="panel.tree"
+      :readonly="panel.readonly"
     >
       <template #header>
         <div :class="$style.header">
-          <SoldierClassHeading v-model:name="panel.name" :soldier-class="panel.soldierClass" />
+          <SoldierClassHeading
+            v-model:name="panel.name"
+            :soldier-class="panel.soldierClass"
+            :readonly="panel.readonly"
+          />
+          <LockToggle v-model="panel.readonly" />
         </div>
       </template>
 

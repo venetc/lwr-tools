@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { useElementVisibility, useEventListener, usePreferredReducedMotion, useRafFn, useResizeObserver } from '@vueuse/core';
+import { useElementVisibility, useEventListener, useMutationObserver, usePreferredReducedMotion, useRafFn, useResizeObserver } from '@vueuse/core';
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
 import { computed, shallowRef, useTemplateRef, watch } from 'vue';
 
 import { MAX_FRAME_DELTA } from './config/constants';
 
 interface Props {
+  /** Whether overflowing content scrolls automatically back and forth. */
   autoScroll?: boolean
+  /** Pause at the top before scrolling down, in milliseconds. */
   autoScrollDelay?: number
+  /** Auto-scroll speed, in pixels per second. */
   autoScrollSpeed?: number
+  /** Pause at the bottom before scrolling back up, in milliseconds. */
   autoScrollPause?: number
 }
 
@@ -36,9 +40,9 @@ let phaseElapsed = 0;
 let scrollPosition = 0;
 
 /**
- * Переключает фазу автопрокрутки и обнуляет её таймер.
+ * Switches the auto-scroll phase and resets its timer.
  *
- * @param nextPhase новая фаза.
+ * @param nextPhase new phase.
  */
 function setPhase(nextPhase: Phase) {
   phase = nextPhase;
@@ -46,11 +50,11 @@ function setPhase(nextPhase: Phase) {
 }
 
 /**
- * Сдвигает прокрутку в пределах контента.
+ * Shifts the scroll position within the content bounds.
  *
- * @param viewportElement прокручиваемый элемент.
- * @param offset сдвиг в пикселях, отрицательный — вверх.
- * @param maxScrollTop наибольшая позиция прокрутки.
+ * @param viewportElement scrollable element.
+ * @param offset shift in pixels; negative scrolls up.
+ * @param maxScrollTop maximum scroll position.
  */
 function scrollBy(viewportElement: HTMLElement, offset: number, maxScrollTop: number) {
   scrollPosition = Math.min(maxScrollTop, Math.max(0, scrollPosition + offset));
@@ -89,7 +93,7 @@ const { pause, resume } = useRafFn(({ delta }) => {
   }
 }, { immediate: false });
 
-/** Проверяет, выходит ли контент за высоту области. */
+/** Checks whether the content overflows the area height. */
 function measureOverflow() {
   const viewportElement = viewport.value;
   if (!viewportElement) return;
@@ -102,7 +106,7 @@ useResizeObserver([viewport, content], measureOverflow);
 const isAutoScrollAllowed = computed(() => props.autoScroll && reducedMotion.value !== 'reduce' && isOverflowing.value);
 const isAutoScrollActive = computed(() => isAutoScrollAllowed.value && isVisible.value && !isStoppedByUser.value);
 
-/** Возвращает автопрокрутку и область в начало. */
+/** Resets auto-scroll and the area to the top. */
 function reset() {
   setPhase('top');
   scrollPosition = 0;
@@ -126,12 +130,20 @@ watch(isAutoScrollAllowed, (isAllowed) => {
   reset();
 });
 
-/** Выключает автопрокрутку, как только пользователь сам взаимодействует с областью. */
+/** Stops auto-scroll as soon as the user interacts with the area. */
 function stopByUser() {
   isStoppedByUser.value = true;
 }
 
 useEventListener(rootElement, ['wheel', 'touchstart', 'pointerdown'], stopByUser, { passive: true });
+
+/** Restarts scrolling when the content changes, even if the user stopped auto-scroll. */
+function restart() {
+  isStoppedByUser.value = false;
+  reset();
+}
+
+useMutationObserver(content, restart, { subtree: true, childList: true, characterData: true });
 </script>
 
 <template>

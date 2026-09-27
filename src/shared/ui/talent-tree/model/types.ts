@@ -13,8 +13,12 @@ export interface TalentRank {
 }
 
 export interface TalentTreeData<Rank extends TalentRank = TalentRank> {
+  /** Tree name. */
   name: string
+  /** Tree ranks from lowest to highest. */
   ranks: Rank[]
+  /** Talents granted without selection: their ranks are always completed and cannot change. */
+  baseBuild: TalentBuild
 }
 
 export type TalentBuild = Talent['id'][];

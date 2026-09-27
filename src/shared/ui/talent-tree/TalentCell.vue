@@ -4,9 +4,13 @@ import { computed, useCssModule } from 'vue';
 import type { TalentRankState } from './model/types';
 
 interface Props {
+  /** Talent icon URL. */
   icon: string
+  /** Talent name. */
   name: string
+  /** State of the rank the talent belongs to. */
   rankState: TalentRankState
+  /** Whether the talent is selected in the build. */
   selected?: boolean
 }
 

@@ -34,7 +34,7 @@ jobs:
 
       - run: npm run build -- --base=${{ steps.pages.outputs.base_path }}/
 
-      # SPA fallback: GitHub Pages отдаёт 404.html на неизвестные пути, роутер разбирает их сам
+      # SPA fallback: GitHub Pages serves 404.html for unknown paths, the router resolves them itself
       - run: cp dist/index.html dist/404.html
 
       - uses: actions/upload-pages-artifact@v4

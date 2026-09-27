@@ -4,7 +4,9 @@ import { computed, useCssModule } from 'vue';
 export type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
 interface Props {
+  /** Visual variant. */
   variant?: ButtonVariant
+  /** Native button type. */
   type?: 'button' | 'submit' | 'reset'
 }
 

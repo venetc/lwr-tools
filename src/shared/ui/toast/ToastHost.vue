@@ -6,10 +6,10 @@ import { TOAST_DURATION } from './config/constants';
 import { dismissToast, toastMessages } from './model/toast-queue';
 
 /**
- * Убирает уведомление из очереди, когда оно закрылось.
+ * Removes the notification from the queue once it closes.
  *
- * @param id id уведомления.
- * @param isOpen открыто ли уведомление после изменения.
+ * @param id notification id.
+ * @param isOpen whether the notification is open after the change.
  */
 function onOpenUpdate(id: number, isOpen: boolean) {
   if (isOpen) return;

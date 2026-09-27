@@ -4,6 +4,7 @@ import { PopoverArrow, PopoverContent, PopoverPortal, PopoverRoot, PopoverTrigge
 export type PopoverAlign = 'start' | 'center' | 'end';
 
 interface Props {
+  /** Content alignment relative to the trigger. */
   align?: PopoverAlign
 }
 
@@ -11,6 +12,7 @@ withDefaults(defineProps<Props>(), {
   align: 'center',
 });
 
+/** Whether the popover is open. */
 const open = defineModel<boolean>('open', { default: false });
 </script>
 

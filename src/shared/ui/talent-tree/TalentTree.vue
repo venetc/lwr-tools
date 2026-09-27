@@ -14,7 +14,10 @@ import { useTalentRanks } from './model/useTalentRanks';
 import TalentCell from './TalentCell.vue';
 
 interface Props {
+  /** Class talent tree. */
   tree: TalentTreeData<Rank>
+  /** Whether the build is view-only. */
+  readonly?: boolean
 }
 
 interface RankSlotProps {
@@ -22,56 +25,61 @@ interface RankSlotProps {
   state: TalentRankState
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  readonly: false,
+});
 
 const slots = defineSlots<{
   header?: () => VNode[]
   rank?: (props: RankSlotProps) => VNode[]
 }>();
 
+/** Selected talents by rank. */
 const build = defineModel<TalentBuild>({ required: true });
 
 const style = useCssModule();
 
-const rankEntries = useTalentRanks(() => props.tree, build);
+const rankEntries = useTalentRanks(() => props.tree, build, () => props.readonly);
 
 const hasHeader = computed(() => slots.header !== undefined);
 
 const { describedTalent, hasGrants, describe } = useDescribedTalent(() => props.tree, build);
 
 /**
- * Применяет выбор таланта на ранге к билду.
+ * Applies a talent selection on a rank to the build.
  *
- * @param rankIndex индекс ранга в дереве.
- * @param toggledValue id выбранного таланта; null или пусто — выбор снят.
+ * @param rankIndex rank index in the tree.
+ * @param toggledValue selected talent id; null or empty means the selection was cleared.
  */
 function onRankUpdate(rankIndex: number, toggledValue: AcceptableValue | null) {
+  if (props.readonly) return;
   const talentId = typeof toggledValue === 'string' ? toggledValue : null;
-  selectTalent(build.value, rankIndex, talentId);
+  selectTalent(props.tree, build.value, rankIndex, talentId);
 }
 
 /**
- * Классы ранга по его состоянию.
+ * Rank classes based on its state.
  *
- * @param rankEntry ранг с состоянием.
+ * @param rankEntry rank with its state.
  */
 function getRankClass(rankEntry: RankEntry<Rank>) {
   return [style.rank, style[rankEntry.state]];
 }
 
 /**
- * aria-disabled для закрытого ранга.
+ * aria-disabled for granted and locked ranks, and for the whole tree in readonly mode.
  *
- * @param rankEntry ранг с состоянием.
+ * @param rankEntry rank with its state.
  */
 function getAriaDisabled(rankEntry: RankEntry<Rank>) {
-  return rankEntry.state === 'locked' ? 'true' : null;
+  const isDisabled = props.readonly || rankEntry.isGranted || rankEntry.state === 'locked';
+  return isDisabled ? 'true' : null;
 }
 
 /**
- * Колонка сетки для таланта.
+ * Grid column for a talent.
  *
- * @param talentEntry талант с рассчитанной колонкой.
+ * @param talentEntry talent with its computed column.
  */
 function getTalentStyle(talentEntry: TalentEntry) {
   return { gridColumn: talentEntry.column };
@@ -136,7 +144,6 @@ function getTalentStyle(talentEntry: TalentEntry) {
       </p>
 
       <ScrollArea
-        :key="describedTalent.id"
         :class="$style.descriptionScroll"
         auto-scroll
       >
@@ -256,6 +263,7 @@ $cell: 44px;
   padding: 0;
   background: none;
   transition: filter 0.12s ease-out;
+  will-change: filter;
 
   @include media.with-hover {
     &:hover:not(:focus-visible) {

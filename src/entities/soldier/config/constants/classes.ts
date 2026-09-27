@@ -1,3 +1,5 @@
+import { markRaw } from 'vue';
+
 import assaultIcon from '@shared/assets/images/classes/class_assault.svg?component';
 import engineerIcon from '@shared/assets/images/classes/class_engineer_long_war.svg?component';
 import gunnerIcon from '@shared/assets/images/classes/class_heavy.svg?component';
@@ -16,7 +18,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.SNIPER,
     name: 'Sniper',
-    icon: sniperIcon,
+    icon: markRaw(sniperIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.SQUADSIGHT],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.MAGNUM, ABILITY_ID.ON_THE_READY, ABILITY_ID.IN_THE_ZONE],
@@ -30,7 +32,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.SCOUT,
     name: 'Scout',
-    icon: scoutIcon,
+    icon: markRaw(scoutIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.RECONNAISSANCE],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.BULLSEYE, ABILITY_ID.HIT_AND_RUN, ABILITY_ID.SMOKE_AND_MIRRORS],
@@ -44,7 +46,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.INFANTRY,
     name: 'Infantry',
-    icon: infantryIcon,
+    icon: markRaw(infantryIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.LIGHT_EM_UP],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.WILL_TO_SURVIVE, ABILITY_ID.SENTINEL, ABILITY_ID.GRENADIER],
@@ -58,7 +60,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.ASSAULT,
     name: 'Assault',
-    icon: assaultIcon,
+    icon: markRaw(assaultIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.CLOSE_ENCOUNTERS],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.WILL_TO_SURVIVE, ABILITY_ID.RUN_AND_GUN, ABILITY_ID.BREACHER],
@@ -72,7 +74,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.GUNNER,
     name: 'Gunner',
-    icon: gunnerIcon,
+    icon: markRaw(gunnerIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.SUPPRESSION],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.WILL_TO_SURVIVE, ABILITY_ID.RAKING_FIRE, ABILITY_ID.MAYHEM],
@@ -86,7 +88,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.ROCKETEER,
     name: 'Rocketeer',
-    icon: rocketeerIcon,
+    icon: markRaw(rocketeerIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.FIRE_ROCKET],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.LIGHT_EM_UP, ABILITY_ID.GRENADIER, ABILITY_ID.SMOKE_AND_MIRRORS],
@@ -100,7 +102,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.MEDIC,
     name: 'Medic',
-    icon: medicIcon,
+    icon: markRaw(medicIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.FIELD_MEDIC],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.WILL_TO_SURVIVE, ABILITY_ID.SENTINEL, ABILITY_ID.SMOKE_AND_MIRRORS],
@@ -114,7 +116,7 @@ export const SOLDIER_CLASSES: SoldierClass[] = [
   {
     id: SOLDIER_CLASS_ID.ENGINEER,
     name: 'Engineer',
-    icon: engineerIcon,
+    icon: markRaw(engineerIcon),
     abilities: {
       [SOLDIER_RANK_ID.SPECIALIST]: [ABILITY_ID.MECHANIC],
       [SOLDIER_RANK_ID.LANCE_CORPORAL]: [ABILITY_ID.DOUBLE_TAP, ABILITY_ID.GRENADIER, ABILITY_ID.SMOKE_AND_MIRRORS],

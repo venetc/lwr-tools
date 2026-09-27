@@ -5,14 +5,14 @@ import { defineConfig } from 'vite';
 import { imagetools } from 'vite-imagetools';
 import svgLoader from 'vite-svg-loader';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     svgLoader({ defaultImport: 'url', svgo: false }),
-    // Мастера абилок 256px: в ячейке 44px, 128px хватает до 3x DPR
     imagetools({
+      /** Ability icon masters, 256px each. */
       include: '**/assets/images/abilities/*.png',
+      /** 128px covers the 44px cell up to 3x DPR. */
       defaultDirectives: new URLSearchParams({ w: '128', format: 'webp', quality: '85' }),
     }),
   ],

@@ -6,10 +6,10 @@ import { firstTalent } from './tree';
 import type { Talent, TalentBuild, TalentTreeData } from './types';
 
 /**
- * Талант в панели описания: последний осмотренный, иначе последний выбранный, иначе первый в дереве.
+ * Talent shown in the description panel: the last inspected one, otherwise the last selected one, otherwise the first in the tree.
  *
- * @param tree дерево талантов класса.
- * @param build выбранные таланты по рангам.
+ * @param tree class talent tree.
+ * @param build selected talents by rank.
  */
 export function useDescribedTalent(tree: MaybeRefOrGetter<TalentTreeData>, build: Ref<TalentBuild>) {
   const inspectedTalent = shallowRef<Talent | null>(null);
@@ -22,9 +22,9 @@ export function useDescribedTalent(tree: MaybeRefOrGetter<TalentTreeData>, build
   const hasGrants = computed(() => (describedTalent.value?.grants.length ?? 0) > 0);
 
   /**
-   * Показывает талант в панели описания.
+   * Shows the talent in the description panel.
    *
-   * @param talent осмотренный пользователем талант.
+   * @param talent talent inspected by the user.
    */
   function describe(talent: Talent) {
     inspectedTalent.value = talent;

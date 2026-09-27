@@ -2,6 +2,7 @@
 import type { SoldierRank } from '../model/types';
 
 interface Props {
+  /** Soldier rank to display. */
   rank: SoldierRank
 }
 

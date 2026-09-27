@@ -2,6 +2,7 @@
 import { Label } from 'reka-ui';
 
 interface Props {
+  /** Id of the labelled control. */
   for: string
 }
 

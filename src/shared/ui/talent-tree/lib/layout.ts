@@ -1,11 +1,11 @@
 import { COLUMNS } from '../config/constants';
 
 /**
- * Колонка сетки для таланта, чтобы таланты ранга стояли по центру.
+ * Grid column for a talent, keeping the rank talents centered.
  *
- * @param talentsInRank сколько талантов на ранге.
- * @param talentIndex индекс таланта на ранге.
- * @returns номер колонки с единицы.
+ * @param talentsInRank number of talents in the rank.
+ * @param talentIndex talent index in the rank.
+ * @returns one-based column number.
  */
 export function talentColumn(talentsInRank: number, talentIndex: number): number {
   return COLUMNS[talentsInRank]?.[talentIndex] ?? talentIndex + 1;

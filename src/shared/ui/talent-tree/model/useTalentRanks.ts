@@ -2,7 +2,7 @@ import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue';
 import { computed, toValue } from 'vue';
 
 import { talentColumn } from '../lib/layout';
-import { rankState, selectedTalentId } from './build';
+import { isRankGranted, rankState, selectedTalentId } from './build';
 import type { Talent, TalentBuild, TalentRank, TalentRankState, TalentTreeData } from './types';
 
 export interface TalentEntry {
@@ -14,33 +14,41 @@ export interface TalentEntry {
 export interface RankEntry<Rank extends TalentRank = TalentRank> {
   rank: Rank
   state: TalentRankState
+  isGranted: boolean
   selectedId: string | null
   talentEntries: TalentEntry[]
 }
 
 /**
- * Ранги дерева с состоянием, выбором и колонками талантов для отрисовки.
+ * Tree ranks with state, selection and talent columns for rendering.
  *
- * @param tree дерево талантов класса.
- * @param build выбранные таланты по рангам.
+ * @param tree class talent tree.
+ * @param build selected talents by rank.
+ * @param readonly whether the build is readonly.
  */
 export function useTalentRanks<Rank extends TalentRank>(
   tree: MaybeRefOrGetter<TalentTreeData<Rank>>,
   build: Ref<TalentBuild>,
+  readonly: MaybeRefOrGetter<boolean>,
 ): ComputedRef<RankEntry<Rank>[]> {
-  return computed(() => toValue(tree).ranks.map((rank, rankIndex): RankEntry<Rank> => {
-    const state = rankState(build.value, rankIndex);
-    const selectedId = selectedTalentId(build.value, rankIndex);
+  return computed(() => {
+    const treeValue = toValue(tree);
 
-    return {
-      rank,
-      state,
-      selectedId,
-      talentEntries: rank.talents.map((talent, talentIndex) => ({
-        talent,
-        isSelected: selectedId === talent.id,
-        column: talentColumn(rank.talents.length, talentIndex),
-      })),
-    };
-  }));
+    return treeValue.ranks.map((rank, rankIndex): RankEntry<Rank> => {
+      const state = rankState(build.value, rankIndex, toValue(readonly));
+      const selectedId = selectedTalentId(build.value, rankIndex);
+
+      return {
+        rank,
+        state,
+        isGranted: isRankGranted(treeValue, rankIndex),
+        selectedId,
+        talentEntries: rank.talents.map((talent, talentIndex) => ({
+          talent,
+          isSelected: selectedId === talent.id,
+          column: talentColumn(rank.talents.length, talentIndex),
+        })),
+      };
+    });
+  });
 }

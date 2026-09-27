@@ -14,9 +14,9 @@ let nextId = 0;
 export const toastMessages = readonly(messages);
 
 /**
- * Добавляет уведомление в очередь.
+ * Adds a notification to the queue.
  *
- * @param content заголовок и текст уведомления.
+ * @param content notification title and text.
  */
 export function showToast(content: ToastContent): void {
   messages.value.push({ ...content, id: nextId++ });
@@ -24,9 +24,9 @@ export function showToast(content: ToastContent): void {
 }
 
 /**
- * Убирает уведомление из очереди.
+ * Removes the notification from the queue.
  *
- * @param id id уведомления, выданный при показе.
+ * @param id notification id returned when it was shown.
  */
 export function dismissToast(id: number): void {
   const index = messages.value.findIndex(message => message.id === id);

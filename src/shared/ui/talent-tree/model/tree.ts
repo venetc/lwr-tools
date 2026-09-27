@@ -1,11 +1,11 @@
 import type { Talent, TalentTreeData } from './types';
 
 /**
- * Талант ранга по id или null, если на ранге такого нет.
+ * Rank talent by id, or null if the rank has no such talent.
  *
- * @param tree дерево талантов класса.
- * @param rankIndex индекс ранга в дереве.
- * @param talentId id искомого таланта или null.
+ * @param tree class talent tree.
+ * @param rankIndex rank index in the tree.
+ * @param talentId id of the talent to find, or null.
  */
 export function findRankTalent(tree: TalentTreeData, rankIndex: number, talentId: string | null): Talent | null {
   const rankTalents = tree.ranks[rankIndex]?.talents ?? [];
@@ -13,9 +13,9 @@ export function findRankTalent(tree: TalentTreeData, rankIndex: number, talentId
 }
 
 /**
- * Первый талант первого ранга или null для пустого дерева.
+ * First talent of the first rank, or null for an empty tree.
  *
- * @param tree дерево талантов класса.
+ * @param tree class talent tree.
  */
 export function firstTalent(tree: TalentTreeData): Talent | null {
   return tree.ranks[0]?.talents[0] ?? null;

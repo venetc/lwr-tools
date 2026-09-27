@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/** Input value. */
 const model = defineModel<string>({ required: true });
 </script>
 

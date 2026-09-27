@@ -53,6 +53,9 @@ $weight-bold: 700;
 @mixin caps-3 {
   @include -text($font-display, 0.8125rem, $weight-medium, 1.3, 0.1em, $caps: true);
 }
+@mixin caps-4 {
+  @include -text($font-display, 0.6875rem, $weight-medium, 1.3, 0.1em, $caps: true);
+}
 
 @mixin label-1 {
   @include -text($font-display, 1rem, $weight-semibold, 1.25, 0.02em);

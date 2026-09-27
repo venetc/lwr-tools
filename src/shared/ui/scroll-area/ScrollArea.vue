@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from 'reka-ui';
+
+export type ScrollAreaOrientation = 'vertical' | 'horizontal';
+
+interface Props {
+  /** Scroll direction. */
+  orientation?: ScrollAreaOrientation
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  orientation: 'vertical',
+});
 </script>
 
 <template>
@@ -11,7 +22,7 @@ import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewpor
       <slot />
     </ScrollAreaViewport>
 
-    <ScrollAreaScrollbar :class="$style.scrollbar" orientation="vertical">
+    <ScrollAreaScrollbar :class="$style.scrollbar" :orientation="props.orientation">
       <ScrollAreaThumb :class="$style.thumb" />
     </ScrollAreaScrollbar>
   </ScrollAreaRoot>
@@ -34,10 +45,18 @@ $scrollbar-width: 6px;
 
 .scrollbar {
   display: flex;
-  width: $scrollbar-width;
   padding: 1px;
   touch-action: none;
   user-select: none;
+
+  &[data-orientation='vertical'] {
+    width: $scrollbar-width;
+  }
+
+  &[data-orientation='horizontal'] {
+    flex-direction: column;
+    height: $scrollbar-width;
+  }
 }
 
 .thumb {

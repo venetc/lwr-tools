@@ -46,7 +46,7 @@ export const isRankGranted = (tree: TalentTreeData, rankIndex: number): boolean 
 };
 
 /**
- * Selects a talent on the rank and clears the selection on all higher ranks. Leaves ranks after the available one and granted ranks untouched.
+ * Selects a talent on the rank, keeping higher ranks; clearing a rank clears all higher ranks too. Leaves ranks after the available one and granted ranks untouched.
  *
  * @param tree class talent tree.
  * @param build selected talents by rank; mutated in place.
@@ -56,6 +56,9 @@ export const isRankGranted = (tree: TalentTreeData, rankIndex: number): boolean 
 export const selectTalent = (tree: TalentTreeData, build: TalentBuild, rankIndex: number, talentId: string | null): void => {
   if (isRankGranted(tree, rankIndex)) return;
   if (rankIndex > build.length) return;
-  build.length = rankIndex;
-  if (talentId !== null) build.push(talentId);
+  if (talentId === null) {
+    build.length = rankIndex;
+    return;
+  }
+  build[rankIndex] = talentId;
 };

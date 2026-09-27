@@ -1,23 +1,28 @@
 <script setup lang="ts">
-import { useCssVar, useElementSize } from '@vueuse/core';
-import { computed, useTemplateRef, watchEffect } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-import { SITE_HEADER_HEIGHT_PROPERTY } from '@shared/config/layout';
-import type { BreadcrumbItem } from '@shared/ui/breadcrumbs';
+import type { BreadcrumbItem, BreadcrumbMenuItem } from '@shared/ui/breadcrumbs';
 import { Breadcrumbs } from '@shared/ui/breadcrumbs';
 
 import { ROOT_BREADCRUMB } from '../config/constants';
 
 const route = useRoute();
+const router = useRouter();
 
-const header = useTemplateRef('header');
-const { height } = useElementSize(header, undefined, { box: 'border-box' });
-const headerHeight = useCssVar(SITE_HEADER_HEIGHT_PROPERTY);
+const navigationMenu = computed(() => router.options.routes.reduce<BreadcrumbMenuItem[]>((items, record) => {
+  if (!record.meta?.breadcrumb) {
+    return items;
+  }
 
-watchEffect(() => {
-  headerHeight.value = `${height.value}px`;
-});
+  items.push({
+    label: record.meta.breadcrumb,
+    to: record.path,
+    isCurrent: route.name === record.name,
+  });
+
+  return items;
+}, []));
 
 const breadcrumbs = computed(() => route.matched.reduce<BreadcrumbItem[]>((items, record) => {
   if (!record.meta.breadcrumb) {
@@ -27,17 +32,18 @@ const breadcrumbs = computed(() => route.matched.reduce<BreadcrumbItem[]>((items
   items.push({ label: record.meta.breadcrumb, to: record.path });
 
   return items;
-}, [ROOT_BREADCRUMB]));
+}, [{ ...ROOT_BREADCRUMB, menu: navigationMenu.value }]));
 </script>
 
 <template>
-  <header ref="header" :class="$style.header">
+  <header :class="$style.header">
     <Breadcrumbs :items="breadcrumbs" />
   </header>
 </template>
 
 <style lang="scss" module>
 @use 'styles/colors';
+@use 'styles/layout';
 
 .header {
   position: sticky;
@@ -45,7 +51,7 @@ const breadcrumbs = computed(() => route.matched.reduce<BreadcrumbItem[]>((items
   z-index: 5;
   display: flex;
   align-items: center;
-  min-block-size: 40px;
+  block-size: layout.$site-header-height;
   padding: 8px 16px;
   background: colors.$surface-translucent;
   backdrop-filter: blur(8px);

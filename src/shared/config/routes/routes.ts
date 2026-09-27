@@ -23,7 +23,7 @@ declare module 'vue-router' {
   }
 
   interface RouteMeta {
-    /** Label of the route in the site header breadcrumbs; routes without it are skipped. */
+    /** Label of the route in the site header breadcrumbs and page menu; routes without it are skipped. */
     breadcrumb?: string
   }
 }

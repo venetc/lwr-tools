@@ -1,2 +1,2 @@
-// Current site header height, kept in sync by the site header; mirrors SITE_HEADER_HEIGHT_PROPERTY.
-$site-header-height: var(--site-header-height, 0px);
+// Fixed site header height; sticky elements below the header are offset by it.
+$site-header-height: 40px;

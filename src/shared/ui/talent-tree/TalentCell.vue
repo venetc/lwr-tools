@@ -51,6 +51,7 @@ const tintStyle = computed(() => ({ maskImage: `url('${props.icon}')` }));
 
 <style lang="scss" module>
 @use 'styles/colors';
+@use 'styles/media';
 
 .cell {
   position: relative;
@@ -88,14 +89,27 @@ const tintStyle = computed(() => ({ maskImage: `url('${props.icon}')` }));
   }
 }
 
+// WebKit repaints luminance masks slowly, so inactive icons are only dimmed there.
 .inactive {
-  .image {
-    opacity: 0;
+  @include media.with-webkit {
+    .image {
+      opacity: 0.35;
+    }
+
+    .tint {
+      display: none;
+    }
   }
 
-  .tint {
-    display: block;
-    background: colors.$accent-dim;
+  @include media.without-webkit {
+    .image {
+      opacity: 0;
+    }
+
+    .tint {
+      display: block;
+      background: colors.$accent-dim;
+    }
   }
 }
 </style>

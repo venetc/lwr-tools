@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 
 import { SoldierClassHeading, SoldierRankLabel } from '@entities/soldier';
+import type { TalentRankState } from '@shared/ui/talent-tree';
 import { TalentTree } from '@shared/ui/talent-tree';
 
 import type { SoldierBuild, SoldierBuildId } from '../model/talents';
@@ -43,6 +44,13 @@ const readonly = computed({
   get: () => props.build.readonly,
   set: value => talentsStore.setReadonly(props.build.id, value),
 });
+
+/**
+ * Checks whether the rank is the one currently open for selection.
+ *
+ * @param state rank state in the tree.
+ */
+const isRankHighlighted = (state: TalentRankState) => state === 'available';
 </script>
 
 <template>
@@ -60,8 +68,8 @@ const readonly = computed({
       <BuildActions v-model:locked="readonly" @remove="requestRemove" />
     </template>
 
-    <template #rank="{ rank }">
-      <SoldierRankLabel :rank="rank" />
+    <template #rank="{ rank, state }">
+      <SoldierRankLabel :rank="rank" :highlighted="isRankHighlighted(state)" />
     </template>
   </TalentTree>
 </template>

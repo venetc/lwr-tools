@@ -1,19 +1,29 @@
 <script setup lang="ts">
+import { computed, useCssModule } from 'vue';
+
 import type { SoldierRank } from '../model/types';
 
 interface Props {
   /** Soldier rank to display. */
   rank: SoldierRank
+  /** Whether the rank icon takes the label color instead of the accent. */
+  highlighted?: boolean
 }
 
-defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  highlighted: false,
+});
+
+const style = useCssModule();
+
+const iconClass = computed(() => [style.icon, props.highlighted ? style.iconHighlighted : style.iconRegular]);
 </script>
 
 <template>
   <span :class="$style.label">
     <component
       :is="rank.icon"
-      :class="$style.icon"
+      :class="iconClass"
       aria-hidden="true"
     />
     <span :class="$style.name">{{ rank.name }}</span>
@@ -39,6 +49,13 @@ defineProps<Props>();
   flex: none;
   width: 26px;
   height: 26px;
+}
+
+.iconRegular {
   color: colors.$accent;
+}
+
+.iconHighlighted {
+  color: currentColor;
 }
 </style>

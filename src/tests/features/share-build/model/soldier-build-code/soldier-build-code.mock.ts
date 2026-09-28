@@ -18,7 +18,7 @@ export const SOLDIER_CLASS_CONTENT_MOCK: Record<string, SoldierClassContent> = {
   tester: {
     code: 3,
     name: 'Tester',
-    abilities: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as SoldierClassContent['abilities'],
+    abilities: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as SoldierClassContent['abilities'],
   },
 };
 

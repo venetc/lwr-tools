@@ -1,0 +1,386 @@
+{
+  "ace": {
+    "code": 1,
+    "name": "Ace",
+    "description": "If this unit has not moved, the first standard shot costs 0 AP. Grants +1 small equipment slots."
+  },
+  "acid-tech": {
+    "code": 2,
+    "name": "Acid Tech",
+    "description": "Acid grenades/spit damage armor on impact equal to 25% of armor HP (max 5, bypasses DR). Shots gain a 35% chance (100% if steadied) to apply corrosion."
+  },
+  "aggression": {
+    "code": 3,
+    "name": "Aggression",
+    "description": "Shots gain +10% crit damage per enemy in sight."
+  },
+  "blast": {
+    "code": 4,
+    "name": "Blast",
+    "description": "Grants +20% radius and +1 damage to explosives. Does not affect Gravity Mines."
+  },
+  "brawler": {
+    "code": 5,
+    "name": "Brawler",
+    "description": "While idle: Melee attacks graze (dealing only half of the original damage) and, if undamaged this turn, incoming shots within 4 tiles also graze."
+  },
+  "breacher": {
+    "code": 6,
+    "name": "Breacher",
+    "description": "The first grenade use each turn costs 0 AP but reduces mobility to 3.3 tiles until it has no AP remaining or the end of the turn. This soldier's grenades do not damage this soldier and gain +70% weapon damage but have -70% range. Equipped grenades receive an additional use and have no weight."
+  },
+  "bring-em-on": {
+    "code": 7,
+    "name": "Bring 'Em On",
+    "description": "This unit gains +0.5 damage on standard shots and incoming non-psionic attacks have a +5% graze chance for each enemy in sight."
+  },
+  "bullseye": {
+    "code": 8,
+    "name": "Bullseye",
+    "description": "Grants +20 aim, +20 crit, +20% crit dmg, and +20 pen to shots fired at 2AP or shots at preoccupied targets (double if both). Grants +1 ammo to primary weapons."
+  },
+  "close-encounters": {
+    "code": 9,
+    "name": "Close Encounters",
+    "description": "The first standard shot against an enemy within 4 tiles will leave this unit with 1 AP but reduces mobility to 3.3 tiles during their next action. Grants immunity to critical hits and reaction fire from enemies within 4 tiles."
+  },
+  "combat-drugs": {
+    "code": 10,
+    "name": "Combat Drugs",
+    "description": "Smoke grenades grant +25 aim and +15 crit. On detonation, if this unit is in the Area of Effect, they Enrage. Smoke grenades also passively heal 2 HP at the end of the turn. Only affects units that are breathing the smoke. Does not work in dense smoke."
+  },
+  "critical-system-targeting": {
+    "code": 11,
+    "name": "Critical System Targeting",
+    "description": "Shots against autopsied mechanical units deal +30% damage and gain +30 penetration (+60% damage and +60 penetration if steadied). Does not work with Arc Weapons."
+  },
+  "dense-smoke": {
+    "code": 12,
+    "name": "Dense Smoke",
+    "description": "Smoke grenades grant an additional +20 defense (+50 defense total -- defense affects psi as well)."
+  },
+  "disabling-shot": {
+    "code": 13,
+    "name": "Disabling Shot",
+    "description": "Fire a 0 AP 1 damage shot that disables the target's main weapon. Grants +1 ammo to primary weapons. Does not work against mechanical targets (except SHIVs). Cannot be used after activating In The Zone. 3 turn cooldown. Only for Sniper/Strike Rifles."
+  },
+  "double-tap": {
+    "code": 14,
+    "name": "Double Tap",
+    "description": "Shooting allows this unit to fire an extra shot if not out of ammo or targets. Any follow-up shots (from Double Tap or not) on a previous target this turn gains +20 aim/crit/pen. 1 turn cooldown after 2nd shot is used. Grants +1 ammo to primary weapons."
+  },
+  "executioner": {
+    "code": 15,
+    "name": "Executioner",
+    "description": "Grants +1 damage and +20 aim against targets at or below half HP. Double the effects if using a sidearm."
+  },
+  "extra-conditioning": {
+    "code": 16,
+    "name": "Extra Conditioning",
+    "description": "Grants +2 armor HP and +0.6 mobility, and a 10% chance for all end-in-idle actions to cost 0 AP."
+  },
+  "field-medic": {
+    "code": 17,
+    "name": "Field Medic",
+    "description": "Grants 2 medikits. Medikits heal +1 HP when used on an ally. Medikits heal +1 HP when an idle Engineer is within 4 tiles. Stabilization costs 0 AP and no longer consumes a medikit (but still requires one to be available)."
+  },
+  "fire-rocket": {
+    "code": 18,
+    "name": "Fire Rocket",
+    "description": "Grants the ability to use and equip a rocket launcher. Rocket scatter is affected by max base HP. Firing a rocket with 1 AP triples scatter and decreases range by 20%. 2 turn cooldown."
+  },
+  "firebase": {
+    "code": 19,
+    "name": "Firebase",
+    "description": "When in partial cover: Steadied shots are not broken by damage and deal +50% base weapon damage. If also adjacent to a SHIV: Gain +20% throw range and automatically Steady Weapon if idle at the end of the turn."
+  },
+  "fragmentation": {
+    "code": 20,
+    "name": "Fragmentation",
+    "description": "Explosives critically hit exposed targets and have +50% the chance to cause bleeding."
+  },
+  "grenadier": {
+    "code": 21,
+    "name": "Grenadier",
+    "description": "Using a destructive grenade deals +1 damage and costs only 1 AP. Equipped destructive grenades and MEC launchers receive an additional use and have no weight."
+  },
+  "grit": {
+    "code": 22,
+    "name": "Grit",
+    "description": "Grants +4 armor HP and %DR equal to a quarter of the % total HP lost."
+  },
+  "guardian": {
+    "code": 23,
+    "name": "Guardian",
+    "description": "Grants a free medikit and +1 ammo to primary weapons. Medikits heal +2 HP if not self-applied. If this unit's last action was using a medikit, overwatch activates at the end of the turn (except when at risk of triggering reaction fire)."
+  },
+  "heat-warheads": {
+    "code": 24,
+    "name": "HEAT Warheads",
+    "description": "Explosives gain +30 penetration and apply 50% more shred."
+  },
+  "hit-and-run": {
+    "code": 25,
+    "name": "Hit and Run",
+    "description": "The first shot each turn that's a Pincer, or that's aimed at a preoccupied target, or a unit damaged this turn, leaves you with 1 AP. That point can only be spent on movement, officer, psionic, or non-arm MEC actions (you can't fire again)."
+  },
+  "holo-rounds": {
+    "code": 26,
+    "name": "Holo Rounds",
+    "description": "Firing at a target holos them for 3 turns [Prevents stealth, incoming shots gain +10 aim and +10 penetration]."
+  },
+  "impact": {
+    "code": 27,
+    "name": "Impact",
+    "description": "Shots gain +10 penetration. Non-reaction shots disable their target's Overwatch and Reactive Targeting Sensors."
+  },
+  "in-the-zone": {
+    "code": 28,
+    "name": "In The Zone",
+    "description": "Shots gain aim equal to the percent of HP the target is missing. Shooting with a steadied weapon allows this unit to fire chain shots (with a stacking -10 max hit chance) until they run out of ammo or targets. Standard shots (outside an ITZ chain) trigger a free reload."
+  },
+  "killer-instinct": {
+    "code": 29,
+    "name": "Killer Instinct",
+    "description": "Grants +30% crit damage."
+  },
+  "kitted": {
+    "code": 30,
+    "name": "Kitted",
+    "description": "Grants a medikit and a smoke grenade. If this unit does not have a scope, it gains a generic scope (+10 aim). If this unit does not have a plating, it gains a generic plating (+2 armor HP)."
+  },
+  "light-em-up": {
+    "code": 31,
+    "name": "Light 'Em Up",
+    "description": "Standard shots cost only 1 AP and gain both +5 penetration and +1 damage for each instance of damage their target took this turn."
+  },
+  "lock-n-load": {
+    "code": 32,
+    "name": "Lock n' Load",
+    "description": "Reloading any weapon costs only 1 AP and dashing automatically reloads the active weapon."
+  },
+  "lone-wolf": {
+    "code": 33,
+    "name": "Lone Wolf",
+    "description": "Grants 10 aim, crit, def and crit resist if not within 6 tiles of an allied unit."
+  },
+  "low-profile": {
+    "code": 34,
+    "name": "Low Profile",
+    "description": "Partial cover grants the defense and DR bonus of full cover."
+  },
+  "magnum": {
+    "code": 35,
+    "name": "Magnum",
+    "description": "Sniper rifles, strike rifles and pistols gain +50% weapon damage. Standard and Precision shots pass through to enemy units behind the target (up to 24 tiles, non-reaction shots only, not amplified by target modifiers)."
+  },
+  "master-mechanic": {
+    "code": 36,
+    "name": "Master Mechanic",
+    "description": "Increases the healing of repair by +4 HP and grants an additional use. Explosive shots that hit friendly SHIVs do not damage this soldier. When in partial cover adjacent to a SHIV: Both this unit and the SHIV gain 20% DR."
+  },
+  "mayhem": {
+    "code": 37,
+    "name": "Mayhem",
+    "description": "Suppression damages enemies immediately with a round of suppressive fire and has its cooldown reduced by 1. Suppressive Fire can cause bleeding."
+  },
+  "mechanic": {
+    "code": 38,
+    "name": "Mechanic",
+    "description": "Grants 2 uses of Repair. Removes corrosion from all adjacent allies after each action. When in partial cover adjacent to a SHIV: Gain Low Profile and when that SHIV takes damage heal the SHIV for 25% of the damage taken (heal only occurs if engineer is idle, steadied, or on overwatch).",
+    "grants": [
+      "repair",
+      "low-profile"
+    ]
+  },
+  "on-the-ready": {
+    "code": 39,
+    "name": "On The Ready",
+    "description": "Shots gain +35% base weapon damage if this unit is Steadying or Combat Ready. Non-reaction shots grant Combat Readiness. If this unit's last action was a shot or a manual activation of combat readiness, overwatch activates at the end of the turn (except when at risk of triggering reaction fire)."
+  },
+  "opportunist": {
+    "code": 40,
+    "name": "Opportunist",
+    "description": "Reaction shots gain +10 aim and can critically hit."
+  },
+  "pathfinder": {
+    "code": 41,
+    "name": "Pathfinder",
+    "description": "Grants +1 battlescanner, +25% crit damage, and +0.6 mobility. If this unit activates enemies while moving, they regain up to 2 AP. Does not apply to covert operatives. Max one activation per turn. Fails if another allied unit acts before the pod finished activating."
+  },
+  "payload": {
+    "code": 42,
+    "name": "Payload",
+    "description": "Grants +30% throw range and +50% weapon damage to explosive grenades."
+  },
+  "penetrator": {
+    "code": 43,
+    "name": "Penetrator",
+    "description": "The primary weapon gains +15 penetration."
+  },
+  "pistolero": {
+    "code": 44,
+    "name": "Pistolero",
+    "description": "Reaction shots from pistols gain +50% weapon damage, +30 aim, and the ability to crit. If idle at end of turn, draws their pistol. If wielding a pistol, fire a reaction shot at any enemy within 4 tiles that acts. [Pistolero reaction shots bypass half of cover DR/def and require hit chance >30]"
+  },
+  "precision-shot": {
+    "code": 45,
+    "name": "Precision Shot",
+    "description": "Fire a shot that has no squadsight penalties, +30 aim, and +30 crit. The shot will never graze. 3 turn cooldown. Only for Strike/Sniper Rifles."
+  },
+  "raking-fire": {
+    "code": 46,
+    "name": "Raking Fire",
+    "description": "Fire 2 additional reaction shots during overwatch."
+  },
+  "ranger": {
+    "code": 47,
+    "name": "Ranger",
+    "description": "Grants +1 damage to all weapons and equipment, +0.6 mobility, and +10% throw/rocket range. Sidearms additionally gain +50% base weapon damage, +20 aim, and 1 AP reloads."
+  },
+  "rapid-fire": {
+    "code": 48,
+    "name": "Rapid Fire",
+    "description": "Fire twice with your primary weapon; accuracy gains above 40% hit chance only contribute half to final hit chance."
+  },
+  "rapid-pincers": {
+    "code": 49,
+    "name": "Rapid Pincers",
+    "description": "Grants Rapid Fire and +0.6 mobility. The first Rapid Fire against a pincered enemy will leave this unit with 1 AP but reduces mobility to 3.3 until out of AP.",
+    "grants": [
+      "rapid-fire"
+    ]
+  },
+  "ready-for-anything": {
+    "code": 50,
+    "name": "Ready For Anything",
+    "description": "At the end of each turn, if this unit did not move and is not at risk of triggering reaction fire, overwatch activates."
+  },
+  "reconnaissance": {
+    "code": 51,
+    "name": "Reconnaissance",
+    "description": "Displays information on the nearest aliens that are not hiding after each non-dash move. Provides additional information on sneaking aliens. The first battle scanner used each turn costs 0 AP. Grants a free battle scanner. Grants Low Profile.",
+    "grants": [
+      "low-profile"
+    ]
+  },
+  "repair": {
+    "code": 52,
+    "name": "Repair",
+    "description": "Heal a mechanical unit for 5 HP and remove corrosion."
+  },
+  "revive": {
+    "code": 53,
+    "name": "Revive",
+    "description": "Bring a stabilized soldier back into action at 33% of their max HP for the cost of 1 medikit and 0 AP."
+  },
+  "run-and-gun": {
+    "code": 54,
+    "name": "Run and Gun",
+    "description": "Activate to allow shooting or overwatching at 0 AP if the last AP was spent moving. When active: gain +25 crit, +25% crit damage, and immunity to reaction fire, but the AP discount from Close Encounters is disabled. 2 turn cooldown. Cannot activate if out of ammo and does not work with the stun rifle."
+  },
+  "sapper": {
+    "code": 55,
+    "name": "Sapper",
+    "description": "Explosives deal +1 damage, gain +20 penetration, and double environmental damage."
+  },
+  "savior": {
+    "code": 56,
+    "name": "Savior",
+    "description": "Medikits heal an additional 35% of the target's missing HP. Grants +1 small equipment slots. Grants Revive.",
+    "grants": [
+      "revive"
+    ]
+  },
+  "sentinel": {
+    "code": 57,
+    "name": "Sentinel",
+    "description": "Fire an additional reaction shot and gain +20 defense during overwatch. Grants Opportunist.",
+    "grants": [
+      "opportunist"
+    ]
+  },
+  "shadowstep": {
+    "code": 58,
+    "name": "Shadowstep",
+    "description": "This unit gains +0.6 mobility and does not trigger reaction shots or pursuit when walking (not dashing). After repositioning, shots gain +25% crit damage until next turn."
+  },
+  "sharpshooter": {
+    "code": 59,
+    "name": "Sharpshooter",
+    "description": "All shots gain +15 aim against biological targets. Rapid Fire shots gain +30 aim instead."
+  },
+  "shock-and-awe": {
+    "code": 60,
+    "name": "Shock and Awe",
+    "description": "Equipped Javelin rockets gain an additional use. Rockets gain +35% damage. Grants +1 small equipment slots."
+  },
+  "smoke-and-mirrors": {
+    "code": 61,
+    "name": "Smoke and Mirrors",
+    "description": "Using a support grenade costs only 1 AP and does not trigger reaction shots. Equipped support grenades receive an additional use."
+  },
+  "snapshot": {
+    "code": 62,
+    "name": "Snapshot",
+    "description": "Shots do not trigger reaction fire."
+  },
+  "sprinter": {
+    "code": 63,
+    "name": "Sprinter",
+    "description": "Grants +1.3 mobility and +10 defense. Doubles damage from Ram."
+  },
+  "squadsight": {
+    "code": 64,
+    "name": "Squadsight",
+    "description": "Allows firing with long-range weapons around some obstacles and beyond 18 tiles at targets with a spotter (an ally at 0 AP that can see the target). Grants +2 aim per ally (+8 per scout) can see the target and -5 aim for each tile beyond 18. Overwatch and reaction shots are still limited to 18 tiles. Other abilities that consider the number of enemies in sight will also include any enemies in squadsight."
+  },
+  "steadfast": {
+    "code": 65,
+    "name": "Steadfast",
+    "description": "Provides +3 armor HP, immunity to panic, and reduces injury times by 30%."
+  },
+  "suppression": {
+    "code": 66,
+    "name": "Suppression",
+    "description": "Suppress [Pinned if protected by cover, suppressive fire if not, no reaction fire, -35 aim, -35% mobility/ability range] targets. Breaks with suppressive fire if the target acts. Requires 2 ammo, and uses the 2nd ammo if the suppression breaks with suppressive fire. 2 turn cooldown. [Suppressive Fire deals 40% standard shot damage]"
+  },
+  "surgical-targeting": {
+    "code": 67,
+    "name": "Surgical Targeting",
+    "description": "Shots against autopsied targets affected by red fog double the bleed chance and deal 50% more damage."
+  },
+  "sustain": {
+    "code": 68,
+    "name": "Sustain",
+    "description": "Self-applied medikits cost 0 AP. Grants +2 armor HP. If idle: when taking 3 or more damage passively heal for 1 HP."
+  },
+  "tandem-warheads": {
+    "code": 69,
+    "name": "Tandem Warheads",
+    "description": "Explosives employed by this soldier do full damage at the extent of their area of effect (instead of 50%)."
+  },
+  "tenacious-defense": {
+    "code": 70,
+    "name": "Tenacious Defense",
+    "description": "Grants +2 armor HP. Grants +20 crit resistance when protected by cover."
+  },
+  "tinker": {
+    "code": 71,
+    "name": "Tinker",
+    "description": "Concussion and psi grenades add 10 shred to their targets. On detonation, smoke grenades repair all shred."
+  },
+  "vital-point-targeting": {
+    "code": 72,
+    "name": "Vital Point Targeting",
+    "description": "When hitting humans or autopsied biological aliens: steadied shots, reaction shots, or shots at targets not protected by cover deal 30% more damage."
+  },
+  "will-to-survive": {
+    "code": 73,
+    "name": "Will To Survive",
+    "description": "Increases DR of all cover to 60% but grants 10 less defense. Grants Steadfast.",
+    "grants": [
+      "steadfast"
+    ]
+  }
+}

@@ -1,9 +1,10 @@
-import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue';
+import type { ComputedRef, MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
+import type { Talent, TalentBuild, TalentRank, TalentRankState, TalentTreeData } from '@shared/lib/talent-tree';
+import { isRankGranted, rankState, selectedTalentId } from '@shared/lib/talent-tree';
+
 import { talentColumn } from '../lib/layout';
-import { isRankGranted, rankState, selectedTalentId } from './build';
-import type { Talent, TalentBuild, TalentRank, TalentRankState, TalentTreeData } from './types';
 
 export interface TalentEntry {
   talent: Talent
@@ -28,15 +29,16 @@ export interface RankEntry<Rank extends TalentRank = TalentRank> {
  */
 export const useTalentRanks = <Rank extends TalentRank>(
   tree: MaybeRefOrGetter<TalentTreeData<Rank>>,
-  build: Ref<TalentBuild>,
+  build: MaybeRefOrGetter<TalentBuild>,
   readonly: MaybeRefOrGetter<boolean>,
 ): ComputedRef<RankEntry<Rank>[]> => {
   return computed(() => {
     const treeValue = toValue(tree);
+    const buildValue = toValue(build);
 
     return treeValue.ranks.map((rank, rankIndex): RankEntry<Rank> => {
-      const state = rankState(build.value, rankIndex, toValue(readonly));
-      const selectedId = selectedTalentId(build.value, rankIndex);
+      const state = rankState(buildValue, rankIndex, toValue(readonly));
+      const selectedId = selectedTalentId(buildValue, rankIndex);
 
       return {
         rank,

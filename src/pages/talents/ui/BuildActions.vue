@@ -1,13 +1,24 @@
 <script setup lang="ts">
-import { Lock, LockOpen, Trash2 } from '@lucide/vue';
+import { ClipboardPaste, Lock, LockOpen, Share2, Trash2 } from '@lucide/vue';
 import { computed, useCssModule } from 'vue';
 
+import type { SoldierBuildData } from '@entities/soldier';
+import { ExportSoldierBuild, ImportSoldierBuild } from '@features/share-build';
 import { Toggle } from '@shared/ui/toggle';
+
+interface Props {
+  /** Build to export. */
+  build: SoldierBuildData
+}
 
 interface Emits {
   /** Requests removal of the build. */
   remove: []
+  /** Requests replacing the build with imported data. */
+  import: [build: SoldierBuildData]
 }
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
@@ -15,26 +26,51 @@ const style = useCssModule();
 
 const lockClass = [style.action, style.lock];
 
-const removeClass = [style.action, style.remove];
+const secondaryClass = [style.action, style.secondary];
 
 /** Whether the build is locked for editing. */
 const locked = defineModel<boolean>('locked', { required: true });
 
 const lockIcon = computed(() => locked.value ? Lock : LockOpen);
 
-const isRemovable = computed(() => !locked.value);
+const isEditable = computed(() => !locked.value);
 
 /**
  * Requests removal of the build.
  */
 const requestRemove = () => emit('remove');
+
+/**
+ * Requests replacing the build with imported data.
+ *
+ * @param build imported build data.
+ */
+const requestImport = (build: SoldierBuildData) => emit('import', build);
 </script>
 
 <template>
   <div :class="$style.actions">
+    <ImportSoldierBuild v-if="isEditable" @import="requestImport">
+      <template #trigger>
+        <button :class="secondaryClass" type="button">
+          <ClipboardPaste :class="$style.icon" aria-hidden="true" />
+          <span :class="$style.visuallyHidden">Import build</span>
+        </button>
+      </template>
+    </ImportSoldierBuild>
+
+    <ExportSoldierBuild :build="props.build">
+      <template #trigger>
+        <button :class="secondaryClass" type="button">
+          <Share2 :class="$style.icon" aria-hidden="true" />
+          <span :class="$style.visuallyHidden">Export build</span>
+        </button>
+      </template>
+    </ExportSoldierBuild>
+
     <button
-      v-if="isRemovable"
-      :class="removeClass"
+      v-if="isEditable"
+      :class="secondaryClass"
       type="button"
       @click="requestRemove"
     >
@@ -99,7 +135,7 @@ const requestRemove = () => emit('remove');
   }
 }
 
-.remove {
+.secondary {
   @include -dimmed;
   color: colors.$text-tertiary;
 }

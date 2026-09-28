@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { SoldierClassHeading, SoldierRankLabel } from '@entities/soldier';
-import type { TalentRankState } from '@shared/ui/talent-tree';
+import type { SoldierBuildData } from '@entities/soldier';
+import { SoldierBuildHeading, soldierClassTalentTree, SoldierRankLabel } from '@entities/soldier';
+import type { TalentRankState } from '@shared/lib/talent-tree';
 import { TalentTree } from '@shared/ui/talent-tree';
 
 import type { SoldierBuild, SoldierBuildId } from '../model/talents';
@@ -30,15 +31,29 @@ const requestRemove = () => emit('remove', props.build.id);
 
 const talentsStore = useTalentsStore();
 
-const talents = computed({
-  get: () => props.build.talents,
-  set: value => talentsStore.setTalents(props.build.id, value),
-});
+const tree = computed(() => soldierClassTalentTree(props.build.soldierClass));
+
+/**
+ * Selects a talent on the rank of the build.
+ *
+ * @param rankIndex rank index in the tree.
+ * @param talentId selected talent id, or null to clear the rank selection.
+ */
+const selectTalent = (rankIndex: number, talentId: string | null) => {
+  talentsStore.selectBuildTalent(props.build.id, rankIndex, talentId);
+};
 
 const name = computed({
   get: () => props.build.name,
   set: value => talentsStore.setName(props.build.id, value),
 });
+
+/**
+ * Replaces the build with imported data.
+ *
+ * @param data imported build data.
+ */
+const importBuild = (data: SoldierBuildData) => talentsStore.replaceBuild(props.build.id, data);
 
 const readonly = computed({
   get: () => props.build.readonly,
@@ -55,17 +70,23 @@ const isRankHighlighted = (state: TalentRankState) => state === 'available';
 
 <template>
   <TalentTree
-    v-model="talents"
+    :build="props.build.talents"
     :readonly="readonly"
-    :tree="props.build.tree"
+    :tree="tree"
+    @select="selectTalent"
   >
     <template #header>
-      <SoldierClassHeading
+      <SoldierBuildHeading
         v-model:name="name"
         :soldier-class="props.build.soldierClass"
         :readonly="readonly"
       />
-      <BuildActions v-model:locked="readonly" @remove="requestRemove" />
+      <BuildActions
+        v-model:locked="readonly"
+        :build="props.build"
+        @remove="requestRemove"
+        @import="importBuild"
+      />
     </template>
 
     <template #rank="{ rank, state }">

@@ -1,0 +1,106 @@
+{
+  "sniper": {
+    "code": 1,
+    "name": "Sniper",
+    "abilities": {
+      "specialist": ["squadsight"],
+      "lance-corporal": ["magnum", "on-the-ready", "in-the-zone"],
+      "corporal": ["sharpshooter", "opportunist", "disabling-shot"],
+      "sergeant": ["ranger", "shadowstep", "executioner"],
+      "tech-sergeant": ["precision-shot"],
+      "gunnery-sergeant": ["impact", "vital-point-targeting", "bring-em-on"],
+      "master-sergeant": ["extra-conditioning", "lone-wolf"]
+    }
+  },
+  "scout": {
+    "code": 2,
+    "name": "Scout",
+    "abilities": {
+      "specialist": ["reconnaissance"],
+      "lance-corporal": ["bullseye", "hit-and-run", "smoke-and-mirrors"],
+      "corporal": ["snapshot", "ranger", "disabling-shot"],
+      "sergeant": ["impact", "vital-point-targeting", "tinker"],
+      "tech-sergeant": ["pathfinder"],
+      "gunnery-sergeant": ["precision-shot", "shadowstep", "kitted"],
+      "master-sergeant": ["aggression", "extra-conditioning"]
+    }
+  },
+  "infantry": {
+    "code": 3,
+    "name": "Infantry",
+    "abilities": {
+      "specialist": ["light-em-up"],
+      "lance-corporal": ["will-to-survive", "sentinel", "grenadier"],
+      "corporal": ["tenacious-defense", "lock-n-load", "payload"],
+      "sergeant": ["extra-conditioning", "impact", "kitted"],
+      "tech-sergeant": ["ace"],
+      "gunnery-sergeant": ["bring-em-on", "ranger", "tandem-warheads"],
+      "master-sergeant": ["executioner", "aggression"]
+    }
+  },
+  "assault": {
+    "code": 4,
+    "name": "Assault",
+    "abilities": {
+      "specialist": ["close-encounters"],
+      "lance-corporal": ["will-to-survive", "run-and-gun", "breacher"],
+      "corporal": ["extra-conditioning", "brawler", "fragmentation"],
+      "sergeant": ["pistolero", "ranger", "killer-instinct"],
+      "tech-sergeant": ["rapid-fire"],
+      "gunnery-sergeant": ["tenacious-defense", "aggression", "heat-warheads"],
+      "master-sergeant": ["sprinter", "lock-n-load"]
+    }
+  },
+  "gunner": {
+    "code": 5,
+    "name": "Gunner",
+    "abilities": {
+      "specialist": ["suppression"],
+      "lance-corporal": ["will-to-survive", "raking-fire", "mayhem"],
+      "corporal": ["double-tap", "ready-for-anything", "holo-rounds"],
+      "sergeant": ["grit", "critical-system-targeting", "penetrator"],
+      "tech-sergeant": ["extra-conditioning"],
+      "gunnery-sergeant": ["tenacious-defense", "bring-em-on", "lock-n-load"],
+      "master-sergeant": ["kitted", "impact"]
+    }
+  },
+  "rocketeer": {
+    "code": 6,
+    "name": "Rocketeer",
+    "abilities": {
+      "specialist": ["fire-rocket"],
+      "lance-corporal": ["light-em-up", "grenadier", "smoke-and-mirrors"],
+      "corporal": ["holo-rounds", "blast", "kitted"],
+      "sergeant": ["ranger", "sapper", "acid-tech"],
+      "tech-sergeant": ["shock-and-awe"],
+      "gunnery-sergeant": ["heat-warheads", "fragmentation", "tandem-warheads"],
+      "master-sergeant": ["bring-em-on", "extra-conditioning"]
+    }
+  },
+  "medic": {
+    "code": 7,
+    "name": "Medic",
+    "abilities": {
+      "specialist": ["field-medic"],
+      "lance-corporal": ["will-to-survive", "sentinel", "smoke-and-mirrors"],
+      "corporal": ["rapid-pincers", "guardian", "combat-drugs"],
+      "sergeant": ["sustain", "surgical-targeting", "ranger"],
+      "tech-sergeant": ["savior"],
+      "gunnery-sergeant": ["pistolero", "bring-em-on", "holo-rounds"],
+      "master-sergeant": ["extra-conditioning", "sharpshooter"]
+    }
+  },
+  "engineer": {
+    "code": 8,
+    "name": "Engineer",
+    "abilities": {
+      "specialist": ["mechanic"],
+      "lance-corporal": ["double-tap", "grenadier", "smoke-and-mirrors"],
+      "corporal": ["holo-rounds", "sapper", "firebase"],
+      "sergeant": ["critical-system-targeting", "tandem-warheads", "dense-smoke"],
+      "tech-sergeant": ["master-mechanic"],
+      "gunnery-sergeant": ["bring-em-on", "heat-warheads", "acid-tech"],
+      "master-sergeant": ["lock-n-load", "extra-conditioning"]
+    }
+  }
+}

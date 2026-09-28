@@ -3,11 +3,10 @@ import type { AcceptableValue } from 'reka-ui';
 import type { VNode } from 'vue';
 import { useCssModule } from 'vue';
 
+import type { TalentBuild, TalentRank, TalentRankState, TalentTreeData } from '@shared/lib/talent-tree';
 import { ScrollArea } from '@shared/ui/scroll-area';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
-import { selectTalent } from './model/build';
-import type { TalentBuild, TalentRank, TalentRankState, TalentTreeData } from './model/types';
 import { useDescribedTalent } from './model/useDescribedTalent';
 import type { RankEntry, TalentEntry } from './model/useTalentRanks';
 import { useTalentRanks } from './model/useTalentRanks';
@@ -16,8 +15,15 @@ import TalentCell from './TalentCell.vue';
 interface Props {
   /** Class talent tree. */
   tree: TalentTreeData<Rank>
+  /** Selected talents by rank. */
+  build: TalentBuild
   /** Whether the build is view-only. */
   readonly?: boolean
+}
+
+interface Emits {
+  /** Requests a talent selection on the rank; null clears the rank. */
+  select: [rankIndex: number, talentId: string | null]
 }
 
 interface RankSlotProps {
@@ -29,22 +35,21 @@ const props = withDefaults(defineProps<Props>(), {
   readonly: false,
 });
 
+const emit = defineEmits<Emits>();
+
 defineSlots<{
   header?: () => VNode[]
   rank?: (props: RankSlotProps) => VNode[]
 }>();
 
-/** Selected talents by rank. */
-const build = defineModel<TalentBuild>({ required: true });
-
 const style = useCssModule();
 
-const rankEntries = useTalentRanks(() => props.tree, build, () => props.readonly);
+const rankEntries = useTalentRanks(() => props.tree, () => props.build, () => props.readonly);
 
-const { describedTalent, hasGrants, describe } = useDescribedTalent(() => props.tree, build);
+const { describedTalent, hasGrants, describe } = useDescribedTalent(() => props.tree, () => props.build);
 
 /**
- * Applies a talent selection on a rank to the build.
+ * Requests a talent selection on a rank.
  *
  * @param rankIndex rank index in the tree.
  * @param toggledValue selected talent id; null or empty means the selection was cleared.
@@ -52,7 +57,7 @@ const { describedTalent, hasGrants, describe } = useDescribedTalent(() => props.
 const onRankUpdate = (rankIndex: number, toggledValue: AcceptableValue | null) => {
   if (props.readonly) return;
   const talentId = typeof toggledValue === 'string' ? toggledValue : null;
-  selectTalent(props.tree, build.value, rankIndex, talentId);
+  emit('select', rankIndex, talentId);
 };
 
 /**

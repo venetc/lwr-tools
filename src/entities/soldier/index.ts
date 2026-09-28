@@ -1,9 +1,8 @@
-export { ABILITY_ID } from './config/constants/ability-id';
-export { SOLDIER_CLASSES } from './config/constants/classes';
-export { SOLDIER_RANKS } from './config/constants/ranks';
-export { SOLDIER_CLASS_ID } from './config/constants/soldier-class-id';
-export { SOLDIER_RANK_ID } from './config/constants/soldier-rank-id';
-export { soldierClassTree } from './lib/class-tree';
-export type { AbilityId, SoldierClass, SoldierClassId, SoldierRankId, SoldierTalentRank } from './model/types';
-export { default as SoldierClassHeading } from './ui/SoldierClassHeading.vue';
+export { abilityById, abilityIdByCode, isAbilityId } from './model/abilities';
+export { soldierBuildName, soldierClassBaseBuild } from './model/build';
+export { soldierClassTalentTree } from './model/class-tree';
+export { SOLDIER_CLASSES, soldierClassByCode } from './model/classes';
+export { SOLDIER_RANKS } from './model/ranks';
+export type { AbilityId, SoldierBuildData, SoldierClass, SoldierClassId, SoldierRankId, SoldierTalentRank } from './model/types';
+export { default as SoldierBuildHeading } from './ui/SoldierBuildHeading.vue';
 export { default as SoldierRankLabel } from './ui/SoldierRankLabel.vue';

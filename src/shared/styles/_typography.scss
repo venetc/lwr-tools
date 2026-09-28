@@ -45,7 +45,7 @@ $weight-bold: 700;
 }
 
 @mixin caps-1 {
-  @include -text($font-display, 1.25rem, $weight-semibold, 1.2, 0.06em, $caps: true);
+  @include -text($font-display, 1.125rem, $weight-semibold, 1.2, 0.06em, $caps: true);
 }
 @mixin caps-2 {
   @include -text($font-display, 1rem, $weight-semibold, 1.25, 0.08em, $caps: true);

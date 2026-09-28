@@ -1,24 +1,16 @@
 import { defineStore } from 'pinia';
-import { computed, markRaw, ref } from 'vue';
+import { computed, ref } from 'vue';
 
-import type { SoldierClass, SoldierTalentRank } from '@entities/soldier';
-import { SOLDIER_CLASSES, soldierClassTree } from '@entities/soldier';
+import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
+import { SOLDIER_CLASSES, soldierBuildName, soldierClassBaseBuild, soldierClassTalentTree } from '@entities/soldier';
 import { createId } from '@shared/lib/id';
-import type { TalentBuild, TalentTreeData } from '@shared/ui/talent-tree';
+import { selectTalent } from '@shared/lib/talent-tree';
 
 export type SoldierBuildId = string;
 
-export interface SoldierBuild {
+export interface SoldierBuild extends SoldierBuildData {
   /** Stable build id, unique among all builds including ones of the same class. */
   id: SoldierBuildId
-  /** Soldier class of the build. */
-  soldierClass: SoldierClass
-  /** Class talent tree; static, kept non-reactive. */
-  tree: TalentTreeData<SoldierTalentRank>
-  /** Selected talents by rank. */
-  talents: TalentBuild
-  /** Build name shown in the heading. */
-  name: string
   /** Whether the build is locked against editing. */
   readonly: boolean
 }
@@ -29,14 +21,11 @@ export interface SoldierBuild {
  * @param soldierClass soldier class.
  */
 const createSoldierBuild = (soldierClass: SoldierClass): SoldierBuild => {
-  const tree = markRaw(soldierClassTree(soldierClass));
-
   return {
     id: createId(),
     soldierClass,
-    tree,
-    talents: [...tree.baseBuild],
-    name: soldierClass.name,
+    talents: soldierClassBaseBuild(soldierClass),
+    name: soldierBuildName(soldierClass, ''),
     readonly: false,
   };
 };
@@ -61,27 +50,41 @@ export const useTalentsStore = defineStore('pages-talents', () => {
   const findBuild = (buildId: SoldierBuildId) => buildsById.value.get(buildId) ?? null;
 
   /**
-   * Replaces selected talents of the build.
+   * Editable build by id: null for a missing or locked build.
    *
    * @param buildId build id.
-   * @param talents new selected talents.
    */
-  const setTalents = (buildId: SoldierBuildId, talents: TalentBuild) => {
+  const findEditableBuild = (buildId: SoldierBuildId) => {
     const build = findBuild(buildId);
 
-    if (!build) return;
+    if (!build || build.readonly) return null;
 
-    build.talents = talents;
+    return build;
   };
 
   /**
-   * Renames the build.
+   * Selects a talent on the rank of an editable build by the tree rules.
+   *
+   * @param buildId build id.
+   * @param rankIndex rank index in the tree.
+   * @param talentId selected talent id, or null to clear the rank selection.
+   */
+  const selectBuildTalent = (buildId: SoldierBuildId, rankIndex: number, talentId: string | null) => {
+    const build = findEditableBuild(buildId);
+
+    if (!build) return;
+
+    selectTalent(soldierClassTalentTree(build.soldierClass), build.talents, rankIndex, talentId);
+  };
+
+  /**
+   * Renames an editable build.
    *
    * @param buildId build id.
    * @param name new build name.
    */
   const setName = (buildId: SoldierBuildId, name: string) => {
-    const build = findBuild(buildId);
+    const build = findEditableBuild(buildId);
 
     if (!build) return;
 
@@ -114,6 +117,37 @@ export const useTalentsStore = defineStore('pages-talents', () => {
   };
 
   /**
+   * Adds a new editable build from imported data.
+   *
+   * @param data imported build data.
+   */
+  const importBuild = (data: SoldierBuildData) => {
+    const build = createSoldierBuild(data.soldierClass);
+
+    build.talents = [...data.talents];
+    build.name = data.name;
+    buildsById.value.set(build.id, build);
+
+    return build.id;
+  };
+
+  /**
+   * Replaces class, talents and name of an editable build with imported data; id and lock stay.
+   *
+   * @param buildId build id.
+   * @param data imported build data.
+   */
+  const replaceBuild = (buildId: SoldierBuildId, data: SoldierBuildData) => {
+    const build = findEditableBuild(buildId);
+
+    if (!build) return;
+
+    build.soldierClass = data.soldierClass;
+    build.talents = [...data.talents];
+    build.name = data.name;
+  };
+
+  /**
    * Removes the build.
    *
    * @param buildId build id.
@@ -124,10 +158,12 @@ export const useTalentsStore = defineStore('pages-talents', () => {
 
   return {
     builds: computed<readonly Readonly<SoldierBuild>[]>(() => [...buildsById.value.values()]),
-    setTalents,
+    selectBuildTalent,
     setName,
     setReadonly,
     addBuild,
+    importBuild,
+    replaceBuild,
     removeBuild,
   };
 });

@@ -167,7 +167,9 @@ $row-height: $icon-size + $item-padding * 2;
   text-box: trim-both cap alphabetic;
   flex: none;
   inline-size: 12ch;
-  overflow: hidden;
+  // Clip only the inline axis: the text-box trimmed block edges cut glyphs in Safari.
+  overflow-x: clip;
+  overflow-y: visible;
   text-align: start;
   text-overflow: ellipsis;
   white-space: nowrap;

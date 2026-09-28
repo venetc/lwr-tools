@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { Plus } from '@lucide/vue';
+import { ClipboardPaste, Plus } from '@lucide/vue';
 import { usePreferredReducedMotion } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { computed, nextTick } from 'vue';
 
+import type { SoldierBuildData } from '@entities/soldier';
 import { SOLDIER_CLASSES } from '@entities/soldier';
+import { ImportSoldierBuild } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 
 import type { SoldierBuildId } from '../model/talents';
@@ -38,6 +40,18 @@ const scrollToBuild = (buildId: SoldierBuildId) => {
   if (!panel) return;
 
   panel.scrollIntoView({ behavior: scrollBehavior.value, block: 'start' });
+};
+
+/**
+ * Adds a build from imported data and scrolls to it.
+ *
+ * @param data imported build data.
+ */
+const importBuild = async (data: SoldierBuildData) => {
+  const buildId = talentsStore.importBuild(data);
+
+  await nextTick();
+  scrollToBuild(buildId);
 };
 </script>
 
@@ -73,6 +87,17 @@ const scrollToBuild = (buildId: SoldierBuildId) => {
             </span>
           </Button>
         </div>
+
+        <ImportSoldierBuild @import="importBuild">
+          <template #trigger>
+            <Button :class="$style.import">
+              <span :class="$style.importContent">
+                <ClipboardPaste :class="$style.importIcon" aria-hidden="true" />
+                Import
+              </span>
+            </Button>
+          </template>
+        </ImportSoldierBuild>
 
         <BuildNav
           :class="$style.nav"
@@ -129,14 +154,14 @@ $toolbar-row-min-width: 720px;
   gap: 8px;
 
   @container (width >= #{$toolbar-row-min-width}) {
-    grid-template-columns: auto minmax(0, 1fr);
-    grid-template-areas: 'add nav';
+    grid-template-columns: auto auto minmax(0, 1fr);
+    grid-template-areas: 'add import nav';
     align-items: center;
   }
 
   @container (width < #{$toolbar-row-min-width}) {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'nav' 'add';
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: 'nav nav' 'add import';
   }
 }
 
@@ -145,6 +170,23 @@ $toolbar-row-min-width: 720px;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
+}
+
+.import {
+  grid-area: import;
+}
+
+.importContent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+}
+
+.importIcon {
+  flex: none;
+  width: 16px;
+  height: 16px;
 }
 
 .nav {

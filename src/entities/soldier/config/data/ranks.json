@@ -1,0 +1,23 @@
+{
+  "specialist": {
+    "name": "Specialist"
+  },
+  "lance-corporal": {
+    "name": "Lance Corporal"
+  },
+  "corporal": {
+    "name": "Corporal"
+  },
+  "sergeant": {
+    "name": "Sergeant"
+  },
+  "tech-sergeant": {
+    "name": "Tech Sergeant"
+  },
+  "gunnery-sergeant": {
+    "name": "Gunnery Sergeant"
+  },
+  "master-sergeant": {
+    "name": "Master Sergeant"
+  }
+}

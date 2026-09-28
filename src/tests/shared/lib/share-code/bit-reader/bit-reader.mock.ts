@@ -1,0 +1,3 @@
+export const PACKED_BYTES = Uint8Array.of(0b10110011, 0b01011100);
+
+export const UTF8_STRING_BYTES = Uint8Array.of(0b01101000, 0b01001101, 0b00101010, 0b01100000);

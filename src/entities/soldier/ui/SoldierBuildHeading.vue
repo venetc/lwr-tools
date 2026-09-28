@@ -4,6 +4,7 @@ import { computed, useId } from 'vue';
 
 import { Label } from '@shared/ui/label';
 
+import { soldierBuildName } from '../model/build';
 import type { SoldierClass } from '../model/types';
 
 interface Props {
@@ -26,8 +27,11 @@ const isEditable = computed(() => !props.readonly);
 
 /** Restores the class name if the name field was left blank. */
 const restoreBlankName = () => {
-  if (name.value.trim() !== '') return;
-  name.value = props.soldierClass.name;
+  const restoredName = soldierBuildName(props.soldierClass, name.value);
+
+  if (restoredName === name.value) return;
+
+  name.value = restoredName;
 };
 
 /**
@@ -35,7 +39,7 @@ const restoreBlankName = () => {
  *
  * @param event key press in the field.
  */
-const commit = (event: KeyboardEvent) => {
+const finishNameEditing = (event: KeyboardEvent) => {
   if (event.target instanceof HTMLInputElement) event.target.blur();
 };
 </script>
@@ -58,7 +62,7 @@ const commit = (event: KeyboardEvent) => {
         :readonly="readonly"
         :placeholder="soldierClass.name"
         @blur="restoreBlankName"
-        @keydown.enter="commit"
+        @keydown.enter="finishNameEditing"
       >
       <Label
         v-if="isEditable"
@@ -105,7 +109,7 @@ $badge: 34px;
   @include typography.caps-1;
   min-inline-size: 4ch;
   max-inline-size: 100%;
-  padding: 2px 6px;
+  padding: 3px 6px 1px;
   background: none;
   border-radius: 3px;
   color: colors.$text-primary;

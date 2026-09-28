@@ -1,5 +1,5 @@
 import type { SvgIcon } from '@shared/types';
-import type { TalentRank } from '@shared/ui/talent-tree';
+import type { TalentIcon, TalentRank } from '@shared/ui/talent-tree';
 
 import type { ABILITY_ID } from '../config/constants/ability-id';
 import type { SOLDIER_CLASS_ID } from '../config/constants/soldier-class-id';
@@ -11,7 +11,7 @@ export interface Ability {
   id: AbilityId
   name: string
   description: string
-  icon: string
+  icon: TalentIcon
   grants?: AbilityId[]
 }
 

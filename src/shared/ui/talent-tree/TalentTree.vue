@@ -155,7 +155,7 @@ const getTalentStyle = (talentEntry: TalentEntry) => {
             <span :class="$style.grantTitle">
               <img
                 :class="$style.grantIcon"
-                :src="grantedTalent.icon"
+                :src="grantedTalent.icon.original"
                 alt=""
               >
               <span :class="$style.grantName">{{ grantedTalent.name }}</span>

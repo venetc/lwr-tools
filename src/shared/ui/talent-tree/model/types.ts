@@ -1,8 +1,17 @@
+export interface TalentIcon {
+  /** Original icon, shown for a selected talent. */
+  original: string
+  /** Icon tinted for a talent available to select. */
+  available: string
+  /** Icon tinted for a talent that is locked or not selected. */
+  disabled: string
+}
+
 export interface Talent {
   id: string
   name: string
   description: string
-  icon: string
+  icon: TalentIcon
   grants: Talent[]
 }
 

@@ -17,7 +17,7 @@ const open = defineModel<boolean>('open', { default: false });
 </script>
 
 <template>
-  <DropdownMenuRoot v-model:open="open">
+  <DropdownMenuRoot v-model:open="open" :modal="false">
     <DropdownMenuTrigger as-child>
       <slot name="trigger" />
     </DropdownMenuTrigger>

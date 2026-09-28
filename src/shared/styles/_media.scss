@@ -9,17 +9,3 @@
     @content;
   }
 }
-
-// WebKit engine (Safari, every iOS browser): only it accepts the Apple system font keyword.
-// For working around WebKit performance issues, not for feature detection.
-@mixin with-webkit {
-  @supports (font: -apple-system-body) {
-    @content;
-  }
-}
-
-@mixin without-webkit {
-  @supports not (font: -apple-system-body) {
-    @content;
-  }
-}

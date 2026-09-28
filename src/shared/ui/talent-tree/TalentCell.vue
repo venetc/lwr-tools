@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, useCssModule } from 'vue';
+import { computed } from 'vue';
 
-import type { TalentRankState } from './model/types';
+import type { TalentIcon, TalentRankState } from './model/types';
 
 interface Props {
-  /** Talent icon URL. */
-  icon: string
+  /** Talent icon variants. */
+  icon: TalentIcon
   /** Talent name. */
   name: string
   /** State of the rank the talent belongs to. */
@@ -14,102 +14,40 @@ interface Props {
   selected?: boolean
 }
 
-type Appearance = 'selected' | 'available' | 'inactive';
+type Appearance = 'selected' | 'available' | 'disabled';
 
 const props = withDefaults(defineProps<Props>(), {
   selected: false,
 });
 
-const style = useCssModule();
+const ICON_VARIANT: Record<Appearance, keyof TalentIcon> = {
+  selected: 'original',
+  available: 'available',
+  disabled: 'disabled',
+};
 
 const appearance = computed((): Appearance => {
   if (props.rankState === 'available') return 'available';
   if (props.rankState === 'completed' && props.selected) return 'selected';
-  return 'inactive';
+  return 'disabled';
 });
 
-const cellClass = computed(() => [style.cell, style[appearance.value]]);
-
-const tintStyle = computed(() => ({ maskImage: `url('${props.icon}')` }));
+const iconSrc = computed(() => props.icon[ICON_VARIANT[appearance.value]]);
 </script>
 
 <template>
-  <span :class="cellClass">
-    <img
-      :class="$style.image"
-      :src="icon"
-      :alt="name"
-      draggable="false"
-    >
-    <span
-      :class="$style.tint"
-      :style="tintStyle"
-      aria-hidden="true"
-    />
-  </span>
+  <img
+    :class="$style.image"
+    :src="iconSrc"
+    :alt="name"
+    draggable="false"
+  >
 </template>
 
 <style lang="scss" module>
-@use 'styles/colors';
-@use 'styles/media';
-
-.cell {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
 .image {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.tint {
-  position: absolute;
-  inset: 0;
-  mask-mode: luminance;
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-}
-
-.selected .tint {
-  display: none;
-}
-
-.available {
-  .image {
-    opacity: 0;
-  }
-
-  .tint {
-    display: block;
-    background: colors.$highlight;
-  }
-}
-
-// WebKit repaints luminance masks slowly, so inactive icons are only dimmed there.
-.inactive {
-  @include media.with-webkit {
-    .image {
-      opacity: 0.35;
-    }
-
-    .tint {
-      display: none;
-    }
-  }
-
-  @include media.without-webkit {
-    .image {
-      opacity: 0;
-    }
-
-    .tint {
-      display: block;
-      background: colors.$accent-dim;
-    }
-  }
 }
 </style>

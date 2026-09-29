@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { onLongPress } from '@vueuse/core';
-import { computed, ref, useTemplateRef } from 'vue';
+import { computed, useTemplateRef } from 'vue';
+
+import { useHold } from './lib/useHold';
 
 export type HoldButtonState = 'idle' | 'holding';
 
@@ -25,56 +26,16 @@ const emit = defineEmits<Emits>();
 
 const button = useTemplateRef<HTMLButtonElement>('button');
 
-const isHolding = ref(false);
+const { isHolding, startHold, activateFromKeyboard } = useHold(button, {
+  duration: () => props.duration,
+  disabled: () => props.disabled,
+  onHold: () => emit('hold'),
+});
 
 /** Hold state, exposed as `data-state` for styling. */
 const state = computed<HoldButtonState>(() => isHolding.value ? 'holding' : 'idle');
 
 const progressStyle = computed(() => ({ '--hold-duration': `${props.duration}ms` }));
-
-/**
- * Starts the progress animation when the pointer presses the button.
- */
-const startHold = () => {
-  if (props.disabled) return;
-
-  isHolding.value = true;
-};
-
-/**
- * Resets the progress when the pointer is released or leaves the button.
- */
-const stopHold = () => {
-  isHolding.value = false;
-};
-
-/**
- * Fires the action once the hold lasted the full duration.
- */
-const completeHold = () => {
-  isHolding.value = false;
-
-  if (props.disabled) return;
-
-  emit('hold');
-};
-
-/**
- * Fires the action on keyboard activation, which has no pointer to hold.
- *
- * @param event click event; `detail` is 0 for keyboard activation.
- */
-const activateFromKeyboard = (event: MouseEvent) => {
-  if (event.detail !== 0) return;
-
-  emit('hold');
-};
-
-onLongPress(button, completeHold, {
-  delay: () => props.duration,
-  distanceThreshold: false,
-  onMouseUp: stopHold,
-});
 </script>
 
 <template>

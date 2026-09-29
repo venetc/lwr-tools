@@ -2,9 +2,8 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
-import { SOLDIER_CLASSES, soldierBuildName, soldierClassBaseBuild, soldierClassTalentTree } from '@entities/soldier';
+import { selectSoldierBuildTalent, SOLDIER_CLASSES } from '@entities/soldier';
 import { createId } from '@shared/lib/id';
-import { selectTalent } from '@shared/lib/talent-tree';
 
 export type SoldierBuildId = string;
 
@@ -24,8 +23,8 @@ const createSoldierBuild = (soldierClass: SoldierClass): SoldierBuild => {
   return {
     id: createId(),
     soldierClass,
-    talents: soldierClassBaseBuild(soldierClass),
-    name: soldierBuildName(soldierClass, ''),
+    talents: [...soldierClass.baseBuild],
+    name: soldierClass.name,
     readonly: false,
   };
 };
@@ -43,19 +42,12 @@ export const useTalentsStore = defineStore('pages-talents', () => {
   }, new Map<SoldierBuildId, SoldierBuild>()));
 
   /**
-   * Build by id.
-   *
-   * @param buildId build id.
-   */
-  const findBuild = (buildId: SoldierBuildId) => buildsById.value.get(buildId) ?? null;
-
-  /**
    * Editable build by id: null for a missing or locked build.
    *
    * @param buildId build id.
    */
   const findEditableBuild = (buildId: SoldierBuildId) => {
-    const build = findBuild(buildId);
+    const build = buildsById.value.get(buildId) ?? null;
 
     if (!build || build.readonly) return null;
 
@@ -74,7 +66,7 @@ export const useTalentsStore = defineStore('pages-talents', () => {
 
     if (!build) return;
 
-    selectTalent(soldierClassTalentTree(build.soldierClass), build.talents, rankIndex, talentId);
+    selectSoldierBuildTalent(build, rankIndex, talentId);
   };
 
   /**
@@ -98,7 +90,7 @@ export const useTalentsStore = defineStore('pages-talents', () => {
    * @param isReadonly whether the build is locked.
    */
   const setReadonly = (buildId: SoldierBuildId, isReadonly: boolean) => {
-    const build = findBuild(buildId);
+    const build = buildsById.value.get(buildId) ?? null;
 
     if (!build) return;
 
@@ -127,8 +119,6 @@ export const useTalentsStore = defineStore('pages-talents', () => {
     build.talents = [...data.talents];
     build.name = data.name;
     buildsById.value.set(build.id, build);
-
-    return build.id;
   };
 
   /**

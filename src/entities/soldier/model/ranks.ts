@@ -1,8 +1,19 @@
-import { typedEntries } from '@shared/lib/object';
+import type { SvgIcon } from '@shared/ui/svg-icon';
 
-import { SOLDIER_RANK_CONTENT } from '../config/constants/soldier-rank-content';
-import { SOLDIER_RANK_ICON } from '../config/constants/soldier-rank-icons';
-import type { SoldierRank } from './types';
+import type ranksJson from '../config/data/ranks.json';
 
-export const SOLDIER_RANKS: SoldierRank[] = typedEntries(SOLDIER_RANK_CONTENT)
-  .map(([id, content]) => ({ id, name: content.name, icon: SOLDIER_RANK_ICON[id] }));
+export type SoldierRankId = keyof typeof ranksJson;
+
+/**
+ * Rank record of `ranks.json`.
+ */
+export interface SoldierRankContent {
+  /** Rank name. */
+  name: string
+}
+
+export interface SoldierRank {
+  id: SoldierRankId
+  name: string
+  icon: SvgIcon
+}

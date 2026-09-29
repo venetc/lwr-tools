@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { decodeSoldierBuild, encodeSoldierBuild } from '@features/share-build/model/soldier-build-code';
-import { encodeShareCode, openShareCode } from '@shared/lib/share-code';
+import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
 
 import {
   BROKEN_NAME_SECTION,
@@ -38,9 +38,9 @@ describe('encodeSoldierBuild', () => {
   it('leaves out the name section for the default name', () => {
     const code = encodeSoldierBuild(DEFAULT_NAME_BUILD) ?? '';
 
-    const shareCode = openShareCode(code);
+    const binaryCode = openBinaryCode(code);
 
-    expect(shareCode?.sections.has(NAME_SECTION_ID)).toBe(false);
+    expect(binaryCode?.sections.has(NAME_SECTION_ID)).toBe(false);
   });
 
   it('gives null for a build with an unknown talent', () => {
@@ -76,7 +76,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('skips unknown sections', () => {
-    const code = encodeShareCode(FORMAT, [VALID_TALENTS_SECTION, UNKNOWN_SECTION]);
+    const code = encodeBinaryCode(FORMAT, [VALID_TALENTS_SECTION, UNKNOWN_SECTION]) ?? '';
 
     const build = decodeSoldierBuild(code);
 
@@ -84,7 +84,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('rejects a code of another format', () => {
-    const code = encodeShareCode(OTHER_FORMAT, [VALID_TALENTS_SECTION]);
+    const code = encodeBinaryCode(OTHER_FORMAT, [VALID_TALENTS_SECTION]) ?? '';
 
     const build = decodeSoldierBuild(code);
 
@@ -92,7 +92,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('rejects a code without the talents section', () => {
-    const code = encodeShareCode(FORMAT, [UNKNOWN_SECTION]);
+    const code = encodeBinaryCode(FORMAT, [UNKNOWN_SECTION]) ?? '';
 
     const build = decodeSoldierBuild(code);
 
@@ -100,7 +100,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('rejects an unknown class', () => {
-    const code = encodeShareCode(FORMAT, [talentsSection(30, [12])]);
+    const code = encodeBinaryCode(FORMAT, [talentsSection(30, [12])]) ?? '';
 
     const build = decodeSoldierBuild(code);
 
@@ -108,7 +108,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('rejects an unknown ability', () => {
-    const code = encodeShareCode(FORMAT, [talentsSection(3, [99])]);
+    const code = encodeBinaryCode(FORMAT, [talentsSection(3, [99])]) ?? '';
 
     const build = decodeSoldierBuild(code);
 
@@ -116,7 +116,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('rejects more talents than ranks', () => {
-    const code = encodeShareCode(FORMAT, [talentsSection(3, [11, 12, 13])]);
+    const code = encodeBinaryCode(FORMAT, [talentsSection(3, [11, 12, 13])]) ?? '';
 
     const build = decodeSoldierBuild(code);
 
@@ -124,7 +124,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('rejects a talents section with unread bits', () => {
-    const code = encodeShareCode(FORMAT, [talentsSection(3, [12], 1)]);
+    const code = encodeBinaryCode(FORMAT, [talentsSection(3, [12], 1)]) ?? '';
 
     const build = decodeSoldierBuild(code);
 
@@ -132,7 +132,7 @@ describe('decodeSoldierBuild', () => {
   });
 
   it('rejects a broken name section when the name is requested', () => {
-    const code = encodeShareCode(FORMAT, [VALID_TALENTS_SECTION, BROKEN_NAME_SECTION]);
+    const code = encodeBinaryCode(FORMAT, [VALID_TALENTS_SECTION, BROKEN_NAME_SECTION]) ?? '';
 
     const build = decodeSoldierBuild(code);
 

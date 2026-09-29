@@ -16,7 +16,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - Прочитанная секция должна закончиться ровно на своей длине, иначе код невалиден; пропущенные секции не проверяются.
 - `decodeSoldierBuild(code, parts)` читает только запрошенные части, остальные получают значения по умолчанию.
 
-Код: `shared/lib/share-code` (биты, секции, CRC, base64url) и фича `features/share-build`: `config/share-code-format.ts` (номера форматов), `config/soldier-build-section.ts` (id секций), `model/soldier-build-code.ts` (поля), `model/types.ts` (`SoldierBuildPart`). Поиск по `code` даёт `entities/soldier`.
+Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/soldier-build-code.ts` (поля и `SoldierBuildPart`). Поиск по `code` даёт `entities/soldier`. У фичи одна страница-потребитель, но она осознанно отдельный слайс: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 

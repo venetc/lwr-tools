@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-
-import type { SoldierBuildData } from '@entities/soldier';
-import { SoldierBuildHeading, soldierClassTalentTree, SoldierRankLabel } from '@entities/soldier';
-import type { TalentRankState } from '@shared/lib/talent-tree';
-import { TalentTree } from '@shared/ui/talent-tree';
+import { TieredPicker } from '@shared/ui/tiered-picker';
 
 import type { SoldierBuild, SoldierBuildId } from '../model/talents';
-import { useTalentsStore } from '../model/talents';
+import { useSoldierBuildEditor } from '../model/useSoldierBuildEditor';
+import type { SoldierRankTier } from '../model/useSoldierBuildTiers';
+import { useSoldierBuildTiers } from '../model/useSoldierBuildTiers';
 import BuildActions from './BuildActions.vue';
+import SoldierBuildHeading from './SoldierBuildHeading.vue';
+import SoldierRankLabel from './SoldierRankLabel.vue';
 
 interface Props {
   /** Soldier build to render and edit. */
@@ -24,55 +23,29 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
+const { tree, tiers, featuredItem } = useSoldierBuildTiers(() => props.build);
+
+const { name, readonly, selectTalent, replace } = useSoldierBuildEditor(() => props.build);
+
 /**
  * Requests removal of the build.
  */
 const requestRemove = () => emit('remove', props.build.id);
 
-const talentsStore = useTalentsStore();
-
-const tree = computed(() => soldierClassTalentTree(props.build.soldierClass));
-
-/**
- * Selects a talent on the rank of the build.
- *
- * @param rankIndex rank index in the tree.
- * @param talentId selected talent id, or null to clear the rank selection.
- */
-const selectTalent = (rankIndex: number, talentId: string | null) => {
-  talentsStore.selectBuildTalent(props.build.id, rankIndex, talentId);
-};
-
-const name = computed({
-  get: () => props.build.name,
-  set: value => talentsStore.setName(props.build.id, value),
-});
-
-/**
- * Replaces the build with imported data.
- *
- * @param data imported build data.
- */
-const importBuild = (data: SoldierBuildData) => talentsStore.replaceBuild(props.build.id, data);
-
-const readonly = computed({
-  get: () => props.build.readonly,
-  set: value => talentsStore.setReadonly(props.build.id, value),
-});
-
 /**
  * Checks whether the rank is the one currently open for selection.
  *
- * @param state rank state in the tree.
+ * @param tier picker tier of the rank.
  */
-const isRankHighlighted = (state: TalentRankState) => state === 'available';
+const isRankHighlighted = (tier: SoldierRankTier) => tier.state === 'available';
 </script>
 
 <template>
-  <TalentTree
-    :build="props.build.talents"
-    :readonly="readonly"
-    :tree="tree"
+  <TieredPicker
+    :key="props.build.soldierClass.id"
+    :label="tree.name"
+    :tiers="tiers"
+    :default-item="featuredItem"
     @select="selectTalent"
   >
     <template #header>
@@ -85,12 +58,12 @@ const isRankHighlighted = (state: TalentRankState) => state === 'available';
         v-model:locked="readonly"
         :build="props.build"
         @remove="requestRemove"
-        @import="importBuild"
+        @import="replace"
       />
     </template>
 
-    <template #rank="{ rank, state }">
-      <SoldierRankLabel :rank="rank" :highlighted="isRankHighlighted(state)" />
+    <template #tier="{ tier }">
+      <SoldierRankLabel :rank="tier.rank" :highlighted="isRankHighlighted(tier)" />
     </template>
-  </TalentTree>
+  </TieredPicker>
 </template>

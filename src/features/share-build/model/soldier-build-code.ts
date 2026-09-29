@@ -1,66 +1,28 @@
 import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
 import {
+  ABILITY_ID_BY_CODE,
   abilityById,
-  abilityIdByCode,
   isAbilityId,
+  SOLDIER_CLASS_BY_CODE,
   SOLDIER_RANKS,
-  soldierBuildName,
-  soldierClassBaseBuild,
-  soldierClassByCode,
 } from '@entities/soldier';
-import type { BitReader, BitWriter, ShareCodeSection } from '@shared/lib/share-code';
-import { encodeShareCode, openShareCode } from '@shared/lib/share-code';
+import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
+import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
 
-import { SHARE_CODE_FORMAT } from '../config/share-code-format';
-import { SOLDIER_BUILD_SECTION } from '../config/soldier-build-section';
-import type { SoldierBuildPart } from './types';
-
-/** Width of the class number; part of the `TALENTS` section, a change means a new section id. */
-export const CLASS_CODE_BITS = 5;
-
-/** Width of the selected talent count; part of the `TALENTS` section, a change means a new section id. */
-const TALENT_COUNT_BITS = 3;
-
-/** Width of the ability number; part of the `TALENTS` section, a change means a new section id. */
-export const ABILITY_CODE_BITS = 8;
-
-/** Width of the name byte length; part of the `NAME` section, a change means a new section id. */
-const NAME_LENGTH_BITS = 5;
-
-const SOLDIER_BUILD_PARTS: SoldierBuildPart[] = ['name'];
+import {
+  ABILITY_CODE_BITS,
+  CLASS_CODE_BITS,
+  NAME_LENGTH_BITS,
+  SHARE_CODE_FORMAT,
+  SOLDIER_BUILD_PARTS,
+  SOLDIER_BUILD_SECTION,
+  TALENT_COUNT_BITS,
+} from '../config/constants';
 
 /**
- * Whether the section was read exactly to its end.
- *
- * @param reader section reader.
+ * Optional part of a soldier build code that decoding can skip; the class and talents are always read.
  */
-const isSectionComplete = (reader: BitReader) => !reader.isOverrun && reader.remainingBits === 0;
-
-/**
- * Ability numbers of the talents selected above the granted ones, or null if some talent is unknown.
- *
- * @param build soldier build.
- */
-const selectedAbilityCodes = (build: SoldierBuildData) => {
-  const selectedTalents = build.talents.slice(soldierClassBaseBuild(build.soldierClass).length);
-
-  if (!selectedTalents.every(isAbilityId)) return null;
-
-  return selectedTalents.map(abilityId => abilityById(abilityId).code);
-};
-
-/**
- * Writes the `TALENTS` section: class and numbers of the talents selected above the granted ones.
- *
- * @param writer section writer.
- * @param classCode class number.
- * @param abilityCodes selected ability numbers.
- */
-const writeTalents = (writer: BitWriter, classCode: number, abilityCodes: number[]) => {
-  writer.writeUint(classCode, CLASS_CODE_BITS);
-  writer.writeUint(abilityCodes.length, TALENT_COUNT_BITS);
-  abilityCodes.forEach(abilityCode => writer.writeUint(abilityCode, ABILITY_CODE_BITS));
-};
+export type SoldierBuildPart = 'name';
 
 /**
  * Class and talents of the `TALENTS` section, granted ones included; null if a class or ability number is unknown,
@@ -69,41 +31,18 @@ const writeTalents = (writer: BitWriter, classCode: number, abilityCodes: number
  * @param reader section reader.
  */
 const readTalents = (reader: BitReader): Omit<SoldierBuildData, 'name'> | null => {
-  const soldierClass = soldierClassByCode(reader.readUint(CLASS_CODE_BITS));
+  const soldierClass = SOLDIER_CLASS_BY_CODE.get(reader.readUint(CLASS_CODE_BITS)) ?? null;
   const talentCount = reader.readUint(TALENT_COUNT_BITS);
-  const selectedTalents = Array.from({ length: talentCount }, () => abilityIdByCode(reader.readUint(ABILITY_CODE_BITS)))
+  const selectedTalents = Array.from({ length: talentCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null)
     .filter(abilityId => abilityId !== null);
 
-  if (!soldierClass || !isSectionComplete(reader)) return null;
+  if (!soldierClass || !reader.isComplete) return null;
 
   if (selectedTalents.length !== talentCount) return null;
 
-  const baseBuild = soldierClassBaseBuild(soldierClass);
+  if (soldierClass.baseBuild.length + selectedTalents.length > SOLDIER_RANKS.length) return null;
 
-  if (baseBuild.length + selectedTalents.length > SOLDIER_RANKS.length) return null;
-
-  return { soldierClass, talents: [...baseBuild, ...selectedTalents] };
-};
-
-/**
- * Writes the `NAME` section.
- *
- * @param writer section writer.
- * @param name build name.
- */
-const writeName = (writer: BitWriter, name: string) => writer.writeString(name, NAME_LENGTH_BITS);
-
-/**
- * Name of the `NAME` section; null if the section is not read exactly to its end.
- *
- * @param reader section reader.
- */
-const readName = (reader: BitReader) => {
-  const name = reader.readString(NAME_LENGTH_BITS);
-
-  if (!isSectionComplete(reader)) return null;
-
-  return name;
+  return { soldierClass, talents: [...soldierClass.baseBuild, ...selectedTalents] };
 };
 
 /**
@@ -117,35 +56,42 @@ const readName = (reader: BitReader) => {
 const decodeName = (sections: Map<number, BitReader>, soldierClass: SoldierClass, parts: SoldierBuildPart[]) => {
   const reader = sections.get(SOLDIER_BUILD_SECTION.NAME) ?? null;
 
-  if (!reader || !parts.includes('name')) return soldierBuildName(soldierClass, '');
+  if (!reader || !parts.includes('name')) return soldierClass.name;
 
-  const name = readName(reader);
+  const name = reader.readString(NAME_LENGTH_BITS);
 
-  if (name === null) return null;
+  if (!reader.isComplete) return null;
 
-  return soldierBuildName(soldierClass, name);
+  if (name.trim() === '') return soldierClass.name;
+
+  return name;
 };
 
 /**
  * Share code of the soldier build: the `TALENTS` section, and the `NAME` section if the name differs from the class name;
- * null if the build has an unknown talent.
+ * null if the build has an unknown talent or a section outgrows its length limit.
  *
  * @param build soldier build.
  */
 export const encodeSoldierBuild = (build: SoldierBuildData) => {
-  const abilityCodes = selectedAbilityCodes(build);
+  const selectedTalents = build.talents.slice(build.soldierClass.baseBuild.length);
 
-  if (!abilityCodes) return null;
+  if (!selectedTalents.every(isAbilityId)) return null;
 
-  const sections: ShareCodeSection[] = [
-    { id: SOLDIER_BUILD_SECTION.TALENTS, write: writer => writeTalents(writer, build.soldierClass.code, abilityCodes) },
-  ];
+  const sections: BinaryCodeSection[] = [{
+    id: SOLDIER_BUILD_SECTION.TALENTS,
+    write: (writer) => {
+      writer.writeUint(build.soldierClass.code, CLASS_CODE_BITS);
+      writer.writeUint(selectedTalents.length, TALENT_COUNT_BITS);
+      selectedTalents.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
+    },
+  }];
 
-  if (build.name !== soldierBuildName(build.soldierClass, '')) {
-    sections.push({ id: SOLDIER_BUILD_SECTION.NAME, write: writer => writeName(writer, build.name) });
+  if (build.name !== build.soldierClass.name) {
+    sections.push({ id: SOLDIER_BUILD_SECTION.NAME, write: writer => writer.writeString(build.name, NAME_LENGTH_BITS) });
   }
 
-  return encodeShareCode(SHARE_CODE_FORMAT.SOLDIER_BUILD, sections);
+  return encodeBinaryCode(SHARE_CODE_FORMAT.SOLDIER_BUILD, sections);
 };
 
 /**
@@ -157,16 +103,16 @@ export const encodeSoldierBuild = (build: SoldierBuildData) => {
  * @param parts optional parts to read; all by default.
  */
 export const decodeSoldierBuild = (code: string, parts = SOLDIER_BUILD_PARTS): SoldierBuildData | null => {
-  const shareCode = openShareCode(code);
+  const binaryCode = openBinaryCode(code);
 
-  if (!shareCode || shareCode.format !== SHARE_CODE_FORMAT.SOLDIER_BUILD) return null;
+  if (!binaryCode || binaryCode.format !== SHARE_CODE_FORMAT.SOLDIER_BUILD) return null;
 
-  const talentsReader = shareCode.sections.get(SOLDIER_BUILD_SECTION.TALENTS) ?? null;
+  const talentsReader = binaryCode.sections.get(SOLDIER_BUILD_SECTION.TALENTS) ?? null;
   const talents = talentsReader && readTalents(talentsReader);
 
   if (!talents) return null;
 
-  const name = decodeName(shareCode.sections, talents.soldierClass, parts);
+  const name = decodeName(binaryCode.sections, talents.soldierClass, parts);
 
   if (name === null) return null;
 

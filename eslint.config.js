@@ -20,7 +20,7 @@ export default antfu({
       ],
       newlinesBetween: 1,
       newlinesInside: 0,
-      internalPattern: ['^@(app|pages|widgets|features|entities|shared)/.+'],
+      internalPattern: ['^@(app|pages|features|entities|shared)/.+'],
       order: 'asc',
       type: 'natural',
     }],

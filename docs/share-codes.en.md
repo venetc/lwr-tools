@@ -16,7 +16,7 @@ section = id (5) | length (9) | fields
 - A section that is read must end exactly at its length, otherwise the code is invalid; skipped sections aren't checked.
 - `decodeSoldierBuild(code, parts)` reads only the requested parts; the rest get defaults.
 
-Code: `shared/lib/share-code` (bits, sections, CRC, base64url) and the `features/share-build` feature: `config/share-code-format.ts` (format numbers), `config/soldier-build-section.ts` (section ids), `model/soldier-build-code.ts` (fields), `model/types.ts` (`SoldierBuildPart`). Lookups by `code` come from `entities/soldier`.
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers, section ids, field widths), `model/soldier-build-code.ts` (fields and `SoldierBuildPart`). Lookups by `code` come from `entities/soldier`. The feature has one consumer page but stays a separate slice on purpose: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 

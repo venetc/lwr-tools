@@ -11,7 +11,7 @@ export default defineConfig({
     svgLoader({ defaultImport: 'url', svgo: false }),
     imagetools({
       /** Ability icon masters and their state variants, 256px each. */
-      include: '**/assets/images/abilities/*/*.png',
+      include: '**/soldier/config/icons/abilities/*/*.png',
       /** 128px covers the 44px cell up to 3x DPR. */
       defaultDirectives: new URLSearchParams({ w: '128', format: 'webp', quality: '85' }),
     }),
@@ -20,7 +20,6 @@ export default defineConfig({
     alias: {
       '@app': resolve(import.meta.dirname, './src/app'),
       '@pages': resolve(import.meta.dirname, './src/pages'),
-      '@widgets': resolve(import.meta.dirname, './src/widgets'),
       '@features': resolve(import.meta.dirname, './src/features'),
       '@entities': resolve(import.meta.dirname, './src/entities'),
       '@shared': resolve(import.meta.dirname, './src/shared'),

@@ -1,36 +1,28 @@
-import { typedEntries } from '@shared/lib/object';
+import type { SvgIcon } from '@shared/ui/svg-icon';
 
-import { SOLDIER_CLASS_CONTENT } from '../config/constants/soldier-class-content';
-import { SOLDIER_CLASS_ICON } from '../config/constants/soldier-class-icons';
-import { isAbilityId } from './abilities';
-import type { AbilityId, SoldierClass, SoldierClassContent, SoldierRankId } from './types';
+import type classesJson from '../config/data/classes.json';
+import type { AbilityId } from './abilities';
+import type { SoldierRankId } from './ranks';
 
-/**
- * Class abilities by rank; unknown ability ids are skipped.
- *
- * @param content class record.
- */
-const classAbilities = (content: SoldierClassContent) => {
-  return typedEntries(content.abilities).reduce((acc, [rankId, abilityIds]) => {
-    acc[rankId] = abilityIds.filter(isAbilityId);
-
-    return acc;
-  }, {} as Record<SoldierRankId, AbilityId[]>);
-};
-
-export const SOLDIER_CLASSES: SoldierClass[] = typedEntries(SOLDIER_CLASS_CONTENT).map(([id, content]) => ({
-  id,
-  code: content.code,
-  name: content.name,
-  icon: SOLDIER_CLASS_ICON[id],
-  abilities: classAbilities(content),
-}));
-
-const soldierClassesByCode = new Map(SOLDIER_CLASSES.map(soldierClass => [soldierClass.code, soldierClass]));
+export type SoldierClassId = keyof typeof classesJson;
 
 /**
- * Soldier class with the share code number, or null for an unknown number.
- *
- * @param code class number.
+ * Class record of `classes.json`.
  */
-export const soldierClassByCode = (code: number) => soldierClassesByCode.get(code) ?? null;
+export interface SoldierClassContent {
+  /** Stable class number in share codes, from 1: a new class gets the maximum plus one; never changed or reused. */
+  code: number
+  /** Class name. */
+  name: string
+  /** Ability ids by rank. */
+  abilities: Record<SoldierRankId, string[]>
+}
+
+export interface SoldierClass {
+  id: SoldierClassId
+  code: number
+  name: string
+  icon: SvgIcon
+  abilities: Record<SoldierRankId, AbilityId[]>
+  baseBuild: AbilityId[]
+}

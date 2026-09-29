@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import { ClipboardPaste, Plus } from '@lucide/vue';
-import { usePreferredReducedMotion } from '@vueuse/core';
 import { storeToRefs } from 'pinia';
-import { computed, nextTick } from 'vue';
 
-import type { SoldierBuildData } from '@entities/soldier';
 import { SOLDIER_CLASSES } from '@entities/soldier';
 import { ImportSoldierBuild } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 
-import type { SoldierBuildId } from '../model/talents';
+import { useBuildScroll } from '../lib/useBuildScroll';
 import { useTalentsStore } from '../model/talents';
 import BuildNav from './BuildNav.vue';
 import SoldierBuildTree from './SoldierBuildTree.vue';
@@ -18,41 +15,7 @@ const talentsStore = useTalentsStore();
 
 const { builds } = storeToRefs(talentsStore);
 
-const reducedMotion = usePreferredReducedMotion();
-
-const scrollBehavior = computed<ScrollBehavior>(() => reducedMotion.value === 'reduce' ? 'auto' : 'smooth');
-
-/**
- * Element id of the build panel.
- *
- * @param buildId build id.
- */
-const panelId = (buildId: SoldierBuildId) => `build-${buildId}`;
-
-/**
- * Scrolls the page to the build panel.
- *
- * @param buildId build id.
- */
-const scrollToBuild = (buildId: SoldierBuildId) => {
-  const panel = document.getElementById(panelId(buildId));
-
-  if (!panel) return;
-
-  panel.scrollIntoView({ behavior: scrollBehavior.value, block: 'start' });
-};
-
-/**
- * Adds a build from imported data and scrolls to it.
- *
- * @param data imported build data.
- */
-const importBuild = async (data: SoldierBuildData) => {
-  const buildId = talentsStore.importBuild(data);
-
-  await nextTick();
-  scrollToBuild(buildId);
-};
+const { panelId, scrollToBuild } = useBuildScroll();
 </script>
 
 <template>
@@ -88,7 +51,7 @@ const importBuild = async (data: SoldierBuildData) => {
           </Button>
         </div>
 
-        <ImportSoldierBuild @import="importBuild">
+        <ImportSoldierBuild @import="talentsStore.importBuild">
           <template #trigger>
             <Button :class="$style.import">
               <span :class="$style.importContent">

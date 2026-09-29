@@ -2,8 +2,9 @@
 import { ConfigProvider } from 'reka-ui';
 
 import { ToastHost } from '@shared/ui/toast';
-import { SiteFooter } from '@widgets/site-footer';
-import { SiteHeader } from '@widgets/site-header';
+
+import SiteFooter from './layout/SiteFooter.vue';
+import SiteHeader from './layout/SiteHeader.vue';
 </script>
 
 <template>

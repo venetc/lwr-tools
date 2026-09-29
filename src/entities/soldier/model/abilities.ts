@@ -1,8 +1,32 @@
-import { typedEntries } from '@shared/lib/object';
-
 import { ABILITY_CONTENT } from '../config/constants/ability-content';
 import { ABILITY_ICON } from '../config/constants/ability-icons';
-import type { Ability, AbilityContent, AbilityId } from './types';
+import type abilitiesJson from '../config/data/abilities.json';
+import type { TalentIcon } from './talent-tree';
+
+export type AbilityId = keyof typeof abilitiesJson;
+
+/**
+ * Ability record of `abilities.json`.
+ */
+export interface AbilityContent {
+  /** Stable ability number in share codes, from 1: a new ability gets the maximum plus one; never changed or reused. */
+  code: number
+  /** Ability name. */
+  name: string
+  /** Ability description. */
+  description: string
+  /** Ids of the abilities this ability grants. */
+  grants?: string[]
+}
+
+export interface Ability {
+  id: AbilityId
+  code: number
+  name: string
+  description: string
+  icon: TalentIcon
+  grants: AbilityId[]
+}
 
 /**
  * Whether the string is a known ability id.
@@ -28,12 +52,3 @@ export const abilityById = (id: AbilityId): Ability => {
     grants: (content.grants ?? []).filter(isAbilityId),
   };
 };
-
-const abilityIdsByCode = new Map(typedEntries(ABILITY_CONTENT).map(([id, content]) => [content.code, id]));
-
-/**
- * Id of the ability with the share code number, or null for an unknown number.
- *
- * @param code ability number.
- */
-export const abilityIdByCode = (code: number) => abilityIdsByCode.get(code) ?? null;

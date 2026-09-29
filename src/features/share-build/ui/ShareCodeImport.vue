@@ -1,10 +1,12 @@
 <script setup lang="ts" generic="Value">
-import { computed, ref, useId, watch } from 'vue';
+import { computed, useId } from 'vue';
 
 import { Button } from '@shared/ui/button';
 import { Input } from '@shared/ui/input';
 import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
+
+import { useShareCodeImport } from '../model/useShareCodeImport';
 
 interface Props {
   /** Decodes a pasted code; null for an invalid code. */
@@ -24,43 +26,16 @@ const inputId = useId();
 
 const errorId = useId();
 
-const isOpen = ref(false);
-
-const code = ref('');
-
-const isInvalid = ref(false);
+const { isOpen, code, isInvalid, clearError, setOpen, submit } = useShareCodeImport(
+  pastedCode => props.decode(pastedCode),
+  value => emit('import', value),
+);
 
 const errorDescribedBy = computed(() => isInvalid.value ? errorId : undefined);
-
-watch(code, () => {
-  isInvalid.value = false;
-});
-
-watch(isOpen, () => {
-  if (isOpen.value) return;
-
-  code.value = '';
-});
-
-/**
- * Decodes the pasted code: shows an error for an invalid code, otherwise emits the value and closes.
- */
-const submit = () => {
-  const value = props.decode(code.value);
-
-  if (value === null) {
-    isInvalid.value = true;
-
-    return;
-  }
-
-  emit('import', value);
-  isOpen.value = false;
-};
 </script>
 
 <template>
-  <Popover v-model:open="isOpen">
+  <Popover :open="isOpen" @update:open="setOpen">
     <template #trigger>
       <slot name="trigger" />
     </template>
@@ -74,6 +49,7 @@ const submit = () => {
           placeholder="Paste code"
           :aria-invalid="isInvalid"
           :aria-describedby="errorDescribedBy"
+          @update:model-value="clearError"
         />
         <Button type="submit">
           <span :class="$style.buttonContent">Import</span>

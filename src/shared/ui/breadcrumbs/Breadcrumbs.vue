@@ -4,7 +4,7 @@ import { computed } from 'vue';
 
 import { DropdownMenu, DropdownMenuLink } from '@shared/ui/dropdown-menu';
 
-import type { BreadcrumbItem } from './model/types';
+import type { BreadcrumbItem } from './model/breadcrumbs';
 
 interface Props {
   /** Trail from the root to the current page; the last item is the current page. */

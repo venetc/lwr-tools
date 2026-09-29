@@ -1,25 +1,32 @@
-import type { TalentBuild } from '@shared/lib/talent-tree';
-
-import { SOLDIER_RANKS } from './ranks';
-import type { SoldierClass } from './types';
+import type { SoldierClass } from './classes';
+import type { TalentBuild } from './talent-tree';
 
 /**
- * Build name to keep: a blank name falls back to the class name.
- *
- * @param soldierClass soldier class of the build.
- * @param name entered or decoded name.
+ * Soldier build: class, selected talents and name, without editor state.
  */
-export const soldierBuildName = (soldierClass: SoldierClass, name: string) => {
-  if (name.trim() === '') return soldierClass.name;
-
-  return name;
-};
+export interface SoldierBuildData {
+  /** Soldier class of the build. */
+  soldierClass: SoldierClass
+  /** Selected talents by rank, including the granted ones. */
+  talents: TalentBuild
+  /** Build name shown in the heading. */
+  name: string
+}
 
 /**
- * Talents granted with the class without selection: the only talent of the first rank.
+ * Selects a talent on the rank of the build, keeping higher ranks; clearing a rank clears all higher ranks too.
+ * Leaves ranks after the available one and ranks granted with the class untouched.
  *
- * @param soldierClass soldier class.
+ * @param build soldier build; its talents are mutated in place.
+ * @param rankIndex rank index in the tree.
+ * @param talentId selected talent id, or null to clear the rank selection.
  */
-export const soldierClassBaseBuild = (soldierClass: SoldierClass): TalentBuild => {
-  return soldierClass.abilities[SOLDIER_RANKS[0].id].slice(0, 1);
+export const selectSoldierBuildTalent = (build: SoldierBuildData, rankIndex: number, talentId: string | null): void => {
+  if (rankIndex < build.soldierClass.baseBuild.length) return;
+  if (rankIndex > build.talents.length) return;
+  if (talentId === null) {
+    build.talents.length = rankIndex;
+    return;
+  }
+  build.talents[rankIndex] = talentId;
 };

@@ -3,7 +3,9 @@ import { X } from '@lucide/vue';
 import { ToastClose, ToastDescription, ToastProvider, ToastRoot, ToastTitle, ToastViewport } from 'reka-ui';
 
 import { TOAST_DURATION } from './config/constants';
-import { dismissToast, toastMessages } from './model/toast-queue';
+import { useToastQueue } from './model/useToastQueue';
+
+const { messages, dismissToast } = useToastQueue();
 
 /**
  * Removes the notification from the queue once it closes.
@@ -11,7 +13,7 @@ import { dismissToast, toastMessages } from './model/toast-queue';
  * @param id notification id.
  * @param isOpen whether the notification is open after the change.
  */
-const onOpenUpdate = (id: number, isOpen: boolean) => {
+const onOpenUpdate = (id: string, isOpen: boolean) => {
   if (isOpen) return;
   dismissToast(id);
 };
@@ -20,7 +22,7 @@ const onOpenUpdate = (id: number, isOpen: boolean) => {
 <template>
   <ToastProvider :duration="TOAST_DURATION" swipe-direction="right">
     <ToastRoot
-      v-for="message in toastMessages"
+      v-for="message in messages"
       :key="message.id"
       :class="$style.toast"
       :default-open="true"

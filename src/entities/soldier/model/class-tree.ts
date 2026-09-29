@@ -1,12 +1,8 @@
-import { markRaw } from 'vue';
-
-import type { Talent, TalentTreeData } from '@shared/lib/talent-tree';
-
+import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
+import type { AbilityId } from './abilities';
 import { abilityById } from './abilities';
-import { soldierClassBaseBuild } from './build';
-import { SOLDIER_CLASSES } from './classes';
-import { SOLDIER_RANKS } from './ranks';
-import type { AbilityId, SoldierClass, SoldierTalentRank } from './types';
+import type { SoldierClass } from './classes';
+import type { SoldierTalentTree, Talent } from './talent-tree';
 
 /**
  * Tree talent built from an ability, together with the talents it grants; a grant back into the chain is skipped.
@@ -31,36 +27,17 @@ const abilityTalent = (abilityId: AbilityId, grantChain = new Set<AbilityId>()):
 };
 
 /**
- * Soldier class talent tree by rank, built anew; static, kept non-reactive.
+ * Soldier class talent tree by rank, built anew on every call; callers that need it repeatedly cache it themselves.
  *
  * @param soldierClass soldier class.
  */
-const buildClassTree = (soldierClass: SoldierClass): TalentTreeData<SoldierTalentRank> => {
-  return markRaw({
+export const soldierClassTalentTree = (soldierClass: SoldierClass): SoldierTalentTree => {
+  return {
     name: soldierClass.name,
     ranks: SOLDIER_RANKS.map(rank => ({
       ...rank,
       talents: soldierClass.abilities[rank.id].map(abilityId => abilityTalent(abilityId)),
     })),
-    baseBuild: soldierClassBaseBuild(soldierClass),
-  });
-};
-
-const treeByClassId = new Map(SOLDIER_CLASSES.map(soldierClass => [soldierClass.id, buildClassTree(soldierClass)]));
-
-/**
- * Soldier class talent tree by rank; one shared instance per class.
- *
- * @param soldierClass soldier class.
- */
-export const soldierClassTalentTree = (soldierClass: SoldierClass) => {
-  const cachedTree = treeByClassId.get(soldierClass.id) ?? null;
-
-  if (cachedTree) return cachedTree;
-
-  const tree = buildClassTree(soldierClass);
-
-  treeByClassId.set(soldierClass.id, tree);
-
-  return tree;
+    baseBuild: soldierClass.baseBuild,
+  };
 };

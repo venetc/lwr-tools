@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
 import { SOLDIER_RANK_CONTENT } from '@entities/soldier/config/constants/soldier-rank-content';
+import type { AbilityContent } from '@entities/soldier/model/abilities';
 import { isAbilityId } from '@entities/soldier/model/abilities';
-import type { AbilityContent, SoldierClassContent, SoldierRankContent } from '@entities/soldier/model/types';
-import { ABILITY_CODE_BITS, CLASS_CODE_BITS } from '@features/share-build/model/soldier-build-code';
+import type { SoldierClassContent } from '@entities/soldier/model/classes';
+import type { SoldierRankContent } from '@entities/soldier/model/ranks';
+import { ABILITY_CODE_BITS, CLASS_CODE_BITS } from '@features/share-build/config/constants';
 import { typedEntries } from '@shared/lib/object';
 
 /**

@@ -5,6 +5,10 @@ import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
 import { selectSoldierBuildTalent, SOLDIER_CLASSES } from '@entities/soldier';
 import { createId } from '@shared/lib/id';
 
+import { DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
+import { loadBuilds } from './build-storage';
+import { useBuildSync } from './useBuildSync';
+
 export type SoldierBuildId = string;
 
 export interface SoldierBuild extends SoldierBuildData {
@@ -18,10 +22,11 @@ export interface SoldierBuild extends SoldierBuildData {
  * New editable build of the class with only the base talents selected.
  *
  * @param soldierClass soldier class.
+ * @param id build id; random by default.
  */
-const createSoldierBuild = (soldierClass: SoldierClass): SoldierBuild => {
+const createSoldierBuild = (soldierClass: SoldierClass, id: SoldierBuildId = createId()): SoldierBuild => {
   return {
-    id: createId(),
+    id,
     soldierClass,
     talents: [...soldierClass.baseBuild],
     name: soldierClass.name,
@@ -30,16 +35,30 @@ const createSoldierBuild = (soldierClass: SoldierClass): SoldierBuild => {
 };
 
 /**
- * Soldier builds of the talents page.
+ * Default builds: one per class with only the base talents selected, with fixed ids.
+ */
+const createDefaultBuilds = () => SOLDIER_CLASSES.reduce((acc, soldierClass) => {
+  const build = createSoldierBuild(soldierClass, `${DEFAULT_BUILD_ID_PREFIX}${soldierClass.id}`);
+
+  acc.set(build.id, build);
+
+  return acc;
+}, new Map<SoldierBuildId, SoldierBuild>());
+
+/**
+ * Soldier builds of the talents page, saved to the local storage and synced between tabs.
  */
 export const useTalentsStore = defineStore('pages-talents', () => {
-  const buildsById = ref(SOLDIER_CLASSES.reduce((acc, soldierClass) => {
-    const build = createSoldierBuild(soldierClass);
+  const storedBuilds = loadBuilds();
 
-    acc.set(build.id, build);
+  const buildsById = ref(storedBuilds ?? createDefaultBuilds());
 
-    return acc;
-  }, new Map<SoldierBuildId, SoldierBuild>()));
+  const { markBuildChanged, markOrderChanged } = useBuildSync(buildsById);
+
+  if (!storedBuilds) {
+    buildsById.value.forEach(build => markBuildChanged(build.id));
+    markOrderChanged();
+  }
 
   /**
    * Editable build by id: null for a missing or locked build.
@@ -67,6 +86,7 @@ export const useTalentsStore = defineStore('pages-talents', () => {
     if (!build) return;
 
     selectSoldierBuildTalent(build, rankIndex, talentId);
+    markBuildChanged(buildId);
   };
 
   /**
@@ -81,6 +101,7 @@ export const useTalentsStore = defineStore('pages-talents', () => {
     if (!build) return;
 
     build.name = name;
+    markBuildChanged(buildId);
   };
 
   /**
@@ -95,6 +116,7 @@ export const useTalentsStore = defineStore('pages-talents', () => {
     if (!build) return;
 
     build.readonly = isReadonly;
+    markBuildChanged(buildId);
   };
 
   /**
@@ -106,6 +128,8 @@ export const useTalentsStore = defineStore('pages-talents', () => {
     const build = createSoldierBuild(soldierClass);
 
     buildsById.value.set(build.id, build);
+    markBuildChanged(build.id);
+    markOrderChanged();
   };
 
   /**
@@ -119,6 +143,8 @@ export const useTalentsStore = defineStore('pages-talents', () => {
     build.talents = [...data.talents];
     build.name = data.name;
     buildsById.value.set(build.id, build);
+    markBuildChanged(build.id);
+    markOrderChanged();
   };
 
   /**
@@ -135,6 +161,7 @@ export const useTalentsStore = defineStore('pages-talents', () => {
     build.soldierClass = data.soldierClass;
     build.talents = [...data.talents];
     build.name = data.name;
+    markBuildChanged(buildId);
   };
 
   /**
@@ -144,6 +171,8 @@ export const useTalentsStore = defineStore('pages-talents', () => {
    */
   const removeBuild = (buildId: SoldierBuildId) => {
     buildsById.value.delete(buildId);
+    markBuildChanged(buildId);
+    markOrderChanged();
   };
 
   return {

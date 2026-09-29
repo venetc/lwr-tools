@@ -2,7 +2,7 @@
 
 **English** · [Русский](README.ru.md)
 
-Random ids for objects created while the app runs: builds on the page, notifications. They tell objects apart within one session and are never stored or shared.
+Random ids for objects created while the app runs: builds on the page, notifications. They tell objects apart; a stored object keeps its id as the identity of its record.
 
 ## Usage
 
@@ -20,6 +20,6 @@ const build = { id: createId(), name: 'Tester' };
 
 `crypto.randomUUID` exists only in secure contexts (HTTPS, localhost) and newer browsers; opening the dev server by a LAN IP breaks it. `createId` builds the same UUID v4 on `crypto.getRandomValues`, which works everywhere.
 
-## Not for stored data
+## Identity, not meaning
 
-Data that goes into codes, files or storage needs numbers that stay the same across versions — like the `code` numbers of abilities and classes. A random id changes on every run and would break everything saved with it.
+An id only tells one object from another: a build in the local storage is stored and synced between tabs under its id. Data whose meaning must stay the same across versions — codes, references to game data — needs fixed numbers, like the `code` numbers of abilities and classes.

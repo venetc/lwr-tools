@@ -14,7 +14,7 @@ export const router: Router = createRouter({
     talentsPageRoute,
     {
       path: '/:pathMatch(.*)*',
-      redirect: { name: ROUTES.TALENTS.name },
+      redirect: { name: ROUTES.TALENTS.name, params: {} },
     },
   ],
 });

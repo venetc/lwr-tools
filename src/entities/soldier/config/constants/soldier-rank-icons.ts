@@ -1,5 +1,6 @@
 import { markRaw } from 'vue';
 
+import type { DeepReadonly } from '@shared/lib/object';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
 import type { SoldierRankId } from '../../model/ranks';
@@ -12,7 +13,7 @@ import rankSergeantIcon from '../icons/ranks/rank_sergeant.svg?component';
 import rankSquaddieIcon from '../icons/ranks/rank_squaddie.svg?component';
 
 /** Soldier rank icons by rank id. */
-export const SOLDIER_RANK_ICON: Record<SoldierRankId, SvgIcon> = {
+export const SOLDIER_RANK_ICON: DeepReadonly<Record<SoldierRankId, SvgIcon>> = {
   'specialist': markRaw(rankSquaddieIcon),
   'lance-corporal': markRaw(rankCorporalIcon),
   'corporal': markRaw(rankSergeantIcon),

@@ -53,7 +53,7 @@ const readTalents = (reader: BitReader): Omit<SoldierBuildData, 'name'> | null =
  * @param soldierClass soldier class of the build.
  * @param parts optional parts to read.
  */
-const decodeName = (sections: Map<number, BitReader>, soldierClass: SoldierClass, parts: SoldierBuildPart[]) => {
+const decodeName = (sections: Map<number, BitReader>, soldierClass: SoldierClass, parts: readonly SoldierBuildPart[]) => {
   const reader = sections.get(SOLDIER_BUILD_SECTION.NAME) ?? null;
 
   if (!reader || !parts.includes('name')) return soldierClass.name;

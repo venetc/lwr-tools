@@ -1,0 +1,14 @@
+{
+  "biosoldier": {
+    "code": 1,
+    "name": "Biosoldier"
+  },
+  "mec": {
+    "code": 2,
+    "name": "MEC"
+  },
+  "shiv": {
+    "code": 3,
+    "name": "SHIV"
+  }
+}

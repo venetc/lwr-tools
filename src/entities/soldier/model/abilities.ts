@@ -16,7 +16,7 @@ export interface AbilityContent {
   /** Ability description. */
   description: string
   /** Ids of the abilities this ability grants. */
-  grants?: string[]
+  grants?: readonly string[]
 }
 
 export interface Ability {

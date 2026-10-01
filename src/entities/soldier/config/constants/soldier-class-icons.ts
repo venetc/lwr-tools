@@ -1,5 +1,6 @@
 import { markRaw } from 'vue';
 
+import type { DeepReadonly } from '@shared/lib/object';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
 import type { SoldierClassId } from '../../model/classes';
@@ -13,7 +14,7 @@ import sniperIcon from '../icons/classes/class_sniper.svg?component';
 import medicIcon from '../icons/classes/class_support.svg?component';
 
 /** Soldier class icons by class id. */
-export const SOLDIER_CLASS_ICON: Record<SoldierClassId, SvgIcon> = {
+export const SOLDIER_CLASS_ICON: DeepReadonly<Record<SoldierClassId, SvgIcon>> = {
   sniper: markRaw(sniperIcon),
   scout: markRaw(scoutIcon),
   infantry: markRaw(infantryIcon),

@@ -1,3 +1,5 @@
+import type { DeepReadonly } from '@shared/lib/object';
+
 import type { SoldierBuildPart } from '../model/soldier-build-code';
 
 /**
@@ -29,4 +31,4 @@ export const ABILITY_CODE_BITS = 8;
 export const NAME_LENGTH_BITS = 5;
 
 /** Optional parts of a soldier build read from a code by default. */
-export const SOLDIER_BUILD_PARTS: SoldierBuildPart[] = ['name'];
+export const SOLDIER_BUILD_PARTS: DeepReadonly<SoldierBuildPart[]> = ['name'];

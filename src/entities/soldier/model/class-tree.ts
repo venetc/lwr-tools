@@ -38,6 +38,6 @@ export const soldierClassTalentTree = (soldierClass: SoldierClass): SoldierTalen
       ...rank,
       talents: soldierClass.abilities[rank.id].map(abilityId => abilityTalent(abilityId)),
     })),
-    baseBuild: soldierClass.baseBuild,
+    baseBuild: [...soldierClass.baseBuild],
   };
 };

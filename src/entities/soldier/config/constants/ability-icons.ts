@@ -172,6 +172,7 @@ import supportSprinterDisabledIcon from '@entities/soldier/config/icons/abilitie
 import urbanCombatBadge2Eu2012OriginalIcon from '@entities/soldier/config/icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x.png';
 import urbanCombatBadge2Eu2012AvailableIcon from '@entities/soldier/config/icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x_available.png';
 import urbanCombatBadge2Eu2012DisabledIcon from '@entities/soldier/config/icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x_disabled.png';
+import type { DeepReadonly } from '@shared/lib/object';
 
 import type { AbilityId } from '../../model/abilities';
 import type { TalentIcon } from '../../model/talent-tree';
@@ -236,7 +237,7 @@ const supportSprinterIcon: TalentIcon = { original: supportSprinterOriginalIcon,
 const urbanCombatBadge2Eu2012Icon: TalentIcon = { original: urbanCombatBadge2Eu2012OriginalIcon, available: urbanCombatBadge2Eu2012AvailableIcon, disabled: urbanCombatBadge2Eu2012DisabledIcon };
 
 /** Talent icon variants by ability id. */
-export const ABILITY_ICON: Record<AbilityId, TalentIcon> = {
+export const ABILITY_ICON: DeepReadonly<Record<AbilityId, TalentIcon>> = {
   'ace': sniperHeadshotIcon,
   'acid-tech': bombardTgaIcon,
   'aggression': assaultAggressionIcon,

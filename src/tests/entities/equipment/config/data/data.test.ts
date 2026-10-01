@@ -1,0 +1,19 @@
+import { describe, expect, it } from 'vitest';
+
+import { ARMOR_CONTENT } from '@entities/equipment/config/constants/armor-content';
+import { EQUIPMENT_UNIT_CONTENT } from '@entities/equipment/config/constants/equipment-unit-content';
+
+import { equipmentContentSchema } from './data.schema';
+
+describe('equipment content data', () => {
+  it('matches the content schema', () => {
+    const content = {
+      units: EQUIPMENT_UNIT_CONTENT,
+      armors: ARMOR_CONTENT,
+    };
+
+    const result = equipmentContentSchema.safeParse(content);
+
+    expect(result.error?.issues ?? []).toEqual([]);
+  });
+});

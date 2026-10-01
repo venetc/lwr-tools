@@ -15,7 +15,7 @@ export interface SoldierClassContent {
   /** Class name. */
   name: string
   /** Ability ids by rank. */
-  abilities: Record<SoldierRankId, string[]>
+  abilities: Record<SoldierRankId, readonly string[]>
 }
 
 export interface SoldierClass {
@@ -23,6 +23,6 @@ export interface SoldierClass {
   code: number
   name: string
   icon: SvgIcon
-  abilities: Record<SoldierRankId, AbilityId[]>
-  baseBuild: AbilityId[]
+  abilities: Record<SoldierRankId, readonly AbilityId[]>
+  baseBuild: readonly AbilityId[]
 }

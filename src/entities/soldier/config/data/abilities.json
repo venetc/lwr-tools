@@ -2,7 +2,7 @@
   "ace": {
     "code": 1,
     "name": "Ace",
-    "description": "If this unit has not moved, the first standard shot costs 0 AP. Grants +1 small equipment slots."
+    "description": "If this unit has not moved, the first standard shot costs 0 AP."
   },
   "acid-tech": {
     "code": 2,
@@ -27,12 +27,12 @@
   "breacher": {
     "code": 6,
     "name": "Breacher",
-    "description": "The first grenade use each turn costs 0 AP but reduces mobility to 3.3 tiles until it has no AP remaining or the end of the turn. This soldier's grenades do not damage this soldier and gain +70% weapon damage but have -70% range. Equipped grenades receive an additional use and have no weight."
+    "description": "The first grenade use each turn costs 0 AP but reduces mobility to 3.3 tiles until it has no AP remaining or the end of the turn. This soldier's grenades gain +70% base weapon damage and do not damage this soldier but have -70% range. Equipped grenades receive an additional use and have no weight."
   },
   "bring-em-on": {
     "code": 7,
     "name": "Bring 'Em On",
-    "description": "This unit gains +0.5 damage on standard shots and incoming non-psionic attacks have a +5% graze chance for each enemy in sight."
+    "description": "For each enemy in sight: this unit gains +0.5 damage on standard shots and incoming non-psionic attacks have a +5% graze chance."
   },
   "bullseye": {
     "code": 8,
@@ -42,7 +42,7 @@
   "close-encounters": {
     "code": 9,
     "name": "Close Encounters",
-    "description": "The first standard shot against an enemy within 4 tiles will leave this unit with 1 AP but reduces mobility to 3.3 tiles during their next action. Grants immunity to critical hits and reaction fire from enemies within 4 tiles."
+    "description": "The first standard shot against an enemy within 4 tiles will leave this unit with 1 AP but reduces mobility to 3.3 until out of AP. Grants immunity to critical hits from shots and reaction fire from enemies within 4 tiles."
   },
   "combat-drugs": {
     "code": 10,
@@ -62,7 +62,7 @@
   "disabling-shot": {
     "code": 13,
     "name": "Disabling Shot",
-    "description": "Fire a 0 AP 1 damage shot that disables the target's main weapon. Grants +1 ammo to primary weapons. Does not work against mechanical targets (except SHIVs). Cannot be used after activating In The Zone. 3 turn cooldown. Only for Sniper/Strike Rifles."
+    "description": "Fire a 0 AP 1 damage shot that disables the target's main weapon. Grants +1 ammo to primary weapons. Does not work against mechanical targets (except SHIVs). Cannot be used to activate or after activating In The Zone. 3 turn cooldown. Only for Sniper/Strike Rifles."
   },
   "double-tap": {
     "code": 14,
@@ -77,12 +77,12 @@
   "extra-conditioning": {
     "code": 16,
     "name": "Extra Conditioning",
-    "description": "Grants +2 armor HP and +0.6 mobility, and a 10% chance for all end-in-idle actions to cost 0 AP."
+    "description": "Grants +2 armor HP, +0.6 mobility, and a 10% chance for all end-in-idle actions to cost 0 AP."
   },
   "field-medic": {
     "code": 17,
     "name": "Field Medic",
-    "description": "Grants 2 medikits. Medikits heal +1 HP when used on an ally. Medikits heal +1 HP when an idle Engineer is within 4 tiles. Stabilization costs 0 AP and no longer consumes a medikit (but still requires one to be available)."
+    "description": "Grants 2 medikits. Medikits used on allies heal +1 HP. Medikits used with an idle Engineer within 4 tiles heal +1 HP. Stabilization costs 0 AP and no longer consumes a medikit (but still requires one to be available)."
   },
   "fire-rocket": {
     "code": 18,
@@ -97,7 +97,7 @@
   "fragmentation": {
     "code": 20,
     "name": "Fragmentation",
-    "description": "Explosives critically hit exposed targets and have +50% the chance to cause bleeding."
+    "description": "Explosives critically hit exposed targets and have a 50% increased chance to cause bleeding."
   },
   "grenadier": {
     "code": 21,
@@ -112,7 +112,7 @@
   "guardian": {
     "code": 23,
     "name": "Guardian",
-    "description": "Grants a free medikit and +1 ammo to primary weapons. Medikits heal +2 HP if not self-applied. If this unit's last action was using a medikit, overwatch activates at the end of the turn (except when at risk of triggering reaction fire)."
+    "description": "Grants a free medikit and +1 ammo to primary weapons. Medikits used on allies heal +2 HP. If this unit's last action was using a medikit, overwatch activates at the end of the turn (except when bleeding or at risk of triggering reaction fire)."
   },
   "heat-warheads": {
     "code": 24,
@@ -122,7 +122,7 @@
   "hit-and-run": {
     "code": 25,
     "name": "Hit and Run",
-    "description": "The first shot each turn that's a Pincer, or that's aimed at a preoccupied target, or a unit damaged this turn, leaves you with 1 AP. That point can only be spent on movement, officer, psionic, or non-arm MEC actions (you can't fire again)."
+    "description": "The first shot each turn at a preoccupied target, or at a unit damaged this turn, leaves you with 1 AP. That point can only be spent on movement, officer, psionic, or non-arm MEC actions (you can't fire again)."
   },
   "holo-rounds": {
     "code": 26,
@@ -132,7 +132,7 @@
   "impact": {
     "code": 27,
     "name": "Impact",
-    "description": "Shots gain +10 penetration. Non-reaction shots disable their target's Overwatch and Reactive Targeting Sensors."
+    "description": "The primary weapon gains +10 penetration. Its non-reaction shots disable their target's Overwatch and Reactive Targeting Sensors."
   },
   "in-the-zone": {
     "code": 28,
@@ -156,23 +156,23 @@
   },
   "lock-n-load": {
     "code": 32,
-    "name": "Lock n' Load",
+    "name": "Lock N' Load",
     "description": "Reloading any weapon costs only 1 AP and dashing automatically reloads the active weapon."
   },
   "lone-wolf": {
     "code": 33,
     "name": "Lone Wolf",
-    "description": "Grants 10 aim, crit, def and crit resist if not within 6 tiles of an allied unit."
+    "description": "Grants 10 aim, crit, def, and crit resist if not within 6 tiles of an allied unit."
   },
   "low-profile": {
     "code": 34,
     "name": "Low Profile",
-    "description": "Partial cover grants the defense and DR bonus of full cover."
+    "description": "All partial cover grants the DR and defense benefits of full cover (does not affect impenetrable DR)."
   },
   "magnum": {
     "code": 35,
     "name": "Magnum",
-    "description": "Sniper rifles, strike rifles and pistols gain +50% weapon damage. Standard and Precision shots pass through to enemy units behind the target (up to 24 tiles, non-reaction shots only, not amplified by target modifiers)."
+    "description": "Sniper rifles, strike rifles, and pistols and gain +50% base weapon damage. Standard and Precision shots passthrough to enemy units behind the target (up to 24 tiles, not amplified by target modifiers)."
   },
   "master-mechanic": {
     "code": 36,
@@ -187,7 +187,7 @@
   "mechanic": {
     "code": 38,
     "name": "Mechanic",
-    "description": "Grants 2 uses of Repair. Removes corrosion from all adjacent allies after each action. When in partial cover adjacent to a SHIV: Gain Low Profile and when that SHIV takes damage heal the SHIV for 25% of the damage taken (heal only occurs if engineer is idle, steadied, or on overwatch).",
+    "description": "Grants 2 uses of Repair. Removes corrosion from all adjacent allies after each action. When in partial cover adjacent to a SHIV: Gain Low Profile and if engineer is idle, steadied, or on overwatch, passively heal the SHIV for 25% of any damage it takes.",
     "grants": [
       "repair",
       "low-profile"
@@ -196,7 +196,7 @@
   "on-the-ready": {
     "code": 39,
     "name": "On The Ready",
-    "description": "Shots gain +35% base weapon damage if this unit is Steadying or Combat Ready. Non-reaction shots grant Combat Readiness. If this unit's last action was a shot or a manual activation of combat readiness, overwatch activates at the end of the turn (except when at risk of triggering reaction fire)."
+    "description": "Shots gain +35% base weapon damage if this unit is Steadying or Combat Ready. Non-reaction shots grant Combat Readiness. If this unit's last action was a shot or a manual activation of combat readiness, overwatch activates at the end of the turn (except when bleeding or at risk of triggering reaction fire)."
   },
   "opportunist": {
     "code": 40,
@@ -206,12 +206,12 @@
   "pathfinder": {
     "code": 41,
     "name": "Pathfinder",
-    "description": "Grants +1 battlescanner, +25% crit damage, and +0.6 mobility. If this unit activates enemies while moving, they regain up to 2 AP. Does not apply to covert operatives. Max one activation per turn. Fails if another allied unit acts before the pod finished activating."
+    "description": "Grants +1 battlescanner. If this unit activates enemies while moving, they regain up to 2 AP. Does not apply to covert operatives. Max one activation per turn. Fails if another allied unit acts before the pod finished activating."
   },
   "payload": {
     "code": 42,
     "name": "Payload",
-    "description": "Grants +30% throw range and +50% weapon damage to explosive grenades."
+    "description": "Grants +30% throw range and +50% base weapon damage to explosive grenades."
   },
   "penetrator": {
     "code": 43,
@@ -221,7 +221,7 @@
   "pistolero": {
     "code": 44,
     "name": "Pistolero",
-    "description": "Reaction shots from pistols gain +50% weapon damage, +30 aim, and the ability to crit. If idle at end of turn, draws their pistol. If wielding a pistol, fire a reaction shot at any enemy within 4 tiles that acts. [Pistolero reaction shots bypass half of cover DR/def and require hit chance >30]"
+    "description": "Reaction shots from pistols gain +50% base weapon damage, +30 aim, and the ability to crit. If idle at end of turn, draws their pistol. If wielding a pistol, fire a reaction shot at any enemy within 4 tiles that acts. [Pistolero reaction shots bypass half of cover DR/def and require hit chance >30]"
   },
   "precision-shot": {
     "code": 45,
@@ -231,7 +231,7 @@
   "raking-fire": {
     "code": 46,
     "name": "Raking Fire",
-    "description": "Fire 2 additional reaction shots during overwatch."
+    "description": "Fire 2 additional reaction shots during overwatch. Increases the cone of Bulletstorm from 30 to 40 degrees."
   },
   "ranger": {
     "code": 47,
@@ -253,8 +253,8 @@
   },
   "ready-for-anything": {
     "code": 50,
-    "name": "Ready For Anything",
-    "description": "At the end of each turn, if this unit did not move and is not at risk of triggering reaction fire, overwatch activates."
+    "name": "Ready for Anything",
+    "description": "At the end of each turn, if this unit did not move and is not bleeding and not at risk of triggering reaction fire, overwatch activates."
   },
   "reconnaissance": {
     "code": 51,
@@ -282,12 +282,12 @@
   "sapper": {
     "code": 55,
     "name": "Sapper",
-    "description": "Explosives deal +1 damage, gain +20 penetration, and double environmental damage."
+    "description": "Explosives are more effective against solid structures. They gain +1 damage, +20 penetration, and double environmental damage."
   },
   "savior": {
     "code": 56,
     "name": "Savior",
-    "description": "Medikits heal an additional 35% of the target's missing HP. Grants +1 small equipment slots. Grants Revive.",
+    "description": "Medikits heal an additional 35% of a target's missing HP. Grants +1 small equipment slots. Grants Revive.",
     "grants": [
       "revive"
     ]
@@ -313,7 +313,7 @@
   "shock-and-awe": {
     "code": 60,
     "name": "Shock and Awe",
-    "description": "Equipped Javelin rockets gain an additional use. Rockets gain +35% damage. Grants +1 small equipment slots."
+    "description": "Rockets gain +35% base weapon damage. Equipped Javelin rockets gain an additional use. Grants +1 small equipment slots."
   },
   "smoke-and-mirrors": {
     "code": 61,
@@ -333,7 +333,7 @@
   "squadsight": {
     "code": 64,
     "name": "Squadsight",
-    "description": "Allows firing with long-range weapons around some obstacles and beyond 18 tiles at targets with a spotter (an ally at 0 AP that can see the target). Grants +2 aim per ally (+8 per scout) can see the target and -5 aim for each tile beyond 18. Overwatch and reaction shots are still limited to 18 tiles. Other abilities that consider the number of enemies in sight will also include any enemies in squadsight."
+    "description": "Allows firing with long-range weapons around some obstacles and beyond 18 tiles at targets with a spotter (a unconcealed ally at 0 AP that can see the target). Grants +2 aim per ally (+8 per scout) that can see the target and -5 aim for each tile beyond 18. Overwatch and reaction shots are still limited to 18 tiles. Other abilities that consider the number of enemies in sight will also include any enemies in squadsight."
   },
   "steadfast": {
     "code": 65,
@@ -358,7 +358,7 @@
   "tandem-warheads": {
     "code": 69,
     "name": "Tandem Warheads",
-    "description": "Explosives employed by this soldier do full damage at the extent of their area of effect (instead of 50%)."
+    "description": "Explosives employed by this soldier do full damage throughout their area of effect (instead of a decrease down to 50% at their periphery)."
   },
   "tenacious-defense": {
     "code": 70,
@@ -368,7 +368,7 @@
   "tinker": {
     "code": 71,
     "name": "Tinker",
-    "description": "Concussion and psi grenades add 10 shred to their targets. On detonation, smoke grenades repair all shred."
+    "description": "Concussion and psi grenades add 10 shred to their targets. On detonation, smoke grenades remove all shred."
   },
   "vital-point-targeting": {
     "code": 72,
@@ -377,8 +377,8 @@
   },
   "will-to-survive": {
     "code": 73,
-    "name": "Will To Survive",
-    "description": "Increases DR of all cover to 60% but grants 10 less defense. Grants Steadfast.",
+    "name": "Will to Survive",
+    "description": "Upgrades cover DR to 60% (does not affect impenetrable DR) but lowers cover defense by 10. Grants Steadfast.",
     "grants": [
       "steadfast"
     ]

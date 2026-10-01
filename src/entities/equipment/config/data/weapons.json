@@ -1,0 +1,1751 @@
+{
+  "assault-rifle": {
+    "code": 1,
+    "unit": "biosoldier",
+    "name": "Assault Rifle",
+    "tier": "ballistic",
+    "type": "assault-rifle",
+    "slot": "primary",
+    "damage": 4,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 0,
+    "ammo": 4,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Default primary weapon for rookies. Equippable by all Biosoldiers.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "battle-rifle": {
+    "code": 2,
+    "unit": "biosoldier",
+    "name": "Battle Rifle",
+    "tier": "ballistic",
+    "type": "battle-rifle",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "rocketeer",
+      "medic",
+      "engineer"
+    ],
+    "damage": 5,
+    "penetration": 15,
+    "crit": 10,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "assault-carbine": {
+    "code": 3,
+    "unit": "biosoldier",
+    "name": "Assault Carbine",
+    "tier": "ballistic",
+    "type": "carbine",
+    "slot": "primary",
+    "damage": 3,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "aerial-precision",
+      "steady-weapon"
+    ]
+  },
+  "smg": {
+    "code": 4,
+    "unit": "biosoldier",
+    "name": "SMG",
+    "tier": "ballistic",
+    "type": "smg",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 3,
+    "penetration": 0,
+    "crit": 30,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "grants": [
+      "burst",
+      "volume-fire"
+    ]
+  },
+  "shotgun": {
+    "code": 5,
+    "unit": "biosoldier",
+    "name": "Shotgun",
+    "tier": "ballistic",
+    "type": "shotgun",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 6,
+    "penetration": 0,
+    "crit": 0,
+    "aim": -20,
+    "ammo": 3,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+  },
+  "saw": {
+    "code": 6,
+    "unit": "biosoldier",
+    "name": "SAW",
+    "tier": "ballistic",
+    "type": "saw",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 6,
+    "penetration": 0,
+    "crit": -30,
+    "aim": 0,
+    "ammo": 5,
+    "mobility": -1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm"
+    ]
+  },
+  "lmg": {
+    "code": 7,
+    "unit": "biosoldier",
+    "name": "LMG",
+    "tier": "ballistic",
+    "type": "lmg",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 8,
+    "penetration": 0,
+    "crit": -50,
+    "aim": -30,
+    "ammo": 6,
+    "mobility": -2.6,
+    "range": 18,
+    "smallSlots": -1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm",
+      "shredder",
+      "danger-zone"
+    ]
+  },
+  "strike-rifle": {
+    "code": 8,
+    "unit": "biosoldier",
+    "name": "Strike Rifle",
+    "tier": "ballistic",
+    "type": "strike-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper",
+      "scout"
+    ],
+    "damage": 5,
+    "penetration": 5,
+    "crit": 20,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "sniper-rifle": {
+    "code": 9,
+    "unit": "biosoldier",
+    "name": "Sniper Rifle",
+    "tier": "ballistic",
+    "type": "sniper-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper"
+    ],
+    "damage": 6,
+    "penetration": 10,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": -1.3,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "minigun": {
+    "code": 10,
+    "unit": "mec",
+    "name": "Minigun",
+    "tier": "ballistic",
+    "type": "mec-weapon",
+    "slot": "primary",
+    "damage": 8,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 3,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "autocannon": {
+    "code": 11,
+    "unit": "shiv",
+    "name": "Autocannon",
+    "tier": "ballistic",
+    "type": "autocannon",
+    "slot": "primary",
+    "damage": 8,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Default primary weapon loadout for SHIV units. Equippable by SHIVs only."
+  },
+  "vulcan-cannon": {
+    "code": 12,
+    "unit": "shiv",
+    "name": "Vulcan Cannon",
+    "tier": "ballistic",
+    "type": "vulcan-cannon",
+    "slot": "primary",
+    "damage": 10,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "grants": [
+      "burst"
+    ]
+  },
+  "pistol": {
+    "code": 13,
+    "unit": "biosoldier",
+    "name": "Pistol",
+    "tier": "ballistic",
+    "type": "pistol",
+    "slot": "secondary",
+    "damage": 3,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "maim"
+    ]
+  },
+  "machine-autopistol": {
+    "code": 14,
+    "unit": "biosoldier",
+    "name": "Machine Autopistol",
+    "tier": "ballistic",
+    "type": "autopistol",
+    "slot": "secondary",
+    "damage": 3,
+    "penetration": 0,
+    "crit": 15,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "maim",
+      "light-volume-fire"
+    ]
+  },
+  "sawed-off-shotgun": {
+    "code": 15,
+    "unit": "biosoldier",
+    "name": "Sawed-off Shotgun",
+    "tier": "ballistic",
+    "type": "sawed-off-shotgun",
+    "slot": "secondary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "rocketeer",
+      "medic",
+      "engineer"
+    ],
+    "damage": 6,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 1,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "damageUpgrade": 3,
+    "info": "Range effects: +10 aim per tile within 10 tiles, -15 aim per tile past 10 tiles. Not affected by ammo capacity upgrades. Equippable by all Biosoldiers except Sniper and Gunner."
+  },
+  "rocket-launcher": {
+    "code": 16,
+    "unit": "biosoldier",
+    "name": "Rocket Launcher",
+    "tier": "ballistic",
+    "type": "rocket-launcher",
+    "slot": "secondary",
+    "classes": [
+      "rocketeer"
+    ],
+    "damage": 7,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 15,
+    "smallSlots": 0,
+    "environmentDamage": 35,
+    "radius": 5,
+    "info": "Rocket scatter is reduced by high base HP not aim. The displayed scatter value while aiming is the Maximum deviation in tiles from the target, covering ~95% of shots or two standard deviations. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown. Equippable by Rocketeer only."
+  },
+  "laser-rifle": {
+    "code": 17,
+    "unit": "biosoldier",
+    "name": "Laser Rifle",
+    "tier": "laser",
+    "type": "assault-rifle",
+    "slot": "primary",
+    "damage": 4,
+    "penetration": 0,
+    "crit": 40,
+    "aim": 10,
+    "ammo": 4,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "laser-battle-rifle": {
+    "code": 18,
+    "unit": "biosoldier",
+    "name": "Laser Battle Rifle",
+    "tier": "laser",
+    "type": "battle-rifle",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "rocketeer",
+      "medic",
+      "engineer"
+    ],
+    "damage": 5,
+    "penetration": 15,
+    "crit": 30,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "laser-carbine": {
+    "code": 19,
+    "unit": "biosoldier",
+    "name": "Laser Carbine",
+    "tier": "laser",
+    "type": "carbine",
+    "slot": "primary",
+    "damage": 3,
+    "penetration": 0,
+    "crit": 40,
+    "aim": 20,
+    "ammo": 3,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "aerial-precision",
+      "steady-weapon"
+    ]
+  },
+  "laser-smg": {
+    "code": 20,
+    "unit": "biosoldier",
+    "name": "Laser SMG",
+    "tier": "laser",
+    "type": "smg",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 3,
+    "penetration": 0,
+    "crit": 50,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "grants": [
+      "burst",
+      "volume-fire"
+    ]
+  },
+  "laser-scattershot": {
+    "code": 21,
+    "unit": "biosoldier",
+    "name": "Laser Scattershot",
+    "tier": "laser",
+    "type": "shotgun",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 6,
+    "penetration": 0,
+    "crit": 20,
+    "aim": -10,
+    "ammo": 3,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+  },
+  "laser-autorifle": {
+    "code": 22,
+    "unit": "biosoldier",
+    "name": "Laser Autorifle",
+    "tier": "laser",
+    "type": "saw",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 6,
+    "penetration": 0,
+    "crit": -10,
+    "aim": 10,
+    "ammo": 5,
+    "mobility": -1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm"
+    ]
+  },
+  "laser-gattler": {
+    "code": 23,
+    "unit": "biosoldier",
+    "name": "Laser Gattler",
+    "tier": "laser",
+    "type": "lmg",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 8,
+    "penetration": 0,
+    "crit": -30,
+    "aim": -20,
+    "ammo": 6,
+    "mobility": -2.6,
+    "range": 18,
+    "smallSlots": -1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. The internal beam crystals increase the radius of danger zone suppression from 2.5 to 2.9 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm",
+      "shredder",
+      "danger-zone"
+    ]
+  },
+  "laser-strike-rifle": {
+    "code": 24,
+    "unit": "biosoldier",
+    "name": "Laser Strike Rifle",
+    "tier": "laser",
+    "type": "strike-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper",
+      "scout"
+    ],
+    "damage": 5,
+    "penetration": 5,
+    "crit": 40,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "laser-sniper-rifle": {
+    "code": 25,
+    "unit": "biosoldier",
+    "name": "Laser Sniper Rifle",
+    "tier": "laser",
+    "type": "sniper-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper"
+    ],
+    "damage": 6,
+    "penetration": 10,
+    "crit": 40,
+    "aim": 20,
+    "ammo": 3,
+    "mobility": -1.3,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "laser-lance": {
+    "code": 26,
+    "unit": "mec",
+    "name": "Laser Lance",
+    "tier": "laser",
+    "type": "mec-weapon",
+    "slot": "primary",
+    "damage": 8,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "laser-autocannon": {
+    "code": 27,
+    "unit": "shiv",
+    "name": "Laser Autocannon",
+    "tier": "laser",
+    "type": "autocannon",
+    "slot": "primary",
+    "damage": 8,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 20,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by SHIVs only."
+  },
+  "laser-vulcan": {
+    "code": 28,
+    "unit": "shiv",
+    "name": "Laser Vulcan",
+    "tier": "laser",
+    "type": "vulcan-cannon",
+    "slot": "primary",
+    "damage": 10,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "grants": [
+      "burst"
+    ]
+  },
+  "laser-pistol": {
+    "code": 29,
+    "unit": "biosoldier",
+    "name": "Laser Pistol",
+    "tier": "laser",
+    "type": "pistol",
+    "slot": "secondary",
+    "damage": 3,
+    "penetration": 0,
+    "crit": 40,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "maim"
+    ]
+  },
+  "arc-rifle": {
+    "code": 30,
+    "unit": "biosoldier",
+    "name": "Arc Rifle",
+    "tier": "arc",
+    "type": "arc-rifle",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "rocketeer",
+      "medic",
+      "engineer"
+    ],
+    "damage": 1,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "canCrit": false,
+    "vsMechanical": {
+      "damage": 6,
+      "penetration": 60,
+      "aim": 15
+    },
+    "info": "Range effects: -20 aim per tile within 10 tiles. Does not use regular ammo and is not affected by regular ammo increasing perks/items/abilities. Cannot critically hit. Equippable by all Biosoldiers except Gunner and Sniper.",
+    "grants": [
+      "overload"
+    ]
+  },
+  "stun-rifle": {
+    "code": 31,
+    "unit": "biosoldier",
+    "name": "Stun Rifle",
+    "tier": "arc",
+    "type": "stun-rifle",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 0,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -2,
+    "range": 4,
+    "smallSlots": -1,
+    "ammoUpgrade": 1,
+    "info": "Non-lethal, short-range rifle used to stun organic targets. Consumable items cannot be used when equipped as the primary weapon (switch to sidearm to use). Capacitor required to use occupies 1 equipment slot. Successful stun chance is higher if the target has low HP. Advanced versions have a better chance to stun targets. Does not work on mechanical units. Does not work with Run and Gun. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer. Cannot be equipped by PFCs.",
+    "grants": [
+      "stun"
+    ]
+  },
+  "arc-pistol": {
+    "code": 32,
+    "unit": "biosoldier",
+    "name": "Arc Pistol",
+    "tier": "arc",
+    "type": "arc-pistol",
+    "slot": "secondary",
+    "damage": 1,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "canCrit": false,
+    "vsMechanical": {
+      "damage": 4,
+      "penetration": 40,
+      "aim": 0
+    },
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Does not use regular ammo and is not affected by regular ammo increasing perks/items/abilities. Cannot critically hit. Equippable by all Biosoldiers.",
+    "grants": [
+      "overload",
+      "maim"
+    ]
+  },
+  "gauss-assault-rifle": {
+    "code": 33,
+    "unit": "biosoldier",
+    "name": "Gauss Assault Rifle",
+    "tier": "gauss",
+    "type": "assault-rifle",
+    "slot": "primary",
+    "damage": 6,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 0,
+    "ammo": 4,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "gauss-battle-rifle": {
+    "code": 34,
+    "unit": "biosoldier",
+    "name": "Gauss Battle Rifle",
+    "tier": "gauss",
+    "type": "battle-rifle",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "rocketeer",
+      "medic",
+      "engineer"
+    ],
+    "damage": 7,
+    "penetration": 25,
+    "crit": 10,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "gauss-carbine": {
+    "code": 35,
+    "unit": "biosoldier",
+    "name": "Gauss Carbine",
+    "tier": "gauss",
+    "type": "carbine",
+    "slot": "primary",
+    "damage": 4,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "critDamage": 25,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "aerial-precision",
+      "steady-weapon"
+    ]
+  },
+  "gauss-smg": {
+    "code": 36,
+    "unit": "biosoldier",
+    "name": "Gauss SMG",
+    "tier": "gauss",
+    "type": "smg",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 4,
+    "penetration": 0,
+    "crit": 30,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "grants": [
+      "burst",
+      "volume-fire"
+    ]
+  },
+  "gauss-alloy-cannon": {
+    "code": 37,
+    "unit": "biosoldier",
+    "name": "Gauss Alloy Cannon",
+    "tier": "gauss",
+    "type": "shotgun",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 9,
+    "penetration": 0,
+    "crit": 0,
+    "aim": -20,
+    "ammo": 3,
+    "mobility": -1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+  },
+  "gauss-autorifle": {
+    "code": 38,
+    "unit": "biosoldier",
+    "name": "Gauss Autorifle",
+    "tier": "gauss",
+    "type": "saw",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 9,
+    "penetration": 0,
+    "crit": -30,
+    "aim": 0,
+    "ammo": 5,
+    "mobility": -2,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm"
+    ]
+  },
+  "gauss-machine-gun": {
+    "code": 39,
+    "unit": "biosoldier",
+    "name": "Gauss Machine Gun",
+    "tier": "gauss",
+    "type": "lmg",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 12,
+    "penetration": 0,
+    "crit": -50,
+    "aim": -30,
+    "ammo": 6,
+    "mobility": -3.3,
+    "range": 18,
+    "smallSlots": -1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm",
+      "shredder",
+      "danger-zone"
+    ]
+  },
+  "gauss-strike-rifle": {
+    "code": 40,
+    "unit": "biosoldier",
+    "name": "Gauss Strike Rifle",
+    "tier": "gauss",
+    "type": "strike-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper",
+      "scout"
+    ],
+    "damage": 7,
+    "penetration": 15,
+    "crit": 20,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "gauss-long-rifle": {
+    "code": 41,
+    "unit": "biosoldier",
+    "name": "Gauss Long Rifle",
+    "tier": "gauss",
+    "type": "sniper-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper"
+    ],
+    "damage": 9,
+    "penetration": 10,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": -2,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "gauss-railgun": {
+    "code": 42,
+    "unit": "mec",
+    "name": "Gauss Railgun",
+    "tier": "gauss",
+    "type": "mec-weapon",
+    "slot": "primary",
+    "damage": 12,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 3,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "gauss-sentry-gun": {
+    "code": 43,
+    "unit": "shiv",
+    "name": "Gauss Sentry Gun",
+    "tier": "gauss",
+    "type": "autocannon",
+    "slot": "primary",
+    "damage": 12,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by SHIVs only."
+  },
+  "gauss-vulcan": {
+    "code": 44,
+    "unit": "shiv",
+    "name": "Gauss Vulcan",
+    "tier": "gauss",
+    "type": "vulcan-cannon",
+    "slot": "primary",
+    "damage": 15,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "grants": [
+      "burst"
+    ]
+  },
+  "gauss-autopistol": {
+    "code": 45,
+    "unit": "biosoldier",
+    "name": "Gauss Autopistol",
+    "tier": "gauss",
+    "type": "autopistol",
+    "slot": "secondary",
+    "damage": 4,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "maim",
+      "light-volume-fire"
+    ]
+  },
+  "recoilless-launcher": {
+    "code": 46,
+    "unit": "biosoldier",
+    "name": "Recoilless Launcher",
+    "tier": "gauss",
+    "type": "rocket-launcher",
+    "slot": "secondary",
+    "classes": [
+      "rocketeer"
+    ],
+    "damage": 10,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 17,
+    "smallSlots": 0,
+    "environmentDamage": 35,
+    "radius": 5,
+    "info": "Rocket scatter is reduced by high base HP not aim. The displayed scatter value while aiming is the Maximum deviation in tiles from the target, covering ~95% of shots or two standard deviations. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown. Equippable by Rocketeer only."
+  },
+  "pulse-rifle": {
+    "code": 47,
+    "unit": "biosoldier",
+    "name": "Pulse Rifle",
+    "tier": "pulse",
+    "type": "assault-rifle",
+    "slot": "primary",
+    "damage": 6,
+    "penetration": 0,
+    "crit": 40,
+    "aim": 10,
+    "ammo": 4,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "pulse-battle-rifle": {
+    "code": 48,
+    "unit": "biosoldier",
+    "name": "Pulse Battle Rifle",
+    "tier": "pulse",
+    "type": "battle-rifle",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "rocketeer",
+      "medic",
+      "engineer"
+    ],
+    "damage": 7,
+    "penetration": 25,
+    "crit": 30,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "pulse-carbine": {
+    "code": 49,
+    "unit": "biosoldier",
+    "name": "Pulse Carbine",
+    "tier": "pulse",
+    "type": "carbine",
+    "slot": "primary",
+    "damage": 4,
+    "penetration": 0,
+    "crit": 40,
+    "aim": 20,
+    "ammo": 3,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "critDamage": 25,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "aerial-precision",
+      "steady-weapon"
+    ]
+  },
+  "pulse-smg": {
+    "code": 50,
+    "unit": "biosoldier",
+    "name": "Pulse SMG",
+    "tier": "pulse",
+    "type": "smg",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 4,
+    "penetration": 0,
+    "crit": 50,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "grants": [
+      "burst",
+      "volume-fire"
+    ]
+  },
+  "pulse-scattershot": {
+    "code": 51,
+    "unit": "biosoldier",
+    "name": "Pulse Scattershot",
+    "tier": "pulse",
+    "type": "shotgun",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 9,
+    "penetration": 0,
+    "crit": 20,
+    "aim": -10,
+    "ammo": 3,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+  },
+  "pulse-autoblaster": {
+    "code": 52,
+    "unit": "biosoldier",
+    "name": "Pulse Autoblaster",
+    "tier": "pulse",
+    "type": "saw",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 9,
+    "penetration": 0,
+    "crit": -10,
+    "aim": 10,
+    "ammo": 5,
+    "mobility": -1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm"
+    ]
+  },
+  "pulse-gattler": {
+    "code": 53,
+    "unit": "biosoldier",
+    "name": "Pulse Gattler",
+    "tier": "pulse",
+    "type": "lmg",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 12,
+    "penetration": 0,
+    "crit": -30,
+    "aim": -20,
+    "ammo": 6,
+    "mobility": -2.6,
+    "range": 18,
+    "smallSlots": -1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. The internal beam crystals increase the radius of danger zone suppression from 2.5 to 2.9 tiles. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm",
+      "shredder",
+      "danger-zone"
+    ]
+  },
+  "pulse-strike-rifle": {
+    "code": 54,
+    "unit": "biosoldier",
+    "name": "Pulse Strike Rifle",
+    "tier": "pulse",
+    "type": "strike-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper",
+      "scout"
+    ],
+    "damage": 7,
+    "penetration": 15,
+    "crit": 40,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "pulse-sniper-rifle": {
+    "code": 55,
+    "unit": "biosoldier",
+    "name": "Pulse Sniper Rifle",
+    "tier": "pulse",
+    "type": "sniper-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper"
+    ],
+    "damage": 9,
+    "penetration": 10,
+    "crit": 40,
+    "aim": 20,
+    "ammo": 3,
+    "mobility": -1.3,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "pulse-lance": {
+    "code": 56,
+    "unit": "mec",
+    "name": "Pulse Lance",
+    "tier": "pulse",
+    "type": "mec-weapon",
+    "slot": "primary",
+    "damage": 12,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "pulse-autocannon": {
+    "code": 57,
+    "unit": "shiv",
+    "name": "Pulse Autocannon",
+    "tier": "pulse",
+    "type": "autocannon",
+    "slot": "primary",
+    "damage": 12,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 20,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by SHIVs only."
+  },
+  "pulse-vulcan": {
+    "code": 58,
+    "unit": "shiv",
+    "name": "Pulse Vulcan",
+    "tier": "pulse",
+    "type": "vulcan-cannon",
+    "slot": "primary",
+    "damage": 15,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "grants": [
+      "burst"
+    ]
+  },
+  "pulse-pistol": {
+    "code": 59,
+    "unit": "biosoldier",
+    "name": "Pulse Pistol",
+    "tier": "pulse",
+    "type": "pistol",
+    "slot": "secondary",
+    "damage": 4,
+    "penetration": 0,
+    "crit": 80,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "grants": [
+      "maim"
+    ]
+  },
+  "plasma-rifle": {
+    "code": 60,
+    "unit": "biosoldier",
+    "name": "Plasma Rifle",
+    "tier": "plasma",
+    "type": "assault-rifle",
+    "slot": "primary",
+    "damage": 8,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 0,
+    "ammo": 4,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. This equipment never requires repairs. Equippable by all Biosoldiers.",
+    "grants": [
+      "ether-shredder",
+      "sublimator",
+      "steady-weapon"
+    ]
+  },
+  "plasma-battle-rifle": {
+    "code": 61,
+    "unit": "biosoldier",
+    "name": "Plasma Battle Rifle",
+    "tier": "plasma",
+    "type": "battle-rifle",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "rocketeer",
+      "medic",
+      "engineer"
+    ],
+    "damage": 10,
+    "penetration": 15,
+    "crit": 10,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. This equipment never requires repairs. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "grants": [
+      "panzer-shredder",
+      "steady-weapon"
+    ]
+  },
+  "plasma-carbine": {
+    "code": 62,
+    "unit": "biosoldier",
+    "name": "Plasma Carbine",
+    "tier": "plasma",
+    "type": "carbine",
+    "slot": "primary",
+    "damage": 6,
+    "penetration": 0,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. This equipment never requires repairs. Equippable by all Biosoldiers.",
+    "grants": [
+      "aerial-precision",
+      "aerial-shredder",
+      "aerial-tracking",
+      "steady-weapon"
+    ]
+  },
+  "plasma-smg": {
+    "code": 63,
+    "unit": "biosoldier",
+    "name": "Plasma SMG",
+    "tier": "plasma",
+    "type": "smg",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 6,
+    "penetration": 0,
+    "crit": 50,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. This equipment never requires repairs. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "grants": [
+      "burst",
+      "volume-fire"
+    ]
+  },
+  "plasma-reflex-cannon": {
+    "code": 64,
+    "unit": "biosoldier",
+    "name": "Plasma Reflex Cannon",
+    "tier": "plasma",
+    "type": "shotgun",
+    "slot": "primary",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "damage": 12,
+    "penetration": 0,
+    "crit": 0,
+    "aim": -20,
+    "ammo": 3,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. This equipment never requires repairs. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "grants": [
+      "carapace-shredder",
+      "sublimator"
+    ]
+  },
+  "plasma-novagun": {
+    "code": 65,
+    "unit": "biosoldier",
+    "name": "Plasma Novagun",
+    "tier": "plasma",
+    "type": "saw",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 12,
+    "penetration": 0,
+    "crit": -30,
+    "aim": 0,
+    "ammo": 5,
+    "mobility": -1.3,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. This equipment never requires repairs. Increases the hit chance of Bulletstorm by +5%. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm"
+    ]
+  },
+  "plasma-dragon": {
+    "code": 66,
+    "unit": "biosoldier",
+    "name": "Plasma Dragon",
+    "tier": "plasma",
+    "type": "lmg",
+    "slot": "primary",
+    "classes": [
+      "gunner"
+    ],
+    "damage": 16,
+    "penetration": 0,
+    "crit": -50,
+    "aim": -30,
+    "ammo": 6,
+    "mobility": -2.6,
+    "range": 18,
+    "smallSlots": -1,
+    "info": "Range effects: +5 aim per tile within 10 tiles. This equipment never requires repairs. Grants +2 damage to Suppressive Fire. Equippable by Gunner only.",
+    "grants": [
+      "hip-fire",
+      "bulletstorm",
+      "shredder",
+      "danger-zone"
+    ]
+  },
+  "plasma-strike-rifle": {
+    "code": 67,
+    "unit": "biosoldier",
+    "name": "Plasma Strike Rifle",
+    "tier": "plasma",
+    "type": "strike-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper",
+      "scout"
+    ],
+    "damage": 10,
+    "penetration": 5,
+    "crit": 20,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. This equipment never requires repairs. Attacks against preocuppied targets gain +2 damage and +20 penetration. Equippable by Sniper and Scout.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "plasma-sniper-rifle": {
+    "code": 68,
+    "unit": "biosoldier",
+    "name": "Plasma Sniper Rifle",
+    "tier": "plasma",
+    "type": "sniper-rifle",
+    "slot": "primary",
+    "classes": [
+      "sniper"
+    ],
+    "damage": 12,
+    "penetration": 10,
+    "crit": 20,
+    "aim": 10,
+    "ammo": 3,
+    "mobility": -1.3,
+    "range": 130,
+    "smallSlots": 0,
+    "info": "Range effects: -20 aim per tile within 10 tiles. This equipment never requires repairs. Steadied shots, reaction shots, or shots at targets not protected by cover gain +2 damage and +20 penetration. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "plasma-particle-cannon": {
+    "code": 69,
+    "unit": "mec",
+    "name": "Plasma Particle Cannon",
+    "tier": "plasma",
+    "type": "mec-weapon",
+    "slot": "primary",
+    "damage": 16,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 3,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "vsMechanical": {
+      "damage": 8,
+      "penetration": 0,
+      "aim": 0
+    },
+    "info": "Range effects: +5 aim per tile within 10 tiles. This equipment never requires repairs. Equippable by MECs only.",
+    "grants": [
+      "steady-weapon"
+    ]
+  },
+  "plasma-autocannon": {
+    "code": 70,
+    "unit": "shiv",
+    "name": "Plasma Autocannon",
+    "tier": "plasma",
+    "type": "autocannon",
+    "slot": "primary",
+    "damage": 16,
+    "penetration": 0,
+    "crit": 15,
+    "aim": 25,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles. This equipment never requires repairs. Equippable by SHIVs only."
+  },
+  "plasma-vulcan": {
+    "code": 71,
+    "unit": "shiv",
+    "name": "Plasma Vulcan",
+    "tier": "plasma",
+    "type": "vulcan-cannon",
+    "slot": "primary",
+    "damage": 20,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. This equipment never requires repairs. Equippable by SHIVs only.",
+    "grants": [
+      "burst"
+    ]
+  },
+  "plasma-pistol": {
+    "code": 72,
+    "unit": "biosoldier",
+    "name": "Plasma Pistol",
+    "tier": "plasma",
+    "type": "pistol",
+    "slot": "secondary",
+    "damage": 6,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": 0,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. This equipment never requires repairs. Equippable by all Biosoldiers.",
+    "grants": [
+      "maim"
+    ]
+  },
+  "plasma-autopistol": {
+    "code": 73,
+    "unit": "biosoldier",
+    "name": "Plasma Autopistol",
+    "tier": "plasma",
+    "type": "autopistol",
+    "slot": "secondary",
+    "damage": 6,
+    "penetration": 0,
+    "crit": 15,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 18,
+    "smallSlots": 0,
+    "ammoUpgrade": 1,
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. This equipment never requires repairs. Equippable by all Biosoldiers.",
+    "grants": [
+      "maim",
+      "light-volume-fire"
+    ]
+  },
+  "blaster-launcher": {
+    "code": 74,
+    "unit": "biosoldier",
+    "name": "Blaster Launcher",
+    "tier": "plasma",
+    "type": "rocket-launcher",
+    "slot": "secondary",
+    "classes": [
+      "rocketeer"
+    ],
+    "damage": 13,
+    "penetration": 0,
+    "crit": 0,
+    "aim": 0,
+    "ammo": 2,
+    "mobility": -0.6,
+    "range": 17,
+    "smallSlots": 0,
+    "environmentDamage": 35,
+    "radius": 5,
+    "info": "This equipment never requires repairs. Requires 2 AP to fire. Shots have 100% accuracy (no rocket scatter) but have decreased range. Shots are guided and can be fired around corners. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown. Equippable by Rocketeer only."
+  }
+}

@@ -38,5 +38,77 @@
   "advanced-psi-boost": {
     "name": "Advanced Psi Boost",
     "description": "Infuses explosives to deal 2 bonus psionic damage. Increases Kinetic Blast and Rift damage by 4. Reduces accumulation of fatigue by 50%."
+  },
+  "steady-weapon": {
+    "name": "Steady Weapon",
+    "description": "Shots do not graze, bypass half of impenetrable cover, gain double base aim, +15 pen, and reaction fire immunity. Rocket range +20%, scatter -75%. Lost if unit acts, is hit, or swaps weapons. Steadying does not trigger reaction fire."
+  },
+  "aerial-precision": {
+    "name": "Aerial Precision",
+    "description": "Grants +20 crit and +50% crit damage against airborne targets."
+  },
+  "burst": {
+    "name": "Burst",
+    "description": "Fire a +20 aim shot. Requires 2 ammo."
+  },
+  "volume-fire": {
+    "name": "Volume Fire",
+    "description": "High fire volume grants +75% base damage vs exposed, pincered, or point-blank enemies, reduces enemy graze chance by 25, and increases distortion maluses by 50%."
+  },
+  "hip-fire": {
+    "name": "Hip Fire",
+    "description": "Accuracy gains on standard shots above 60% hit chance only contribute half to final hit chance."
+  },
+  "bulletstorm": {
+    "name": "Bulletstorm",
+    "description": "Spray fire across a 30 degree cone out to 18 tiles. Every enemy in the cone has 2x 20% chances (10% with an LMG) to take Standard Shot Damage. Enemies not hit have a 50% chance to take 1 damage. Requires 2 ammo."
+  },
+  "shredder": {
+    "name": "Shredder",
+    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) for the remainder of the battle."
+  },
+  "danger-zone": {
+    "name": "Danger Zone",
+    "description": "Suppression affects (with half suppressive fire damage) targets in a 2.5 tile radius around the primary target."
+  },
+  "maim": {
+    "name": "Maim",
+    "description": "Fire 2 shots with an aim malus of -5 per HP of the target. The shots deal 1 damage each. Any damage against a biological target with 1 HP will Maim the target instead of dealing damage, preventing the target from performing reactive fire and skipping it's next turn."
+  },
+  "light-volume-fire": {
+    "name": "Light Volume Fire",
+    "description": "High fire volume grants +50% base damage vs exposed, pincered, or point-blank enemies and reduces enemy graze chance by 15."
+  },
+  "overload": {
+    "name": "Overload",
+    "description": "Standard shots against mechanical units clear overwatch and reactive targeting sensors and have a chance to disorient targets equal to the percent of max HP they lost. Triple the chance vs SHIVs."
+  },
+  "stun": {
+    "name": "Stun",
+    "description": "Non-lethal, short-range arc attack that has a chance to stun biological targets. Any target at or below 4 HP that resists the stun will be maimed instead. Stun chance increases if target is at low HP."
+  },
+  "ether-shredder": {
+    "name": "Ether Shredder",
+    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) to any unit with distortion for the remainder of the battle."
+  },
+  "sublimator": {
+    "name": "Sublimator",
+    "description": "Grants +10 penetration vs hardened targets and deals triple damage to Plasma Shields."
+  },
+  "panzer-shredder": {
+    "name": "Panzer Shredder",
+    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) to any grounded mechanical unit for the remainder of the battle."
+  },
+  "aerial-shredder": {
+    "name": "Aerial Shredder",
+    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) to any flying-capable unit for the remainder of the battle."
+  },
+  "aerial-tracking": {
+    "name": "Aerial Tracking",
+    "description": "Shots from the primary weapon ignore the 30 defense bonus flying targets receive."
+  },
+  "carapace-shredder": {
+    "name": "Carapace Shredder",
+    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) to any hardened biologic unit for the remainder of the battle."
   }
 }

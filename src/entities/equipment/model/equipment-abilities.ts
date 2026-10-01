@@ -20,7 +20,7 @@ export interface EquipmentAbilityContent {
 export interface EquipmentAbility extends EquipmentAbilityContent {
   /** Ability id, the key in `abilities.json`. */
   id: EquipmentAbilityId
-  /** Upscaled ability icon URL; null if the game has no icon for the ability. */
+  /** Upscaled ability icon URL; null if no icon was found for the ability. */
   icon: string | null
 }
 

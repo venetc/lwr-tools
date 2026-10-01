@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 import type { ArmorContent } from '@entities/equipment/model/armors';
+import type { EquipmentAbilityContent } from '@entities/equipment/model/equipment-abilities';
+import { isEquipmentAbilityId } from '@entities/equipment/model/equipment-abilities';
 import type { EquipmentUnitContent } from '@entities/equipment/model/equipment-units';
 import { isEquipmentUnitId } from '@entities/equipment/model/equipment-units';
 
@@ -26,6 +28,13 @@ const checkUniqueCodes = (records: Record<string, { code: number }>, context: z.
 
 const unitIdSchema = z.string().refine(isEquipmentUnitId, { error: 'Unknown unit id' });
 
+const abilityIdSchema = z.string().refine(isEquipmentAbilityId, { error: 'Unknown equipment ability id' });
+
+const equipmentAbilityContentSchema: z.ZodType<EquipmentAbilityContent> = z.strictObject({
+  name: z.string().min(1),
+  description: z.string().min(1),
+});
+
 const equipmentUnitContentSchema: z.ZodType<EquipmentUnitContent> = z.strictObject({
   code: z.int().min(1),
   name: z.string().min(1),
@@ -47,12 +56,14 @@ const armorContentSchema: z.ZodType<ArmorContent> = z.strictObject({
   largeSlots: z.int().min(0),
   fuel: z.int().min(0),
   info: z.string().min(1),
+  grants: z.array(abilityIdSchema).min(1).optional(),
 });
 
 /**
- * Schema of all equipment content JSON: record shapes, unit references and categories, code ranges and uniqueness.
+ * Schema of all equipment content JSON: record shapes, unit and ability references, categories, code ranges and uniqueness.
  */
 export const equipmentContentSchema = z.strictObject({
   units: z.record(z.string(), equipmentUnitContentSchema).superRefine(checkUniqueCodes),
+  abilities: z.record(z.string(), equipmentAbilityContentSchema),
   armors: z.record(z.string(), armorContentSchema).superRefine(checkUniqueCodes),
 });

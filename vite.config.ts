@@ -10,8 +10,8 @@ export default defineConfig({
     vue(),
     svgLoader({ defaultImport: 'url', svgo: false }),
     imagetools({
-      /** Ability icon masters and their state variants, 256px each. */
-      include: '**/soldier/config/icons/abilities/*/*.png',
+      /** Ability icon masters (soldier ones with state variants), up to 256px each. */
+      include: '**/config/icons/abilities/*/*.png',
       /** 128px covers the 44px cell up to 3x DPR. */
       defaultDirectives: new URLSearchParams({ w: '128', format: 'webp', quality: '85' }),
     }),

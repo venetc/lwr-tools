@@ -82,7 +82,10 @@
     "smallSlots": 2,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "Offers enhanced protection with greatly improved mobility and defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers."
+    "info": "Offers enhanced protection with greatly improved mobility and defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "grants": [
+      "grapple"
+    ]
   },
   "aegis-armor": {
     "code": 6,
@@ -99,7 +102,10 @@
     "smallSlots": 2,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "Provides greatly enhanced protection and mobility. Heavy armor set. Equippable by all Biosoldiers."
+    "info": "Provides greatly enhanced protection and mobility. Heavy armor set. Equippable by all Biosoldiers.",
+    "grants": [
+      "damage-control"
+    ]
   },
   "banshee-armor": {
     "code": 7,
@@ -116,7 +122,11 @@
     "smallSlots": 2,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers."
+    "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "grants": [
+      "grapple",
+      "repulsor"
+    ]
   },
   "corsair-armor": {
     "code": 8,
@@ -133,7 +143,11 @@
     "smallSlots": 2,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers."
+    "info": "This equipment never requires repairs. Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "grants": [
+      "grapple",
+      "repulsor"
+    ]
   },
   "titan-armor": {
     "code": 9,
@@ -150,7 +164,12 @@
     "smallSlots": 2,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Offers greatly enhanced protection with immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers."
+    "info": "This equipment never requires repairs. Offers greatly enhanced protection with immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
+    "grants": [
+      "damage-control",
+      "sealed",
+      "flame-resistant"
+    ]
   },
   "seraph-armor": {
     "code": 10,
@@ -167,7 +186,10 @@
     "smallSlots": 1,
     "largeSlots": 1,
     "fuel": 8,
-    "info": "Offers greatly enhanced protection with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Light armor set. Equippable by all classes except MEC."
+    "info": "Offers greatly enhanced protection with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Light armor set. Equippable by all classes except MEC.",
+    "grants": [
+      "tactical-mobility"
+    ]
   },
   "archangel-armor": {
     "code": 11,
@@ -184,7 +206,12 @@
     "smallSlots": 2,
     "largeSlots": 1,
     "fuel": 12,
-    "info": "This equipment never requires repairs. Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Provides immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers."
+    "info": "This equipment never requires repairs. Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Provides immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
+    "grants": [
+      "damage-control",
+      "sealed",
+      "flame-resistant"
+    ]
   },
   "ghost-armor": {
     "code": 12,
@@ -201,7 +228,12 @@
     "smallSlots": 1,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Offers enhanced protection with greatly improved defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers."
+    "info": "This equipment never requires repairs. Offers enhanced protection with greatly improved defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "grants": [
+      "ghost",
+      "advanced-grapple",
+      "repulsor"
+    ]
   },
   "aurora-armor": {
     "code": 13,
@@ -218,7 +250,10 @@
     "smallSlots": 3,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "Offers enhanced protection with improved mobility. Increases wearers psionic capabilities. Light armor set. Equippable by Psi only."
+    "info": "Offers enhanced protection with improved mobility. Increases wearers psionic capabilities. Light armor set. Equippable by Psi only.",
+    "grants": [
+      "psi-boost"
+    ]
   },
   "vortex-armor": {
     "code": 14,
@@ -235,6 +270,9 @@
     "smallSlots": 3,
     "largeSlots": 1,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Offers enhanced protection with increased mental fortitude. Gollop Chamber activation requires this armor and a soldier with the Fervor ability. Reduces post-battle fatigue. Heavy armor set. Equippable by Psi only."
+    "info": "This equipment never requires repairs. Offers enhanced protection with increased mental fortitude. Gollop Chamber activation requires this armor and a soldier with the Fervor ability. Reduces post-battle fatigue. Heavy armor set. Equippable by Psi only.",
+    "grants": [
+      "advanced-psi-boost"
+    ]
   }
 }

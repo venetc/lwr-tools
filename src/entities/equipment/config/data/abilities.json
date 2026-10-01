@@ -1,0 +1,42 @@
+{
+  "grapple": {
+    "name": "Grapple",
+    "description": "Using the Grapple costs 0 AP and can propel this soldier up to 15 tiles clearing this unit from all overwatching aliens. Single use only."
+  },
+  "advanced-grapple": {
+    "name": "Advanced Grapple",
+    "description": "Using the Grapple costs 0 AP and can propel this soldier up to 15 tiles clearing this unit from all overwatching aliens. 3 uses."
+  },
+  "damage-control": {
+    "name": "Damage Control",
+    "description": "Grants +5% DR each time damage is received. If at full HP, grants +50 crit resist. If shredded, reduce shred to a maximum of 50% at end of turn."
+  },
+  "repulsor": {
+    "name": "Repulsor",
+    "description": "If at full HP, non-psionic attacks are repulsed, causing them to graze (dealing only half of the original damage)."
+  },
+  "sealed": {
+    "name": "Sealed",
+    "description": "Internal air supply and oxygen recycling systems grant the wearer immunity to strangulation."
+  },
+  "flame-resistant": {
+    "name": "Flame Resistant",
+    "description": "Internal vapor chambers with intergrated cooling systems grant this unit with complete immunity to fire hazards."
+  },
+  "tactical-mobility": {
+    "name": "Tactical Mobility",
+    "description": "This unit gains 30 defense when in cover or flying. Does not apply to reaction fire. Disabled if this unit has been damaged this turn or is disoriented."
+  },
+  "ghost": {
+    "name": "Ghost",
+    "description": "Activate to turn invisible until your next action or next turn (2-turn cooldown). Cannot Ghost while Holo-Targeted. Attacks made while Ghosted gain +30 crit."
+  },
+  "psi-boost": {
+    "name": "Psi Boost",
+    "description": "Infuses explosives to deal 1 bonus psionic damage. Increases Kinetic Blast and Rift damage by 2. Reduces accumulation of fatigue by 20%."
+  },
+  "advanced-psi-boost": {
+    "name": "Advanced Psi Boost",
+    "description": "Infuses explosives to deal 2 bonus psionic damage. Increases Kinetic Blast and Rift damage by 4. Reduces accumulation of fatigue by 50%."
+  }
+}

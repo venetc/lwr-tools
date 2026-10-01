@@ -1,6 +1,8 @@
 import { ARMOR_CATEGORIES } from '../config/constants/armor-categories';
 import { ARMOR_ICON } from '../config/constants/armor-icons';
 import type armorsJson from '../config/data/armors.json';
+import type { EquipmentAbility } from './equipment-abilities';
+import { equipmentAbilityById, isEquipmentAbilityId } from './equipment-abilities';
 import type { EquipmentUnitId } from './equipment-units';
 import { isEquipmentUnitId } from './equipment-units';
 
@@ -42,12 +44,14 @@ export interface ArmorContent {
   fuel: number
   /** Tactical info text from the game. */
   info: string
+  /** Ids of the equipment abilities the armor grants. */
+  grants?: readonly string[]
 }
 
 /**
- * Armor with its id, image and checked unit and category.
+ * Armor with its id, image, granted abilities and checked unit and category.
  */
-export interface Armor extends Omit<ArmorContent, 'unit' | 'category'> {
+export interface Armor extends Omit<ArmorContent, 'unit' | 'category' | 'grants'> {
   /** Armor id, the key in `armors.json`. */
   id: ArmorId
   /** Id of the unit type that wears the armor. */
@@ -56,6 +60,8 @@ export interface Armor extends Omit<ArmorContent, 'unit' | 'category'> {
   category: ArmorCategory
   /** Armor image URL. */
   icon: string
+  /** Equipment abilities the armor grants. */
+  grants: EquipmentAbility[]
 }
 
 /**
@@ -69,12 +75,19 @@ export const isArmorCategory = (category: string): category is ArmorCategory => 
  * Armor of an `armors.json` entry, for `flatMap` over the records.
  *
  * @param entry armor id and its record.
- * @returns the armor alone, or nothing if its unit or category is unknown.
+ * @returns the armor alone, or nothing if its unit or category is unknown; unknown granted ids are skipped.
  */
 export const armorsFromEntry = (entry: [ArmorId, ArmorContent]): Armor[] => {
   const [id, content] = entry;
 
   if (!isEquipmentUnitId(content.unit) || !isArmorCategory(content.category)) return [];
 
-  return [{ ...content, id, unit: content.unit, category: content.category, icon: ARMOR_ICON[id] }];
+  return [{
+    ...content,
+    id,
+    unit: content.unit,
+    category: content.category,
+    icon: ARMOR_ICON[id],
+    grants: (content.grants ?? []).filter(isEquipmentAbilityId).map(equipmentAbilityById),
+  }];
 };

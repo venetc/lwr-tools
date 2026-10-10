@@ -1,4 +1,4 @@
-# Коды билдов солдат
+# Коды билдов биосолдат
 
 [English](share-codes.en.md) · **Русский**
 
@@ -14,9 +14,9 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - Секции идут по возрастанию id, каждая не больше одного раза; `0` завершает список.
 - Неизвестные секции пропускаются по длине.
 - Прочитанная секция должна закончиться ровно на своей длине, иначе код невалиден; пропущенные секции не проверяются.
-- `decodeSoldierBuild(code, parts)` читает только запрошенные части, остальные получают значения по умолчанию.
+- `decodeBiosoldierBuild(code, parts)` читает только запрошенные части, остальные получают значения по умолчанию.
 
-Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/soldier-build-code.ts` (поля и `SoldierBuildPart`). Поиск по `code` даёт `entities/soldier`. У фичи одна страница-потребитель, но она осознанно отдельный слайс: формат меняется по своим причинам, у него свои тесты и доки.
+Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/biosoldier-build-code.ts` (поля и `BiosoldierBuildPart`). Поиск по `code` даёт `entities/biosoldier`. У фичи одна страница-потребитель, но она осознанно отдельный слайс: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 
@@ -36,7 +36,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - `code` удалённой записи не переиспользовать; лучше записи не удалять.
 - `0` не выдаётся: у абилок и классов это «неизвестно», у секций — конец списка.
 
-То же для `SOLDIER_BUILD_SECTION` и `SHARE_CODE_FORMAT`.
+То же для `BIOSOLDIER_BUILD_SECTION` и `SHARE_CODE_FORMAT`.
 
 Пример: новая абилка, максимальный `code` — 73.
 
@@ -62,30 +62,30 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Поля секции меняются только новой секцией:
 
-1. Добавить в `SOLDIER_BUILD_SECTION` следующий id с суффиксом версии.
+1. Добавить в `BIOSOLDIER_BUILD_SECTION` следующий id с суффиксом версии.
 2. К имени текущего чтения секции добавить суффикс версии; её запись удалить.
-3. Написать новые запись и чтение; `decodeSoldierBuild` читает ту из двух секций, что есть в коде.
+3. Написать новые запись и чтение; `decodeBiosoldierBuild` читает ту из двух секций, что есть в коде.
 
 Чтение старых секций остаётся навсегда. Сама разметка секций меняется только новым номером в `SHARE_CODE_FORMAT`.
 
 Пример: в `TALENTS` добавляется поле, максимальный id секции — 2.
 
-1. `SOLDIER_BUILD_SECTION`: `TALENTS_V2: 3`.
-2. `soldier-build-code.ts`: `readTalents` → `readTalentsV1`, `writeTalents` удалить.
-3. Новые `writeTalents` / `readTalents`; `encodeSoldierBuild` пишет `TALENTS_V2`.
-4. `decodeSoldierBuild`: `TALENTS` → `readTalentsV1` с новым полем по умолчанию, `TALENTS_V2` → `readTalents`.
+1. `BIOSOLDIER_BUILD_SECTION`: `TALENTS_V2: 3`.
+2. `biosoldier-build-code.ts`: `readTalents` → `readTalentsV1`, `writeTalents` удалить.
+3. Новые `writeTalents` / `readTalents`; `encodeBiosoldierBuild` пишет `TALENTS_V2`.
+4. `decodeBiosoldierBuild`: `TALENTS` → `readTalentsV1` с новым полем по умолчанию, `TALENTS_V2` → `readTalents`.
 
 ## Новая часть
 
-1. Добавить в `SOLDIER_BUILD_SECTION` следующий id.
-2. Написать запись и чтение в `soldier-build-code.ts`; `encodeSoldierBuild` пишет секцию, только если у билда есть эта часть.
-3. Добавить часть в `SoldierBuildPart`; `decodeSoldierBuild` читает секцию, только если часть запрошена, иначе даёт значение по умолчанию.
+1. Добавить в `BIOSOLDIER_BUILD_SECTION` следующий id.
+2. Написать запись и чтение в `biosoldier-build-code.ts`; `encodeBiosoldierBuild` пишет секцию, только если у билда есть эта часть.
+3. Добавить часть в `BiosoldierBuildPart`; `decodeBiosoldierBuild` читает секцию, только если часть запрошена, иначе даёт значение по умолчанию.
 
 Пример: офицерское дерево, максимальный id секции — 2.
 
-1. `SOLDIER_BUILD_SECTION`: `OFFICER: 3`.
+1. `BIOSOLDIER_BUILD_SECTION`: `OFFICER: 3`.
 2. `writeOfficer` / `readOfficer`; у не-офицера секции нет.
-3. `SoldierBuildPart`: `'officer'`; без секции или без части у билда нет офицерского дерева.
+3. `BiosoldierBuildPart`: `'officer'`; без секции или без части у билда нет офицерского дерева.
 
 ## Проверки
 

@@ -71,7 +71,7 @@ It does not check section fields: it does not know them. After reading a section
 - The frame itself (widths of id and length, CRC, base64url) changes only with a new format number.
 - Format numbers and section ids are never reused.
 
-How this applies to soldier builds: [docs/share-codes](../../../../docs/share-codes.en.md).
+How this applies to biosoldier builds: [docs/share-codes](../../../../docs/share-codes.en.md).
 
 ## Limits
 

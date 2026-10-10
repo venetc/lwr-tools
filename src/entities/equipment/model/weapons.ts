@@ -42,7 +42,7 @@ export interface WeaponContent {
   type: string
   /** Loadout slot. */
   slot: string
-  /** Ids of the soldier classes that may equip the weapon; absent if every class of the unit may. */
+  /** Ids of the biosoldier classes that may equip the weapon; absent if every class of the unit may. */
   classes?: readonly string[]
   /** Base damage. */
   damage: number
@@ -94,7 +94,7 @@ export interface Weapon extends Required<Omit<WeaponContent, 'unit' | 'tier' | '
   type: WeaponType
   /** Loadout slot. */
   slot: WeaponSlot
-  /** Ids of the soldier classes that may equip the weapon; null if every class of the unit may. */
+  /** Ids of the biosoldier classes that may equip the weapon; null if every class of the unit may. */
   classes: readonly string[] | null
   /** Extra stats against mechanical targets; null if there are none. */
   vsMechanical: WeaponMechanicalBonus | null

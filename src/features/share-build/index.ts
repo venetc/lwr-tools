@@ -1,3 +1,3 @@
-export { decodeSoldierBuild, encodeSoldierBuild } from './model/soldier-build-code';
-export { default as ExportSoldierBuild } from './ui/ExportSoldierBuild.vue';
-export { default as ImportSoldierBuild } from './ui/ImportSoldierBuild.vue';
+export { decodeBiosoldierBuild, encodeBiosoldierBuild } from './model/biosoldier-build-code';
+export { default as ExportBiosoldierBuild } from './ui/ExportBiosoldierBuild.vue';
+export { default as ImportBiosoldierBuild } from './ui/ImportBiosoldierBuild.vue';

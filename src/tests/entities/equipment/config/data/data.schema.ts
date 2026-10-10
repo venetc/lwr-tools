@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
+import { BIOSOLDIER_CLASS_CONTENT } from '@entities/biosoldier/config/constants/biosoldier-class-content';
 import type { ArmorContent } from '@entities/equipment/model/armors';
 import type { EquipmentAbilityContent } from '@entities/equipment/model/equipment-abilities';
 import { isEquipmentAbilityId } from '@entities/equipment/model/equipment-abilities';
 import type { EquipmentUnitContent } from '@entities/equipment/model/equipment-units';
 import { isEquipmentUnitId } from '@entities/equipment/model/equipment-units';
 import type { WeaponContent } from '@entities/equipment/model/weapons';
-import { SOLDIER_CLASS_CONTENT } from '@entities/soldier/config/constants/soldier-class-content';
 import { typedEntries } from '@shared/lib/object';
 
 /**
@@ -30,7 +30,7 @@ const checkUniqueCodes = (records: Record<string, { code: number }>, context: z.
 };
 
 /**
- * Reports weapons limited to soldier classes although their unit type has no classes.
+ * Reports weapons limited to biosoldier classes although their unit type has no classes.
  *
  * @param records weapon records by id.
  * @param context refinement context that collects issues.
@@ -39,7 +39,7 @@ const checkClassUnits = (records: Record<string, WeaponContent>, context: z.Refi
   Object.entries(records).forEach(([id, record]) => {
     if (!record.classes || record.unit === 'biosoldier') return;
 
-    context.addIssue({ code: 'custom', message: `Unit "${record.unit}" has no soldier classes`, path: [id, 'classes'] });
+    context.addIssue({ code: 'custom', message: `Unit "${record.unit}" has no biosoldier classes`, path: [id, 'classes'] });
   });
 };
 
@@ -47,7 +47,7 @@ const unitIdSchema = z.string().refine(isEquipmentUnitId, { error: 'Unknown unit
 
 const abilityIdSchema = z.string().refine(isEquipmentAbilityId, { error: 'Unknown equipment ability id' });
 
-const soldierClassIdSchema = z.enum(typedEntries(SOLDIER_CLASS_CONTENT).map(([id]) => id));
+const biosoldierClassIdSchema = z.enum(typedEntries(BIOSOLDIER_CLASS_CONTENT).map(([id]) => id));
 
 const equipmentAbilityContentSchema: z.ZodType<EquipmentAbilityContent> = z.strictObject({
   name: z.string().min(1),
@@ -105,7 +105,7 @@ const weaponContentSchema: z.ZodType<WeaponContent> = z.strictObject({
     'rocket-launcher',
   ]),
   slot: z.enum(['primary', 'secondary']),
-  classes: z.array(soldierClassIdSchema).min(1).refine(ids => new Set(ids).size === ids.length, { error: 'Repeated class id' }).optional(),
+  classes: z.array(biosoldierClassIdSchema).min(1).refine(ids => new Set(ids).size === ids.length, { error: 'Repeated class id' }).optional(),
   damage: z.int().min(0),
   penetration: z.int().min(0),
   crit: z.int(),

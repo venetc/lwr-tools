@@ -1,7 +1,8 @@
 import type { Router } from 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
 
-import { talentsPageRoute } from '@pages/talents';
+import { biosoldierBuildsPageRoute } from '@pages/biosoldier-builds';
+import { buildsPageRoute } from '@pages/builds';
 import { ROUTES } from '@shared/config/routes';
 
 export const router: Router = createRouter({
@@ -9,12 +10,21 @@ export const router: Router = createRouter({
   routes: [
     {
       ...ROUTES.HOME,
-      redirect: { name: ROUTES.TALENTS.name },
+      redirect: { name: ROUTES.BUILDS.name },
     },
-    talentsPageRoute,
+    {
+      path: ROUTES.BUILDS.path,
+      meta: {
+        title: 'Builds',
+      },
+      children: [
+        buildsPageRoute,
+        biosoldierBuildsPageRoute,
+      ],
+    },
     {
       path: '/:pathMatch(.*)*',
-      redirect: { name: ROUTES.TALENTS.name, params: {} },
+      redirect: { name: ROUTES.HOME.name, params: {} },
     },
   ],
 });

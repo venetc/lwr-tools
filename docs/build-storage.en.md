@@ -2,13 +2,13 @@
 
 **English** · [Русский](build-storage.ru.md)
 
-Builds of the talents page survive reloads and reopening: they are saved to `localStorage` and synced between open tabs.
+Builds of the Biosoldier Build calculator survive reloads and reopening: they are saved to `localStorage` and synced between open tabs.
 
 ## Keys
 
 ```
-lwr-tools.talents.v1.order         → ["id1", "id2", …]
-lwr-tools.talents.v1.build.<id>    → { "code": "AQx…", "readonly": false }
+lwr-tools.biosoldier-builds.v1.order         → ["id1", "id2", …]
+lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly": false }
 ```
 
 - `code` is the build's [share code](share-codes.en.md): class, talents and name. Its format already keeps old codes readable, so the record only adds the lock.
@@ -16,7 +16,7 @@ lwr-tools.talents.v1.build.<id>    → { "code": "AQx…", "readonly": false }
 - `order` is the display order. No `order` means nothing has been saved yet, and the page shows the default builds; `[]` means the user removed them all.
 - `lwr-tools.` is required: on GitHub Pages every `<user>.github.io` project shares one storage.
 
-Code: `pages/talents/config/constants.ts` (keys, schemas, delays), `model/build-storage.ts` (records and loading), `model/useBuildSync.ts` (saving and sync); storage access is `shared/lib/local-storage`.
+Code: `pages/biosoldier-builds/config/constants.ts` (keys, schemas, delays), `model/build-storage.ts` (records and loading), `model/useBuildSync.ts` (saving and sync); storage access is `shared/lib/local-storage`.
 
 ## Loading
 

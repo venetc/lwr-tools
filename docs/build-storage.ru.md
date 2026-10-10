@@ -2,13 +2,13 @@
 
 [English](build-storage.en.md) · **Русский**
 
-Билды страницы талантов переживают рефреш и переоткрытие: они сохраняются в `localStorage` и синхронизируются между открытыми вкладками.
+Билды калькулятора билдов биосолдат переживают рефреш и переоткрытие: они сохраняются в `localStorage` и синхронизируются между открытыми вкладками.
 
 ## Ключи
 
 ```
-lwr-tools.talents.v1.order         → ["id1", "id2", …]
-lwr-tools.talents.v1.build.<id>    → { "code": "AQx…", "readonly": false }
+lwr-tools.biosoldier-builds.v1.order         → ["id1", "id2", …]
+lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly": false }
 ```
 
 - `code` — [share-код](share-codes.ru.md) билда: класс, таланты и имя. Его формат сам обеспечивает чтение старых кодов, поэтому запись добавляет к нему только лок.
@@ -16,7 +16,7 @@ lwr-tools.talents.v1.build.<id>    → { "code": "AQx…", "readonly": false }
 - `order` — порядок показа. Если `order` нет, значит, ещё ничего не сохраняли, и страница показывает дефолтные билды. `[]` означает, что пользователь удалил все.
 - Префикс `lwr-tools.` обязателен: на GitHub Pages все проекты `<user>.github.io` делят одно хранилище.
 
-Код: `pages/talents/config/constants.ts` (ключи, схемы, задержки), `model/build-storage.ts` (записи и загрузка), `model/useBuildSync.ts` (сохранение и синхронизация). Доступ к хранилищу — `shared/lib/local-storage`.
+Код: `pages/biosoldier-builds/config/constants.ts` (ключи, схемы, задержки), `model/build-storage.ts` (записи и загрузка), `model/useBuildSync.ts` (сохранение и синхронизация). Доступ к хранилищу — `shared/lib/local-storage`.
 
 ## Загрузка
 

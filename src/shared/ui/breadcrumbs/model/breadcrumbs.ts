@@ -1,13 +1,8 @@
 import type { RouteLocationRaw } from 'vue-router';
 
-export interface BreadcrumbMenuItem {
-  /** Visible label. */
-  label: string
-  /** Link target. */
-  to: RouteLocationRaw
-  /** Whether the item leads to the current page. */
-  isCurrent: boolean
-}
+import type { RouteMenuItem } from '@shared/lib/route-menu';
+
+export type BreadcrumbMenuItem = RouteMenuItem;
 
 export interface BreadcrumbItem {
   /** Visible label. */

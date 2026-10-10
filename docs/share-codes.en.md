@@ -1,4 +1,4 @@
-# Soldier build codes
+# Biosoldier build codes
 
 **English** · [Русский](share-codes.ru.md)
 
@@ -14,9 +14,9 @@ section = id (5) | length (9) | fields
 - Sections go by ascending id, each at most once; `0` ends the list.
 - Unknown sections are skipped by their length.
 - A section that is read must end exactly at its length, otherwise the code is invalid; skipped sections aren't checked.
-- `decodeSoldierBuild(code, parts)` reads only the requested parts; the rest get defaults.
+- `decodeBiosoldierBuild(code, parts)` reads only the requested parts; the rest get defaults.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers, section ids, field widths), `model/soldier-build-code.ts` (fields and `SoldierBuildPart`). Lookups by `code` come from `entities/soldier`. The feature has one consumer page but stays a separate slice on purpose: the format changes for its own reasons and has its own tests and docs.
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers, section ids, field widths), `model/biosoldier-build-code.ts` (fields and `BiosoldierBuildPart`). Lookups by `code` come from `entities/biosoldier`. The feature has one consumer page but stays a separate slice on purpose: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
@@ -36,7 +36,7 @@ Codes store the `code` numbers of abilities and classes, not tree positions, so 
 - Never reuse a deleted record's `code`; better, don't delete records.
 - `0` is never assigned: for abilities and classes it means "unknown", for sections — the end of the list.
 
-Same for `SOLDIER_BUILD_SECTION` and `SHARE_CODE_FORMAT`.
+Same for `BIOSOLDIER_BUILD_SECTION` and `SHARE_CODE_FORMAT`.
 
 Example: new ability, max `code` is 73.
 
@@ -62,30 +62,30 @@ If an ability on a rank is replaced by a different one, keep the old record. Old
 
 Section fields change only in a new section:
 
-1. Add the next id to `SOLDIER_BUILD_SECTION` with a version suffix.
+1. Add the next id to `BIOSOLDIER_BUILD_SECTION` with a version suffix.
 2. Add the version suffix to the current section reader's name; delete its writer.
-3. Write the new writer and reader; `decodeSoldierBuild` reads whichever of the two sections the code has.
+3. Write the new writer and reader; `decodeBiosoldierBuild` reads whichever of the two sections the code has.
 
 Readers of old sections stay forever. The section layout itself changes only with a new number in `SHARE_CODE_FORMAT`.
 
 Example: `TALENTS` gets a new field, max section id is 2.
 
-1. `SOLDIER_BUILD_SECTION`: `TALENTS_V2: 3`.
-2. `soldier-build-code.ts`: `readTalents` → `readTalentsV1`, `writeTalents` deleted.
-3. New `writeTalents` / `readTalents`; `encodeSoldierBuild` writes `TALENTS_V2`.
-4. `decodeSoldierBuild`: `TALENTS` → `readTalentsV1` with the new field defaulted, `TALENTS_V2` → `readTalents`.
+1. `BIOSOLDIER_BUILD_SECTION`: `TALENTS_V2: 3`.
+2. `biosoldier-build-code.ts`: `readTalents` → `readTalentsV1`, `writeTalents` deleted.
+3. New `writeTalents` / `readTalents`; `encodeBiosoldierBuild` writes `TALENTS_V2`.
+4. `decodeBiosoldierBuild`: `TALENTS` → `readTalentsV1` with the new field defaulted, `TALENTS_V2` → `readTalents`.
 
 ## New part
 
-1. Add the next id to `SOLDIER_BUILD_SECTION`.
-2. Write the writer and reader in `soldier-build-code.ts`; `encodeSoldierBuild` writes the section only when the build has the part.
-3. Add the part to `SoldierBuildPart`; `decodeSoldierBuild` reads the section only if the part is requested, otherwise gives the default.
+1. Add the next id to `BIOSOLDIER_BUILD_SECTION`.
+2. Write the writer and reader in `biosoldier-build-code.ts`; `encodeBiosoldierBuild` writes the section only when the build has the part.
+3. Add the part to `BiosoldierBuildPart`; `decodeBiosoldierBuild` reads the section only if the part is requested, otherwise gives the default.
 
 Example: officer tree, max section id is 2.
 
-1. `SOLDIER_BUILD_SECTION`: `OFFICER: 3`.
+1. `BIOSOLDIER_BUILD_SECTION`: `OFFICER: 3`.
 2. `writeOfficer` / `readOfficer`; no section for a non-officer.
-3. `SoldierBuildPart`: `'officer'`; without the section or the part the build has no officer tree.
+3. `BiosoldierBuildPart`: `'officer'`; without the section or the part the build has no officer tree.
 
 ## Checks
 

@@ -1,0 +1,54 @@
+{
+  "jaeger": {
+    "code": 9,
+    "name": "Jaeger",
+    "perks": {
+      "specialist": ["hunter"],
+      "lance-corporal": ["rapid-fire", "vital-point-targeting", "pyro"],
+      "corporal": ["sharpshooter", "impact", "jetboot-module"],
+      "sergeant": ["lock-n-load", "aggression", "bring-em-on"],
+      "tech-sergeant": ["killer-instinct"],
+      "gunnery-sergeant": ["lone-wolf", "awareness", "repulsor"],
+      "master-sergeant": ["extra-conditioning", "sprinter"]
+    }
+  },
+  "marauder": {
+    "code": 10,
+    "name": "Marauder",
+    "perks": {
+      "specialist": ["onslaught"],
+      "lance-corporal": ["close-combat-specialist", "jetboot-module", "dash-and-bash"],
+      "corporal": ["brawler", "fortified", "grit"],
+      "sergeant": ["lock-n-load", "lone-wolf", "repulsor"],
+      "tech-sergeant": ["sprinter"],
+      "gunnery-sergeant": ["bring-em-on", "extra-conditioning", "repair-servos"],
+      "master-sergeant": ["vital-point-targeting", "shadowstep"]
+    }
+  },
+  "goliath": {
+    "code": 11,
+    "name": "Goliath",
+    "perks": {
+      "specialist": ["absorption-fields"],
+      "lance-corporal": ["double-tap", "reactive-targeting-sensors", "grenadier"],
+      "corporal": ["critical-system-targeting", "grit", "fortified"],
+      "sergeant": ["lock-n-load", "sentry", "blast"],
+      "tech-sergeant": ["dampening-shield"],
+      "gunnery-sergeant": ["holo-rounds", "repair-servos", "tandem-warheads"],
+      "master-sergeant": ["extra-conditioning", "executioner"]
+    }
+  },
+  "shogun": {
+    "code": 12,
+    "name": "Shogun",
+    "perks": {
+      "specialist": ["collateral-damage"],
+      "lance-corporal": ["hit-and-run", "gattler", "grenadier"],
+      "corporal": ["vital-point-targeting", "repair-servos", "jetboot-module"],
+      "sergeant": ["critical-system-targeting", "fortified", "sapper"],
+      "tech-sergeant": ["arsenal"],
+      "gunnery-sergeant": ["absorption-fields", "grit", "fragmentation"],
+      "master-sergeant": ["shadowstep", "extra-conditioning"]
+    }
+  }
+}

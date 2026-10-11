@@ -3,13 +3,16 @@ import type { SvgIcon } from '@shared/ui/svg-icon';
 
 import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
 import type biosoldierClassesJson from '../config/data/biosoldier-classes.json';
+import type mecClassesJson from '../config/data/mec-classes.json';
 import type { AbilityId } from './abilities';
 import { isAbilityId } from './abilities';
 import type { SoldierRankId } from './ranks';
 
 export type BiosoldierClassId = keyof typeof biosoldierClassesJson;
 
-export type SoldierClassId = BiosoldierClassId;
+export type MecClassId = keyof typeof mecClassesJson;
+
+export type SoldierClassId = BiosoldierClassId | MecClassId;
 
 /**
  * Class record of the class data.

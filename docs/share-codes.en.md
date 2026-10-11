@@ -23,7 +23,7 @@ section = id (5) | length (9) | fields
 A decoder returns `{ status: 'decoded', build }`, or why it failed:
 
 - `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
-- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section. The import shows "Invalid code" under the field.
+- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, a class of another format, a perk not offered on its rank of the class tree. The import shows "Invalid code" under the field.
 
 A stored build whose code does not decode is skipped on loading.
 

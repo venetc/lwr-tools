@@ -39,6 +39,10 @@ vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICO
 
 vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
 
+vi.mock('@entities/soldier/config/constants/mec-class-content', () => ({ MEC_CLASS_CONTENT: {} }));
+
+vi.mock('@entities/soldier/config/constants/mec-class-icons', () => ({ MEC_CLASS_ICON: {} }));
+
 vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 
 describe('encodeBiosoldierBuild', () => {
@@ -130,6 +134,14 @@ describe('decodeBiosoldierBuild', () => {
 
   it('rejects an unknown ability', () => {
     const code = encodeBinaryCode(FORMAT, [perksSection(3, [99])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a known ability outside the class rank', () => {
+    const code = encodeBinaryCode(FORMAT, [perksSection(3, [13])]) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 

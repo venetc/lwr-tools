@@ -30,8 +30,9 @@ export type SoldierBuildPart = 'name';
  */
 export const soldierBuildCodec = (format: number, classByCode: ReadonlyMap<number, DeepReadonly<SoldierClass>>) => {
   /**
-   * Class and perks of the `PERKS` section, the base perk included; null if a class is not of the format or an ability
-   * number is unknown, perks outnumber the ranks, or the section is not read exactly to its end.
+   * Class and perks of the `PERKS` section, the base perk included; null if a class is not of the format, an ability
+   * number is unknown or not offered on its rank of the class tree, perks outnumber the ranks, or the section is not read
+   * exactly to its end.
    *
    * @param reader section reader.
    */
@@ -46,6 +47,10 @@ export const soldierBuildCodec = (format: number, classByCode: ReadonlyMap<numbe
     if (selectedPerks.length !== perkCount) return null;
 
     if (selectedPerks.length >= SOLDIER_RANKS.length) return null;
+
+    const isInClassTree = selectedPerks.every((perkId, index) => soldierClass.perks[SOLDIER_RANKS[index + 1].id].includes(perkId));
+
+    if (!isInClassTree) return null;
 
     return { soldierClass, perks: [soldierClass.basePerk, ...selectedPerks] };
   };

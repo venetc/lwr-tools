@@ -16,6 +16,9 @@ import alienDeathblossomDisabledIcon from '@entities/soldier/config/icons/abilit
 import alienIntimidateOriginalIcon from '@entities/soldier/config/icons/abilities/alien_intimidate/alien_intimidate@4x.png';
 import alienIntimidateAvailableIcon from '@entities/soldier/config/icons/abilities/alien_intimidate/alien_intimidate@4x_available.png';
 import alienIntimidateDisabledIcon from '@entities/soldier/config/icons/abilities/alien_intimidate/alien_intimidate@4x_disabled.png';
+import alienLaunchOriginalIcon from '@entities/soldier/config/icons/abilities/alien_launch/alien_launch@4x.png';
+import alienLaunchAvailableIcon from '@entities/soldier/config/icons/abilities/alien_launch/alien_launch@4x_available.png';
+import alienLaunchDisabledIcon from '@entities/soldier/config/icons/abilities/alien_launch/alien_launch@4x_disabled.png';
 import alienLeapOriginalIcon from '@entities/soldier/config/icons/abilities/alien_leap/alien_leap@4x.png';
 import alienLeapAvailableIcon from '@entities/soldier/config/icons/abilities/alien_leap/alien_leap@4x_available.png';
 import alienLeapDisabledIcon from '@entities/soldier/config/icons/abilities/alien_leap/alien_leap@4x_disabled.png';
@@ -49,18 +52,27 @@ import assaultLightningreflexesDisabledIcon from '@entities/soldier/config/icons
 import assaultRapidfireOriginalIcon from '@entities/soldier/config/icons/abilities/assault_rapidfire/assault_rapidfire@4x.png';
 import assaultRapidfireAvailableIcon from '@entities/soldier/config/icons/abilities/assault_rapidfire/assault_rapidfire@4x_available.png';
 import assaultRapidfireDisabledIcon from '@entities/soldier/config/icons/abilities/assault_rapidfire/assault_rapidfire@4x_disabled.png';
+import assaultResillienceOriginalIcon from '@entities/soldier/config/icons/abilities/assault_resillience/assault_resillience@4x.png';
+import assaultResillienceAvailableIcon from '@entities/soldier/config/icons/abilities/assault_resillience/assault_resillience@4x_available.png';
+import assaultResillienceDisabledIcon from '@entities/soldier/config/icons/abilities/assault_resillience/assault_resillience@4x_disabled.png';
 import assaultRungunOriginalIcon from '@entities/soldier/config/icons/abilities/assault_rungun/assault_rungun@4x.png';
 import assaultRungunAvailableIcon from '@entities/soldier/config/icons/abilities/assault_rungun/assault_rungun@4x_available.png';
 import assaultRungunDisabledIcon from '@entities/soldier/config/icons/abilities/assault_rungun/assault_rungun@4x_disabled.png';
 import bombardTgaOriginalIcon from '@entities/soldier/config/icons/abilities/bombard_tga/bombard_tga@4x.png';
 import bombardTgaAvailableIcon from '@entities/soldier/config/icons/abilities/bombard_tga/bombard_tga@4x_available.png';
 import bombardTgaDisabledIcon from '@entities/soldier/config/icons/abilities/bombard_tga/bombard_tga@4x_disabled.png';
+import burnOriginalIcon from '@entities/soldier/config/icons/abilities/burn/burn@4x.png';
+import burnAvailableIcon from '@entities/soldier/config/icons/abilities/burn/burn@4x_available.png';
+import burnDisabledIcon from '@entities/soldier/config/icons/abilities/burn/burn@4x_disabled.png';
 import councilMedalOfHonor2Eu2012OriginalIcon from '@entities/soldier/config/icons/abilities/council_medal_of_honor_2_eu2012/council_medal_of_honor_2_eu2012@4x.png';
 import councilMedalOfHonor2Eu2012AvailableIcon from '@entities/soldier/config/icons/abilities/council_medal_of_honor_2_eu2012/council_medal_of_honor_2_eu2012@4x_available.png';
 import councilMedalOfHonor2Eu2012DisabledIcon from '@entities/soldier/config/icons/abilities/council_medal_of_honor_2_eu2012/council_medal_of_honor_2_eu2012@4x_disabled.png';
 import defendersMedal1Eu2012OriginalIcon from '@entities/soldier/config/icons/abilities/defenders_medal_1_eu2012/defenders_medal_1_eu2012@4x.png';
 import defendersMedal1Eu2012AvailableIcon from '@entities/soldier/config/icons/abilities/defenders_medal_1_eu2012/defenders_medal_1_eu2012@4x_available.png';
 import defendersMedal1Eu2012DisabledIcon from '@entities/soldier/config/icons/abilities/defenders_medal_1_eu2012/defenders_medal_1_eu2012@4x_disabled.png';
+import fireInTheHoleOriginalIcon from '@entities/soldier/config/icons/abilities/fire_in_the_hole/fire_in_the_hole@4x.png';
+import fireInTheHoleAvailableIcon from '@entities/soldier/config/icons/abilities/fire_in_the_hole/fire_in_the_hole@4x_available.png';
+import fireInTheHoleDisabledIcon from '@entities/soldier/config/icons/abilities/fire_in_the_hole/fire_in_the_hole@4x_disabled.png';
 import heavyBulletswarmOriginalIcon from '@entities/soldier/config/icons/abilities/heavy_bulletswarm/heavy_bulletswarm@4x.png';
 import heavyBulletswarmAvailableIcon from '@entities/soldier/config/icons/abilities/heavy_bulletswarm/heavy_bulletswarm@4x_available.png';
 import heavyBulletswarmDisabledIcon from '@entities/soldier/config/icons/abilities/heavy_bulletswarm/heavy_bulletswarm@4x_disabled.png';
@@ -82,6 +94,9 @@ import heavyHoloDisabledIcon from '@entities/soldier/config/icons/abilities/heav
 import heavyMayhemOriginalIcon from '@entities/soldier/config/icons/abilities/heavy_mayhem/heavy_mayhem@4x.png';
 import heavyMayhemAvailableIcon from '@entities/soldier/config/icons/abilities/heavy_mayhem/heavy_mayhem@4x_available.png';
 import heavyMayhemDisabledIcon from '@entities/soldier/config/icons/abilities/heavy_mayhem/heavy_mayhem@4x_disabled.png';
+import heavyRapidreactionOriginalIcon from '@entities/soldier/config/icons/abilities/heavy_rapidreaction/heavy_rapidreaction@4x.png';
+import heavyRapidreactionAvailableIcon from '@entities/soldier/config/icons/abilities/heavy_rapidreaction/heavy_rapidreaction@4x_available.png';
+import heavyRapidreactionDisabledIcon from '@entities/soldier/config/icons/abilities/heavy_rapidreaction/heavy_rapidreaction@4x_disabled.png';
 import heavyRocketeerOriginalIcon from '@entities/soldier/config/icons/abilities/heavy_rocketeer/heavy_rocketeer@4x.png';
 import heavyRocketeerAvailableIcon from '@entities/soldier/config/icons/abilities/heavy_rocketeer/heavy_rocketeer@4x_available.png';
 import heavyRocketeerDisabledIcon from '@entities/soldier/config/icons/abilities/heavy_rocketeer/heavy_rocketeer@4x_disabled.png';
@@ -94,15 +109,39 @@ import heavyWilltosurviveDisabledIcon from '@entities/soldier/config/icons/abili
 import itzIconOriginalIcon from '@entities/soldier/config/icons/abilities/itz_icon/itz_icon@4x.png';
 import itzIconAvailableIcon from '@entities/soldier/config/icons/abilities/itz_icon/itz_icon@4x_available.png';
 import itzIconDisabledIcon from '@entities/soldier/config/icons/abilities/itz_icon/itz_icon@4x_disabled.png';
+import mecAbsortionFieldsOriginalIcon from '@entities/soldier/config/icons/abilities/mec_absortion_fields/mec_absortion_fields@4x.png';
+import mecAbsortionFieldsAvailableIcon from '@entities/soldier/config/icons/abilities/mec_absortion_fields/mec_absortion_fields@4x_available.png';
+import mecAbsortionFieldsDisabledIcon from '@entities/soldier/config/icons/abilities/mec_absortion_fields/mec_absortion_fields@4x_disabled.png';
 import mecAdvancedFireControlOriginalIcon from '@entities/soldier/config/icons/abilities/mec_advanced_fire_control/mec_advanced_fire_control@4x.png';
 import mecAdvancedFireControlAvailableIcon from '@entities/soldier/config/icons/abilities/mec_advanced_fire_control/mec_advanced_fire_control@4x_available.png';
 import mecAdvancedFireControlDisabledIcon from '@entities/soldier/config/icons/abilities/mec_advanced_fire_control/mec_advanced_fire_control@4x_disabled.png';
+import mecAutomatedThreatAssessmentOriginalIcon from '@entities/soldier/config/icons/abilities/mec_automated_threat_assessment/mec_automated_threat_assessment@4x.png';
+import mecAutomatedThreatAssessmentAvailableIcon from '@entities/soldier/config/icons/abilities/mec_automated_threat_assessment/mec_automated_threat_assessment@4x_available.png';
+import mecAutomatedThreatAssessmentDisabledIcon from '@entities/soldier/config/icons/abilities/mec_automated_threat_assessment/mec_automated_threat_assessment@4x_disabled.png';
+import mecCollateralDamageOriginalIcon from '@entities/soldier/config/icons/abilities/mec_collateral_damage/mec_collateral_damage@4x.png';
+import mecCollateralDamageAvailableIcon from '@entities/soldier/config/icons/abilities/mec_collateral_damage/mec_collateral_damage@4x_available.png';
+import mecCollateralDamageDisabledIcon from '@entities/soldier/config/icons/abilities/mec_collateral_damage/mec_collateral_damage@4x_disabled.png';
 import mecExpandedStorageOriginalIcon from '@entities/soldier/config/icons/abilities/mec_expanded_storage/mec_expanded_storage@4x.png';
 import mecExpandedStorageAvailableIcon from '@entities/soldier/config/icons/abilities/mec_expanded_storage/mec_expanded_storage@4x_available.png';
 import mecExpandedStorageDisabledIcon from '@entities/soldier/config/icons/abilities/mec_expanded_storage/mec_expanded_storage@4x_disabled.png';
+import mecJetBootModuleOriginalIcon from '@entities/soldier/config/icons/abilities/mec_jet_boot_module/mec_jet_boot_module@4x.png';
+import mecJetBootModuleAvailableIcon from '@entities/soldier/config/icons/abilities/mec_jet_boot_module/mec_jet_boot_module@4x_available.png';
+import mecJetBootModuleDisabledIcon from '@entities/soldier/config/icons/abilities/mec_jet_boot_module/mec_jet_boot_module@4x_disabled.png';
+import mecReactiveTargetingSensorsOriginalIcon from '@entities/soldier/config/icons/abilities/mec_reactive_targeting_sensors/mec_reactive_targeting_sensors@4x.png';
+import mecReactiveTargetingSensorsAvailableIcon from '@entities/soldier/config/icons/abilities/mec_reactive_targeting_sensors/mec_reactive_targeting_sensors@4x_available.png';
+import mecReactiveTargetingSensorsDisabledIcon from '@entities/soldier/config/icons/abilities/mec_reactive_targeting_sensors/mec_reactive_targeting_sensors@4x_disabled.png';
+import mecRepairServosOriginalIcon from '@entities/soldier/config/icons/abilities/mec_repair_servos/mec_repair_servos@4x.png';
+import mecRepairServosAvailableIcon from '@entities/soldier/config/icons/abilities/mec_repair_servos/mec_repair_servos@4x_available.png';
+import mecRepairServosDisabledIcon from '@entities/soldier/config/icons/abilities/mec_repair_servos/mec_repair_servos@4x_disabled.png';
+import mecShockAbsorbentArmorOriginalIcon from '@entities/soldier/config/icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x.png';
+import mecShockAbsorbentArmorAvailableIcon from '@entities/soldier/config/icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x_available.png';
+import mecShockAbsorbentArmorDisabledIcon from '@entities/soldier/config/icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x_disabled.png';
 import mecVitalPointTargetingOriginalIcon from '@entities/soldier/config/icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x.png';
 import mecVitalPointTargetingAvailableIcon from '@entities/soldier/config/icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x_available.png';
 import mecVitalPointTargetingDisabledIcon from '@entities/soldier/config/icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x_disabled.png';
+import onslaughtLwrOriginalIcon from '@entities/soldier/config/icons/abilities/onslaught_lwr/onslaught_lwr@4x.png';
+import onslaughtLwrAvailableIcon from '@entities/soldier/config/icons/abilities/onslaught_lwr/onslaught_lwr@4x_available.png';
+import onslaughtLwrDisabledIcon from '@entities/soldier/config/icons/abilities/onslaught_lwr/onslaught_lwr@4x_disabled.png';
 import pheromonesTgaOriginalIcon from '@entities/soldier/config/icons/abilities/pheromones_tga/pheromones_tga@4x.png';
 import pheromonesTgaAvailableIcon from '@entities/soldier/config/icons/abilities/pheromones_tga/pheromones_tga@4x_available.png';
 import pheromonesTgaDisabledIcon from '@entities/soldier/config/icons/abilities/pheromones_tga/pheromones_tga@4x_disabled.png';
@@ -182,6 +221,7 @@ const alienBullrushIcon: AbilityIcon = { original: alienBullrushOriginalIcon, av
 const alienClusterbombIcon: AbilityIcon = { original: alienClusterbombOriginalIcon, available: alienClusterbombAvailableIcon, disabled: alienClusterbombDisabledIcon };
 const alienDeathblossomIcon: AbilityIcon = { original: alienDeathblossomOriginalIcon, available: alienDeathblossomAvailableIcon, disabled: alienDeathblossomDisabledIcon };
 const alienIntimidateIcon: AbilityIcon = { original: alienIntimidateOriginalIcon, available: alienIntimidateAvailableIcon, disabled: alienIntimidateDisabledIcon };
+const alienLaunchIcon: AbilityIcon = { original: alienLaunchOriginalIcon, available: alienLaunchAvailableIcon, disabled: alienLaunchDisabledIcon };
 const alienLeapIcon: AbilityIcon = { original: alienLeapOriginalIcon, available: alienLeapAvailableIcon, disabled: alienLeapDisabledIcon };
 const alienOverloadIcon: AbilityIcon = { original: alienOverloadOriginalIcon, available: alienOverloadAvailableIcon, disabled: alienOverloadDisabledIcon };
 const alienRepairIcon: AbilityIcon = { original: alienRepairOriginalIcon, available: alienRepairAvailableIcon, disabled: alienRepairDisabledIcon };
@@ -193,10 +233,13 @@ const assaultExtraconditioningIcon: AbilityIcon = { original: assaultExtracondit
 const assaultKillerinstinctIcon: AbilityIcon = { original: assaultKillerinstinctOriginalIcon, available: assaultKillerinstinctAvailableIcon, disabled: assaultKillerinstinctDisabledIcon };
 const assaultLightningreflexesIcon: AbilityIcon = { original: assaultLightningreflexesOriginalIcon, available: assaultLightningreflexesAvailableIcon, disabled: assaultLightningreflexesDisabledIcon };
 const assaultRapidfireIcon: AbilityIcon = { original: assaultRapidfireOriginalIcon, available: assaultRapidfireAvailableIcon, disabled: assaultRapidfireDisabledIcon };
+const assaultResillienceIcon: AbilityIcon = { original: assaultResillienceOriginalIcon, available: assaultResillienceAvailableIcon, disabled: assaultResillienceDisabledIcon };
 const assaultRungunIcon: AbilityIcon = { original: assaultRungunOriginalIcon, available: assaultRungunAvailableIcon, disabled: assaultRungunDisabledIcon };
 const bombardTgaIcon: AbilityIcon = { original: bombardTgaOriginalIcon, available: bombardTgaAvailableIcon, disabled: bombardTgaDisabledIcon };
+const burnIcon: AbilityIcon = { original: burnOriginalIcon, available: burnAvailableIcon, disabled: burnDisabledIcon };
 const councilMedalOfHonor2Eu2012Icon: AbilityIcon = { original: councilMedalOfHonor2Eu2012OriginalIcon, available: councilMedalOfHonor2Eu2012AvailableIcon, disabled: councilMedalOfHonor2Eu2012DisabledIcon };
 const defendersMedal1Eu2012Icon: AbilityIcon = { original: defendersMedal1Eu2012OriginalIcon, available: defendersMedal1Eu2012AvailableIcon, disabled: defendersMedal1Eu2012DisabledIcon };
+const fireInTheHoleIcon: AbilityIcon = { original: fireInTheHoleOriginalIcon, available: fireInTheHoleAvailableIcon, disabled: fireInTheHoleDisabledIcon };
 const heavyBulletswarmIcon: AbilityIcon = { original: heavyBulletswarmOriginalIcon, available: heavyBulletswarmAvailableIcon, disabled: heavyBulletswarmDisabledIcon };
 const heavyDangerzoneIcon: AbilityIcon = { original: heavyDangerzoneOriginalIcon, available: heavyDangerzoneAvailableIcon, disabled: heavyDangerzoneDisabledIcon };
 const heavyFirerocketIcon: AbilityIcon = { original: heavyFirerocketOriginalIcon, available: heavyFirerocketAvailableIcon, disabled: heavyFirerocketDisabledIcon };
@@ -204,13 +247,22 @@ const heavyGrenadierIcon: AbilityIcon = { original: heavyGrenadierOriginalIcon, 
 const heavyHeatAmmoIcon: AbilityIcon = { original: heavyHeatAmmoOriginalIcon, available: heavyHeatAmmoAvailableIcon, disabled: heavyHeatAmmoDisabledIcon };
 const heavyHoloIcon: AbilityIcon = { original: heavyHoloOriginalIcon, available: heavyHoloAvailableIcon, disabled: heavyHoloDisabledIcon };
 const heavyMayhemIcon: AbilityIcon = { original: heavyMayhemOriginalIcon, available: heavyMayhemAvailableIcon, disabled: heavyMayhemDisabledIcon };
+const heavyRapidreactionIcon: AbilityIcon = { original: heavyRapidreactionOriginalIcon, available: heavyRapidreactionAvailableIcon, disabled: heavyRapidreactionDisabledIcon };
 const heavyRocketeerIcon: AbilityIcon = { original: heavyRocketeerOriginalIcon, available: heavyRocketeerAvailableIcon, disabled: heavyRocketeerDisabledIcon };
 const heavySuppressionIcon: AbilityIcon = { original: heavySuppressionOriginalIcon, available: heavySuppressionAvailableIcon, disabled: heavySuppressionDisabledIcon };
 const heavyWilltosurviveIcon: AbilityIcon = { original: heavyWilltosurviveOriginalIcon, available: heavyWilltosurviveAvailableIcon, disabled: heavyWilltosurviveDisabledIcon };
 const itzIconIcon: AbilityIcon = { original: itzIconOriginalIcon, available: itzIconAvailableIcon, disabled: itzIconDisabledIcon };
+const mecAbsortionFieldsIcon: AbilityIcon = { original: mecAbsortionFieldsOriginalIcon, available: mecAbsortionFieldsAvailableIcon, disabled: mecAbsortionFieldsDisabledIcon };
 const mecAdvancedFireControlIcon: AbilityIcon = { original: mecAdvancedFireControlOriginalIcon, available: mecAdvancedFireControlAvailableIcon, disabled: mecAdvancedFireControlDisabledIcon };
+const mecAutomatedThreatAssessmentIcon: AbilityIcon = { original: mecAutomatedThreatAssessmentOriginalIcon, available: mecAutomatedThreatAssessmentAvailableIcon, disabled: mecAutomatedThreatAssessmentDisabledIcon };
+const mecCollateralDamageIcon: AbilityIcon = { original: mecCollateralDamageOriginalIcon, available: mecCollateralDamageAvailableIcon, disabled: mecCollateralDamageDisabledIcon };
 const mecExpandedStorageIcon: AbilityIcon = { original: mecExpandedStorageOriginalIcon, available: mecExpandedStorageAvailableIcon, disabled: mecExpandedStorageDisabledIcon };
+const mecJetBootModuleIcon: AbilityIcon = { original: mecJetBootModuleOriginalIcon, available: mecJetBootModuleAvailableIcon, disabled: mecJetBootModuleDisabledIcon };
+const mecReactiveTargetingSensorsIcon: AbilityIcon = { original: mecReactiveTargetingSensorsOriginalIcon, available: mecReactiveTargetingSensorsAvailableIcon, disabled: mecReactiveTargetingSensorsDisabledIcon };
+const mecRepairServosIcon: AbilityIcon = { original: mecRepairServosOriginalIcon, available: mecRepairServosAvailableIcon, disabled: mecRepairServosDisabledIcon };
+const mecShockAbsorbentArmorIcon: AbilityIcon = { original: mecShockAbsorbentArmorOriginalIcon, available: mecShockAbsorbentArmorAvailableIcon, disabled: mecShockAbsorbentArmorDisabledIcon };
 const mecVitalPointTargetingIcon: AbilityIcon = { original: mecVitalPointTargetingOriginalIcon, available: mecVitalPointTargetingAvailableIcon, disabled: mecVitalPointTargetingDisabledIcon };
+const onslaughtLwrIcon: AbilityIcon = { original: onslaughtLwrOriginalIcon, available: onslaughtLwrAvailableIcon, disabled: onslaughtLwrDisabledIcon };
 const pheromonesTgaIcon: AbilityIcon = { original: pheromonesTgaOriginalIcon, available: pheromonesTgaAvailableIcon, disabled: pheromonesTgaDisabledIcon };
 const reconLwrIcon: AbilityIcon = { original: reconLwrOriginalIcon, available: reconLwrAvailableIcon, disabled: reconLwrDisabledIcon };
 const sentinelModuleIconIcon: AbilityIcon = { original: sentinelModuleIconOriginalIcon, available: sentinelModuleIconAvailableIcon, disabled: sentinelModuleIconDisabledIcon };
@@ -237,17 +289,25 @@ const urbanCombatBadge2Eu2012Icon: AbilityIcon = { original: urbanCombatBadge2Eu
 
 /** Icon variants by ability id. */
 export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
+  'absorption-fields': mecAbsortionFieldsIcon,
   'ace': sniperHeadshotIcon,
   'acid-tech': bombardTgaIcon,
   'aggression': assaultAggressionIcon,
+  'arsenal': mecExpandedStorageIcon,
+  'awareness': mecAutomatedThreatAssessmentIcon,
   'blast': heavyDangerzoneIcon,
   'brawler': alienIntimidateIcon,
   'breacher': heavyGrenadierIcon,
   'bring-em-on': assaultBringthemonIcon,
   'bullseye': alienBullrushIcon,
+  'close-combat-specialist': assaultClosecombatIcon,
   'close-encounters': assaultClosepersonalIcon,
+  'collateral-damage': mecCollateralDamageIcon,
   'combat-drugs': supportCombatdrugsIcon,
+  'combined-arms': fireInTheHoleIcon,
   'critical-system-targeting': adaptiveBoneMarrowGeneModEu2012Icon,
+  'dampening-shield': mecAbsortionFieldsIcon,
+  'dash-and-bash': assaultRungunIcon,
   'dense-smoke': supportDensesmokeIcon,
   'disabling-shot': sniperDisablingshotIcon,
   'double-tap': sniperDoubletapIcon,
@@ -256,15 +316,19 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'field-medic': supportFieldmedicIcon,
   'fire-rocket': heavyFirerocketIcon,
   'firebase': heavyMayhemIcon,
+  'fortified': assaultResillienceIcon,
   'fragmentation': alienClusterbombIcon,
+  'gattler': heavyRocketeerIcon,
   'grenadier': heavyGrenadierIcon,
   'grit': pheromonesTgaIcon,
   'guardian': supportSaviorIcon,
   'heat-warheads': heavyHeatAmmoIcon,
   'hit-and-run': alienLeapIcon,
   'holo-rounds': heavyHoloIcon,
+  'hunter': alienLaunchIcon,
   'impact': sniperDggIcon,
   'in-the-zone': itzIconIcon,
+  'jetboot-module': mecJetBootModuleIcon,
   'killer-instinct': alienDeathblossomIcon,
   'kitted': supportSaviorIcon,
   'light-em-up': heavyBulletswarmIcon,
@@ -276,24 +340,31 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'mayhem': heavyMayhemIcon,
   'mechanic': sentinelModuleIconIcon,
   'on-the-ready': mecAdvancedFireControlIcon,
+  'onslaught': onslaughtLwrIcon,
   'opportunist': sniperOpportunistIcon,
   'pathfinder': supportSprinterIcon,
   'payload': heavyMayhemIcon,
   'penetrator': heavyHeatAmmoIcon,
   'pistolero': assaultClosecombatIcon,
   'precision-shot': sniperHeadshotIcon,
+  'pyro': burnIcon,
   'raking-fire': supportSentinelIcon,
+  'ram': alienBullrushIcon,
   'ranger': sniperGunslingerIcon,
   'rapid-fire': assaultRapidfireIcon,
   'rapid-pincers': assaultClosepersonalIcon,
+  'reactive-targeting-sensors': mecReactiveTargetingSensorsIcon,
   'ready-for-anything': mecAdvancedFireControlIcon,
   'reconnaissance': reconLwrIcon,
   'repair': alienRepairIcon,
+  'repair-servos': mecRepairServosIcon,
+  'repulsor': mecShockAbsorbentArmorIcon,
   'revive': supportReviveIcon,
   'run-and-gun': assaultRungunIcon,
   'sapper': aceHoleIcon,
   'savior': supportReviveIcon,
   'sentinel': supportSentinelIcon,
+  'sentry': heavyRapidreactionIcon,
   'shadowstep': assaultLightningreflexesIcon,
   'sharpshooter': urbanCombatBadge2Eu2012Icon,
   'shock-and-awe': heavyRocketeerIcon,

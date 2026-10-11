@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 /**
  * Prefix of all stored keys of the Biosoldier Build calculator. Keys are never changed: a new shape of stored records
  * gets a new version (`v2`), and loading reads the old one.
@@ -17,9 +15,3 @@ export const BUILD_KEY_PREFIX = `${BUILD_STORAGE_PREFIX}build.`;
  * save the same records instead of doubling the list.
  */
 export const DEFAULT_BUILD_ID_PREFIX = 'default-';
-
-/** Stored build record: share code of the build and its lock. */
-export const STORED_BUILD_SCHEMA = z.object({
-  code: z.string(),
-  readonly: z.boolean(),
-});

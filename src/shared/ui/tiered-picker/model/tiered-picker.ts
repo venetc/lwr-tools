@@ -17,7 +17,7 @@ export interface TieredPickerItem {
   /** Item icon variants. */
   icon: TieredPickerIcon
   /** Items described together with this one, below its description. */
-  related: TieredPickerItem[]
+  related: readonly TieredPickerItem[]
 }
 
 /**
@@ -37,7 +37,7 @@ export interface TieredPickerTier {
   /** Id of the selected item, or null. */
   selectedId: string | null
   /** Items to choose from, one to three. */
-  items: TieredPickerItem[]
+  items: readonly TieredPickerItem[]
 }
 
 /**

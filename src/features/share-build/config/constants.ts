@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import type { DeepReadonly } from '@shared/lib/object';
 
 import type { BiosoldierBuildPart } from '../model/biosoldier-build-code';
@@ -62,3 +64,9 @@ export const SHIV_BUILD_PARTS: DeepReadonly<ShivBuildPart[]> = ['name'];
 
 /** Result of a broken share code. */
 export const INVALID_SHARE_CODE: DeepReadonly<ShareCodeFailure> = { status: 'invalid' };
+
+/** Stored build record: share code of the build and its lock. */
+export const STORED_BUILD_SCHEMA = z.object({
+  code: z.string(),
+  readonly: z.boolean(),
+});

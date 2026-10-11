@@ -10,8 +10,8 @@ export default defineConfig({
     vue(),
     svgLoader({ defaultImport: 'url', svgo: false }),
     imagetools({
-      /** Ability icon masters (biosoldier ones with state variants), up to 256px each. */
-      include: '**/config/icons/abilities/*/*.png',
+      /** Ability and SHIV perk icon masters (with state variants for trees), up to 256px each. */
+      include: '**/config/icons/{abilities,perks}/*/*.png',
       /** 128px covers the 44px cell up to 3x DPR. */
       defaultDirectives: new URLSearchParams({ w: '128', format: 'webp', quality: '85' }),
     }),
@@ -20,6 +20,7 @@ export default defineConfig({
     alias: {
       '@app': resolve(import.meta.dirname, './src/app'),
       '@pages': resolve(import.meta.dirname, './src/pages'),
+      '@widgets': resolve(import.meta.dirname, './src/widgets'),
       '@features': resolve(import.meta.dirname, './src/features'),
       '@entities': resolve(import.meta.dirname, './src/entities'),
       '@shared': resolve(import.meta.dirname, './src/shared'),

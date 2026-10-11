@@ -1,4 +1,7 @@
 export { decodeBiosoldierBuild, encodeBiosoldierBuild } from './model/biosoldier-build-code';
+export type { ShareCodeDecodeResult } from './model/share-code';
 export { decodeShivBuild, encodeShivBuild } from './model/shiv-build-code';
-export { default as ExportBiosoldierBuild } from './ui/ExportBiosoldierBuild.vue';
-export { default as ImportBiosoldierBuild } from './ui/ImportBiosoldierBuild.vue';
+export { storedBuildCodec } from './model/stored-build';
+export type { StoredBuild } from './model/stored-build';
+export { default as ShareCodeExport } from './ui/ShareCodeExport.vue';
+export { default as ShareCodeImport } from './ui/ShareCodeImport.vue';

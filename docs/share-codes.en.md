@@ -27,7 +27,7 @@ A decoder returns `{ status: 'decoded', build }`, or why it failed:
 
 A stored build whose code does not decode is skipped on loading.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/biosoldier-build-code.ts` (fields and `BiosoldierBuildPart`). Lookups by `code` come from `entities/biosoldier`. The feature has one consumer page but stays a separate slice on purpose: the format changes for its own reasons and has its own tests and docs.
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/biosoldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` come from `entities/biosoldier` and `entities/shiv`. The feature serves both Build calculator pages and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 

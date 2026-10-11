@@ -5,5 +5,5 @@ export { selectShivBuildPerk } from './model/build';
 export type { SelectedShivPerks, ShivBuildData } from './model/build';
 export { isShivPerkId, shivPerkById } from './model/perks';
 export type { ShivPerk, ShivPerkId } from './model/perks';
-export { featuredShivPerk } from './model/technology-levels';
+export { featuredShivPerk, technologyLevelState } from './model/technology-levels';
 export type { TechnologyLevel } from './model/technology-levels';

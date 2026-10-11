@@ -1,0 +1,28 @@
+import type { MaybeRefOrGetter } from 'vue';
+import { computed, toValue } from 'vue';
+
+import type { ListNavItem } from '@shared/ui/list-nav';
+
+import type { ListedBuild, NamedBuildData } from './build-list';
+
+/**
+ * Navigation item of a build, with the build for the item's icon slot.
+ */
+export interface BuildNavItem<Build> extends ListNavItem {
+  /** Listed build. */
+  build: Build
+}
+
+/**
+ * Builds as navigation items: name as the label, removable unless locked.
+ *
+ * @param builds builds in page order.
+ */
+export const useBuildNavItems = <Build extends ListedBuild<NamedBuildData>>(builds: MaybeRefOrGetter<readonly Build[]>) => {
+  return computed(() => toValue(builds).map((build): BuildNavItem<Build> => ({
+    id: build.id,
+    label: build.name,
+    isRemovable: !build.readonly,
+    build,
+  })));
+};

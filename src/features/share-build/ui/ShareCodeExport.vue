@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="Value">
 import { useClipboard } from '@vueuse/core';
 import { computed, useId } from 'vue';
 
@@ -8,8 +8,10 @@ import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
 
 interface Props {
-  /** Share code to show and copy; null if the value cannot be encoded. */
-  code: string | null
+  /** Value to share. */
+  value: Value
+  /** Encodes the value; null if it cannot be shared. */
+  encode: (value: Value) => string | null
 }
 
 const props = defineProps<Props>();
@@ -19,9 +21,12 @@ const open = defineModel<boolean>('open', { default: false });
 
 const inputId = useId();
 
-const hasCode = computed(() => props.code !== null);
+/** Share code of the value while the popover is open: encoded on demand, not on every change. */
+const code = computed(() => open.value ? props.encode(props.value) : '');
 
-const shownCode = computed(() => props.code ?? '');
+const hasCode = computed(() => code.value !== null);
+
+const shownCode = computed(() => code.value ?? '');
 
 const { copy, copied, isSupported } = useClipboard({ source: shownCode });
 

@@ -27,7 +27,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Сохранённый билд, чей код не декодируется, при загрузке пропускается.
 
-Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/biosoldier-build-code.ts` (поля и `BiosoldierBuildPart`). Поиск по `code` даёт `entities/biosoldier`. У фичи одна страница-потребитель, но она осознанно отдельный слайс: формат меняется по своим причинам, у него свои тесты и доки.
+Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/biosoldier-build-code.ts` и `model/shiv-build-code.ts` (поля и части билда), `model/stored-build.ts` (записи хранилища поверх share-кода). Поиск по `code` дают `entities/biosoldier` и `entities/shiv`. Фича обслуживает обе страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 

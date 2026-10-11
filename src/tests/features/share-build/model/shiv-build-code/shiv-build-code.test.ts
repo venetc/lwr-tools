@@ -27,6 +27,8 @@ vi.mock('@entities/shiv/config/constants/technology-level-content', async () => 
 
 vi.mock('@entities/shiv/config/constants/perk-icons', () => ({ SHIV_PERK_ICON: {} }));
 
+vi.mock('@entities/shiv/config/constants/technology-level-icons', () => ({ TECHNOLOGY_LEVEL_ICON: {} }));
+
 describe('encodeShivBuild', () => {
   it('leaves out the name section for the default name', () => {
     const code = encodeShivBuild(DEFAULT_NAME_BUILD) ?? '';

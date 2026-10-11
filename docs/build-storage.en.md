@@ -2,7 +2,7 @@
 
 **English** · [Русский](build-storage.ru.md)
 
-Builds of the Biosoldier Build calculator survive reloads and reopening: they are saved to `localStorage` and synced between open tabs.
+Builds of the Build calculators survive reloads and reopening: they are saved to `localStorage` and synced between open tabs. Each calculator has its own prefix and list: `lwr-tools.biosoldier-builds.v1.` and `lwr-tools.shiv-builds.v1.`; keys and records below are shown for Biosoldiers and are the same for SHIVs.
 
 ## Keys
 
@@ -16,7 +16,7 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 - `order` is the display order. No `order` means nothing has been saved yet, and the page shows the default builds; `[]` means the user removed them all.
 - `lwr-tools.` is required: on GitHub Pages every `<user>.github.io` project shares one storage.
 
-Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `pages/biosoldier-builds/config/constants.ts` (keys, record schema), `model/build-storage.ts` (build record ↔ build), `model/biosoldier-builds.ts` (store and default builds).
+Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `features/manage-builds` (build list operations: rename, lock, import, replace, remove), `features/share-build`: `config/constants.ts` (record schema) and `model/stored-build.ts` (build record ↔ build through the share code), and in each calculator page (`pages/biosoldier-builds`, `pages/shiv-builds`) `config/constants.ts` (keys) and the store `model/biosoldier-builds.ts` / `model/shiv-builds.ts` (default builds, tree rules).
 
 ## Loading
 
@@ -24,7 +24,7 @@ Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (lo
 - Ids from `order` without a record are skipped.
 - A record that fails to parse (JSON, shape, share code) is skipped and stays in the storage: a newer app version may read it.
 - An invalid `order` counts as `[]`: records are still restored.
-- Default builds have fixed ids `default-<classId>` and are saved right away, so tabs opened for the first time at once write the same records.
+- Default builds have fixed ids (`default-<classId>` for Biosoldiers, `default-shiv` for SHIVs) and are saved right away, so tabs opened for the first time at once write the same records.
 
 ## Saving
 

@@ -16,6 +16,10 @@ export const ROUTES = {
     name: 'biosoldier-builds',
     path: '/builds/biosoldier',
   },
+  SHIV_BUILDS: {
+    name: 'shiv-builds',
+    path: '/builds/shiv',
+  },
 } as const;
 
 declare module 'vue-router' {
@@ -24,6 +28,7 @@ declare module 'vue-router' {
       [ROUTES.HOME.name]: RouteRecordInfo<typeof ROUTES.HOME.name, typeof ROUTES.HOME.path, Record<never, never>, Record<never, never>>
       [ROUTES.BUILDS.name]: RouteRecordInfo<typeof ROUTES.BUILDS.name, typeof ROUTES.BUILDS.path, Record<never, never>, Record<never, never>>
       [ROUTES.BIOSOLDIER_BUILDS.name]: RouteRecordInfo<typeof ROUTES.BIOSOLDIER_BUILDS.name, typeof ROUTES.BIOSOLDIER_BUILDS.path, Record<never, never>, Record<never, never>>
+      [ROUTES.SHIV_BUILDS.name]: RouteRecordInfo<typeof ROUTES.SHIV_BUILDS.name, typeof ROUTES.SHIV_BUILDS.path, Record<never, never>, Record<never, never>>
     }
   }
 

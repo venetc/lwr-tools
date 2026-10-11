@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, useCssModule } from 'vue';
 
-import type { SoldierRank } from '@entities/biosoldier';
+import type { SvgIcon } from '@shared/ui/svg-icon';
 
 interface Props {
-  /** Soldier rank to display. */
-  rank: SoldierRank
-  /** Whether the rank icon takes the label color instead of the accent. */
+  /** Tier icon. */
+  icon: SvgIcon
+  /** Tier name. */
+  name: string
+  /** Whether the icon takes the label color instead of the accent. */
   highlighted?: boolean
 }
 
@@ -22,11 +24,11 @@ const iconClass = computed(() => [style.icon, props.highlighted ? style.iconHigh
 <template>
   <span :class="$style.label">
     <component
-      :is="rank.icon"
+      :is="props.icon"
       :class="iconClass"
       aria-hidden="true"
     />
-    <span :class="$style.name">{{ rank.name }}</span>
+    <span :class="$style.name">{{ props.name }}</span>
   </span>
 </template>
 

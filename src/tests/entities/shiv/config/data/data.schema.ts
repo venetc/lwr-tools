@@ -57,17 +57,19 @@ const checkPerksOnOneLevel = (levels: Record<string, TechnologyLevelContent>, co
 };
 
 /**
- * Reports perks without all icon variants.
+ * Reports perks without an icon entry or with a blank variant: every perk needs the original and both tinted ones.
  *
  * @param perks perk records by id.
  * @param context refinement context that collects issues.
  */
 const checkPerkIcons = (perks: Record<string, ShivPerkContent>, context: z.RefinementCtx) => {
-  Object.keys(perks).filter(isShivPerkId).forEach((perkId) => {
-    const icon = SHIV_PERK_ICON[perkId];
-    const hasAllVariants = [icon.original, icon.available, icon.disabled].every(variant => variant !== '');
+  Object.keys(perks).forEach((perkId) => {
+    const icon = isShivPerkId(perkId) && Object.hasOwn(SHIV_PERK_ICON, perkId) ? SHIV_PERK_ICON[perkId] : null;
+    const hasAllVariants = icon !== null && [icon.original, icon.available, icon.disabled].every(variant => variant !== '');
 
-    if (!hasAllVariants) context.addIssue({ code: 'custom', message: `Perk "${perkId}" lacks icon variants`, path: [perkId] });
+    if (hasAllVariants) return;
+
+    context.addIssue({ code: 'custom', message: `Perk "${perkId}" lacks icon variants`, path: [perkId] });
   });
 };
 

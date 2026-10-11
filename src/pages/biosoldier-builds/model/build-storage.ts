@@ -17,7 +17,7 @@ export const serializeBuild = (build: Readonly<BiosoldierBuild>) => {
 };
 
 /**
- * Build of the stored record; null if the record does not match the schema or has an invalid code.
+ * Build of the stored record; null if the record does not match the schema or its code does not decode to a biosoldier build.
  *
  * @param buildId build id.
  * @param record stored record.
@@ -27,9 +27,9 @@ export const parseBuild = (buildId: BiosoldierBuildId, record: unknown): Biosold
 
   if (!storedBuild.success) return null;
 
-  const data = decodeBiosoldierBuild(storedBuild.data.code);
+  const result = decodeBiosoldierBuild(storedBuild.data.code);
 
-  if (!data) return null;
+  if (result.status !== 'decoded') return null;
 
-  return { ...data, id: buildId, readonly: storedBuild.data.readonly };
+  return { ...result.build, id: buildId, readonly: storedBuild.data.readonly };
 };

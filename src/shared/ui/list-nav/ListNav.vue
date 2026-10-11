@@ -1,79 +1,101 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="Item extends ListNavItem">
 import { Trash2 } from '@lucide/vue';
+import type { VNode } from 'vue';
 import { useId } from 'vue';
 
 import { HoldButton } from '@shared/ui/hold-button';
 import { ScrollArea } from '@shared/ui/scroll-area';
 
-import type { BiosoldierBuild, BiosoldierBuildId } from '../model/biosoldier-builds';
+import type { ListNavItem } from './model/list-nav';
 
 interface Props {
-  /** Builds to list, in page order. */
-  builds: readonly Readonly<BiosoldierBuild>[]
+  /** Items to list, in page order. */
+  items: readonly Item[]
+  /** Caption above the list; also the accessible name of the navigation. */
+  caption: string
 }
 
 interface Emits {
-  /** Requests scrolling to the build panel. */
-  select: [buildId: BiosoldierBuildId]
-  /** Requests removal of the build. */
-  remove: [buildId: BiosoldierBuildId]
+  /** Requests going to the item. */
+  select: [id: string]
+  /** Requests removal of the item. */
+  remove: [id: string]
+}
+
+interface IconSlotProps {
+  item: Item
 }
 
 const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
+const slots = defineSlots<{
+  icon?: (props: IconSlotProps) => VNode[]
+}>();
+
 const captionId = useId();
 
-/**
- * Requests scrolling to the build panel.
- *
- * @param buildId build id.
- */
-const select = (buildId: BiosoldierBuildId) => emit('select', buildId);
+const hasIcon = Boolean(slots.icon);
 
 /**
- * Requests removal of the build.
+ * Requests going to the item.
  *
- * @param buildId build id.
+ * @param id item id.
  */
-const remove = (buildId: BiosoldierBuildId) => emit('remove', buildId);
+const select = (id: string) => emit('select', id);
+
+/**
+ * Requests removal of the item.
+ *
+ * @param id item id.
+ */
+const remove = (id: string) => emit('remove', id);
+
+/**
+ * Whether the item cannot be removed.
+ *
+ * @param item listed item.
+ */
+const isRemoveDisabled = (item: Item) => !item.isRemovable;
 </script>
 
 <template>
   <nav :class="$style.nav" :aria-labelledby="captionId">
     <p :id="captionId" :class="$style.caption">
-      Click to scroll to a build
+      {{ props.caption }}
     </p>
     <ScrollArea orientation="horizontal">
       <ul :class="$style.list">
         <li
-          v-for="build in props.builds"
-          :key="build.id"
+          v-for="item in props.items"
+          :key="item.id"
           :class="$style.entry"
         >
           <button
             :class="$style.item"
             type="button"
-            :title="build.name"
-            @click="select(build.id)"
+            :title="item.label"
+            @click="select(item.id)"
           >
-            <component
-              :is="build.biosoldierClass.icon"
+            <span
+              v-if="hasIcon"
               :class="$style.icon"
               aria-hidden="true"
-            />
-            <span :class="$style.name">{{ build.name }}</span>
+            >
+              <slot name="icon" :item="item" />
+            </span>
+            <span :class="$style.name">{{ item.label }}</span>
           </button>
           <HoldButton
             :class="$style.remove"
-            :disabled="build.readonly"
+            :disabled="isRemoveDisabled(item)"
             :duration="450"
             title="Hold to remove"
-            @hold="remove(build.id)"
+            @hold="remove(item.id)"
           >
             <Trash2 :class="$style.removeIcon" aria-hidden="true" />
-            <span :class="$style.visuallyHidden">Remove {{ build.name }}</span>
+            <span :class="$style.visuallyHidden">Remove {{ item.label }}</span>
           </HoldButton>
         </li>
       </ul>
@@ -88,7 +110,7 @@ const remove = (buildId: BiosoldierBuildId) => emit('remove', buildId);
 
 $icon-size: 20px;
 $item-padding: 4px;
-// Fixed row height, so the list keeps its height with any number of builds.
+// Fixed row height, so the list keeps its height with any number of items.
 $row-height: $icon-size + $item-padding * 2;
 
 .nav {
@@ -157,9 +179,10 @@ $row-height: $icon-size + $item-padding * 2;
 
 .icon {
   flex: none;
+  display: grid;
+  place-items: center;
   width: $icon-size;
   height: $icon-size;
-  color: colors.$accent;
 }
 
 .name {

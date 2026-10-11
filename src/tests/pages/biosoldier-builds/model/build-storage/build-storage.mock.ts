@@ -32,12 +32,12 @@ export const encodeBiosoldierBuildMock = (build: BiosoldierBuildData) => {
 };
 
 /**
- * Fake share code decoder: the mock build for the valid code, null for any other.
+ * Fake share code decoder: the mock build for the valid code, an invalid result for any other.
  *
  * @param code share code.
  */
 export const decodeBiosoldierBuildMock = (code: string) => {
-  if (code !== VALID_CODE) return null;
+  if (code !== VALID_CODE) return { status: 'invalid' };
 
-  return BUILD_DATA_MOCK;
+  return { status: 'decoded', build: BUILD_DATA_MOCK };
 };

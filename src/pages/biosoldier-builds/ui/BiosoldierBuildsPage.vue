@@ -4,18 +4,21 @@ import { storeToRefs } from 'pinia';
 
 import { BIOSOLDIER_CLASSES } from '@entities/biosoldier';
 import { ImportBiosoldierBuild } from '@features/share-build';
+import { usePanelScroll } from '@shared/lib/panel-scroll';
 import { Button } from '@shared/ui/button';
+import { ListNav } from '@shared/ui/list-nav';
 
-import { useBuildScroll } from '../lib/useBuildScroll';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
+import { useBiosoldierBuildNavItems } from '../model/useBiosoldierBuildNavItems';
 import BiosoldierBuildTree from './BiosoldierBuildTree.vue';
-import BuildNav from './BuildNav.vue';
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
 const { builds } = storeToRefs(biosoldierBuildsStore);
 
-const { panelId, scrollToBuild } = useBuildScroll();
+const { panelRef, scrollToPanel } = usePanelScroll();
+
+const navItems = useBiosoldierBuildNavItems(builds);
 </script>
 
 <template>
@@ -23,7 +26,7 @@ const { panelId, scrollToBuild } = useBuildScroll();
     <div :class="$style.builds">
       <BiosoldierBuildTree
         v-for="build in builds"
-        :id="panelId(build.id)"
+        :ref="panelRef(build.id)"
         :key="build.id"
         :class="$style.build"
         :build="build"
@@ -62,12 +65,17 @@ const { panelId, scrollToBuild } = useBuildScroll();
           </template>
         </ImportBiosoldierBuild>
 
-        <BuildNav
+        <ListNav
           :class="$style.nav"
-          :builds="builds"
-          @select="scrollToBuild"
+          :items="navItems"
+          caption="Click to scroll to a build"
+          @select="scrollToPanel"
           @remove="biosoldierBuildsStore.removeBuild"
-        />
+        >
+          <template #icon="{ item }">
+            <component :is="item.icon" :class="$style.navIcon" />
+          </template>
+        </ListNav>
       </div>
     </div>
   </main>
@@ -170,6 +178,12 @@ $toolbar-row-min-width: 720px;
   @container (width >= #{$toolbar-row-min-width}) {
     padding-inline: 8px;
   }
+}
+
+.navIcon {
+  width: 100%;
+  height: 100%;
+  color: colors.$accent;
 }
 
 .plusIcon {

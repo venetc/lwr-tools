@@ -7,17 +7,20 @@ import {
   SOLDIER_RANKS,
 } from '@entities/biosoldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
-import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
+import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import {
   ABILITY_CODE_BITS,
   BIOSOLDIER_BUILD_PARTS,
   BIOSOLDIER_BUILD_SECTION,
   CLASS_CODE_BITS,
+  INVALID_SHARE_CODE,
   NAME_LENGTH_BITS,
   PERK_COUNT_BITS,
   SHARE_CODE_FORMAT,
 } from '../config/constants';
+import type { ShareCodeDecodeResult } from './share-code';
+import { openShareCode } from './share-code';
 
 /**
  * Optional part of a biosoldier build code that decoding can skip; the class and perks are always read.
@@ -95,26 +98,29 @@ export const encodeBiosoldierBuild = (build: BiosoldierBuildData) => {
 };
 
 /**
- * Biosoldier build of the share code, or null if the code is invalid, not a biosoldier build, has no valid `PERKS` section
- * or has an invalid section of a requested part. Parts that are not requested or absent get their defaults;
- * unknown sections are skipped.
+ * Biosoldier build of the share code; `other-unit` for a build code of another unit; `invalid` if the code is broken,
+ * has no valid `PERKS` section or has an invalid section of a requested part. Parts that are not requested or absent
+ * get their defaults; unknown sections are skipped.
  *
  * @param code share code.
  * @param parts optional parts to read; all by default.
  */
-export const decodeBiosoldierBuild = (code: string, parts = BIOSOLDIER_BUILD_PARTS): BiosoldierBuildData | null => {
-  const binaryCode = openBinaryCode(code);
+export const decodeBiosoldierBuild = (
+  code: string,
+  parts = BIOSOLDIER_BUILD_PARTS,
+): ShareCodeDecodeResult<BiosoldierBuildData> => {
+  const shareCode = openShareCode(code, SHARE_CODE_FORMAT.BIOSOLDIER_BUILD);
 
-  if (!binaryCode || binaryCode.format !== SHARE_CODE_FORMAT.BIOSOLDIER_BUILD) return null;
+  if (shareCode.status !== 'opened') return shareCode;
 
-  const perksReader = binaryCode.sections.get(BIOSOLDIER_BUILD_SECTION.PERKS) ?? null;
+  const perksReader = shareCode.sections.get(BIOSOLDIER_BUILD_SECTION.PERKS) ?? null;
   const perks = perksReader && readPerks(perksReader);
 
-  if (!perks) return null;
+  if (!perks) return INVALID_SHARE_CODE;
 
-  const name = decodeName(binaryCode.sections, perks.biosoldierClass, parts);
+  const name = decodeName(shareCode.sections, perks.biosoldierClass, parts);
 
-  if (name === null) return null;
+  if (name === null) return INVALID_SHARE_CODE;
 
-  return { ...perks, name };
+  return { status: 'decoded', build: { ...perks, name } };
 };

@@ -7,10 +7,14 @@ import {
   BROKEN_NAME_SECTION,
   DEFAULT_NAME_BUILD,
   FORMAT,
+  GARBAGE_CODE,
+  INVALID_RESULT,
   NAME_SECTION_ID,
   NAMED_BUILD,
-  OTHER_FORMAT,
   perksSection,
+  SHIV_CODE_RESULT,
+  SHIV_FORMAT,
+  UNKNOWN_FORMAT,
   UNKNOWN_PERK_BUILD,
   UNKNOWN_SECTION,
   VALID_PERKS_SECTION,
@@ -54,88 +58,102 @@ describe('decodeBiosoldierBuild', () => {
   it('restores a build with the default name', () => {
     const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toEqual(DEFAULT_NAME_BUILD);
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
   });
 
   it('restores a build with its own name', () => {
     const code = encodeBiosoldierBuild(NAMED_BUILD) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toEqual(NAMED_BUILD);
+    expect(result).toEqual({ status: 'decoded', build: NAMED_BUILD });
   });
 
   it('gives the default name when the name part is not requested', () => {
     const code = encodeBiosoldierBuild(NAMED_BUILD) ?? '';
 
-    const build = decodeBiosoldierBuild(code, []);
+    const result = decodeBiosoldierBuild(code, []);
 
-    expect(build?.name).toBe(DEFAULT_NAME_BUILD.name);
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
   });
 
   it('skips unknown sections', () => {
     const code = encodeBinaryCode(FORMAT, [VALID_PERKS_SECTION, UNKNOWN_SECTION]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toEqual(DEFAULT_NAME_BUILD);
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
   });
 
-  it('rejects a code of another format', () => {
-    const code = encodeBinaryCode(OTHER_FORMAT, [VALID_PERKS_SECTION]) ?? '';
+  it('recognises a code of another unit', () => {
+    const code = encodeBinaryCode(SHIV_FORMAT, [VALID_PERKS_SECTION]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(SHIV_CODE_RESULT);
+  });
+
+  it('rejects a code of an unknown format', () => {
+    const code = encodeBinaryCode(UNKNOWN_FORMAT, [VALID_PERKS_SECTION]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a string that is not a code', () => {
+    const result = decodeBiosoldierBuild(GARBAGE_CODE);
+
+    expect(result).toEqual(INVALID_RESULT);
   });
 
   it('rejects a code without the perks section', () => {
     const code = encodeBinaryCode(FORMAT, [UNKNOWN_SECTION]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(INVALID_RESULT);
   });
 
   it('rejects an unknown class', () => {
     const code = encodeBinaryCode(FORMAT, [perksSection(30, [12])]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(INVALID_RESULT);
   });
 
   it('rejects an unknown ability', () => {
     const code = encodeBinaryCode(FORMAT, [perksSection(3, [99])]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(INVALID_RESULT);
   });
 
   it('rejects more perks than ranks', () => {
     const code = encodeBinaryCode(FORMAT, [perksSection(3, [11, 12, 13])]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(INVALID_RESULT);
   });
 
   it('rejects a perks section with unread bits', () => {
     const code = encodeBinaryCode(FORMAT, [perksSection(3, [12], 1)]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(INVALID_RESULT);
   });
 
   it('rejects a broken name section when the name is requested', () => {
     const code = encodeBinaryCode(FORMAT, [VALID_PERKS_SECTION, BROKEN_NAME_SECTION]) ?? '';
 
-    const build = decodeBiosoldierBuild(code);
+    const result = decodeBiosoldierBuild(code);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(INVALID_RESULT);
   });
 });

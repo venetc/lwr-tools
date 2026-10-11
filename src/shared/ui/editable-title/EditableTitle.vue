@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { SquarePen } from '@lucide/vue';
+import type { VNode } from 'vue';
 import { computed, useId } from 'vue';
 
-import type { BiosoldierClass } from '@entities/biosoldier';
 import { Label } from '@shared/ui/label';
 
 interface Props {
-  /** Biosoldier class of the build. */
-  biosoldierClass: BiosoldierClass
-  /** Whether the build name cannot be edited. */
+  /** Title shown as the placeholder and restored when the field is left blank. */
+  fallback: string
+  /** Accessible label of the edit button. */
+  editLabel: string
+  /** Whether the title cannot be edited. */
   readonly?: boolean
 }
 
@@ -16,49 +18,49 @@ const props = withDefaults(defineProps<Props>(), {
   readonly: false,
 });
 
-/** Build name; defaults to the class name, also when the field is cleared. */
-const name = defineModel<string>('name', { required: true });
+defineSlots<{
+  icon?: () => VNode[]
+}>();
+
+/** Title text; the fallback is restored when the field is left blank. */
+const title = defineModel<string>({ required: true });
 
 const inputId = useId();
 
 const isEditable = computed(() => !props.readonly);
 
-/** Restores the class name if the name field was left blank. */
-const restoreBlankName = () => {
-  if (name.value.trim() !== '') return;
+/** Restores the fallback if the field was left blank. */
+const restoreBlankTitle = () => {
+  if (title.value.trim() !== '') return;
 
-  name.value = props.biosoldierClass.name;
+  title.value = props.fallback;
 };
 
 /**
- * Finishes name editing by removing focus.
+ * Finishes editing by removing focus.
  *
  * @param event key press in the field.
  */
-const finishNameEditing = (event: KeyboardEvent) => {
+const finishEditing = (event: KeyboardEvent) => {
   if (event.target instanceof HTMLInputElement) event.target.blur();
 };
 </script>
 
 <template>
   <div :class="$style.heading">
-    <component
-      :is="biosoldierClass.icon"
-      :class="$style.icon"
-      aria-hidden="true"
-    />
+    <slot name="icon" />
     <div :class="$style.name">
       <input
         :id="inputId"
-        v-model="name"
+        v-model="title"
         :class="$style.nameInput"
         type="text"
         spellcheck="false"
         autocomplete="off"
-        :readonly="readonly"
-        :placeholder="biosoldierClass.name"
-        @blur="restoreBlankName"
-        @keydown.enter="finishNameEditing"
+        :readonly="props.readonly"
+        :placeholder="props.fallback"
+        @blur="restoreBlankTitle"
+        @keydown.enter="finishEditing"
       >
       <Label
         v-if="isEditable"
@@ -66,7 +68,7 @@ const finishNameEditing = (event: KeyboardEvent) => {
         :for="inputId"
       >
         <SquarePen :class="$style.editIcon" aria-hidden="true" />
-        <span :class="$style.visuallyHidden">Rename build</span>
+        <span :class="$style.visuallyHidden">{{ props.editLabel }}</span>
       </Label>
     </div>
   </div>
@@ -77,21 +79,15 @@ const finishNameEditing = (event: KeyboardEvent) => {
 @use 'styles/typography';
 @use 'styles/media';
 
-$badge: 34px;
+// Row height of a title with a leading icon, kept without one so titles line up.
+$row-height: 34px;
 
 .heading {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
-  min-height: $badge;
-}
-
-.icon {
-  flex: none;
-  width: $badge;
-  height: $badge;
-  color: colors.$accent;
+  min-height: $row-height;
 }
 
 .name {

@@ -16,7 +16,16 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - Прочитанная секция должна закончиться ровно на своей длине, иначе код невалиден; пропущенные секции не проверяются.
 - `decodeBiosoldierBuild(code, parts)` читает только запрошенные части, остальные получают значения по умолчанию.
 
-Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/biosoldier-build-code.ts` (поля и `BiosoldierBuildPart`). Поиск по `code` даёт `entities/biosoldier`. У фичи одна страница-потребитель, но она осознанно отдельный слайс: формат меняется по своим причинам, у него свои тесты и доки.
+## Результат декодирования
+
+Декодер возвращает `{ status: 'decoded', build }` или причину неудачи:
+
+- `{ status: 'other-unit', unit }` — CRC и заголовок валидны, но `format` принадлежит билдам другого юнита (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV). Импорт показывает toast «This is a <unit> build code» и оставляет форму открытой с кодом.
+- `{ status: 'invalid' }` — всё остальное: битый код, неизвестный формат, отсутствующая или битая секция. Импорт показывает «Invalid code» под полем.
+
+Сохранённый билд, чей код не декодируется, при загрузке пропускается.
+
+Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/biosoldier-build-code.ts` (поля и `BiosoldierBuildPart`). Поиск по `code` даёт `entities/biosoldier`. У фичи одна страница-потребитель, но она осознанно отдельный слайс: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 

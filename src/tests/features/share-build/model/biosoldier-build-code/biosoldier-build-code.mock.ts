@@ -51,7 +51,15 @@ export const NAME_SECTION_ID = 2;
 
 export const UNKNOWN_SECTION_ID = 20;
 
-export const OTHER_FORMAT = 5;
+export const UNKNOWN_FORMAT = 5;
+
+export const SHIV_FORMAT = 2;
+
+export const INVALID_RESULT = { status: 'invalid' };
+
+export const SHIV_CODE_RESULT = { status: 'other-unit', unit: 'SHIV' };
+
+export const GARBAGE_CODE = 'not a code';
 
 /**
  * `PERKS` section with raw numbers: class 5 bits, perk count 3 bits, ability numbers 8 bits each.

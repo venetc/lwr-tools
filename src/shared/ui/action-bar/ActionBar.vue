@@ -1,26 +1,34 @@
 <script setup lang="ts">
-import { ClipboardPaste, Lock, LockOpen, Share2, Trash2 } from '@lucide/vue';
+import { Lock, LockOpen, Trash2 } from '@lucide/vue';
+import type { VNode } from 'vue';
 import { computed, useCssModule } from 'vue';
 
-import type { BiosoldierBuildData } from '@entities/biosoldier';
-import { ExportBiosoldierBuild, ImportBiosoldierBuild } from '@features/share-build';
 import { Toggle } from '@shared/ui/toggle';
 
 interface Props {
-  /** Build to export. */
-  build: BiosoldierBuildData
+  /** Accessible label of the remove button. */
+  removeLabel: string
+  /** Accessible label of the lock toggle. */
+  lockLabel: string
 }
 
 interface Emits {
-  /** Requests removal of the build. */
+  /** Requests removal. */
   remove: []
-  /** Requests replacing the build with imported data. */
-  import: [build: BiosoldierBuildData]
+}
+
+interface DefaultSlotProps {
+  /** Class that styles a button like the bar's own actions. */
+  actionClass: string[]
 }
 
 const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  default?: (props: DefaultSlotProps) => VNode[]
+}>();
 
 const style = useCssModule();
 
@@ -28,7 +36,7 @@ const lockClass = [style.action, style.lock];
 
 const secondaryClass = [style.action, style.secondary];
 
-/** Whether the build is locked for editing. */
+/** Whether editing is locked; the remove button is hidden while locked. */
 const locked = defineModel<boolean>('locked', { required: true });
 
 const lockIcon = computed(() => locked.value ? Lock : LockOpen);
@@ -36,37 +44,14 @@ const lockIcon = computed(() => locked.value ? Lock : LockOpen);
 const isEditable = computed(() => !locked.value);
 
 /**
- * Requests removal of the build.
+ * Requests removal.
  */
 const requestRemove = () => emit('remove');
-
-/**
- * Requests replacing the build with imported data.
- *
- * @param build imported build data.
- */
-const requestImport = (build: BiosoldierBuildData) => emit('import', build);
 </script>
 
 <template>
   <div :class="$style.actions">
-    <ImportBiosoldierBuild v-if="isEditable" @import="requestImport">
-      <template #trigger>
-        <button :class="secondaryClass" type="button">
-          <ClipboardPaste :class="$style.icon" aria-hidden="true" />
-          <span :class="$style.visuallyHidden">Import build</span>
-        </button>
-      </template>
-    </ImportBiosoldierBuild>
-
-    <ExportBiosoldierBuild :build="props.build">
-      <template #trigger>
-        <button :class="secondaryClass" type="button">
-          <Share2 :class="$style.icon" aria-hidden="true" />
-          <span :class="$style.visuallyHidden">Export build</span>
-        </button>
-      </template>
-    </ExportBiosoldierBuild>
+    <slot :action-class="secondaryClass" />
 
     <button
       v-if="isEditable"
@@ -75,7 +60,7 @@ const requestImport = (build: BiosoldierBuildData) => emit('import', build);
       @click="requestRemove"
     >
       <Trash2 :class="$style.icon" aria-hidden="true" />
-      <span :class="$style.visuallyHidden">Remove build</span>
+      <span :class="$style.visuallyHidden">{{ props.removeLabel }}</span>
     </button>
 
     <Toggle v-model="locked" :class="lockClass">
@@ -84,7 +69,7 @@ const requestImport = (build: BiosoldierBuildData) => emit('import', build);
         :class="$style.icon"
         aria-hidden="true"
       />
-      <span :class="$style.visuallyHidden">Lock build</span>
+      <span :class="$style.visuallyHidden">{{ props.lockLabel }}</span>
     </Toggle>
   </div>
 </template>

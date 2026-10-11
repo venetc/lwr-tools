@@ -16,7 +16,16 @@ section = id (5) | length (9) | fields
 - A section that is read must end exactly at its length, otherwise the code is invalid; skipped sections aren't checked.
 - `decodeBiosoldierBuild(code, parts)` reads only the requested parts; the rest get defaults.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers, section ids, field widths), `model/biosoldier-build-code.ts` (fields and `BiosoldierBuildPart`). Lookups by `code` come from `entities/biosoldier`. The feature has one consumer page but stays a separate slice on purpose: the format changes for its own reasons and has its own tests and docs.
+## Decoding result
+
+A decoder returns `{ status: 'decoded', build }`, or why it failed:
+
+- `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
+- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section. The import shows "Invalid code" under the field.
+
+A stored build whose code does not decode is skipped on loading.
+
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/biosoldier-build-code.ts` (fields and `BiosoldierBuildPart`). Lookups by `code` come from `entities/biosoldier`. The feature has one consumer page but stays a separate slice on purpose: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 

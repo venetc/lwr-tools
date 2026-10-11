@@ -6,11 +6,12 @@ import { Input } from '@shared/ui/input';
 import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
 
+import type { ShareCodeDecodeResult } from '../model/share-code';
 import { useShareCodeImport } from '../model/useShareCodeImport';
 
 interface Props {
-  /** Decodes a pasted code; null for an invalid code. */
-  decode: (code: string) => Value | null
+  /** Decodes a pasted code. */
+  decode: (code: string) => ShareCodeDecodeResult<Value>
 }
 
 interface Emits {

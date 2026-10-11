@@ -1,13 +1,21 @@
 import type { DeepReadonly } from '@shared/lib/object';
 
 import type { BiosoldierBuildPart } from '../model/biosoldier-build-code';
+import type { ShareCodeFailure } from '../model/share-code';
 
 /**
  * Formats of all share codes of the app; a new format gets the next number; numbers are never changed or reused.
  */
 export const SHARE_CODE_FORMAT = {
   BIOSOLDIER_BUILD: 1,
+  SHIV_BUILD: 2,
 } as const;
+
+/** Unit whose builds each format carries, by format number; a code of a listed format is reported as another unit's. */
+export const SHARE_CODE_FORMAT_UNIT: ReadonlyMap<number, string> = new Map([
+  [SHARE_CODE_FORMAT.BIOSOLDIER_BUILD, 'Biosoldier'],
+  [SHARE_CODE_FORMAT.SHIV_BUILD, 'SHIV'],
+]);
 
 /**
  * Section ids of biosoldier build codes. A new section gets the next id; ids are never changed or reused.
@@ -32,3 +40,6 @@ export const NAME_LENGTH_BITS = 5;
 
 /** Optional parts of a biosoldier build read from a code by default. */
 export const BIOSOLDIER_BUILD_PARTS: DeepReadonly<BiosoldierBuildPart[]> = ['name'];
+
+/** Result of a broken share code. */
+export const INVALID_SHARE_CODE: DeepReadonly<ShareCodeFailure> = { status: 'invalid' };

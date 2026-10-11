@@ -1,47 +1,10 @@
 import { decodeBiosoldierBuild, encodeBiosoldierBuild } from '@features/share-build';
-import { localStorageKeys, readLocalStorage } from '@shared/lib/local-storage';
 
-import {
-  BUILD_KEY_PREFIX,
-  BUILD_ORDER_KEY,
-  BUILD_ORDER_SCHEMA,
-  STORED_BUILD_SCHEMA,
-} from '../config/constants';
+import { STORED_BUILD_SCHEMA } from '../config/constants';
 import type { BiosoldierBuild, BiosoldierBuildId } from './biosoldier-builds';
 
 /**
- * Parsed JSON value, or null if the text is not valid JSON.
- *
- * @param value JSON text.
- */
-const parseJson = (value: string): unknown => {
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-};
-
-/**
- * Storage key of the build.
- *
- * @param buildId build id.
- */
-export const buildStorageKey = (buildId: BiosoldierBuildId) => `${BUILD_KEY_PREFIX}${buildId}`;
-
-/**
- * Build id of the storage key, or null if the key is not a build key.
- *
- * @param key storage key.
- */
-export const buildIdOfKey = (key: string): BiosoldierBuildId | null => {
-  if (!key.startsWith(BUILD_KEY_PREFIX)) return null;
-
-  return key.slice(BUILD_KEY_PREFIX.length);
-};
-
-/**
- * Stored record of the build: JSON `{ code, readonly }`; null if the build has no share code.
+ * Stored record of the build: its share code and lock; null if the build has no share code.
  *
  * @param build biosoldier build.
  */
@@ -50,75 +13,23 @@ export const serializeBuild = (build: Readonly<BiosoldierBuild>) => {
 
   if (code === null) return null;
 
-  return JSON.stringify({ code, readonly: build.readonly });
+  return { code, readonly: build.readonly };
 };
 
 /**
- * Build of the stored record; null if the record is not valid JSON, does not match the schema or has an invalid code.
+ * Build of the stored record; null if the record does not match the schema or has an invalid code.
  *
  * @param buildId build id.
- * @param value stored record.
+ * @param record stored record.
  */
-export const parseBuild = (buildId: BiosoldierBuildId, value: string): BiosoldierBuild | null => {
-  const record = STORED_BUILD_SCHEMA.safeParse(parseJson(value));
+export const parseBuild = (buildId: BiosoldierBuildId, record: unknown): BiosoldierBuild | null => {
+  const storedBuild = STORED_BUILD_SCHEMA.safeParse(record);
 
-  if (!record.success) return null;
+  if (!storedBuild.success) return null;
 
-  const data = decodeBiosoldierBuild(record.data.code);
+  const data = decodeBiosoldierBuild(storedBuild.data.code);
 
   if (!data) return null;
 
-  return { ...data, id: buildId, readonly: record.data.readonly };
-};
-
-/**
- * Build ids of the stored order, or null if the order is not valid JSON or not an array of strings.
- *
- * @param value stored order.
- */
-export const parseBuildOrder = (value: string) => {
-  const order = BUILD_ORDER_SCHEMA.safeParse(parseJson(value));
-
-  if (!order.success) return null;
-
-  return order.data;
-};
-
-/**
- * Build ids arranged by the order: ids of the order that are present first, without duplicates,
- * then the remaining ids in their own order. Ids of the order that are not present are skipped.
- *
- * @param order build ids in the desired order.
- * @param buildIds present build ids.
- */
-export const orderedBuildIds = (order: BiosoldierBuildId[], buildIds: BiosoldierBuildId[]) => {
-  const presentIds = new Set(buildIds);
-  const orderedIds = new Set(order.filter(buildId => presentIds.has(buildId)));
-
-  buildIds.forEach(buildId => orderedIds.add(buildId));
-
-  return [...orderedIds];
-};
-
-/**
- * Stored builds in the stored order, records outside the order last; null if nothing has been saved yet.
- * Invalid records are skipped; an invalid order counts as empty.
- */
-export const loadBuilds = () => {
-  const orderValue = readLocalStorage(BUILD_ORDER_KEY);
-
-  if (orderValue === null) return null;
-
-  const storedIds = localStorageKeys(BUILD_KEY_PREFIX)
-    .map(buildIdOfKey)
-    .filter(buildId => buildId !== null);
-
-  return orderedBuildIds(parseBuildOrder(orderValue) ?? [], storedIds).reduce((acc, buildId) => {
-    const value = readLocalStorage(buildStorageKey(buildId));
-    const build = value === null ? null : parseBuild(buildId, value);
-
-    if (build) acc.set(buildId, build);
-
-    return acc;
-  }, new Map<BiosoldierBuildId, BiosoldierBuild>());
+  return { ...data, id: buildId, readonly: storedBuild.data.readonly };
 };

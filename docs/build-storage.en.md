@@ -16,7 +16,7 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 - `order` is the display order. No `order` means nothing has been saved yet, and the page shows the default builds; `[]` means the user removed them all.
 - `lwr-tools.` is required: on GitHub Pages every `<user>.github.io` project shares one storage.
 
-Code: `pages/biosoldier-builds/config/constants.ts` (keys, schemas, delays), `model/build-storage.ts` (records and loading), `model/useBuildSync.ts` (saving and sync); storage access is `shared/lib/local-storage`.
+Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `pages/biosoldier-builds/config/constants.ts` (keys, record schema), `model/build-storage.ts` (build record ↔ build), `model/biosoldier-builds.ts` (store and default builds).
 
 ## Loading
 

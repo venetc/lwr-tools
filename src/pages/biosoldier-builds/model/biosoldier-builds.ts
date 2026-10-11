@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
 
 import type { BiosoldierBuildData, BiosoldierClass } from '@entities/biosoldier';
 import { BIOSOLDIER_CLASSES, selectBiosoldierBuildPerk } from '@entities/biosoldier';
 import { createId } from '@shared/lib/id';
+import { useStoredList } from '@shared/lib/stored-list';
 
-import { DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
-import { loadBuilds } from './build-storage';
-import { useBuildSync } from './useBuildSync';
+import { BUILD_KEY_PREFIX, BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
+import { parseBuild, serializeBuild } from './build-storage';
 
 export type BiosoldierBuildId = string;
 
@@ -37,28 +36,21 @@ const createBiosoldierBuild = (biosoldierClass: BiosoldierClass, id: BiosoldierB
 /**
  * Default builds: one per class with only the base perk selected, with fixed ids.
  */
-const createDefaultBuilds = () => BIOSOLDIER_CLASSES.reduce((acc, biosoldierClass) => {
-  const build = createBiosoldierBuild(biosoldierClass, `${DEFAULT_BUILD_ID_PREFIX}${biosoldierClass.id}`);
-
-  acc.set(build.id, build);
-
-  return acc;
-}, new Map<BiosoldierBuildId, BiosoldierBuild>());
+const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map(biosoldierClass => (
+  createBiosoldierBuild(biosoldierClass, `${DEFAULT_BUILD_ID_PREFIX}${biosoldierClass.id}`)
+));
 
 /**
  * Builds of the Biosoldier Build calculator, saved to the local storage and synced between tabs.
  */
 export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', () => {
-  const storedBuilds = loadBuilds();
-
-  const buildsById = ref(storedBuilds ?? createDefaultBuilds());
-
-  const { markBuildChanged, markOrderChanged } = useBuildSync(buildsById);
-
-  if (!storedBuilds) {
-    buildsById.value.forEach(build => markBuildChanged(build.id));
-    markOrderChanged();
-  }
+  const buildList = useStoredList<BiosoldierBuild>({
+    orderKey: BUILD_ORDER_KEY,
+    itemKeyPrefix: BUILD_KEY_PREFIX,
+    serialize: serializeBuild,
+    parse: parseBuild,
+    defaultItems: createDefaultBuilds,
+  });
 
   /**
    * Editable build by id: null for a missing or locked build.
@@ -66,7 +58,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
    * @param buildId build id.
    */
   const findEditableBuild = (buildId: BiosoldierBuildId) => {
-    const build = buildsById.value.get(buildId) ?? null;
+    const build = buildList.getItem(buildId);
 
     if (!build || build.readonly) return null;
 
@@ -86,7 +78,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
     if (!build) return;
 
     selectBiosoldierBuildPerk(build, rankIndex, perkId);
-    markBuildChanged(buildId);
+    buildList.markItemChanged(buildId);
   };
 
   /**
@@ -101,7 +93,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
     if (!build) return;
 
     build.name = name;
-    markBuildChanged(buildId);
+    buildList.markItemChanged(buildId);
   };
 
   /**
@@ -111,12 +103,12 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
    * @param isReadonly whether the build is locked.
    */
   const setReadonly = (buildId: BiosoldierBuildId, isReadonly: boolean) => {
-    const build = buildsById.value.get(buildId) ?? null;
+    const build = buildList.getItem(buildId);
 
     if (!build) return;
 
     build.readonly = isReadonly;
-    markBuildChanged(buildId);
+    buildList.markItemChanged(buildId);
   };
 
   /**
@@ -125,11 +117,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
    * @param biosoldierClass biosoldier class of the new build.
    */
   const addBuild = (biosoldierClass: BiosoldierClass) => {
-    const build = createBiosoldierBuild(biosoldierClass);
-
-    buildsById.value.set(build.id, build);
-    markBuildChanged(build.id);
-    markOrderChanged();
+    buildList.addItem(createBiosoldierBuild(biosoldierClass));
   };
 
   /**
@@ -142,9 +130,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
 
     build.perks = [...data.perks];
     build.name = data.name;
-    buildsById.value.set(build.id, build);
-    markBuildChanged(build.id);
-    markOrderChanged();
+    buildList.addItem(build);
   };
 
   /**
@@ -161,7 +147,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
     build.biosoldierClass = data.biosoldierClass;
     build.perks = [...data.perks];
     build.name = data.name;
-    markBuildChanged(buildId);
+    buildList.markItemChanged(buildId);
   };
 
   /**
@@ -169,14 +155,10 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
    *
    * @param buildId build id.
    */
-  const removeBuild = (buildId: BiosoldierBuildId) => {
-    buildsById.value.delete(buildId);
-    markBuildChanged(buildId);
-    markOrderChanged();
-  };
+  const removeBuild = (buildId: BiosoldierBuildId) => buildList.removeItem(buildId);
 
   return {
-    builds: computed<readonly Readonly<BiosoldierBuild>[]>(() => [...buildsById.value.values()]),
+    builds: buildList.items,
     selectBuildPerk,
     setName,
     setReadonly,

@@ -18,17 +18,8 @@ export const BUILD_KEY_PREFIX = `${BUILD_STORAGE_PREFIX}build.`;
  */
 export const DEFAULT_BUILD_ID_PREFIX = 'default-';
 
-/** Delay after the last change before builds are saved, in milliseconds. */
-export const BUILD_SAVE_DELAY = 300;
-
-/** Longest time changes wait to be saved during continuous editing, in milliseconds. */
-export const BUILD_SAVE_MAX_WAIT = 2000;
-
 /** Stored build record: share code of the build and its lock. */
 export const STORED_BUILD_SCHEMA = z.object({
   code: z.string(),
   readonly: z.boolean(),
 });
-
-/** Stored build order: build ids from first to last. */
-export const BUILD_ORDER_SCHEMA = z.array(z.string());

@@ -2,10 +2,6 @@ import type { BiosoldierBuildData } from '@entities/biosoldier/model/build';
 import type { BiosoldierClass } from '@entities/biosoldier/model/classes';
 import type { BiosoldierBuild } from '@pages/biosoldier-builds/model/biosoldier-builds';
 
-export const BUILD_KEY_PREFIX = 'lwr-tools.biosoldier-builds.v1.build.';
-
-export const ORDER_KEY = 'lwr-tools.biosoldier-builds.v1.order';
-
 export const BUILD_ID = 'build-1';
 
 export const VALID_CODE = 'valid-code';

@@ -16,7 +16,7 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 - `order` — порядок показа. Если `order` нет, значит, ещё ничего не сохраняли, и страница показывает дефолтные билды. `[]` означает, что пользователь удалил все.
 - Префикс `lwr-tools.` обязателен: на GitHub Pages все проекты `<user>.github.io` делят одно хранилище.
 
-Код: `pages/biosoldier-builds/config/constants.ts` (ключи, схемы, задержки), `model/build-storage.ts` (записи и загрузка), `model/useBuildSync.ts` (сохранение и синхронизация). Доступ к хранилищу — `shared/lib/local-storage`.
+Код: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.ru.md) (загрузка, сохранение, синхронизация вкладок, задержки), `pages/biosoldier-builds/config/constants.ts` (ключи, схема записи), `model/build-storage.ts` (запись билда ↔ билд), `model/biosoldier-builds.ts` (стор и билды по умолчанию).
 
 ## Загрузка
 

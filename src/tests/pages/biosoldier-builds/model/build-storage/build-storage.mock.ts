@@ -15,8 +15,8 @@ export const INVALID_CODE = 'invalid-code';
 export const UNENCODABLE_NAME = 'Unencodable';
 
 export const BUILD_DATA_MOCK = {
-  biosoldierClass: { id: 'tester', name: 'Tester', baseBuild: ['granted'] } as unknown as BiosoldierClass,
-  talents: ['granted', 'left'],
+  biosoldierClass: { id: 'tester', name: 'Tester', basePerk: 'granted' } as unknown as BiosoldierClass,
+  perks: ['granted', 'left'],
   name: 'Overwatch',
 } as BiosoldierBuildData;
 

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { selectBiosoldierBuildTalent } from '@entities/biosoldier/model/build';
+import { selectBiosoldierBuildPerk } from '@entities/biosoldier/model/build';
 
-import { BASE_TALENTS, createBuildMock, FULL_TALENTS } from './build.mock';
+import { BASE_PERKS, createBuildMock, FULL_PERKS } from './build.mock';
 
 vi.mock('@entities/biosoldier/config/constants/soldier-rank-content', async () => ({
   SOLDIER_RANK_CONTENT: (await import('./build.mock')).SOLDIER_RANK_CONTENT_MOCK,
@@ -10,44 +10,44 @@ vi.mock('@entities/biosoldier/config/constants/soldier-rank-content', async () =
 
 vi.mock('@entities/biosoldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 
-describe('selectBiosoldierBuildTalent', () => {
-  it('selects a talent on the available rank', () => {
-    const build = createBuildMock(BASE_TALENTS);
+describe('selectBiosoldierBuildPerk', () => {
+  it('selects a perk on the available rank', () => {
+    const build = createBuildMock(BASE_PERKS);
 
-    selectBiosoldierBuildTalent(build, 1, 'left');
+    selectBiosoldierBuildPerk(build, 1, 'left');
 
-    expect(build.talents).toEqual(['granted', 'left']);
+    expect(build.perks).toEqual(['granted', 'left']);
   });
 
   it('replaces the selection on a completed rank and keeps higher ranks', () => {
-    const build = createBuildMock(FULL_TALENTS);
+    const build = createBuildMock(FULL_PERKS);
 
-    selectBiosoldierBuildTalent(build, 1, 'left');
+    selectBiosoldierBuildPerk(build, 1, 'left');
 
-    expect(build.talents).toEqual(['granted', 'left', 'top']);
+    expect(build.perks).toEqual(['granted', 'left', 'top']);
   });
 
-  it('clears the rank and all higher ranks on a null talent', () => {
-    const build = createBuildMock(FULL_TALENTS);
+  it('clears the rank and all higher ranks on a null perk', () => {
+    const build = createBuildMock(FULL_PERKS);
 
-    selectBiosoldierBuildTalent(build, 1, null);
+    selectBiosoldierBuildPerk(build, 1, null);
 
-    expect(build.talents).toEqual(['granted']);
+    expect(build.perks).toEqual(['granted']);
   });
 
   it('leaves a rank granted with the class untouched', () => {
-    const build = createBuildMock(FULL_TALENTS);
+    const build = createBuildMock(FULL_PERKS);
 
-    selectBiosoldierBuildTalent(build, 0, null);
+    selectBiosoldierBuildPerk(build, 0, null);
 
-    expect(build.talents).toEqual(FULL_TALENTS);
+    expect(build.perks).toEqual(FULL_PERKS);
   });
 
   it('leaves a rank after the available one untouched', () => {
-    const build = createBuildMock(BASE_TALENTS);
+    const build = createBuildMock(BASE_PERKS);
 
-    selectBiosoldierBuildTalent(build, 2, 'top');
+    selectBiosoldierBuildPerk(build, 2, 'top');
 
-    expect(build.talents).toEqual(BASE_TALENTS);
+    expect(build.perks).toEqual(BASE_PERKS);
   });
 });

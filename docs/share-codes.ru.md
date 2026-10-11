@@ -22,10 +22,10 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 | Секция | id | Поля | Пишется |
 |---|---|---|---|
-| `TALENTS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | всегда |
+| `PERKS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | всегда |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | если имя отличается от названия класса |
 
-`count` — число талантов, выбранных сверх выданного; абилки идут по рангам снизу вверх. Выданный талант при импорте берётся из текущего дерева.
+`count` — число перков, выбранных сверх базового; абилки идут по рангам снизу вверх. Базовый перк при импорте берётся из текущего дерева.
 
 ## Нумерация
 
@@ -68,12 +68,12 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Чтение старых секций остаётся навсегда. Сама разметка секций меняется только новым номером в `SHARE_CODE_FORMAT`.
 
-Пример: в `TALENTS` добавляется поле, максимальный id секции — 2.
+Пример: в `PERKS` добавляется поле, максимальный id секции — 2.
 
-1. `BIOSOLDIER_BUILD_SECTION`: `TALENTS_V2: 3`.
-2. `biosoldier-build-code.ts`: `readTalents` → `readTalentsV1`, `writeTalents` удалить.
-3. Новые `writeTalents` / `readTalents`; `encodeBiosoldierBuild` пишет `TALENTS_V2`.
-4. `decodeBiosoldierBuild`: `TALENTS` → `readTalentsV1` с новым полем по умолчанию, `TALENTS_V2` → `readTalents`.
+1. `BIOSOLDIER_BUILD_SECTION`: `PERKS_V2: 3`.
+2. `biosoldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` удалить.
+3. Новые `writePerks` / `readPerks`; `encodeBiosoldierBuild` пишет `PERKS_V2`.
+4. `decodeBiosoldierBuild`: `PERKS` → `readPerksV1` с новым полем по умолчанию, `PERKS_V2` → `readPerks`.
 
 ## Новая часть
 

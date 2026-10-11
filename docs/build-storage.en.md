@@ -11,7 +11,7 @@ lwr-tools.biosoldier-builds.v1.order         → ["id1", "id2", …]
 lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly": false }
 ```
 
-- `code` is the build's [share code](share-codes.en.md): class, talents and name. Its format already keeps old codes readable, so the record only adds the lock.
+- `code` is the build's [share code](share-codes.en.md): class, perks and name. Its format already keeps old codes readable, so the record only adds the lock.
 - One key per build: a tab changes only the records it touched and does not overwrite other tabs' edits with a whole snapshot.
 - `order` is the display order. No `order` means nothing has been saved yet, and the page shows the default builds; `[]` means the user removed them all.
 - `lwr-tools.` is required: on GitHub Pages every `<user>.github.io` project shares one storage.

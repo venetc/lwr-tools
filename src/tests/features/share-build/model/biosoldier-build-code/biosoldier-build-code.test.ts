@@ -10,10 +10,10 @@ import {
   NAME_SECTION_ID,
   NAMED_BUILD,
   OTHER_FORMAT,
-  talentsSection,
+  perksSection,
+  UNKNOWN_PERK_BUILD,
   UNKNOWN_SECTION,
-  UNKNOWN_TALENT_BUILD,
-  VALID_TALENTS_SECTION,
+  VALID_PERKS_SECTION,
 } from './biosoldier-build-code.mock';
 
 vi.mock('@entities/biosoldier/config/constants/ability-content', async () => ({
@@ -43,8 +43,8 @@ describe('encodeBiosoldierBuild', () => {
     expect(binaryCode?.sections.has(NAME_SECTION_ID)).toBe(false);
   });
 
-  it('gives null for a build with an unknown talent', () => {
-    const code = encodeBiosoldierBuild(UNKNOWN_TALENT_BUILD);
+  it('gives null for a build with an unknown perk', () => {
+    const code = encodeBiosoldierBuild(UNKNOWN_PERK_BUILD);
 
     expect(code).toBeNull();
   });
@@ -76,7 +76,7 @@ describe('decodeBiosoldierBuild', () => {
   });
 
   it('skips unknown sections', () => {
-    const code = encodeBinaryCode(FORMAT, [VALID_TALENTS_SECTION, UNKNOWN_SECTION]) ?? '';
+    const code = encodeBinaryCode(FORMAT, [VALID_PERKS_SECTION, UNKNOWN_SECTION]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
 
@@ -84,14 +84,14 @@ describe('decodeBiosoldierBuild', () => {
   });
 
   it('rejects a code of another format', () => {
-    const code = encodeBinaryCode(OTHER_FORMAT, [VALID_TALENTS_SECTION]) ?? '';
+    const code = encodeBinaryCode(OTHER_FORMAT, [VALID_PERKS_SECTION]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
 
     expect(build).toBeNull();
   });
 
-  it('rejects a code without the talents section', () => {
+  it('rejects a code without the perks section', () => {
     const code = encodeBinaryCode(FORMAT, [UNKNOWN_SECTION]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
@@ -100,7 +100,7 @@ describe('decodeBiosoldierBuild', () => {
   });
 
   it('rejects an unknown class', () => {
-    const code = encodeBinaryCode(FORMAT, [talentsSection(30, [12])]) ?? '';
+    const code = encodeBinaryCode(FORMAT, [perksSection(30, [12])]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
 
@@ -108,23 +108,23 @@ describe('decodeBiosoldierBuild', () => {
   });
 
   it('rejects an unknown ability', () => {
-    const code = encodeBinaryCode(FORMAT, [talentsSection(3, [99])]) ?? '';
+    const code = encodeBinaryCode(FORMAT, [perksSection(3, [99])]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
 
     expect(build).toBeNull();
   });
 
-  it('rejects more talents than ranks', () => {
-    const code = encodeBinaryCode(FORMAT, [talentsSection(3, [11, 12, 13])]) ?? '';
+  it('rejects more perks than ranks', () => {
+    const code = encodeBinaryCode(FORMAT, [perksSection(3, [11, 12, 13])]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
 
     expect(build).toBeNull();
   });
 
-  it('rejects a talents section with unread bits', () => {
-    const code = encodeBinaryCode(FORMAT, [talentsSection(3, [12], 1)]) ?? '';
+  it('rejects a perks section with unread bits', () => {
+    const code = encodeBinaryCode(FORMAT, [perksSection(3, [12], 1)]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
 
@@ -132,7 +132,7 @@ describe('decodeBiosoldierBuild', () => {
   });
 
   it('rejects a broken name section when the name is requested', () => {
-    const code = encodeBinaryCode(FORMAT, [VALID_TALENTS_SECTION, BROKEN_NAME_SECTION]) ?? '';
+    const code = encodeBinaryCode(FORMAT, [VALID_PERKS_SECTION, BROKEN_NAME_SECTION]) ?? '';
 
     const build = decodeBiosoldierBuild(code);
 

@@ -14,8 +14,8 @@ export interface BiosoldierClassContent {
   code: number
   /** Class name. */
   name: string
-  /** Ability ids by rank. */
-  abilities: Record<SoldierRankId, readonly string[]>
+  /** Perk ids by rank. */
+  perks: Record<SoldierRankId, readonly string[]>
 }
 
 export interface BiosoldierClass {
@@ -23,6 +23,6 @@ export interface BiosoldierClass {
   code: number
   name: string
   icon: SvgIcon
-  abilities: Record<SoldierRankId, readonly AbilityId[]>
-  baseBuild: readonly AbilityId[]
+  perks: Record<SoldierRankId, readonly AbilityId[]>
+  basePerk: AbilityId
 }

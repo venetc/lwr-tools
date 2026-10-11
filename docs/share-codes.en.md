@@ -22,10 +22,10 @@ Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-
 
 | Section | id | Fields | Written |
 |---|---|---|---|
-| `TALENTS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | always |
+| `PERKS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | always |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | if the name differs from the class name |
 
-`count` is the number of talents selected beyond the granted one; abilities go by rank, bottom to top. The granted talent is taken from the current tree on import.
+`count` is the number of perks selected beyond the base perk; abilities go by rank, bottom to top. The base perk is taken from the current tree on import.
 
 ## Numbering
 
@@ -68,12 +68,12 @@ Section fields change only in a new section:
 
 Readers of old sections stay forever. The section layout itself changes only with a new number in `SHARE_CODE_FORMAT`.
 
-Example: `TALENTS` gets a new field, max section id is 2.
+Example: `PERKS` gets a new field, max section id is 2.
 
-1. `BIOSOLDIER_BUILD_SECTION`: `TALENTS_V2: 3`.
-2. `biosoldier-build-code.ts`: `readTalents` → `readTalentsV1`, `writeTalents` deleted.
-3. New `writeTalents` / `readTalents`; `encodeBiosoldierBuild` writes `TALENTS_V2`.
-4. `decodeBiosoldierBuild`: `TALENTS` → `readTalentsV1` with the new field defaulted, `TALENTS_V2` → `readTalents`.
+1. `BIOSOLDIER_BUILD_SECTION`: `PERKS_V2: 3`.
+2. `biosoldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` deleted.
+3. New `writePerks` / `readPerks`; `encodeBiosoldierBuild` writes `PERKS_V2`.
+4. `decodeBiosoldierBuild`: `PERKS` → `readPerksV1` with the new field defaulted, `PERKS_V2` → `readPerks`.
 
 ## New part
 

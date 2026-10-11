@@ -22,9 +22,9 @@ section = id (5) | length (9) | fields
 
 ```ts
 const code = encodeBinaryCode(FORMAT, [
-  { id: SECTION.TALENTS, write: (writer) => {
-    writer.writeUint(classCode, 5);
-    writer.writeUint(talentCount, 3);
+  { id: SECTION.ITEMS, write: (writer) => {
+    writer.writeUint(typeCode, 5);
+    writer.writeUint(itemCount, 3);
   } },
   { id: SECTION.NAME, write: writer => writer.writeString(name, 5) },
 ]);
@@ -33,12 +33,12 @@ const opened = openBinaryCode(code);
 
 if (!opened || opened.format !== FORMAT) return null;
 
-const reader = opened.sections.get(SECTION.TALENTS) ?? null;
+const reader = opened.sections.get(SECTION.ITEMS) ?? null;
 
 if (!reader) return null;
 
-const classCode = reader.readUint(5);
-const talentCount = reader.readUint(3);
+const typeCode = reader.readUint(5);
+const itemCount = reader.readUint(3);
 
 if (!reader.isComplete) return null;
 ```

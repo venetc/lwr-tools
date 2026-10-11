@@ -24,14 +24,4 @@ dist-ssr
 *.sln
 *.sw?
 
-# Agent files: kept locally, not in the repo
-CLAUDE.md
-AGENTS.md
 .claude
-docs/agents
-skills-lock.json
-.scratch
-GLOSSARY.md
-GLOSSARY-MAP.md
-docs/adr
-CODING_STANDARDS.md

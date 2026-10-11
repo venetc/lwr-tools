@@ -101,7 +101,7 @@ const abilityContentSchema: z.ZodType<AbilityContent> = z.strictObject({
 const biosoldierClassContentSchema: z.ZodType<BiosoldierClassContent> = z.strictObject({
   code: codeSchema(CLASS_CODE_BITS),
   name: z.string().min(1),
-  abilities: z.record(rankIdSchema, z.array(abilityIdSchema).min(1)),
+  perks: z.record(rankIdSchema, z.array(abilityIdSchema).min(1)),
 });
 
 const soldierRankContentSchema: z.ZodType<SoldierRankContent> = z.strictObject({

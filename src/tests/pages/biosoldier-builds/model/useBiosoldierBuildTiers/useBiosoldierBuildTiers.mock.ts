@@ -20,24 +20,24 @@ const BIOSOLDIER_CLASS_MOCK = {
   id: 'tester',
   code: 3,
   name: 'Tester',
-  abilities: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
-  baseBuild: ['granted'],
+  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
+  basePerk: 'granted',
 } as unknown as BiosoldierClass;
 
 /**
  * Build of the mock class.
  *
- * @param talents selected talents by rank.
+ * @param perks selected perks by rank.
  * @param readonly whether the build is readonly.
  */
-export const createBuildMock = (talents: string[], readonly = false): BiosoldierBuild => ({
+export const createBuildMock = (perks: string[], readonly = false): BiosoldierBuild => ({
   id: 'build',
   biosoldierClass: BIOSOLDIER_CLASS_MOCK,
-  talents,
+  perks,
   name: 'Tester',
   readonly,
 });
 
-export const BASE_TALENTS = ['granted'];
+export const BASE_PERKS = ['granted'];
 
-export const PARTIAL_TALENTS = ['granted', 'right'];
+export const PARTIAL_PERKS = ['granted', 'right'];

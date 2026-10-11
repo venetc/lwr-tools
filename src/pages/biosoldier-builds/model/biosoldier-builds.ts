@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
 import type { BiosoldierBuildData, BiosoldierClass } from '@entities/biosoldier';
-import { BIOSOLDIER_CLASSES, selectBiosoldierBuildTalent } from '@entities/biosoldier';
+import { BIOSOLDIER_CLASSES, selectBiosoldierBuildPerk } from '@entities/biosoldier';
 import { createId } from '@shared/lib/id';
 
 import { DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
@@ -19,7 +19,7 @@ export interface BiosoldierBuild extends BiosoldierBuildData {
 }
 
 /**
- * New editable build of the class with only the base talents selected.
+ * New editable build of the class with only the base perk selected.
  *
  * @param biosoldierClass biosoldier class.
  * @param id build id; random by default.
@@ -28,14 +28,14 @@ const createBiosoldierBuild = (biosoldierClass: BiosoldierClass, id: BiosoldierB
   return {
     id,
     biosoldierClass,
-    talents: [...biosoldierClass.baseBuild],
+    perks: [biosoldierClass.basePerk],
     name: biosoldierClass.name,
     readonly: false,
   };
 };
 
 /**
- * Default builds: one per class with only the base talents selected, with fixed ids.
+ * Default builds: one per class with only the base perk selected, with fixed ids.
  */
 const createDefaultBuilds = () => BIOSOLDIER_CLASSES.reduce((acc, biosoldierClass) => {
   const build = createBiosoldierBuild(biosoldierClass, `${DEFAULT_BUILD_ID_PREFIX}${biosoldierClass.id}`);
@@ -74,18 +74,18 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
   };
 
   /**
-   * Selects a talent on the rank of an editable build by the tree rules.
+   * Selects a perk on the rank of an editable build by the tree rules.
    *
    * @param buildId build id.
    * @param rankIndex rank index in the tree.
-   * @param talentId selected talent id, or null to clear the rank selection.
+   * @param perkId selected perk id, or null to clear the rank selection.
    */
-  const selectBuildTalent = (buildId: BiosoldierBuildId, rankIndex: number, talentId: string | null) => {
+  const selectBuildPerk = (buildId: BiosoldierBuildId, rankIndex: number, perkId: string | null) => {
     const build = findEditableBuild(buildId);
 
     if (!build) return;
 
-    selectBiosoldierBuildTalent(build, rankIndex, talentId);
+    selectBiosoldierBuildPerk(build, rankIndex, perkId);
     markBuildChanged(buildId);
   };
 
@@ -120,7 +120,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
   };
 
   /**
-   * Adds a new build of the class with only the base talents selected.
+   * Adds a new build of the class with only the base perk selected.
    *
    * @param biosoldierClass biosoldier class of the new build.
    */
@@ -140,7 +140,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
   const importBuild = (data: BiosoldierBuildData) => {
     const build = createBiosoldierBuild(data.biosoldierClass);
 
-    build.talents = [...data.talents];
+    build.perks = [...data.perks];
     build.name = data.name;
     buildsById.value.set(build.id, build);
     markBuildChanged(build.id);
@@ -148,7 +148,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
   };
 
   /**
-   * Replaces class, talents and name of an editable build with imported data; id and lock stay.
+   * Replaces class, perks and name of an editable build with imported data; id and lock stay.
    *
    * @param buildId build id.
    * @param data imported build data.
@@ -159,7 +159,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
     if (!build) return;
 
     build.biosoldierClass = data.biosoldierClass;
-    build.talents = [...data.talents];
+    build.perks = [...data.perks];
     build.name = data.name;
     markBuildChanged(buildId);
   };
@@ -177,7 +177,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
 
   return {
     builds: computed<readonly Readonly<BiosoldierBuild>[]>(() => [...buildsById.value.values()]),
-    selectBuildTalent,
+    selectBuildPerk,
     setName,
     setReadonly,
     addBuild,

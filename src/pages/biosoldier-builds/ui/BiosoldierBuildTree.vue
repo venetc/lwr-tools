@@ -25,7 +25,7 @@ const emit = defineEmits<Emits>();
 
 const { tree, tiers, featuredItem } = useBiosoldierBuildTiers(() => props.build);
 
-const { name, readonly, selectTalent, replace } = useBiosoldierBuildEditor(() => props.build);
+const { name, readonly, selectPerk, replace } = useBiosoldierBuildEditor(() => props.build);
 
 /**
  * Requests removal of the build.
@@ -46,7 +46,7 @@ const isRankHighlighted = (tier: BiosoldierRankTier) => tier.state === 'availabl
     :label="tree.name"
     :tiers="tiers"
     :default-item="featuredItem"
-    @select="selectTalent"
+    @select="selectPerk"
   >
     <template #header>
       <BiosoldierBuildHeading

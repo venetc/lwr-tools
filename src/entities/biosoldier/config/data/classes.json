@@ -2,7 +2,7 @@
   "sniper": {
     "code": 1,
     "name": "Sniper",
-    "abilities": {
+    "perks": {
       "specialist": ["squadsight"],
       "lance-corporal": ["magnum", "on-the-ready", "in-the-zone"],
       "corporal": ["sharpshooter", "opportunist", "disabling-shot"],
@@ -15,7 +15,7 @@
   "scout": {
     "code": 2,
     "name": "Scout",
-    "abilities": {
+    "perks": {
       "specialist": ["reconnaissance"],
       "lance-corporal": ["bullseye", "hit-and-run", "smoke-and-mirrors"],
       "corporal": ["snapshot", "ranger", "disabling-shot"],
@@ -28,7 +28,7 @@
   "infantry": {
     "code": 3,
     "name": "Infantry",
-    "abilities": {
+    "perks": {
       "specialist": ["light-em-up"],
       "lance-corporal": ["will-to-survive", "sentinel", "grenadier"],
       "corporal": ["tenacious-defense", "lock-n-load", "payload"],
@@ -41,7 +41,7 @@
   "assault": {
     "code": 4,
     "name": "Assault",
-    "abilities": {
+    "perks": {
       "specialist": ["close-encounters"],
       "lance-corporal": ["will-to-survive", "run-and-gun", "breacher"],
       "corporal": ["extra-conditioning", "brawler", "fragmentation"],
@@ -54,7 +54,7 @@
   "gunner": {
     "code": 5,
     "name": "Gunner",
-    "abilities": {
+    "perks": {
       "specialist": ["suppression"],
       "lance-corporal": ["will-to-survive", "raking-fire", "mayhem"],
       "corporal": ["double-tap", "ready-for-anything", "holo-rounds"],
@@ -67,7 +67,7 @@
   "rocketeer": {
     "code": 6,
     "name": "Rocketeer",
-    "abilities": {
+    "perks": {
       "specialist": ["fire-rocket"],
       "lance-corporal": ["light-em-up", "grenadier", "smoke-and-mirrors"],
       "corporal": ["holo-rounds", "blast", "kitted"],
@@ -80,7 +80,7 @@
   "medic": {
     "code": 7,
     "name": "Medic",
-    "abilities": {
+    "perks": {
       "specialist": ["field-medic"],
       "lance-corporal": ["will-to-survive", "sentinel", "smoke-and-mirrors"],
       "corporal": ["rapid-pincers", "guardian", "combat-drugs"],
@@ -93,7 +93,7 @@
   "engineer": {
     "code": 8,
     "name": "Engineer",
-    "abilities": {
+    "perks": {
       "specialist": ["mechanic"],
       "lance-corporal": ["double-tap", "grenadier", "smoke-and-mirrors"],
       "corporal": ["holo-rounds", "sapper", "firebase"],

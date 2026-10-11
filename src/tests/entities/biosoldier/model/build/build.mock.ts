@@ -12,21 +12,21 @@ export const BIOSOLDIER_CLASS_MOCK = {
   id: 'tester',
   code: 3,
   name: 'Tester',
-  abilities: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
-  baseBuild: ['granted'],
+  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
+  basePerk: 'granted',
 } as unknown as BiosoldierClass;
 
-export const BASE_TALENTS = ['granted'];
+export const BASE_PERKS = ['granted'];
 
-export const FULL_TALENTS = ['granted', 'right', 'top'];
+export const FULL_PERKS = ['granted', 'right', 'top'];
 
 /**
- * Fresh build of the mock class with its own talents array.
+ * Fresh build of the mock class with its own perks array.
  *
- * @param talents selected talents by rank.
+ * @param perks selected perks by rank.
  */
-export const createBuildMock = (talents: string[]): BiosoldierBuildData => ({
+export const createBuildMock = (perks: string[]): BiosoldierBuildData => ({
   biosoldierClass: BIOSOLDIER_CLASS_MOCK,
-  talents: [...talents],
+  perks: [...perks],
   name: 'Tester',
 });

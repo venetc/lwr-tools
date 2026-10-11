@@ -9,9 +9,9 @@ import { BIOSOLDIER_CLASS_CONTENT } from './biosoldier-class-content';
 import { BIOSOLDIER_CLASS_ICON } from './biosoldier-class-icons';
 import { SOLDIER_RANKS } from './soldier-ranks';
 
-/** All biosoldier classes with their icons and abilities by rank; unknown ability ids are skipped. */
+/** All biosoldier classes with their icons and perks by rank; unknown ability ids are skipped. The base perk is the first perk of the first rank. */
 export const BIOSOLDIER_CLASSES: DeepReadonly<BiosoldierClass[]> = typedEntries(BIOSOLDIER_CLASS_CONTENT).map(([id, content]) => {
-  const abilities = typedEntries(content.abilities).reduce((acc, [rankId, abilityIds]) => {
+  const perks = typedEntries(content.perks).reduce((acc, [rankId, abilityIds]) => {
     acc[rankId] = abilityIds.filter(isAbilityId);
 
     return acc;
@@ -22,8 +22,8 @@ export const BIOSOLDIER_CLASSES: DeepReadonly<BiosoldierClass[]> = typedEntries(
     code: content.code,
     name: content.name,
     icon: BIOSOLDIER_CLASS_ICON[id],
-    abilities,
-    baseBuild: abilities[SOLDIER_RANKS[0].id].slice(0, 1),
+    perks,
+    basePerk: perks[SOLDIER_RANKS[0].id][0],
   };
 });
 

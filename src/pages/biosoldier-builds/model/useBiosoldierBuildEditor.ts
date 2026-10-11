@@ -7,7 +7,7 @@ import type { BiosoldierBuild } from './biosoldier-builds';
 import { useBiosoldierBuildsStore } from './biosoldier-builds';
 
 /**
- * Editing of a build through the talents store: name and lock as writable values, talent selection and replacement.
+ * Editing of a build through the builds store: name and lock as writable values, perk selection and replacement.
  *
  * @param build biosoldier build.
  */
@@ -25,13 +25,13 @@ export const useBiosoldierBuildEditor = (build: MaybeRefOrGetter<Readonly<Biosol
   });
 
   /**
-   * Selects a talent on the rank of the build.
+   * Selects a perk on the rank of the build.
    *
    * @param rankIndex rank index in the tree.
-   * @param talentId selected talent id, or null to clear the rank selection.
+   * @param perkId selected perk id, or null to clear the rank selection.
    */
-  const selectTalent = (rankIndex: number, talentId: string | null) => {
-    biosoldierBuildsStore.selectBuildTalent(toValue(build).id, rankIndex, talentId);
+  const selectPerk = (rankIndex: number, perkId: string | null) => {
+    biosoldierBuildsStore.selectBuildPerk(toValue(build).id, rankIndex, perkId);
   };
 
   /**
@@ -41,5 +41,5 @@ export const useBiosoldierBuildEditor = (build: MaybeRefOrGetter<Readonly<Biosol
    */
   const replace = (data: BiosoldierBuildData) => biosoldierBuildsStore.replaceBuild(toValue(build).id, data);
 
-  return { name, readonly, selectTalent, replace };
+  return { name, readonly, selectPerk, replace };
 };

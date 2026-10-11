@@ -11,20 +11,20 @@ export const SHARE_CODE_FORMAT = {
 
 /**
  * Section ids of biosoldier build codes. A new section gets the next id; ids are never changed or reused.
- * A section whose fields change gets a new id with a version suffix (`TALENTS_V2`), and the old id keeps its reader.
+ * A section whose fields change gets a new id with a version suffix (`PERKS_V2`), and the old id keeps its reader.
  */
 export const BIOSOLDIER_BUILD_SECTION = {
-  TALENTS: 1,
+  PERKS: 1,
   NAME: 2,
 } as const;
 
-/** Width of the class number; part of the `TALENTS` section, a change means a new section id. */
+/** Width of the class number; part of the `PERKS` section, a change means a new section id. */
 export const CLASS_CODE_BITS = 5;
 
-/** Width of the selected talent count; part of the `TALENTS` section, a change means a new section id. */
-export const TALENT_COUNT_BITS = 3;
+/** Width of the selected perk count; part of the `PERKS` section, a change means a new section id. */
+export const PERK_COUNT_BITS = 3;
 
-/** Width of the ability number; part of the `TALENTS` section, a change means a new section id. */
+/** Width of the ability number; part of the `PERKS` section, a change means a new section id. */
 export const ABILITY_CODE_BITS = 8;
 
 /** Width of the name byte length; part of the `NAME` section, a change means a new section id. */

@@ -1,9 +1,17 @@
 import { ABILITY_CONTENT } from '../config/constants/ability-content';
 import { ABILITY_ICON } from '../config/constants/ability-icons';
 import type abilitiesJson from '../config/data/abilities.json';
-import type { TalentIcon } from './talent-tree';
 
 export type AbilityId = keyof typeof abilitiesJson;
+
+export interface AbilityIcon {
+  /** Original icon, shown for a selected perk. */
+  original: string
+  /** Icon tinted for a perk available to select. */
+  available: string
+  /** Icon tinted for a perk that is locked or not selected. */
+  disabled: string
+}
 
 /**
  * Ability record of `abilities.json`.
@@ -24,7 +32,7 @@ export interface Ability {
   code: number
   name: string
   description: string
-  icon: TalentIcon
+  icon: AbilityIcon
   grants: AbilityId[]
 }
 

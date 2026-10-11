@@ -3,10 +3,9 @@ export { BIOSOLDIER_CLASS_BY_CODE, BIOSOLDIER_CLASSES } from './config/constants
 export { SOLDIER_RANKS } from './config/constants/soldier-ranks';
 export { abilityById, isAbilityId } from './model/abilities';
 export type { AbilityId } from './model/abilities';
-export { selectBiosoldierBuildTalent } from './model/build';
+export { selectBiosoldierBuildPerk } from './model/build';
 export type { BiosoldierBuildData } from './model/build';
-export { biosoldierClassTalentTree } from './model/class-tree';
+export { biosoldierClassTree, featuredPerk, rankState } from './model/class-tree';
+export type { BiosoldierClassTree, BiosoldierClassTreeRank, SelectedPerks, TreeAbility } from './model/class-tree';
 export type { BiosoldierClass, BiosoldierClassId } from './model/classes';
 export type { SoldierRank, SoldierRankId } from './model/ranks';
-export { featuredTalent, talentRankState } from './model/talent-tree';
-export type { BiosoldierTalentRank, BiosoldierTalentTree, Talent, TalentBuild } from './model/talent-tree';

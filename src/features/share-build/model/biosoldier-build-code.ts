@@ -15,34 +15,34 @@ import {
   BIOSOLDIER_BUILD_SECTION,
   CLASS_CODE_BITS,
   NAME_LENGTH_BITS,
+  PERK_COUNT_BITS,
   SHARE_CODE_FORMAT,
-  TALENT_COUNT_BITS,
 } from '../config/constants';
 
 /**
- * Optional part of a biosoldier build code that decoding can skip; the class and talents are always read.
+ * Optional part of a biosoldier build code that decoding can skip; the class and perks are always read.
  */
 export type BiosoldierBuildPart = 'name';
 
 /**
- * Class and talents of the `TALENTS` section, granted ones included; null if a class or ability number is unknown,
- * talents outnumber the ranks, or the section is not read exactly to its end.
+ * Class and perks of the `PERKS` section, the base perk included; null if a class or ability number is unknown,
+ * perks outnumber the ranks, or the section is not read exactly to its end.
  *
  * @param reader section reader.
  */
-const readTalents = (reader: BitReader): Omit<BiosoldierBuildData, 'name'> | null => {
+const readPerks = (reader: BitReader): Omit<BiosoldierBuildData, 'name'> | null => {
   const biosoldierClass = BIOSOLDIER_CLASS_BY_CODE.get(reader.readUint(CLASS_CODE_BITS)) ?? null;
-  const talentCount = reader.readUint(TALENT_COUNT_BITS);
-  const selectedTalents = Array.from({ length: talentCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null)
+  const perkCount = reader.readUint(PERK_COUNT_BITS);
+  const selectedPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null)
     .filter(abilityId => abilityId !== null);
 
   if (!biosoldierClass || !reader.isComplete) return null;
 
-  if (selectedTalents.length !== talentCount) return null;
+  if (selectedPerks.length !== perkCount) return null;
 
-  if (biosoldierClass.baseBuild.length + selectedTalents.length > SOLDIER_RANKS.length) return null;
+  if (selectedPerks.length >= SOLDIER_RANKS.length) return null;
 
-  return { biosoldierClass, talents: [...biosoldierClass.baseBuild, ...selectedTalents] };
+  return { biosoldierClass, perks: [biosoldierClass.basePerk, ...selectedPerks] };
 };
 
 /**
@@ -68,22 +68,22 @@ const decodeName = (sections: Map<number, BitReader>, biosoldierClass: Biosoldie
 };
 
 /**
- * Share code of the biosoldier build: the `TALENTS` section, and the `NAME` section if the name differs from the class name;
- * null if the build has an unknown talent or a section outgrows its length limit.
+ * Share code of the biosoldier build: the `PERKS` section, and the `NAME` section if the name differs from the class name;
+ * null if the build has an unknown perk or a section outgrows its length limit.
  *
  * @param build biosoldier build.
  */
 export const encodeBiosoldierBuild = (build: BiosoldierBuildData) => {
-  const selectedTalents = build.talents.slice(build.biosoldierClass.baseBuild.length);
+  const selectedPerks = build.perks.slice(1);
 
-  if (!selectedTalents.every(isAbilityId)) return null;
+  if (!selectedPerks.every(isAbilityId)) return null;
 
   const sections: BinaryCodeSection[] = [{
-    id: BIOSOLDIER_BUILD_SECTION.TALENTS,
+    id: BIOSOLDIER_BUILD_SECTION.PERKS,
     write: (writer) => {
       writer.writeUint(build.biosoldierClass.code, CLASS_CODE_BITS);
-      writer.writeUint(selectedTalents.length, TALENT_COUNT_BITS);
-      selectedTalents.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
+      writer.writeUint(selectedPerks.length, PERK_COUNT_BITS);
+      selectedPerks.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
     },
   }];
 
@@ -95,7 +95,7 @@ export const encodeBiosoldierBuild = (build: BiosoldierBuildData) => {
 };
 
 /**
- * Biosoldier build of the share code, or null if the code is invalid, not a biosoldier build, has no valid `TALENTS` section
+ * Biosoldier build of the share code, or null if the code is invalid, not a biosoldier build, has no valid `PERKS` section
  * or has an invalid section of a requested part. Parts that are not requested or absent get their defaults;
  * unknown sections are skipped.
  *
@@ -107,14 +107,14 @@ export const decodeBiosoldierBuild = (code: string, parts = BIOSOLDIER_BUILD_PAR
 
   if (!binaryCode || binaryCode.format !== SHARE_CODE_FORMAT.BIOSOLDIER_BUILD) return null;
 
-  const talentsReader = binaryCode.sections.get(BIOSOLDIER_BUILD_SECTION.TALENTS) ?? null;
-  const talents = talentsReader && readTalents(talentsReader);
+  const perksReader = binaryCode.sections.get(BIOSOLDIER_BUILD_SECTION.PERKS) ?? null;
+  const perks = perksReader && readPerks(perksReader);
 
-  if (!talents) return null;
+  if (!perks) return null;
 
-  const name = decodeName(binaryCode.sections, talents.biosoldierClass, parts);
+  const name = decodeName(binaryCode.sections, perks.biosoldierClass, parts);
 
   if (name === null) return null;
 
-  return { ...talents, name };
+  return { ...perks, name };
 };

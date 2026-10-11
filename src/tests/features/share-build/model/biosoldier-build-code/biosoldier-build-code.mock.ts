@@ -21,7 +21,7 @@ export const BIOSOLDIER_CLASS_CONTENT_MOCK: Record<string, BiosoldierClassConten
   tester: {
     code: 3,
     name: 'Tester',
-    abilities: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as BiosoldierClassContent['abilities'],
+    perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as BiosoldierClassContent['perks'],
   },
 };
 
@@ -29,23 +29,23 @@ export const BIOSOLDIER_CLASS_MOCK = {
   id: 'tester',
   code: 3,
   name: 'Tester',
-  abilities: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
-  baseBuild: ['granted'],
+  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
+  basePerk: 'granted',
 } as unknown as BiosoldierClass;
 
 export const DEFAULT_NAME_BUILD = {
   biosoldierClass: BIOSOLDIER_CLASS_MOCK,
-  talents: ['granted', 'right', 'top'],
+  perks: ['granted', 'right', 'top'],
   name: 'Tester',
 } as BiosoldierBuildData;
 
 export const NAMED_BUILD = { ...DEFAULT_NAME_BUILD, name: 'Overwatch' };
 
-export const UNKNOWN_TALENT_BUILD = { ...DEFAULT_NAME_BUILD, talents: ['granted', 'missing'] };
+export const UNKNOWN_PERK_BUILD = { ...DEFAULT_NAME_BUILD, perks: ['granted', 'missing'] };
 
 export const FORMAT = 1;
 
-export const TALENTS_SECTION_ID = 1;
+export const PERKS_SECTION_ID = 1;
 
 export const NAME_SECTION_ID = 2;
 
@@ -54,14 +54,14 @@ export const UNKNOWN_SECTION_ID = 20;
 export const OTHER_FORMAT = 5;
 
 /**
- * `TALENTS` section with raw numbers: class 5 bits, talent count 3 bits, ability numbers 8 bits each.
+ * `PERKS` section with raw numbers: class 5 bits, perk count 3 bits, ability numbers 8 bits each.
  *
  * @param classCode class number.
  * @param abilityCodes selected ability numbers.
  * @param extraBits number of zero bits written after the fields.
  */
-export const talentsSection = (classCode: number, abilityCodes: number[], extraBits = 0): BinaryCodeSection => ({
-  id: TALENTS_SECTION_ID,
+export const perksSection = (classCode: number, abilityCodes: number[], extraBits = 0): BinaryCodeSection => ({
+  id: PERKS_SECTION_ID,
   write: (writer: BitWriter) => {
     writer.writeUint(classCode, 5);
     writer.writeUint(abilityCodes.length, 3);
@@ -70,7 +70,7 @@ export const talentsSection = (classCode: number, abilityCodes: number[], extraB
   },
 });
 
-export const VALID_TALENTS_SECTION = talentsSection(3, [12, 13]);
+export const VALID_PERKS_SECTION = perksSection(3, [12, 13]);
 
 export const UNKNOWN_SECTION: BinaryCodeSection = { id: UNKNOWN_SECTION_ID, write: writer => writer.writeUint(0b11, 2) };
 

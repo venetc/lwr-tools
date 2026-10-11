@@ -1,8 +1,8 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { BiosoldierTalentRank, Talent } from '@entities/biosoldier';
-import { biosoldierClassTalentTree, featuredTalent, talentRankState } from '@entities/biosoldier';
+import type { BiosoldierClassTreeRank, TreeAbility } from '@entities/biosoldier';
+import { biosoldierClassTree, featuredPerk, rankState } from '@entities/biosoldier';
 import type { TieredPickerItem, TieredPickerTier } from '@shared/ui/tiered-picker';
 
 import type { BiosoldierBuild } from './biosoldier-builds';
@@ -12,57 +12,57 @@ import type { BiosoldierBuild } from './biosoldier-builds';
  */
 export interface BiosoldierRankTier extends TieredPickerTier {
   /** Soldier rank of the tier. */
-  rank: BiosoldierTalentRank
+  rank: BiosoldierClassTreeRank
 }
 
 /**
- * Picker item of a talent, with the talents it grants as related items.
+ * Picker item of a tree ability, with the abilities it grants as related items.
  *
- * @param talent tree talent.
+ * @param ability tree ability: a perk or a granted ability.
  */
-const talentItem = (talent: Talent): TieredPickerItem => ({
-  id: talent.id,
-  name: talent.name,
-  description: talent.description,
-  icon: talent.icon,
-  related: talent.grants.map(talentItem),
+const perkItem = (ability: TreeAbility): TieredPickerItem => ({
+  id: ability.id,
+  name: ability.name,
+  description: ability.description,
+  icon: ability.icon,
+  related: ability.grants.map(perkItem),
 });
 
 /**
- * Class talent tree of the build as picker tiers, and the item described while the user inspects none.
+ * Class tree of the build as picker tiers, and the item described while the user inspects none.
  *
- * @description A tier is disabled for a readonly build, a rank granted with the class, or a locked rank.
+ * @description A tier is disabled for a readonly build, the rank of the base perk, or a locked rank.
  * The tree is rebuilt only when the build class changes.
  *
  * @param build biosoldier build.
  */
 export const useBiosoldierBuildTiers = (build: MaybeRefOrGetter<Readonly<BiosoldierBuild>>) => {
-  const tree = computed(() => biosoldierClassTalentTree(toValue(build).biosoldierClass));
+  const tree = computed(() => biosoldierClassTree(toValue(build).biosoldierClass));
 
   const tiers = computed(() => {
-    const { talents, readonly } = toValue(build);
+    const { perks, readonly } = toValue(build);
 
     return tree.value.ranks.map((rank, rankIndex): BiosoldierRankTier => {
-      const state = talentRankState(talents, rankIndex, readonly);
+      const state = rankState(perks, rankIndex, readonly);
 
       return {
         id: rank.id,
         name: rank.name,
         rank,
         state,
-        isDisabled: readonly || rankIndex < tree.value.baseBuild.length || state === 'locked',
-        selectedId: talents[rankIndex] ?? null,
-        items: rank.talents.map(talentItem),
+        isDisabled: readonly || rankIndex === 0 || state === 'locked',
+        selectedId: perks[rankIndex] ?? null,
+        items: rank.perks.map(perkItem),
       };
     });
   });
 
   const featuredItem = computed(() => {
-    const talent = featuredTalent(tree.value, toValue(build).talents);
+    const perk = featuredPerk(tree.value, toValue(build).perks);
 
-    if (!talent) return null;
+    if (!perk) return null;
 
-    return talentItem(talent);
+    return perkItem(perk);
   });
 
   return { tree, tiers, featuredItem };

@@ -1,0 +1,77 @@
+{
+  "lock-n-load": {
+    "code": 1,
+    "name": "Lock N' Load",
+    "description": "Reloading any weapon costs only 1 AP and dashing automatically reloads the active weapon."
+  },
+  "repair-servos": {
+    "code": 2,
+    "name": "Repair Servos",
+    "description": "Repairs damage sustained in battle: When damaged, gain servos equal to 50% of the damage sustained. Each servo can heal 1 HP. At end of turn, use 20% of the servos available (minimum 1) and then lose 1 servo. Active servos are removed if this unit is fully healed or corroded."
+  },
+  "platform-stability": {
+    "code": 3,
+    "name": "Platform Stability",
+    "description": "If this unit is on the ground and has not moved, they gain: +15 aim, -80% rocket scatter, and +1 damage to suppressive fire. Allows steadying of Autocannons, Vulcan Cannons, SAWs, and LMGs. Prevents damage from breaking a steadied weapon."
+  },
+  "holo-rounds": {
+    "code": 4,
+    "name": "Holo Rounds",
+    "description": "Firing at a target holos them for 3 turns [Prevents stealth, incoming shots gain +10 aim and +10 penetration]."
+  },
+  "shredder": {
+    "code": 5,
+    "name": "Shredder",
+    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) for the remainder of the battle."
+  },
+  "damage-control": {
+    "code": 6,
+    "name": "Damage Control",
+    "description": "Grants +5% DR each time damage is received. If at full HP, grants +50 crit resist. If shredded, reduce shred to a maximum of 50% at end of turn."
+  },
+  "reactive-targeting-sensors": {
+    "code": 7,
+    "name": "Reactive Targeting Sensors",
+    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +30% DR against that attack, returns fire with a +30 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
+  },
+  "light-em-up": {
+    "code": 8,
+    "name": "Light 'Em Up",
+    "description": "Standard shots cost only 1 AP and gain both +5 penetration and +1 damage for each instance of damage their target took this turn."
+  },
+  "close-combat-specialist": {
+    "code": 9,
+    "name": "Close Combat Specialist",
+    "description": "Grants a reaction shot at any enemy within 4 tiles that acts. Reaction shot only activates on enemy's turn, once per enemy. [Basic reaction shots lower cover DR/def by half, cannot crit, and require hit chance >30]"
+  },
+  "critical-system-targeting": {
+    "code": 10,
+    "name": "Critical System Targeting",
+    "description": "Shots against autopsied mechanical units deal +30% damage and gain +30 penetration (+60% damage and +60 penetration if steadied). Does not work with Arc Weapons."
+  },
+  "fortified": {
+    "code": 11,
+    "name": "Fortified",
+    "description": "Grants immunity to critical hits. Injury and fatigue times are reduced by 15%."
+  },
+  "absorption-fields": {
+    "code": 12,
+    "name": "Absorption Fields",
+    "description": "Gain +10% DR. Shots from beam weapons (laser/pulse/drone/cyberdisc) lose their penetration when targeting this unit."
+  },
+  "vital-point-targeting": {
+    "code": 13,
+    "name": "Vital Point Targeting",
+    "description": "When hitting humans or autopsied biological aliens: steadied shots, reaction shots, or shots at targets not protected by cover deal 30% more damage."
+  },
+  "bring-em-on": {
+    "code": 14,
+    "name": "Bring 'Em On",
+    "description": "For each enemy in sight: this unit gains +0.5 damage on standard shots and incoming non-psionic attacks have a +5% graze chance."
+  },
+  "smart-macrophages": {
+    "code": 15,
+    "name": "Smart Macrophages",
+    "description": "Grants complete immunity to corrosion and shredding."
+  }
+}

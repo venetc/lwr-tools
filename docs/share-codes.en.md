@@ -4,6 +4,8 @@
 
 An issued code must always open: we can't update codes players have saved.
 
+SHIV build codes share the layout and rules: [SHIV build codes](shiv-share-codes.en.md).
+
 ## Structure
 
 ```

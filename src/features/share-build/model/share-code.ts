@@ -1,7 +1,7 @@
 import type { BitReader } from '@shared/lib/binary-code';
 import { openBinaryCode } from '@shared/lib/binary-code';
 
-import { INVALID_SHARE_CODE, SHARE_CODE_FORMAT_UNIT } from '../config/constants';
+import { INVALID_SHARE_CODE, NAME_LENGTH_BITS, SHARE_CODE_FORMAT_UNIT } from '../config/constants';
 
 /**
  * Why a share code could not be decoded: it is broken, or it carries a build of another unit.
@@ -37,4 +37,24 @@ export const openShareCode = (code: string, format: number): OpenedShareCode => 
   if (unit === null) return INVALID_SHARE_CODE;
 
   return { status: 'other-unit', unit };
+};
+
+/**
+ * Build name from a `NAME` section; the fallback if the section is absent, not requested or blank,
+ * null if the section is invalid.
+ *
+ * @param reader reader of the `NAME` section, or null if the code has none.
+ * @param fallback default name of the build.
+ * @param isRequested whether the name part is read.
+ */
+export const decodeName = (reader: BitReader | null, fallback: string, isRequested: boolean) => {
+  if (!reader || !isRequested) return fallback;
+
+  const name = reader.readString(NAME_LENGTH_BITS);
+
+  if (!reader.isComplete) return null;
+
+  if (name.trim() === '') return fallback;
+
+  return name;
 };

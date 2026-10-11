@@ -1,0 +1,50 @@
+# SHIV build codes
+
+**English** · [Русский](shiv-share-codes.ru.md)
+
+A SHIV build in a share code. The layout (header, sections, CRC, base64url), the decoding result and the rules for issued codes are the same as for [Biosoldier build codes](share-codes.en.md); this page covers only what differs.
+
+## Format
+
+`SHARE_CODE_FORMAT.SHIV_BUILD` = `2`. A Biosoldier code given to the SHIV decoder, and a SHIV code given to the Biosoldier one, decode as `other-unit`.
+
+## Sections
+
+| Section | id | Fields | Written |
+|---|---|---|---|
+| `PERKS` | 1 | `count` 3 · `perk` 6 × count | always |
+| `NAME` | 2 | `nameLength` 5 · UTF-8 | if the name differs from "SHIV" |
+
+`PERKS` holds the selected perks as a set, without technology levels. On import each perk goes to its level in the current SHIV tree. The code is invalid if a perk is unknown, two perks share a level, or there are more perks than levels.
+
+Code: `features/share-build`: `config/constants.ts` (`SHIV_BUILD_SECTION`, field widths), `model/shiv-build-code.ts` (`encodeShivBuild`, `decodeShivBuild`, `ShivBuildPart`); perks and levels come from `entities/shiv`.
+
+## Numbering
+
+Codes store the `code` numbers of SHIV perks (`entities/shiv/config/data/perks.json`), from 1 to 63.
+
+- New perk: max `code` + 1.
+- Never change an existing `code`, never reuse a deleted one; better, don't delete perks.
+- `0` is never assigned.
+
+Same for `SHIV_BUILD_SECTION`.
+
+## Safe edits
+
+Move or reorder perks within the tree; rename ids (keep `code`); edit names, descriptions, icons; add perks and levels.
+
+## Breaking edits
+
+| Edit | Old codes |
+|---|---|
+| change or reuse a `code` | show the wrong perk |
+| delete a perk | "Invalid code" |
+| put one perk on two levels | the test schema rejects it: a perk must have one level |
+| move two selected perks onto one level | "Invalid code" for codes with both |
+| change a section's fields or their widths | "Invalid code" or wrong data |
+
+Section fields change only in a new section with a version suffix, as for Biosoldier codes.
+
+## Checks
+
+`npm test` checks `code` ranges and uniqueness, five levels of three known perks, one level per perk, icons, and the code format itself.

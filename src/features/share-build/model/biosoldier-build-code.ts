@@ -1,4 +1,4 @@
-import type { BiosoldierBuildData, BiosoldierClass } from '@entities/biosoldier';
+import type { BiosoldierBuildData } from '@entities/biosoldier';
 import {
   ABILITY_ID_BY_CODE,
   abilityById,
@@ -20,7 +20,7 @@ import {
   SHARE_CODE_FORMAT,
 } from '../config/constants';
 import type { ShareCodeDecodeResult } from './share-code';
-import { openShareCode } from './share-code';
+import { decodeName, openShareCode } from './share-code';
 
 /**
  * Optional part of a biosoldier build code that decoding can skip; the class and perks are always read.
@@ -46,28 +46,6 @@ const readPerks = (reader: BitReader): Omit<BiosoldierBuildData, 'name'> | null 
   if (selectedPerks.length >= SOLDIER_RANKS.length) return null;
 
   return { biosoldierClass, perks: [biosoldierClass.basePerk, ...selectedPerks] };
-};
-
-/**
- * Build name from the `NAME` section; the class name if the name part is not requested or the section is absent,
- * null if the section is invalid.
- *
- * @param sections section readers by id.
- * @param biosoldierClass biosoldier class of the build.
- * @param parts optional parts to read.
- */
-const decodeName = (sections: Map<number, BitReader>, biosoldierClass: BiosoldierClass, parts: readonly BiosoldierBuildPart[]) => {
-  const reader = sections.get(BIOSOLDIER_BUILD_SECTION.NAME) ?? null;
-
-  if (!reader || !parts.includes('name')) return biosoldierClass.name;
-
-  const name = reader.readString(NAME_LENGTH_BITS);
-
-  if (!reader.isComplete) return null;
-
-  if (name.trim() === '') return biosoldierClass.name;
-
-  return name;
 };
 
 /**
@@ -118,7 +96,8 @@ export const decodeBiosoldierBuild = (
 
   if (!perks) return INVALID_SHARE_CODE;
 
-  const name = decodeName(shareCode.sections, perks.biosoldierClass, parts);
+  const nameReader = shareCode.sections.get(BIOSOLDIER_BUILD_SECTION.NAME) ?? null;
+  const name = decodeName(nameReader, perks.biosoldierClass.name, parts.includes('name'));
 
   if (name === null) return INVALID_SHARE_CODE;
 

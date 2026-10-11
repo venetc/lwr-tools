@@ -1,0 +1,119 @@
+import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
+import { ABILITY_ID_BY_CODE, abilityById, BIOSOLDIER_CLASS_BY_CODE, isAbilityId, SOLDIER_RANKS } from '@entities/soldier';
+import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
+import { encodeBinaryCode } from '@shared/lib/binary-code';
+import type { DeepReadonly } from '@shared/lib/object';
+
+import {
+  ABILITY_CODE_BITS,
+  CLASS_CODE_BITS,
+  INVALID_SHARE_CODE,
+  NAME_LENGTH_BITS,
+  PERK_COUNT_BITS,
+  SHARE_CODE_FORMAT,
+  SOLDIER_BUILD_PARTS,
+  SOLDIER_BUILD_SECTION,
+} from '../config/constants';
+import type { ShareCodeDecodeResult } from './share-code';
+import { decodeName, openShareCode } from './share-code';
+
+/**
+ * Optional part of a soldier build code that decoding can skip; the class and perks are always read.
+ */
+export type SoldierBuildPart = 'name';
+
+/**
+ * Share code encoder and decoder of soldier builds of one format, bound to the classes of that format.
+ *
+ * @param format share code format number.
+ * @param classByCode classes the format carries by their code; a build or code with any other class is rejected.
+ */
+export const soldierBuildCodec = (format: number, classByCode: ReadonlyMap<number, DeepReadonly<SoldierClass>>) => {
+  /**
+   * Class and perks of the `PERKS` section, the base perk included; null if a class is not of the format or an ability
+   * number is unknown, perks outnumber the ranks, or the section is not read exactly to its end.
+   *
+   * @param reader section reader.
+   */
+  const readPerks = (reader: BitReader): Omit<SoldierBuildData, 'name'> | null => {
+    const soldierClass = classByCode.get(reader.readUint(CLASS_CODE_BITS)) ?? null;
+    const perkCount = reader.readUint(PERK_COUNT_BITS);
+    const selectedPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null)
+      .filter(abilityId => abilityId !== null);
+
+    if (!soldierClass || !reader.isComplete) return null;
+
+    if (selectedPerks.length !== perkCount) return null;
+
+    if (selectedPerks.length >= SOLDIER_RANKS.length) return null;
+
+    return { soldierClass, perks: [soldierClass.basePerk, ...selectedPerks] };
+  };
+
+  /**
+   * Share code of the soldier build: the `PERKS` section, and the `NAME` section if the name differs from the class name;
+   * null if the build class is not of the format, the build has an unknown perk or a section outgrows its length limit.
+   *
+   * @param build soldier build.
+   */
+  const encode = (build: SoldierBuildData) => {
+    if (!classByCode.has(build.soldierClass.code)) return null;
+
+    const selectedPerks = build.perks.slice(1);
+
+    if (!selectedPerks.every(isAbilityId)) return null;
+
+    const sections: BinaryCodeSection[] = [{
+      id: SOLDIER_BUILD_SECTION.PERKS,
+      write: (writer) => {
+        writer.writeUint(build.soldierClass.code, CLASS_CODE_BITS);
+        writer.writeUint(selectedPerks.length, PERK_COUNT_BITS);
+        selectedPerks.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
+      },
+    }];
+
+    if (build.name !== build.soldierClass.name) {
+      sections.push({ id: SOLDIER_BUILD_SECTION.NAME, write: writer => writer.writeString(build.name, NAME_LENGTH_BITS) });
+    }
+
+    return encodeBinaryCode(format, sections);
+  };
+
+  /**
+   * Soldier build of the share code; `other-unit` for a build code of another unit; `invalid` if the code is broken,
+   * has no valid `PERKS` section or has an invalid section of a requested part. Parts that are not requested or absent
+   * get their defaults; unknown sections are skipped.
+   *
+   * @param code share code.
+   * @param parts optional parts to read; all by default.
+   */
+  const decode = (code: string, parts = SOLDIER_BUILD_PARTS): ShareCodeDecodeResult<SoldierBuildData> => {
+    const shareCode = openShareCode(code, format);
+
+    if (shareCode.status !== 'opened') return shareCode;
+
+    const perksReader = shareCode.sections.get(SOLDIER_BUILD_SECTION.PERKS) ?? null;
+    const perks = perksReader && readPerks(perksReader);
+
+    if (!perks) return INVALID_SHARE_CODE;
+
+    const nameReader = shareCode.sections.get(SOLDIER_BUILD_SECTION.NAME) ?? null;
+    const name = decodeName(nameReader, perks.soldierClass.name, parts.includes('name'));
+
+    if (name === null) return INVALID_SHARE_CODE;
+
+    return { status: 'decoded', build: { ...perks, name } };
+  };
+
+  return { encode, decode };
+};
+
+/**
+ * Share code encoder and decoder of biosoldier builds: format 1 bound to the biosoldier classes. `encodeBiosoldierBuild(build)`
+ * gives the code, or null for a class of another kind of soldier, an unknown perk or an oversized section;
+ * `decodeBiosoldierBuild(code, parts)` reads the requested optional parts (all by default) and gives the build or why it failed.
+ */
+export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = soldierBuildCodec(
+  SHARE_CODE_FORMAT.BIOSOLDIER_BUILD,
+  BIOSOLDIER_CLASS_BY_CODE,
+);

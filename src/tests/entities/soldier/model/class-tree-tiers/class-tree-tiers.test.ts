@@ -12,10 +12,6 @@ vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => (
   SOLDIER_RANK_CONTENT: (await import('./class-tree-tiers.mock')).SOLDIER_RANK_CONTENT_MOCK,
 }));
 
-vi.mock('@entities/soldier/config/constants/biosoldier-class-content', () => ({ BIOSOLDIER_CLASS_CONTENT: {} }));
-
-vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
-
 vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
 
 vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));

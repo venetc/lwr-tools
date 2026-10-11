@@ -27,7 +27,7 @@ A decoder returns `{ status: 'decoded', build }`, or why it failed:
 
 A stored build whose code does not decode is skipped on loading.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/biosoldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` come from `entities/soldier` and `entities/shiv`. The feature serves both Build calculator pages and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts; `soldierBuildCodec` builds the encoder and decoder of a soldier format from its classes by code, `encodeBiosoldierBuild` / `decodeBiosoldierBuild` are its format 1 pair), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` (abilities, the classes of each soldier format, SHIV perks) come from `entities/soldier` and `entities/shiv`. The feature serves both Build calculator pages and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
@@ -47,7 +47,7 @@ Codes store the `code` numbers of abilities and classes, not tree positions, so 
 - Never reuse a deleted record's `code`; better, don't delete records.
 - `0` is never assigned: for abilities and classes it means "unknown", for sections — the end of the list.
 
-Same for `BIOSOLDIER_BUILD_SECTION` and `SHARE_CODE_FORMAT`.
+Same for `SOLDIER_BUILD_SECTION` and `SHARE_CODE_FORMAT`.
 
 Example: new ability, max `code` is 73.
 
@@ -73,30 +73,30 @@ If an ability on a rank is replaced by a different one, keep the old record. Old
 
 Section fields change only in a new section:
 
-1. Add the next id to `BIOSOLDIER_BUILD_SECTION` with a version suffix.
+1. Add the next id to `SOLDIER_BUILD_SECTION` with a version suffix.
 2. Add the version suffix to the current section reader's name; delete its writer.
-3. Write the new writer and reader; `decodeBiosoldierBuild` reads whichever of the two sections the code has.
+3. Write the new writer and reader; `decode` of `soldierBuildCodec` reads whichever of the two sections the code has.
 
 Readers of old sections stay forever. The section layout itself changes only with a new number in `SHARE_CODE_FORMAT`.
 
 Example: `PERKS` gets a new field, max section id is 2.
 
-1. `BIOSOLDIER_BUILD_SECTION`: `PERKS_V2: 3`.
-2. `biosoldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` deleted.
-3. New `writePerks` / `readPerks`; `encodeBiosoldierBuild` writes `PERKS_V2`.
-4. `decodeBiosoldierBuild`: `PERKS` → `readPerksV1` with the new field defaulted, `PERKS_V2` → `readPerks`.
+1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 3`.
+2. `soldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` deleted.
+3. New `writePerks` / `readPerks`; `encode` of `soldierBuildCodec` writes `PERKS_V2`.
+4. `decode` of `soldierBuildCodec`: `PERKS` → `readPerksV1` with the new field defaulted, `PERKS_V2` → `readPerks`.
 
 ## New part
 
-1. Add the next id to `BIOSOLDIER_BUILD_SECTION`.
-2. Write the writer and reader in `biosoldier-build-code.ts`; `encodeBiosoldierBuild` writes the section only when the build has the part.
-3. Add the part to `BiosoldierBuildPart`; `decodeBiosoldierBuild` reads the section only if the part is requested, otherwise gives the default.
+1. Add the next id to `SOLDIER_BUILD_SECTION`.
+2. Write the writer and reader in `soldier-build-code.ts`; `encode` of `soldierBuildCodec` writes the section only when the build has the part.
+3. Add the part to `SoldierBuildPart`; `decode` of `soldierBuildCodec` reads the section only if the part is requested, otherwise gives the default.
 
 Example: officer tree, max section id is 2.
 
-1. `BIOSOLDIER_BUILD_SECTION`: `OFFICER: 3`.
+1. `SOLDIER_BUILD_SECTION`: `OFFICER: 3`.
 2. `writeOfficer` / `readOfficer`; no section for a non-officer.
-3. `BiosoldierBuildPart`: `'officer'`; without the section or the part the build has no officer tree.
+3. `SoldierBuildPart`: `'officer'`; without the section or the part the build has no officer tree.
 
 ## Checks
 

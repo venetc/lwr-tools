@@ -39,6 +39,20 @@ export const DEFAULT_NAME_BUILD = {
   name: 'Tester',
 } as SoldierBuildData;
 
+export const OTHER_CLASS_MOCK = {
+  id: 'other',
+  code: 4,
+  name: 'Other',
+  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
+  basePerk: 'granted',
+} as unknown as SoldierClass;
+
+export const BOUND_CLASS_BY_CODE = new Map([[3, BIOSOLDIER_CLASS_MOCK]]);
+
+export const OTHER_CLASS_CODE = 4;
+
+export const OTHER_CLASS_BUILD = { ...DEFAULT_NAME_BUILD, soldierClass: OTHER_CLASS_MOCK, name: 'Other' };
+
 export const NAMED_BUILD = { ...DEFAULT_NAME_BUILD, name: 'Overwatch' };
 
 export const UNKNOWN_PERK_BUILD = { ...DEFAULT_NAME_BUILD, perks: ['granted', 'missing'] };

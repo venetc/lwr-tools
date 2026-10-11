@@ -1,9 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { decodeBiosoldierBuild, encodeBiosoldierBuild } from '@features/share-build/model/biosoldier-build-code';
+import { decodeBiosoldierBuild, encodeBiosoldierBuild, soldierBuildCodec } from '@features/share-build/model/soldier-build-code';
 import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
 
 import {
+  BOUND_CLASS_BY_CODE,
   BROKEN_NAME_SECTION,
   DEFAULT_NAME_BUILD,
   FORMAT,
@@ -11,6 +12,8 @@ import {
   INVALID_RESULT,
   NAME_SECTION_ID,
   NAMED_BUILD,
+  OTHER_CLASS_BUILD,
+  OTHER_CLASS_CODE,
   perksSection,
   SHIV_CODE_RESULT,
   SHIV_FORMAT,
@@ -18,18 +21,18 @@ import {
   UNKNOWN_PERK_BUILD,
   UNKNOWN_SECTION,
   VALID_PERKS_SECTION,
-} from './biosoldier-build-code.mock';
+} from './soldier-build-code.mock';
 
 vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
-  ABILITY_CONTENT: (await import('./biosoldier-build-code.mock')).ABILITY_CONTENT_MOCK,
+  ABILITY_CONTENT: (await import('./soldier-build-code.mock')).ABILITY_CONTENT_MOCK,
 }));
 
 vi.mock('@entities/soldier/config/constants/biosoldier-class-content', async () => ({
-  BIOSOLDIER_CLASS_CONTENT: (await import('./biosoldier-build-code.mock')).BIOSOLDIER_CLASS_CONTENT_MOCK,
+  BIOSOLDIER_CLASS_CONTENT: (await import('./soldier-build-code.mock')).BIOSOLDIER_CLASS_CONTENT_MOCK,
 }));
 
 vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => ({
-  SOLDIER_RANK_CONTENT: (await import('./biosoldier-build-code.mock')).SOLDIER_RANK_CONTENT_MOCK,
+  SOLDIER_RANK_CONTENT: (await import('./soldier-build-code.mock')).SOLDIER_RANK_CONTENT_MOCK,
 }));
 
 vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
@@ -155,5 +158,21 @@ describe('decodeBiosoldierBuild', () => {
     const result = decodeBiosoldierBuild(code);
 
     expect(result).toEqual(INVALID_RESULT);
+  });
+});
+
+describe('soldierBuildCodec', () => {
+  it('rejects a code with a class outside its class list', () => {
+    const code = encodeBinaryCode(FORMAT, [perksSection(OTHER_CLASS_CODE, [12])]) ?? '';
+
+    const result = soldierBuildCodec(FORMAT, BOUND_CLASS_BY_CODE).decode(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('gives null for a build with a class outside its class list', () => {
+    const code = soldierBuildCodec(FORMAT, BOUND_CLASS_BY_CODE).encode(OTHER_CLASS_BUILD);
+
+    expect(code).toBeNull();
   });
 });

@@ -2,9 +2,9 @@ import { z } from 'zod';
 
 import type { DeepReadonly } from '@shared/lib/object';
 
-import type { BiosoldierBuildPart } from '../model/biosoldier-build-code';
 import type { ShareCodeFailure } from '../model/share-code';
 import type { ShivBuildPart } from '../model/shiv-build-code';
+import type { SoldierBuildPart } from '../model/soldier-build-code';
 
 /**
  * Formats of all share codes of the app; a new format gets the next number; numbers are never changed or reused.
@@ -21,10 +21,10 @@ export const SHARE_CODE_FORMAT_UNIT: ReadonlyMap<number, string> = new Map([
 ]);
 
 /**
- * Section ids of biosoldier build codes. A new section gets the next id; ids are never changed or reused.
+ * Section ids of soldier build codes, shared by every soldier format. A new section gets the next id; ids are never changed or reused.
  * A section whose fields change gets a new id with a version suffix (`PERKS_V2`), and the old id keeps its reader.
  */
-export const BIOSOLDIER_BUILD_SECTION = {
+export const SOLDIER_BUILD_SECTION = {
   PERKS: 1,
   NAME: 2,
 } as const;
@@ -56,8 +56,8 @@ export const SHIV_PERK_COUNT_BITS = 3;
 /** Width of the SHIV perk number; part of the SHIV `PERKS` section, a change means a new section id. */
 export const SHIV_PERK_CODE_BITS = 6;
 
-/** Optional parts of a biosoldier build read from a code by default. */
-export const BIOSOLDIER_BUILD_PARTS: DeepReadonly<BiosoldierBuildPart[]> = ['name'];
+/** Optional parts of a soldier build read from a code by default. */
+export const SOLDIER_BUILD_PARTS: DeepReadonly<SoldierBuildPart[]> = ['name'];
 
 /** Optional parts of a SHIV build read from a code by default. */
 export const SHIV_BUILD_PARTS: DeepReadonly<ShivBuildPart[]> = ['name'];

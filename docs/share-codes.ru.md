@@ -27,7 +27,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Сохранённый билд, чей код не декодируется, при загрузке пропускается.
 
-Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/biosoldier-build-code.ts` и `model/shiv-build-code.ts` (поля и части билда), `model/stored-build.ts` (записи хранилища поверх share-кода). Поиск по `code` дают `entities/soldier` и `entities/shiv`. Фича обслуживает обе страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
+Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (поля и части билда; `soldierBuildCodec` собирает кодер и декодер формата солдат по его классам по коду, `encodeBiosoldierBuild` / `decodeBiosoldierBuild` — его пара для формата 1), `model/stored-build.ts` (записи хранилища поверх share-кода). Поиск по `code` (абилки, классы каждого формата солдат, перки SHIV) дают `entities/soldier` и `entities/shiv`. Фича обслуживает обе страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 
@@ -47,7 +47,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - `code` удалённой записи не переиспользовать; лучше записи не удалять.
 - `0` не выдаётся: у абилок и классов это «неизвестно», у секций — конец списка.
 
-То же для `BIOSOLDIER_BUILD_SECTION` и `SHARE_CODE_FORMAT`.
+То же для `SOLDIER_BUILD_SECTION` и `SHARE_CODE_FORMAT`.
 
 Пример: новая абилка, максимальный `code` — 73.
 
@@ -73,30 +73,30 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Поля секции меняются только новой секцией:
 
-1. Добавить в `BIOSOLDIER_BUILD_SECTION` следующий id с суффиксом версии.
+1. Добавить в `SOLDIER_BUILD_SECTION` следующий id с суффиксом версии.
 2. К имени текущего чтения секции добавить суффикс версии; её запись удалить.
-3. Написать новые запись и чтение; `decodeBiosoldierBuild` читает ту из двух секций, что есть в коде.
+3. Написать новые запись и чтение; `decode` из `soldierBuildCodec` читает ту из двух секций, что есть в коде.
 
 Чтение старых секций остаётся навсегда. Сама разметка секций меняется только новым номером в `SHARE_CODE_FORMAT`.
 
 Пример: в `PERKS` добавляется поле, максимальный id секции — 2.
 
-1. `BIOSOLDIER_BUILD_SECTION`: `PERKS_V2: 3`.
-2. `biosoldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` удалить.
-3. Новые `writePerks` / `readPerks`; `encodeBiosoldierBuild` пишет `PERKS_V2`.
-4. `decodeBiosoldierBuild`: `PERKS` → `readPerksV1` с новым полем по умолчанию, `PERKS_V2` → `readPerks`.
+1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 3`.
+2. `soldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` удалить.
+3. Новые `writePerks` / `readPerks`; `encode` из `soldierBuildCodec` пишет `PERKS_V2`.
+4. `decode` из `soldierBuildCodec`: `PERKS` → `readPerksV1` с новым полем по умолчанию, `PERKS_V2` → `readPerks`.
 
 ## Новая часть
 
-1. Добавить в `BIOSOLDIER_BUILD_SECTION` следующий id.
-2. Написать запись и чтение в `biosoldier-build-code.ts`; `encodeBiosoldierBuild` пишет секцию, только если у билда есть эта часть.
-3. Добавить часть в `BiosoldierBuildPart`; `decodeBiosoldierBuild` читает секцию, только если часть запрошена, иначе даёт значение по умолчанию.
+1. Добавить в `SOLDIER_BUILD_SECTION` следующий id.
+2. Написать запись и чтение в `soldier-build-code.ts`; `encode` из `soldierBuildCodec` пишет секцию, только если у билда есть эта часть.
+3. Добавить часть в `SoldierBuildPart`; `decode` из `soldierBuildCodec` читает секцию, только если часть запрошена, иначе даёт значение по умолчанию.
 
 Пример: офицерское дерево, максимальный id секции — 2.
 
-1. `BIOSOLDIER_BUILD_SECTION`: `OFFICER: 3`.
+1. `SOLDIER_BUILD_SECTION`: `OFFICER: 3`.
 2. `writeOfficer` / `readOfficer`; у не-офицера секции нет.
-3. `BiosoldierBuildPart`: `'officer'`; без секции или без части у билда нет офицерского дерева.
+3. `SoldierBuildPart`: `'officer'`; без секции или без части у билда нет офицерского дерева.
 
 ## Проверки
 

@@ -1,8 +1,10 @@
-# Biosoldier build codes
+# Soldier build codes
 
 **English** · [Русский](share-codes.ru.md)
 
 An issued code must always open: we can't update codes players have saved.
+
+Biosoldier and MEC builds share one layout under their own formats: `1` Biosoldier, `3` MEC. A format reads only the classes of its kind of soldier.
 
 SHIV build codes share the layout and rules: [SHIV build codes](shiv-share-codes.en.md).
 
@@ -16,18 +18,18 @@ section = id (5) | length (9) | fields
 - Sections go by ascending id, each at most once; `0` ends the list.
 - Unknown sections are skipped by their length.
 - A section that is read must end exactly at its length, otherwise the code is invalid; skipped sections aren't checked.
-- `decodeBiosoldierBuild(code, parts)` reads only the requested parts; the rest get defaults.
+- `decodeBiosoldierBuild(code, parts)` and `decodeMecBuild(code, parts)` read only the requested parts; the rest get defaults.
 
 ## Decoding result
 
 A decoder returns `{ status: 'decoded', build }`, or why it failed:
 
-- `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
+- `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
 - `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, a class of another format, a perk not offered on its rank of the class tree. The import shows "Invalid code" under the field.
 
 A stored build whose code does not decode is skipped on loading.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts; `soldierBuildCodec` builds the encoder and decoder of a soldier format from its classes by code, `encodeBiosoldierBuild` / `decodeBiosoldierBuild` are its format 1 pair), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` (abilities, the classes of each soldier format, SHIV perks) come from `entities/soldier` and `entities/shiv`. The feature serves both Build calculator pages and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts; `soldierBuildCodec` builds the encoder and decoder of a soldier format from its classes by code, `encodeBiosoldierBuild` / `decodeBiosoldierBuild` are its format 1 pair, `encodeMecBuild` / `decodeMecBuild` its format 3 pair), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` (abilities, the classes of each soldier format, SHIV perks) come from `entities/soldier` and `entities/shiv`. The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
@@ -42,18 +44,18 @@ Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-
 
 Codes store the `code` numbers of abilities and classes, not tree positions, so trees can change freely.
 
-- New record: max `code` + 1.
+- New record: max `code` + 1. Class codes are unique across the Biosoldier and MEC class lists: a new class of either kind gets the max class `code` of both + 1.
 - Never change an existing `code`.
 - Never reuse a deleted record's `code`; better, don't delete records.
 - `0` is never assigned: for abilities and classes it means "unknown", for sections — the end of the list.
 
 Same for `SOLDIER_BUILD_SECTION` and `SHARE_CODE_FORMAT`.
 
-Example: new ability, max `code` is 73.
+Example: new ability, max `code` is N.
 
-1. `abilities.json`: `"deadeye": { "code": 74, "name": "Deadeye", "description": "…" }`.
+1. `abilities.json`: `"deadeye": { "code": N + 1, "name": "Deadeye", "description": "…" }`.
 2. `config/constants/ability-icons.ts`: `deadeye` icon in `ABILITY_ICON`.
-3. `biosoldier-classes.json`: `"deadeye"` on the class rank.
+3. `biosoldier-classes.json` or `mec-classes.json`: `"deadeye"` on the class rank.
 4. `npm test`.
 
 ## Safe edits
@@ -100,6 +102,6 @@ Example: officer tree, max section id is 2.
 
 ## Checks
 
-`npm test` checks `code` ranges and uniqueness, ids and `grants` cycles, and the code format itself; the pre-push hook runs it with `vue-tsc` and lint.
+`npm test` checks `code` ranges and uniqueness (class ids and codes across both class lists), ids and `grants` cycles, and the code format itself; the pre-push hook runs it with `vue-tsc` and lint.
 
 Changing or reusing a `code` is caught only in review.

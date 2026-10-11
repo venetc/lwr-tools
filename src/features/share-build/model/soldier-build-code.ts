@@ -1,5 +1,5 @@
 import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
-import { ABILITY_ID_BY_CODE, abilityById, BIOSOLDIER_CLASS_BY_CODE, isAbilityId, SOLDIER_RANKS } from '@entities/soldier';
+import { ABILITY_ID_BY_CODE, abilityById, BIOSOLDIER_CLASS_BY_CODE, isAbilityId, MEC_CLASS_BY_CODE, SOLDIER_RANKS } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 import type { DeepReadonly } from '@shared/lib/object';
@@ -113,12 +113,14 @@ export const soldierBuildCodec = (format: number, classByCode: ReadonlyMap<numbe
   return { encode, decode };
 };
 
-/**
- * Share code encoder and decoder of biosoldier builds: format 1 bound to the biosoldier classes. `encodeBiosoldierBuild(build)`
- * gives the code, or null for a class of another kind of soldier, an unknown perk or an oversized section;
- * `decodeBiosoldierBuild(code, parts)` reads the requested optional parts (all by default) and gives the build or why it failed.
- */
+/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1 and the biosoldier classes. */
 export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = soldierBuildCodec(
   SHARE_CODE_FORMAT.BIOSOLDIER_BUILD,
   BIOSOLDIER_CLASS_BY_CODE,
+);
+
+/** Share code encoder and decoder of MEC builds: `soldierBuildCodec` bound to format 3 and the MEC classes. */
+export const { encode: encodeMecBuild, decode: decodeMecBuild } = soldierBuildCodec(
+  SHARE_CODE_FORMAT.MEC_BUILD,
+  MEC_CLASS_BY_CODE,
 );

@@ -12,12 +12,14 @@ import type { SoldierBuildPart } from '../model/soldier-build-code';
 export const SHARE_CODE_FORMAT = {
   BIOSOLDIER_BUILD: 1,
   SHIV_BUILD: 2,
+  MEC_BUILD: 3,
 } as const;
 
 /** Unit whose builds each format carries, by format number; a code of a listed format is reported as another unit's. */
 export const SHARE_CODE_FORMAT_UNIT: ReadonlyMap<number, string> = new Map([
   [SHARE_CODE_FORMAT.BIOSOLDIER_BUILD, 'Biosoldier'],
   [SHARE_CODE_FORMAT.SHIV_BUILD, 'SHIV'],
+  [SHARE_CODE_FORMAT.MEC_BUILD, 'MEC'],
 ]);
 
 /**

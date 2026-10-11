@@ -9,6 +9,8 @@ import {
   DEFAULT_NAME_BUILD,
   GARBAGE_CODE,
   INVALID_RESULT,
+  MEC_CODE_RESULT,
+  MEC_FORMAT,
   NAME_SECTION_ID,
   NAMED_BUILD,
   perksSection,
@@ -114,5 +116,13 @@ describe('decodeShivBuild', () => {
     const result = decodeShivBuild(code);
 
     expect(result).toEqual(BIOSOLDIER_CODE_RESULT);
+  });
+
+  it('recognises a MEC build code', () => {
+    const code = encodeBinaryCode(MEC_FORMAT, [perksSection([1])]) ?? '';
+
+    const result = decodeShivBuild(code);
+
+    expect(result).toEqual(MEC_CODE_RESULT);
   });
 });

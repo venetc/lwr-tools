@@ -27,6 +27,8 @@ export const SHIV_FORMAT = 2;
 
 export const BIOSOLDIER_FORMAT = 1;
 
+export const MEC_FORMAT = 3;
+
 export const PERKS_SECTION_ID = 1;
 
 export const NAME_SECTION_ID = 2;
@@ -34,6 +36,8 @@ export const NAME_SECTION_ID = 2;
 export const INVALID_RESULT = { status: 'invalid' };
 
 export const BIOSOLDIER_CODE_RESULT = { status: 'other-unit', unit: 'Biosoldier' };
+
+export const MEC_CODE_RESULT = { status: 'other-unit', unit: 'MEC' };
 
 export const GARBAGE_CODE = 'not a code';
 

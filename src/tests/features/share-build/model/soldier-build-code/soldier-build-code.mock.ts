@@ -25,6 +25,14 @@ export const BIOSOLDIER_CLASS_CONTENT_MOCK: Record<string, SoldierClassContent> 
   },
 };
 
+export const MEC_CLASS_CONTENT_MOCK: Record<string, SoldierClassContent> = {
+  walker: {
+    code: 5,
+    name: 'Walker',
+    perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as SoldierClassContent['perks'],
+  },
+};
+
 export const BIOSOLDIER_CLASS_MOCK = {
   id: 'tester',
   code: 3,
@@ -53,11 +61,27 @@ export const OTHER_CLASS_CODE = 4;
 
 export const OTHER_CLASS_BUILD = { ...DEFAULT_NAME_BUILD, soldierClass: OTHER_CLASS_MOCK, name: 'Other' };
 
+export const MEC_CLASS_MOCK = {
+  id: 'walker',
+  code: 5,
+  name: 'Walker',
+  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
+  basePerk: 'granted',
+} as unknown as SoldierClass;
+
+export const MEC_DEFAULT_NAME_BUILD = { ...DEFAULT_NAME_BUILD, soldierClass: MEC_CLASS_MOCK, name: 'Walker' };
+
+export const MEC_NAMED_BUILD = { ...MEC_DEFAULT_NAME_BUILD, name: 'Juggernaut' };
+
+export const MEC_CLASS_CODE = MEC_CLASS_MOCK.code;
+
+export const BIOSOLDIER_CLASS_CODE = BIOSOLDIER_CLASS_MOCK.code;
+
 export const NAMED_BUILD = { ...DEFAULT_NAME_BUILD, name: 'Overwatch' };
 
 export const UNKNOWN_PERK_BUILD = { ...DEFAULT_NAME_BUILD, perks: ['granted', 'missing'] };
 
-export const FORMAT = 1;
+export const BIOSOLDIER_FORMAT = 1;
 
 export const PERKS_SECTION_ID = 1;
 
@@ -69,9 +93,15 @@ export const UNKNOWN_FORMAT = 5;
 
 export const SHIV_FORMAT = 2;
 
+export const MEC_FORMAT = 3;
+
 export const INVALID_RESULT = { status: 'invalid' };
 
 export const SHIV_CODE_RESULT = { status: 'other-unit', unit: 'SHIV' };
+
+export const MEC_CODE_RESULT = { status: 'other-unit', unit: 'MEC' };
+
+export const BIOSOLDIER_CODE_RESULT = { status: 'other-unit', unit: 'Biosoldier' };
 
 export const GARBAGE_CODE = 'not a code';
 
@@ -92,7 +122,7 @@ export const perksSection = (classCode: number, abilityCodes: number[], extraBit
   },
 });
 
-export const VALID_PERKS_SECTION = perksSection(3, [12, 13]);
+export const VALID_PERKS_SECTION = perksSection(BIOSOLDIER_CLASS_CODE, [12, 13]);
 
 export const UNKNOWN_SECTION: BinaryCodeSection = { id: UNKNOWN_SECTION_ID, write: writer => writer.writeUint(0b11, 2) };
 

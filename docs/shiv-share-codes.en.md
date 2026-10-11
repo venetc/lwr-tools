@@ -2,11 +2,11 @@
 
 **English** · [Русский](shiv-share-codes.ru.md)
 
-A SHIV build in a share code. The layout (header, sections, CRC, base64url), the decoding result and the rules for issued codes are the same as for [Biosoldier build codes](share-codes.en.md); this page covers only what differs.
+A SHIV build in a share code. The layout (header, sections, CRC, base64url), the decoding result and the rules for issued codes are the same as for [Soldier build codes](share-codes.en.md); this page covers only what differs.
 
 ## Format
 
-`SHARE_CODE_FORMAT.SHIV_BUILD` = `2`. A Biosoldier code given to the SHIV decoder, and a SHIV code given to the Biosoldier one, decode as `other-unit`.
+`SHARE_CODE_FORMAT.SHIV_BUILD` = `2`. A Biosoldier or MEC code given to the SHIV decoder, and a SHIV code given to a soldier one, decode as `other-unit`.
 
 ## Sections
 
@@ -43,7 +43,7 @@ Move or reorder perks within the tree; rename ids (keep `code`); edit names, des
 | move two selected perks onto one level | "Invalid code" for codes with both |
 | change a section's fields or their widths | "Invalid code" or wrong data |
 
-Section fields change only in a new section with a version suffix, as for Biosoldier codes.
+Section fields change only in a new section with a version suffix, as for Soldier codes.
 
 ## Checks
 

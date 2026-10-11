@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { orderedIds } from '@shared/lib/stored-list/stored-list';
+import { orderedIds } from '@shared/lib/stored-list/stored-records';
 
 describe('orderedIds', () => {
   it('arranges the ids by the order', () => {

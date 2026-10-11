@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { loadStoredItems } from '@shared/lib/stored-list/stored-list';
+import { loadStoredItems } from '@shared/lib/stored-list/stored-records';
 
 import {
   BROKEN_JSON_STORAGE,

@@ -7,7 +7,7 @@ import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
 
 import type { ShareCodeDecodeResult } from '../model/share-code';
-import { useShareCodeImport } from '../model/useShareCodeImport';
+import { useShareCodeImport } from '../model/share-code-import';
 
 interface Props {
   /** Decodes a pasted code. */

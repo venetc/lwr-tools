@@ -1,15 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { useShivBuildTiers } from '@pages/shiv-builds/model/useShivBuildTiers';
+import { useShivBuildTiers } from '@pages/shiv-builds/model/shiv-build-tiers';
 
-import { createBuildMock, FIRST_FILLED_PERKS } from './useShivBuildTiers.mock';
+import { createBuildMock, FIRST_FILLED_PERKS } from './shiv-build-tiers.mock';
 
 vi.mock('@entities/shiv/config/constants/perk-content', async () => ({
-  SHIV_PERK_CONTENT: (await import('./useShivBuildTiers.mock')).SHIV_PERK_CONTENT_MOCK,
+  SHIV_PERK_CONTENT: (await import('./shiv-build-tiers.mock')).SHIV_PERK_CONTENT_MOCK,
 }));
 
 vi.mock('@entities/shiv/config/constants/technology-level-content', async () => ({
-  TECHNOLOGY_LEVEL_CONTENT: (await import('./useShivBuildTiers.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
+  TECHNOLOGY_LEVEL_CONTENT: (await import('./shiv-build-tiers.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
 }));
 
 vi.mock('@entities/shiv/config/constants/perk-icons', () => ({ SHIV_PERK_ICON: {} }));

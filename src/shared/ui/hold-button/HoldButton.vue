@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from 'vue';
 
-import { useHold } from './lib/useHold';
+import { useHold } from './lib/hold';
 
 export type HoldButtonState = 'idle' | 'holding';
 

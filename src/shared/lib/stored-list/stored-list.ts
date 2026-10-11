@@ -1,6 +1,11 @@
-import { localStorageKeys, readLocalStorage } from '@shared/lib/local-storage';
+import { useDebounceFn, useEventListener } from '@vueuse/core';
+import type { Ref } from 'vue';
+import { computed, ref } from 'vue';
 
-import { ORDER_SCHEMA } from './constants';
+import { removeLocalStorage, writeLocalStorage } from '@shared/lib/local-storage';
+
+import { SAVE_DELAY, SAVE_MAX_WAIT } from './constants';
+import { loadStoredItems, orderedIds, parseJson, parseStoredOrder, storedItemId } from './stored-records';
 
 export interface StoredListItem {
   /** Item id, unique in the list and part of its storage key. */
@@ -21,79 +26,204 @@ export interface StoredListOptions<Item extends StoredListItem> {
 }
 
 /**
- * Parsed JSON value, or null if the text is not valid JSON.
+ * Ordered list of items kept in the local storage and synced between tabs: loads the stored items, or the default ones
+ * if nothing has been saved yet, and saves every change made through its operations.
  *
- * @param value JSON text.
- */
-export const parseJson = (value: string): unknown => {
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-};
-
-/**
- * Item id of the storage key, or null if the key is not an item key.
- *
- * @param key storage key.
- * @param itemKeyPrefix key prefix of stored items.
- */
-export const storedItemId = (key: string, itemKeyPrefix: string) => {
-  if (!key.startsWith(itemKeyPrefix)) return null;
-
-  return key.slice(itemKeyPrefix.length);
-};
-
-/**
- * Item ids of the stored order, or null if the order is not valid JSON or not an array of strings.
- *
- * @param value stored order.
- */
-export const parseStoredOrder = (value: string) => {
-  const order = ORDER_SCHEMA.safeParse(parseJson(value));
-
-  if (!order.success) return null;
-
-  return order.data;
-};
-
-/**
- * Item ids arranged by the order: ids of the order that are present first, without duplicates,
- * then the remaining ids in their own order. Ids of the order that are not present are skipped.
- *
- * @param order item ids in the desired order.
- * @param ids present item ids.
- */
-export const orderedIds = (order: string[], ids: string[]) => {
-  const presentIds = new Set(ids);
-  const result = new Set(order.filter(id => presentIds.has(id)));
-
-  ids.forEach(id => result.add(id));
-
-  return [...result];
-};
-
-/**
- * Stored items by id in the stored order, records outside the order last; null if nothing has been saved yet.
+ * @description Changes are saved with a debounce and flushed when the page is hidden or closed; changes from other
+ * tabs are applied directly to the items and are not saved back. Items are mutated in place by the caller, which then
+ * marks them changed.
  *
  * @param options stored list options.
  */
-export const loadStoredItems = <Item extends StoredListItem>(options: StoredListOptions<Item>) => {
-  const orderValue = readLocalStorage(options.orderKey);
+export const useStoredList = <Item extends StoredListItem>(options: StoredListOptions<Item>) => {
+  const storedItems = loadStoredItems(options);
 
-  if (orderValue === null) return null;
+  const itemsById = ref(storedItems ?? new Map(options.defaultItems().map(item => [item.id, item]))) as Ref<Map<string, Item>>;
 
-  const storedIds = localStorageKeys(options.itemKeyPrefix)
-    .map(key => storedItemId(key, options.itemKeyPrefix))
-    .filter(id => id !== null);
+  const changedKeys = new Set<string>();
 
-  return orderedIds(parseStoredOrder(orderValue) ?? [], storedIds).reduce((acc, id) => {
-    const value = readLocalStorage(`${options.itemKeyPrefix}${id}`);
-    const item = value === null ? null : options.parse(id, parseJson(value));
+  /**
+   * Saves the current value of the key: the order, or the item record; removes the record of a removed item.
+   * An item that cannot be serialized keeps its previous record.
+   *
+   * @param key storage key.
+   */
+  const saveKey = (key: string) => {
+    if (key === options.orderKey) {
+      writeLocalStorage(key, JSON.stringify([...itemsById.value.keys()]));
+      return;
+    }
 
-    if (item) acc.set(id, item);
+    const id = storedItemId(key, options.itemKeyPrefix);
 
-    return acc;
-  }, new Map<string, Item>());
+    if (id === null) return;
+
+    const item = itemsById.value.get(id) ?? null;
+
+    if (!item) {
+      removeLocalStorage(key);
+      return;
+    }
+
+    const record = options.serialize(item);
+
+    if (record === null) return;
+
+    writeLocalStorage(key, JSON.stringify(record));
+  };
+
+  /**
+   * Saves all changed keys.
+   */
+  const save = () => {
+    changedKeys.forEach(saveKey);
+    changedKeys.clear();
+  };
+
+  const scheduleSave = useDebounceFn(save, SAVE_DELAY, { maxWait: SAVE_MAX_WAIT });
+
+  /**
+   * Marks the key as changed and schedules saving.
+   *
+   * @param key storage key.
+   */
+  const markKeyChanged = (key: string) => {
+    changedKeys.add(key);
+    scheduleSave();
+  };
+
+  /**
+   * Marks the item as changed, removed items included, and schedules saving.
+   *
+   * @param id item id.
+   */
+  const markItemChanged = (id: string) => markKeyChanged(`${options.itemKeyPrefix}${id}`);
+
+  /**
+   * Marks the order as changed and schedules saving.
+   */
+  const markOrderChanged = () => markKeyChanged(options.orderKey);
+
+  /**
+   * Item by id, mutable in place; null for a missing item.
+   *
+   * @param id item id.
+   */
+  const getItem = (id: string) => itemsById.value.get(id) ?? null;
+
+  /**
+   * Adds the item last and saves it.
+   *
+   * @param item new item.
+   */
+  const addItem = (item: Item) => {
+    itemsById.value.set(item.id, item);
+    markItemChanged(item.id);
+    markOrderChanged();
+  };
+
+  /**
+   * Removes the item and its record.
+   *
+   * @param id item id.
+   */
+  const removeItem = (id: string) => {
+    itemsById.value.delete(id);
+    markItemChanged(id);
+    markOrderChanged();
+  };
+
+  /**
+   * Applies an item record saved by another tab: removes the item if the record is removed,
+   * otherwise replaces it in place or adds it last. An invalid record is ignored.
+   *
+   * @param id item id.
+   * @param value new record, or null if it is removed.
+   */
+  const applyStoredItem = (id: string, value: string | null) => {
+    if (value === null) {
+      itemsById.value.delete(id);
+      return;
+    }
+
+    const item = options.parse(id, parseJson(value));
+
+    if (!item) return;
+
+    itemsById.value.set(id, item);
+  };
+
+  /**
+   * Arranges items by the order saved by another tab. Items missing from it stay last, and then the merged order
+   * is saved back; ids of items unknown here are not saved back, so tabs do not overwrite each other in turn.
+   * An invalid or removed order is ignored.
+   *
+   * @param value new order, or null if it is removed.
+   */
+  const applyStoredOrder = (value: string | null) => {
+    const order = value === null ? null : parseStoredOrder(value);
+
+    if (!order) return;
+
+    const items = itemsById.value;
+    const orderIds = new Set(order);
+    const hasMissingItems = [...items.keys()].some(id => !orderIds.has(id));
+
+    itemsById.value = orderedIds(order, [...items.keys()]).reduce((acc, id) => {
+      const item = items.get(id) ?? null;
+
+      if (item) acc.set(id, item);
+
+      return acc;
+    }, new Map<string, Item>());
+
+    if (hasMissingItems) markOrderChanged();
+  };
+
+  /**
+   * Applies a change of the storage made by another tab; keys of other lists and clearing are ignored.
+   *
+   * @param event storage change.
+   */
+  const applyStorageChange = (event: StorageEvent) => {
+    if (event.key === null) return;
+
+    if (event.key === options.orderKey) {
+      applyStoredOrder(event.newValue);
+      return;
+    }
+
+    const id = storedItemId(event.key, options.itemKeyPrefix);
+
+    if (id === null) return;
+
+    applyStoredItem(id, event.newValue);
+    changedKeys.delete(event.key);
+  };
+
+  /**
+   * Saves pending changes right away when the page is hidden: it may be closed without further events.
+   */
+  const flushOnHide = () => {
+    if (document.visibilityState !== 'hidden') return;
+
+    scheduleSave.flush();
+  };
+
+  useEventListener(window, 'storage', applyStorageChange);
+  useEventListener(window, 'pagehide', scheduleSave.flush);
+  useEventListener(document, 'visibilitychange', flushOnHide);
+
+  if (!storedItems) {
+    itemsById.value.forEach(item => markItemChanged(item.id));
+    markOrderChanged();
+  }
+
+  return {
+    items: computed<readonly Item[]>(() => [...itemsById.value.values()]),
+    getItem,
+    addItem,
+    removeItem,
+    markItemChanged,
+  };
 };

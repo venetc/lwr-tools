@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { parseStoredOrder } from '@shared/lib/stored-list/stored-list';
+import { parseStoredOrder } from '@shared/lib/stored-list/stored-records';
 
 import { INVALID_JSON_VALUE, NOT_A_LIST_VALUE, ORDER_IDS, ORDER_VALUE } from './parse-stored-order.mock';
 

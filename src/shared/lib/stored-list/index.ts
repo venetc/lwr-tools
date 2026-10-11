@@ -1,2 +1,2 @@
 export type { StoredListItem, StoredListOptions } from './stored-list';
-export { useStoredList } from './useStoredList';
+export { useStoredList } from './stored-list';

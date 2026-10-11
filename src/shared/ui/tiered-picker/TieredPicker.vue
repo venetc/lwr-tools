@@ -7,8 +7,8 @@ import { ScrollArea } from '@shared/ui/scroll-area';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
 import { COLUMNS } from './config/constants';
+import { useDescribedItem } from './model/described-item';
 import type { TieredPickerItem, TieredPickerTier } from './model/tiered-picker';
-import { useDescribedItem } from './model/useDescribedItem';
 import TieredPickerCell from './TieredPickerCell.vue';
 
 interface Props {

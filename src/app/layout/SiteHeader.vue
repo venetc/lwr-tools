@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Breadcrumbs } from '@shared/ui/breadcrumbs';
 
-import { useBreadcrumbs } from '../lib/useBreadcrumbs';
+import { useBreadcrumbs } from '../lib/breadcrumbs';
 
 const { breadcrumbs } = useBreadcrumbs();
 </script>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { storedItemId } from '@shared/lib/stored-list/stored-list';
+import { storedItemId } from '@shared/lib/stored-list/stored-records';
 
 import { ITEM_ID, ITEM_KEY_PREFIX, ORDER_KEY } from './stored-item-id.mock';
 

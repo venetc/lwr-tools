@@ -1,5 +1,5 @@
+export { useBuildEditor } from './model/build-editor';
+export type { BuildEditorActions } from './model/build-editor';
 export { useBuildList } from './model/build-list';
 export type { ListedBuild, NamedBuildData } from './model/build-list';
-export { useBuildEditor } from './model/useBuildEditor';
-export type { BuildEditorActions } from './model/useBuildEditor';
-export { useBuildNavItems } from './model/useBuildNavItems';
+export { useBuildNavItems } from './model/build-nav-items';

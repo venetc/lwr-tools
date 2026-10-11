@@ -3,9 +3,9 @@ import { decodeBiosoldierBuild, encodeBiosoldierBuild } from '@features/share-bu
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 import { BuildPanel } from '@widgets/build-calculator';
 
+import { useBiosoldierBuildTiers } from '../model/biosoldier-build-tiers';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
-import { useBiosoldierBuildTiers } from '../model/useBiosoldierBuildTiers';
 
 interface Props {
   /** Biosoldier build to render and edit. */

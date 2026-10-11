@@ -4,9 +4,9 @@ import { decodeShivBuild, encodeShivBuild } from '@features/share-build';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 import { BuildPanel } from '@widgets/build-calculator';
 
+import { useShivBuildTiers } from '../model/shiv-build-tiers';
 import type { ShivBuild } from '../model/shiv-builds';
 import { useShivBuildsStore } from '../model/shiv-builds';
-import { useShivBuildTiers } from '../model/useShivBuildTiers';
 
 interface Props {
   /** SHIV build to render and edit. */

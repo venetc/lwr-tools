@@ -1,1 +1,1 @@
-export { usePanelScroll } from './usePanelScroll';
+export { usePanelScroll } from './panel-scroll';

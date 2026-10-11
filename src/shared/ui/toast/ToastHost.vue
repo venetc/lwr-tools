@@ -3,7 +3,7 @@ import { X } from '@lucide/vue';
 import { ToastClose, ToastDescription, ToastProvider, ToastRoot, ToastTitle, ToastViewport } from 'reka-ui';
 
 import { TOAST_DURATION } from './config/constants';
-import { useToastQueue } from './model/useToastQueue';
+import { useToastQueue } from './model/toast-queue';
 
 const { messages, dismissToast } = useToastQueue();
 

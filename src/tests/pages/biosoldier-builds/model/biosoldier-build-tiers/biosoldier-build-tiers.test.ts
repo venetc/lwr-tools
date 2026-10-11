@@ -1,15 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { useBiosoldierBuildTiers } from '@pages/biosoldier-builds/model/useBiosoldierBuildTiers';
+import { useBiosoldierBuildTiers } from '@pages/biosoldier-builds/model/biosoldier-build-tiers';
 
-import { BASE_PERKS, createBuildMock, PARTIAL_PERKS } from './useBiosoldierBuildTiers.mock';
+import { BASE_PERKS, createBuildMock, PARTIAL_PERKS } from './biosoldier-build-tiers.mock';
 
 vi.mock('@entities/biosoldier/config/constants/ability-content', async () => ({
-  ABILITY_CONTENT: (await import('./useBiosoldierBuildTiers.mock')).ABILITY_CONTENT_MOCK,
+  ABILITY_CONTENT: (await import('./biosoldier-build-tiers.mock')).ABILITY_CONTENT_MOCK,
 }));
 
 vi.mock('@entities/biosoldier/config/constants/soldier-rank-content', async () => ({
-  SOLDIER_RANK_CONTENT: (await import('./useBiosoldierBuildTiers.mock')).SOLDIER_RANK_CONTENT_MOCK,
+  SOLDIER_RANK_CONTENT: (await import('./biosoldier-build-tiers.mock')).SOLDIER_RANK_CONTENT_MOCK,
 }));
 
 vi.mock('@entities/biosoldier/config/constants/biosoldier-class-content', () => ({ BIOSOLDIER_CLASS_CONTENT: {} }));

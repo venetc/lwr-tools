@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import { biosoldierBuildsPageRoute } from '@pages/biosoldier-builds';
 import { buildsPageRoute } from '@pages/builds';
+import { mecBuildsPageRoute } from '@pages/mec-builds';
 import { shivBuildsPageRoute } from '@pages/shiv-builds';
 import { ROUTES } from '@shared/config/routes';
 
@@ -21,6 +22,7 @@ export const router: Router = createRouter({
       children: [
         buildsPageRoute,
         biosoldierBuildsPageRoute,
+        mecBuildsPageRoute,
         shivBuildsPageRoute,
       ],
     },

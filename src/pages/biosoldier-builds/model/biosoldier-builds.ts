@@ -9,6 +9,7 @@ import { createId } from '@shared/lib/id';
 
 import { BUILD_KEY_PREFIX, BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
 
+/** Id of a biosoldier build, unique in the calculator list. */
 export type BiosoldierBuildId = string;
 
 /**

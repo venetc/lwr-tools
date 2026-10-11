@@ -1,11 +1,11 @@
-import type { BiosoldierBuildData } from '@entities/biosoldier';
+import type { SoldierBuildData } from '@entities/soldier';
 import {
   ABILITY_ID_BY_CODE,
   abilityById,
-  BIOSOLDIER_CLASS_BY_CODE,
   isAbilityId,
+  SOLDIER_CLASS_BY_CODE,
   SOLDIER_RANKS,
-} from '@entities/biosoldier';
+} from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 
@@ -33,19 +33,19 @@ export type BiosoldierBuildPart = 'name';
  *
  * @param reader section reader.
  */
-const readPerks = (reader: BitReader): Omit<BiosoldierBuildData, 'name'> | null => {
-  const biosoldierClass = BIOSOLDIER_CLASS_BY_CODE.get(reader.readUint(CLASS_CODE_BITS)) ?? null;
+const readPerks = (reader: BitReader): Omit<SoldierBuildData, 'name'> | null => {
+  const soldierClass = SOLDIER_CLASS_BY_CODE.get(reader.readUint(CLASS_CODE_BITS)) ?? null;
   const perkCount = reader.readUint(PERK_COUNT_BITS);
   const selectedPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null)
     .filter(abilityId => abilityId !== null);
 
-  if (!biosoldierClass || !reader.isComplete) return null;
+  if (!soldierClass || !reader.isComplete) return null;
 
   if (selectedPerks.length !== perkCount) return null;
 
   if (selectedPerks.length >= SOLDIER_RANKS.length) return null;
 
-  return { biosoldierClass, perks: [biosoldierClass.basePerk, ...selectedPerks] };
+  return { soldierClass, perks: [soldierClass.basePerk, ...selectedPerks] };
 };
 
 /**
@@ -54,7 +54,7 @@ const readPerks = (reader: BitReader): Omit<BiosoldierBuildData, 'name'> | null 
  *
  * @param build biosoldier build.
  */
-export const encodeBiosoldierBuild = (build: BiosoldierBuildData) => {
+export const encodeBiosoldierBuild = (build: SoldierBuildData) => {
   const selectedPerks = build.perks.slice(1);
 
   if (!selectedPerks.every(isAbilityId)) return null;
@@ -62,13 +62,13 @@ export const encodeBiosoldierBuild = (build: BiosoldierBuildData) => {
   const sections: BinaryCodeSection[] = [{
     id: BIOSOLDIER_BUILD_SECTION.PERKS,
     write: (writer) => {
-      writer.writeUint(build.biosoldierClass.code, CLASS_CODE_BITS);
+      writer.writeUint(build.soldierClass.code, CLASS_CODE_BITS);
       writer.writeUint(selectedPerks.length, PERK_COUNT_BITS);
       selectedPerks.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
     },
   }];
 
-  if (build.name !== build.biosoldierClass.name) {
+  if (build.name !== build.soldierClass.name) {
     sections.push({ id: BIOSOLDIER_BUILD_SECTION.NAME, write: writer => writer.writeString(build.name, NAME_LENGTH_BITS) });
   }
 
@@ -86,7 +86,7 @@ export const encodeBiosoldierBuild = (build: BiosoldierBuildData) => {
 export const decodeBiosoldierBuild = (
   code: string,
   parts = BIOSOLDIER_BUILD_PARTS,
-): ShareCodeDecodeResult<BiosoldierBuildData> => {
+): ShareCodeDecodeResult<SoldierBuildData> => {
   const shareCode = openShareCode(code, SHARE_CODE_FORMAT.BIOSOLDIER_BUILD);
 
   if (shareCode.status !== 'opened') return shareCode;
@@ -97,7 +97,7 @@ export const decodeBiosoldierBuild = (
   if (!perks) return INVALID_SHARE_CODE;
 
   const nameReader = shareCode.sections.get(BIOSOLDIER_BUILD_SECTION.NAME) ?? null;
-  const name = decodeName(nameReader, perks.biosoldierClass.name, parts.includes('name'));
+  const name = decodeName(nameReader, perks.soldierClass.name, parts.includes('name'));
 
   if (name === null) return INVALID_SHARE_CODE;
 

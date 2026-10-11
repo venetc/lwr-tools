@@ -1,7 +1,7 @@
-import type { AbilityContent } from '@entities/biosoldier/model/abilities';
-import type { BiosoldierBuildData } from '@entities/biosoldier/model/build';
-import type { BiosoldierClass, BiosoldierClassContent } from '@entities/biosoldier/model/classes';
-import type { SoldierRankContent } from '@entities/biosoldier/model/ranks';
+import type { AbilityContent } from '@entities/soldier/model/abilities';
+import type { SoldierBuildData } from '@entities/soldier/model/build';
+import type { SoldierClass, SoldierClassContent } from '@entities/soldier/model/classes';
+import type { SoldierRankContent } from '@entities/soldier/model/ranks';
 import type { BinaryCodeSection, BitWriter } from '@shared/lib/binary-code';
 
 export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
@@ -17,11 +17,11 @@ export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
   third: { name: 'Third' },
 };
 
-export const BIOSOLDIER_CLASS_CONTENT_MOCK: Record<string, BiosoldierClassContent> = {
+export const BIOSOLDIER_CLASS_CONTENT_MOCK: Record<string, SoldierClassContent> = {
   tester: {
     code: 3,
     name: 'Tester',
-    perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as BiosoldierClassContent['perks'],
+    perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as SoldierClassContent['perks'],
   },
 };
 
@@ -31,13 +31,13 @@ export const BIOSOLDIER_CLASS_MOCK = {
   name: 'Tester',
   perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
   basePerk: 'granted',
-} as unknown as BiosoldierClass;
+} as unknown as SoldierClass;
 
 export const DEFAULT_NAME_BUILD = {
-  biosoldierClass: BIOSOLDIER_CLASS_MOCK,
+  soldierClass: BIOSOLDIER_CLASS_MOCK,
   perks: ['granted', 'right', 'top'],
   name: 'Tester',
-} as BiosoldierBuildData;
+} as SoldierBuildData;
 
 export const NAMED_BUILD = { ...DEFAULT_NAME_BUILD, name: 'Overwatch' };
 

@@ -1,4 +1,4 @@
-import type { BiosoldierClassTree, TreeAbility } from '@entities/biosoldier/model/class-tree';
+import type { ClassTree, TreeAbility } from '@entities/soldier/model/class-tree';
 
 /**
  * Tree perk without grants.
@@ -28,12 +28,12 @@ export const TREE_MOCK = {
     { id: 'second', name: 'Second', perks: [LEFT_PERK, RIGHT_PERK] },
     { id: 'third', name: 'Third', perks: [TOP_PERK] },
   ],
-} as unknown as BiosoldierClassTree;
+} as unknown as ClassTree;
 
 export const EMPTY_TREE_MOCK = {
   name: 'Empty',
   ranks: [],
-} as unknown as BiosoldierClassTree;
+} as unknown as ClassTree;
 
 export const BASE_BUILD = ['granted'];
 

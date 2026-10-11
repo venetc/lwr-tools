@@ -2,7 +2,7 @@
 import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
-import { BIOSOLDIER_CLASSES } from '@entities/biosoldier';
+import { BIOSOLDIER_CLASSES } from '@entities/soldier';
 import { decodeBiosoldierBuild } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 import { BuildCalculator } from '@widgets/build-calculator';
@@ -29,25 +29,25 @@ const { builds } = storeToRefs(biosoldierBuildsStore);
     <template #add>
       <div :class="$style.addButtons">
         <Button
-          v-for="biosoldierClass in BIOSOLDIER_CLASSES"
-          :key="biosoldierClass.id"
-          @click="biosoldierBuildsStore.addBuild(biosoldierClass)"
+          v-for="soldierClass in BIOSOLDIER_CLASSES"
+          :key="soldierClass.id"
+          @click="biosoldierBuildsStore.addBuild(soldierClass)"
         >
           <span :class="$style.addContent">
             <Plus :class="$style.plusIcon" aria-hidden="true" />
             <component
-              :is="biosoldierClass.icon"
+              :is="soldierClass.icon"
               :class="$style.classIcon"
               aria-hidden="true"
             />
-            <span :class="$style.visuallyHidden">Add {{ biosoldierClass.name }}</span>
+            <span :class="$style.visuallyHidden">Add {{ soldierClass.name }}</span>
           </span>
         </Button>
       </div>
     </template>
 
     <template #nav-icon="{ build }">
-      <component :is="build.biosoldierClass.icon" :class="$style.navIcon" />
+      <component :is="build.soldierClass.icon" :class="$style.navIcon" />
     </template>
   </BuildCalculator>
 </template>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { featuredPerk, rankState } from '@entities/biosoldier/model/class-tree';
+import { featuredPerk, rankState } from '@entities/soldier/model/class-tree';
 
 import {
   BASE_BUILD,

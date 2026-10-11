@@ -27,7 +27,7 @@ A decoder returns `{ status: 'decoded', build }`, or why it failed:
 
 A stored build whose code does not decode is skipped on loading.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/biosoldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` come from `entities/biosoldier` and `entities/shiv`. The feature serves both Build calculator pages and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/biosoldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` come from `entities/soldier` and `entities/shiv`. The feature serves both Build calculator pages and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
@@ -53,7 +53,7 @@ Example: new ability, max `code` is 73.
 
 1. `abilities.json`: `"deadeye": { "code": 74, "name": "Deadeye", "description": "…" }`.
 2. `config/constants/ability-icons.ts`: `deadeye` icon in `ABILITY_ICON`.
-3. `classes.json`: `"deadeye"` on the class rank.
+3. `biosoldier-classes.json`: `"deadeye"` on the class rank.
 4. `npm test`.
 
 ## Safe edits

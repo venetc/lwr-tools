@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
-import { SOLDIER_RANK_CONTENT } from '@entities/biosoldier/config/constants/soldier-rank-content';
-import type { AbilityContent } from '@entities/biosoldier/model/abilities';
-import { isAbilityId } from '@entities/biosoldier/model/abilities';
-import type { BiosoldierClassContent } from '@entities/biosoldier/model/classes';
-import type { SoldierRankContent } from '@entities/biosoldier/model/ranks';
+import { SOLDIER_RANK_CONTENT } from '@entities/soldier/config/constants/soldier-rank-content';
+import type { AbilityContent } from '@entities/soldier/model/abilities';
+import { isAbilityId } from '@entities/soldier/model/abilities';
+import type { SoldierClassContent } from '@entities/soldier/model/classes';
+import type { SoldierRankContent } from '@entities/soldier/model/ranks';
 import { ABILITY_CODE_BITS, CLASS_CODE_BITS } from '@features/share-build/config/constants';
 import { typedEntries } from '@shared/lib/object';
 
@@ -98,7 +98,7 @@ const abilityContentSchema: z.ZodType<AbilityContent> = z.strictObject({
   grants: z.array(abilityIdSchema).optional(),
 });
 
-const biosoldierClassContentSchema: z.ZodType<BiosoldierClassContent> = z.strictObject({
+const soldierClassContentSchema: z.ZodType<SoldierClassContent> = z.strictObject({
   code: codeSchema(CLASS_CODE_BITS),
   name: z.string().min(1),
   perks: z.record(rankIdSchema, z.array(abilityIdSchema).min(1)),
@@ -109,10 +109,10 @@ const soldierRankContentSchema: z.ZodType<SoldierRankContent> = z.strictObject({
 });
 
 /**
- * Schema of all biosoldier content JSON: record shapes, code ranges and uniqueness, ability references and grant cycles.
+ * Schema of all soldier content JSON: record shapes, code ranges and uniqueness, ability references and grant cycles.
  */
-export const biosoldierContentSchema = z.strictObject({
+export const soldierContentSchema = z.strictObject({
   abilities: z.record(z.string(), abilityContentSchema).superRefine(checkUniqueCodes).superRefine(checkGrantCycles),
-  classes: z.record(z.string(), biosoldierClassContentSchema).superRefine(checkUniqueCodes),
+  classes: z.record(z.string(), soldierClassContentSchema).superRefine(checkUniqueCodes),
   ranks: z.record(z.string(), soldierRankContentSchema),
 });

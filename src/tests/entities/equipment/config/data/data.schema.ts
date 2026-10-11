@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
-import { BIOSOLDIER_CLASS_CONTENT } from '@entities/biosoldier/config/constants/biosoldier-class-content';
 import type { ArmorContent } from '@entities/equipment/model/armors';
 import type { EquipmentAbilityContent } from '@entities/equipment/model/equipment-abilities';
 import { isEquipmentAbilityId } from '@entities/equipment/model/equipment-abilities';
 import type { EquipmentUnitContent } from '@entities/equipment/model/equipment-units';
 import { isEquipmentUnitId } from '@entities/equipment/model/equipment-units';
 import type { WeaponContent } from '@entities/equipment/model/weapons';
+import { BIOSOLDIER_CLASS_CONTENT } from '@entities/soldier/config/constants/biosoldier-class-content';
 import { typedEntries } from '@shared/lib/object';
 
 /**

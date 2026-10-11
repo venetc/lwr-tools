@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
-import type { BiosoldierBuildData, BiosoldierClass } from '@entities/biosoldier';
-import { BIOSOLDIER_CLASSES, selectBiosoldierBuildPerk } from '@entities/biosoldier';
+import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
+import { BIOSOLDIER_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
 import type { StoredBuild } from '@features/share-build';
 import { decodeBiosoldierBuild, encodeBiosoldierBuild, storedBuildCodec } from '@features/share-build';
@@ -14,20 +14,20 @@ export type BiosoldierBuildId = string;
 /**
  * Biosoldier build of the calculator: build data with its id and lock.
  */
-export type BiosoldierBuild = StoredBuild<BiosoldierBuildData>;
+export type BiosoldierBuild = StoredBuild<SoldierBuildData>;
 
 /**
  * New editable build of the class with only the base perk selected.
  *
- * @param biosoldierClass biosoldier class.
+ * @param soldierClass biosoldier class.
  * @param id build id; random by default.
  */
-const createBiosoldierBuild = (biosoldierClass: BiosoldierClass, id: BiosoldierBuildId = createId()): BiosoldierBuild => {
+const createBiosoldierBuild = (soldierClass: SoldierClass, id: BiosoldierBuildId = createId()): BiosoldierBuild => {
   return {
     id,
-    biosoldierClass,
-    perks: [biosoldierClass.basePerk],
-    name: biosoldierClass.name,
+    soldierClass,
+    perks: [soldierClass.basePerk],
+    name: soldierClass.name,
     readonly: false,
   };
 };
@@ -35,15 +35,15 @@ const createBiosoldierBuild = (biosoldierClass: BiosoldierClass, id: BiosoldierB
 /**
  * Default builds: one per class with only the base perk selected, with fixed ids.
  */
-const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map(biosoldierClass => (
-  createBiosoldierBuild(biosoldierClass, `${DEFAULT_BUILD_ID_PREFIX}${biosoldierClass.id}`)
+const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map(soldierClass => (
+  createBiosoldierBuild(soldierClass, `${DEFAULT_BUILD_ID_PREFIX}${soldierClass.id}`)
 ));
 
 /**
  * Builds of the Biosoldier Build calculator, saved to the local storage and synced between tabs.
  */
 export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', () => {
-  const buildList = useBuildList<BiosoldierBuildData>({
+  const buildList = useBuildList<SoldierBuildData>({
     orderKey: BUILD_ORDER_KEY,
     itemKeyPrefix: BUILD_KEY_PREFIX,
     ...storedBuildCodec(encodeBiosoldierBuild, decodeBiosoldierBuild),
@@ -62,16 +62,16 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
 
     if (!build) return;
 
-    selectBiosoldierBuildPerk(build, rankIndex, perkId);
+    selectSoldierBuildPerk(build, rankIndex, perkId);
     buildList.markBuildChanged(buildId);
   };
 
   /**
    * Adds a new build of the class with only the base perk selected.
    *
-   * @param biosoldierClass biosoldier class of the new build.
+   * @param soldierClass biosoldier class of the new build.
    */
-  const addBuild = (biosoldierClass: BiosoldierClass) => buildList.addBuild(createBiosoldierBuild(biosoldierClass));
+  const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(createBiosoldierBuild(soldierClass));
 
   return {
     builds: buildList.builds,

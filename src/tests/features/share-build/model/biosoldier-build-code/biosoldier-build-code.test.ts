@@ -20,23 +20,23 @@ import {
   VALID_PERKS_SECTION,
 } from './biosoldier-build-code.mock';
 
-vi.mock('@entities/biosoldier/config/constants/ability-content', async () => ({
+vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
   ABILITY_CONTENT: (await import('./biosoldier-build-code.mock')).ABILITY_CONTENT_MOCK,
 }));
 
-vi.mock('@entities/biosoldier/config/constants/biosoldier-class-content', async () => ({
+vi.mock('@entities/soldier/config/constants/biosoldier-class-content', async () => ({
   BIOSOLDIER_CLASS_CONTENT: (await import('./biosoldier-build-code.mock')).BIOSOLDIER_CLASS_CONTENT_MOCK,
 }));
 
-vi.mock('@entities/biosoldier/config/constants/soldier-rank-content', async () => ({
+vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => ({
   SOLDIER_RANK_CONTENT: (await import('./biosoldier-build-code.mock')).SOLDIER_RANK_CONTENT_MOCK,
 }));
 
-vi.mock('@entities/biosoldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
+vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
 
-vi.mock('@entities/biosoldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
+vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
 
-vi.mock('@entities/biosoldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
+vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 
 describe('encodeBiosoldierBuild', () => {
   it('leaves out the name section for the default name', () => {

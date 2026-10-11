@@ -1,7 +1,7 @@
-import type { AbilityContent } from '@entities/biosoldier/model/abilities';
-import type { BiosoldierClass } from '@entities/biosoldier/model/classes';
-import type { SoldierRankContent } from '@entities/biosoldier/model/ranks';
-import type { BiosoldierBuild } from '@pages/biosoldier-builds/model/biosoldier-builds';
+import type { AbilityContent } from '@entities/soldier/model/abilities';
+import type { ClassTreeBuild } from '@entities/soldier/model/class-tree-tiers';
+import type { SoldierClass } from '@entities/soldier/model/classes';
+import type { SoldierRankContent } from '@entities/soldier/model/ranks';
 
 export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
   granted: { code: 10, name: 'Granted', description: 'Granted by the class.' },
@@ -16,13 +16,13 @@ export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
   third: { name: 'Third' },
 };
 
-const BIOSOLDIER_CLASS_MOCK = {
+const SOLDIER_CLASS_MOCK = {
   id: 'tester',
   code: 3,
   name: 'Tester',
   perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
   basePerk: 'granted',
-} as unknown as BiosoldierClass;
+} as unknown as SoldierClass;
 
 /**
  * Build of the mock class.
@@ -30,9 +30,8 @@ const BIOSOLDIER_CLASS_MOCK = {
  * @param perks selected perks by rank.
  * @param readonly whether the build is readonly.
  */
-export const createBuildMock = (perks: string[], readonly = false): BiosoldierBuild => ({
-  id: 'build',
-  biosoldierClass: BIOSOLDIER_CLASS_MOCK,
+export const createBuildMock = (perks: string[], readonly = false): ClassTreeBuild => ({
+  soldierClass: SOLDIER_CLASS_MOCK,
   perks,
   name: 'Tester',
   readonly,

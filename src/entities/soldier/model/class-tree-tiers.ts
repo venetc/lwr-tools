@@ -1,18 +1,23 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { BiosoldierClassTreeRank, TreeAbility } from '@entities/biosoldier';
-import { biosoldierClassTree, featuredPerk, rankState } from '@entities/biosoldier';
 import type { TieredPickerItem, TieredPickerTier } from '@shared/ui/tiered-picker';
 
-import type { BiosoldierBuild } from './biosoldier-builds';
+import type { SoldierBuildData } from './build';
+import type { ClassTreeRank, TreeAbility } from './class-tree';
+import { classTree, featuredPerk, rankState } from './class-tree';
+
+/**
+ * Soldier build shown in a class tree: build data with its lock.
+ */
+export type ClassTreeBuild = Readonly<SoldierBuildData & { readonly: boolean }>;
 
 /**
  * Picker tier of a soldier rank.
  */
-export interface BiosoldierRankTier extends TieredPickerTier {
+export interface ClassTreeRankTier extends TieredPickerTier {
   /** Soldier rank of the tier. */
-  rank: BiosoldierClassTreeRank
+  rank: ClassTreeRank
 }
 
 /**
@@ -34,15 +39,15 @@ const perkItem = (ability: TreeAbility): TieredPickerItem => ({
  * @description A tier is disabled for a readonly build, the rank of the base perk, or a locked rank.
  * The tree is rebuilt only when the build class changes.
  *
- * @param build biosoldier build.
+ * @param build soldier build with its lock.
  */
-export const useBiosoldierBuildTiers = (build: MaybeRefOrGetter<Readonly<BiosoldierBuild>>) => {
-  const tree = computed(() => biosoldierClassTree(toValue(build).biosoldierClass));
+export const useClassTreeTiers = (build: MaybeRefOrGetter<ClassTreeBuild>) => {
+  const tree = computed(() => classTree(toValue(build).soldierClass));
 
   const tiers = computed(() => {
     const { perks, readonly } = toValue(build);
 
-    return tree.value.ranks.map((rank, rankIndex): BiosoldierRankTier => {
+    return tree.value.ranks.map((rank, rankIndex): ClassTreeRankTier => {
       const state = rankState(perks, rankIndex, readonly);
 
       return {

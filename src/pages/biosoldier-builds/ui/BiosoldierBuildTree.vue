@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { useClassTreeTiers } from '@entities/soldier';
 import { decodeBiosoldierBuild, encodeBiosoldierBuild } from '@features/share-build';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 import { BuildPanel } from '@widgets/build-calculator';
 
-import { useBiosoldierBuildTiers } from '../model/biosoldier-build-tiers';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
 
@@ -16,15 +16,15 @@ const props = defineProps<Props>();
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
-const { tree, tiers, featuredItem } = useBiosoldierBuildTiers(() => props.build);
+const { tree, tiers, featuredItem } = useClassTreeTiers(() => props.build);
 </script>
 
 <template>
   <BuildPanel
-    :key="props.build.biosoldierClass.id"
+    :key="props.build.soldierClass.id"
     :build="props.build"
     :label="tree.name"
-    :fallback-name="props.build.biosoldierClass.name"
+    :fallback-name="props.build.soldierClass.name"
     :tiers="tiers"
     :default-item="featuredItem"
     :actions="biosoldierBuildsStore"
@@ -33,7 +33,7 @@ const { tree, tiers, featuredItem } = useBiosoldierBuildTiers(() => props.build)
   >
     <template #icon>
       <component
-        :is="props.build.biosoldierClass.icon"
+        :is="props.build.soldierClass.icon"
         :class="$style.classIcon"
         aria-hidden="true"
       />

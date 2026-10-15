@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
+    "test:clear-cache": "vitest --clearCache",
     "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {

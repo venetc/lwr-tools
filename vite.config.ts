@@ -10,8 +10,8 @@ export default defineConfig({
     vue(),
     svgLoader({ defaultImport: 'url', svgo: false }),
     imagetools({
-      /** Ability and SHIV perk icon masters (with state variants for trees), up to 256px each. */
-      include: '**/config/icons/{abilities,perks}/*/*.png',
+      /** Ability, gene mod, psionic ability and SHIV perk icon masters (with state variants for trees), up to 256px each. */
+      include: '**/config/icons/{abilities,perks,gene-mods,psionic}/*/*.png',
       /** 128px covers the 44px cell up to 3x DPR. */
       defaultDirectives: new URLSearchParams({ w: '128', format: 'webp', quality: '85' }),
     }),

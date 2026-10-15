@@ -29,3 +29,6 @@ export const TECHNOLOGY_LEVEL_ITEMS: DeepReadonly<TieredPickerItem[][]> = TECHNO
 export const SHIV_PERK_ITEM_BY_ID: ReadonlyMap<string, DeepReadonly<TieredPickerItem>> = new Map(
   TECHNOLOGY_LEVEL_ITEMS.flat().map(item => [item.id, item]),
 );
+
+/** Id of the only tier group of a SHIV build panel: the SHIV tree. */
+export const SHIV_TREE_GROUP_ID = 'shiv-tree';

@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="Value">
+<script setup lang="ts" generic="Kind extends BuildCodeKind">
 import { computed, useId } from 'vue';
 
 import { Button } from '@shared/ui/button';
@@ -6,17 +6,17 @@ import { Input } from '@shared/ui/input';
 import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
 
-import type { ShareCodeDecodeResult } from '../model/share-code';
+import type { BuildCodeKind, BuildDataByKind } from '../model/build-codecs';
 import { useShareCodeImport } from '../model/share-code-import';
 
 interface Props {
-  /** Decodes a pasted code. */
-  decode: (code: string) => ShareCodeDecodeResult<Value>
+  /** Kind of build code the form accepts. */
+  kind: Kind
 }
 
 interface Emits {
-  /** Value decoded from a valid code. */
-  import: [value: Value]
+  /** Build decoded from a valid code. */
+  import: [build: BuildDataByKind[Kind]]
 }
 
 const props = defineProps<Props>();
@@ -28,8 +28,8 @@ const inputId = useId();
 const errorId = useId();
 
 const { isOpen, code, isInvalid, clearError, setOpen, submit } = useShareCodeImport(
-  pastedCode => props.decode(pastedCode),
-  value => emit('import', value),
+  () => props.kind,
+  build => emit('import', build),
 );
 
 const errorDescribedBy = computed(() => isInvalid.value ? errorId : undefined);

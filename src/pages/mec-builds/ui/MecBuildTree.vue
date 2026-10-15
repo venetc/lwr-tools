@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useClassTreeTiers } from '@entities/soldier';
-import { decodeMecBuild, encodeMecBuild } from '@features/share-build';
+import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 import { BuildPanel } from '@widgets/build-calculator';
 
+import { useMecBuildGroups } from '../model/mec-build-groups';
 import type { MecBuild } from '../model/mec-builds';
 import { useMecBuildsStore } from '../model/mec-builds';
 
@@ -16,7 +16,9 @@ const props = defineProps<Props>();
 
 const mecBuildsStore = useMecBuildsStore();
 
-const { tree, tiers, featuredItem } = useClassTreeTiers(() => props.build);
+const { rename, lock, replace, remove } = useBuildEditor(() => props.build, mecBuildsStore);
+
+const { tree, groups, select } = useMecBuildGroups(() => props.build);
 </script>
 
 <template>
@@ -25,11 +27,13 @@ const { tree, tiers, featuredItem } = useClassTreeTiers(() => props.build);
     :build="props.build"
     :label="tree.name"
     :fallback-name="props.build.soldierClass.name"
-    :tiers="tiers"
-    :default-item="featuredItem"
-    :actions="mecBuildsStore"
-    :encode="encodeMecBuild"
-    :decode="decodeMecBuild"
+    kind="mec"
+    :groups="groups"
+    @rename="rename"
+    @lock="lock"
+    @replace="replace"
+    @remove="remove"
+    @select="select"
   >
     <template #icon>
       <component

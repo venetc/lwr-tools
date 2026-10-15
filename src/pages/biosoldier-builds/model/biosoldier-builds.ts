@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
-import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
-import { BIOSOLDIER_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
+import type { BiosoldierBuildData, SoldierClass } from '@entities/soldier';
+import { BIOSOLDIER_CLASSES, EMPTY_GENE_MODS, selectBiosoldierBuildGeneMod, selectSoldierBuildPerk } from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
 import type { StoredBuild } from '@features/share-build';
 import { decodeBiosoldierBuild, encodeBiosoldierBuild, storedBuildCodec } from '@features/share-build';
@@ -15,10 +15,10 @@ export type BiosoldierBuildId = string;
 /**
  * Biosoldier build of the calculator: build data with its id and lock.
  */
-export type BiosoldierBuild = StoredBuild<SoldierBuildData>;
+export type BiosoldierBuild = StoredBuild<BiosoldierBuildData>;
 
 /**
- * New editable build of the class with only the base perk selected.
+ * New editable build of the class with only the base perk selected and no gene mods.
  *
  * @param soldierClass biosoldier class.
  * @param id build id; random by default.
@@ -28,6 +28,7 @@ const createBiosoldierBuild = (soldierClass: SoldierClass, id: BiosoldierBuildId
     id,
     soldierClass,
     perks: [soldierClass.basePerk],
+    geneMods: [...EMPTY_GENE_MODS],
     name: soldierClass.name,
     readonly: false,
   };
@@ -44,7 +45,7 @@ const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map(soldierClass => (
  * Builds of the Biosoldier Build calculator, saved to the local storage and synced between tabs.
  */
 export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', () => {
-  const buildList = useBuildList<SoldierBuildData>({
+  const buildList = useBuildList<BiosoldierBuildData>({
     orderKey: BUILD_ORDER_KEY,
     itemKeyPrefix: BUILD_KEY_PREFIX,
     ...storedBuildCodec(encodeBiosoldierBuild, decodeBiosoldierBuild),
@@ -68,6 +69,22 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
   };
 
   /**
+   * Selects a gene mod of the body part of an editable build, or clears the body part.
+   *
+   * @param buildId build id.
+   * @param bodyPartIndex body part index.
+   * @param geneModId selected gene mod id, or null to clear the body part.
+   */
+  const selectBuildGeneMod = (buildId: BiosoldierBuildId, bodyPartIndex: number, geneModId: string | null) => {
+    const build = buildList.findEditableBuild(buildId);
+
+    if (!build) return;
+
+    selectBiosoldierBuildGeneMod(build, bodyPartIndex, geneModId);
+    buildList.markBuildChanged(buildId);
+  };
+
+  /**
    * Adds a new build of the class with only the base perk selected.
    *
    * @param soldierClass biosoldier class of the new build.
@@ -77,6 +94,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
   return {
     builds: buildList.builds,
     selectBuildPerk,
+    selectBuildGeneMod,
     setName: buildList.setName,
     setReadonly: buildList.setReadonly,
     addBuild,

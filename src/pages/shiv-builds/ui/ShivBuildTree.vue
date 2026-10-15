@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { SHIV_BUILD_NAME } from '@entities/shiv';
-import { decodeShivBuild, encodeShivBuild } from '@features/share-build';
+import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 import { BuildPanel } from '@widgets/build-calculator';
 
-import { useShivBuildTiers } from '../model/shiv-build-tiers';
+import { useShivBuildGroups } from '../model/shiv-build-groups';
 import type { ShivBuild } from '../model/shiv-builds';
 import { useShivBuildsStore } from '../model/shiv-builds';
 
@@ -17,7 +17,9 @@ const props = defineProps<Props>();
 
 const shivBuildsStore = useShivBuildsStore();
 
-const { tiers, featuredItem } = useShivBuildTiers(() => props.build);
+const { rename, lock, replace, remove } = useBuildEditor(() => props.build, shivBuildsStore);
+
+const { groups, select } = useShivBuildGroups(() => props.build);
 </script>
 
 <template>
@@ -25,11 +27,13 @@ const { tiers, featuredItem } = useShivBuildTiers(() => props.build);
     :build="props.build"
     :label="SHIV_BUILD_NAME"
     :fallback-name="SHIV_BUILD_NAME"
-    :tiers="tiers"
-    :default-item="featuredItem"
-    :actions="shivBuildsStore"
-    :encode="encodeShivBuild"
-    :decode="decodeShivBuild"
+    kind="shiv"
+    :groups="groups"
+    @rename="rename"
+    @lock="lock"
+    @replace="replace"
+    @remove="remove"
+    @select="select"
   >
     <template #tier="{ tier, highlighted }">
       <TieredPickerTierLabel

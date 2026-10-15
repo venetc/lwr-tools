@@ -68,7 +68,7 @@ export const featuredPerk = (tree: ClassTree, perks: SelectedPerks): TreeAbility
  * @param abilityId ability id.
  * @param grantChain ids of the abilities that granted this one; restored after the call.
  */
-const treeAbility = (abilityId: AbilityId, grantChain = new Set<AbilityId>()): TreeAbility => {
+export const treeAbility = (abilityId: AbilityId, grantChain = new Set<AbilityId>()): TreeAbility => {
   const ability = abilityById(abilityId);
 
   grantChain.add(abilityId);

@@ -72,11 +72,12 @@ function getImageAlt(variant: TieredPickerAppearance) {
   height: 100%;
 }
 
+// Variants switch by opacity, not visibility: a hidden ancestor, such as an inactive tab panel, must hide every variant.
 .shown {
-  visibility: visible;
+  opacity: 1;
 }
 
 .concealed {
-  visibility: hidden;
+  opacity: 0;
 }
 </style>

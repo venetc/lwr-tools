@@ -1,9 +1,4 @@
 {
-  "absorption-fields": {
-    "code": 74,
-    "name": "Absorption Fields",
-    "description": "Gain +10% DR. Shots from beam weapons (laser/pulse/drone/cyberdisc) lose their penetration when targeting this unit."
-  },
   "ace": {
     "code": 1,
     "name": "Ace",
@@ -18,16 +13,6 @@
     "code": 3,
     "name": "Aggression",
     "description": "Shots gain +10% crit damage per enemy in sight."
-  },
-  "arsenal": {
-    "code": 75,
-    "name": "Arsenal",
-    "description": "Grenade Launchers, Restorative Mists, and Flamethrowers receive +2 uses. Grenades deal +1 damage and Restorative Mists heal 1 more HP. Reloading costs only 1 AP."
-  },
-  "awareness": {
-    "code": 76,
-    "name": "Awareness",
-    "description": "A state of constant alertness grants this unit +20 defense at all times. Does not apply against attacks from steadied shots."
   },
   "blast": {
     "code": 4,
@@ -54,45 +39,20 @@
     "name": "Bullseye",
     "description": "Grants +20 aim, +20 crit, +20% crit dmg, and +20 pen to shots fired at 2AP or shots at preoccupied targets (double if both). Grants +1 ammo to primary weapons."
   },
-  "close-combat-specialist": {
-    "code": 77,
-    "name": "Close Combat Specialist",
-    "description": "Grants a reaction shot at any enemy within 4 tiles that acts. Reaction shot only activates on enemy's turn, once per enemy. [Basic reaction shots lower cover DR/def by half, cannot crit, and require hit chance >30]"
-  },
   "close-encounters": {
     "code": 9,
     "name": "Close Encounters",
     "description": "The first standard shot against an enemy within 4 tiles will leave this unit with 1 AP but reduces mobility to 3.3 until out of AP. Grants immunity to critical hits from shots and reaction fire from enemies within 4 tiles."
-  },
-  "collateral-damage": {
-    "code": 78,
-    "name": "Collateral Damage",
-    "description": "Use a full magazine of ammo to destroy some cover and deal 15% of base weapon damage per ammo spent in a 5 tile radius up to 8 tiles away and then reload the main weapon. Leaves this unit with 1 AP and reduces mobility to 3.3 until out of AP. Does not work while in One For All. Destroys Corpses. 3 turn cooldown."
   },
   "combat-drugs": {
     "code": 10,
     "name": "Combat Drugs",
     "description": "Smoke grenades grant +25 aim and +15 crit. On detonation, if this unit is in the Area of Effect, they Enrage. Smoke grenades also passively heal 2 HP at the end of the turn. Only affects units that are breathing the smoke. Does not work in dense smoke."
   },
-  "combined-arms": {
-    "code": 79,
-    "name": "Combined Arms",
-    "description": "All weapons and equipment deal +1 damage."
-  },
   "critical-system-targeting": {
     "code": 11,
     "name": "Critical System Targeting",
     "description": "Shots against autopsied mechanical units deal +30% damage and gain +30 penetration (+60% damage and +60 penetration if steadied). Does not work with Arc Weapons."
-  },
-  "dampening-shield": {
-    "code": 80,
-    "name": "Dampening Shield",
-    "description": "Grants proximity-based DR from shots against this unit over 10 tiles away (+3% DR per tile further than 10)."
-  },
-  "dash-and-bash": {
-    "code": 81,
-    "name": "Dash and Bash",
-    "description": "Activate to allow the use of a Kinetic Strike at 0 AP if the last AP was spent moving. When active, KSM attacks gain +80% base weapon damage and disables the AP discount from Onslaught. Cannot activate if out of ammo. 2 turn cooldown."
   },
   "dense-smoke": {
     "code": 12,
@@ -134,20 +94,10 @@
     "name": "Firebase",
     "description": "When in partial cover: Steadied shots are not broken by damage and deal +50% base weapon damage. If also adjacent to a SHIV: Gain +20% throw range and automatically Steady Weapon if idle at the end of the turn."
   },
-  "fortified": {
-    "code": 82,
-    "name": "Fortified",
-    "description": "Grants immunity to critical hits. Injury and fatigue times are reduced by 15%."
-  },
   "fragmentation": {
     "code": 20,
     "name": "Fragmentation",
     "description": "Explosives critically hit exposed targets and have a 50% increased chance to cause bleeding."
-  },
-  "gattler": {
-    "code": 83,
-    "name": "Gattler",
-    "description": "Collateral Damage can fire 4 tiles further, deals 20% of base weapon damage per ammo spent, and has its cooldown reduced by 1 turn."
   },
   "grenadier": {
     "code": 21,
@@ -179,14 +129,6 @@
     "name": "Holo Rounds",
     "description": "Firing at a target holos them for 3 turns [Prevents stealth, incoming shots gain +10 aim and +10 penetration]."
   },
-  "hunter": {
-    "code": 84,
-    "name": "Hunter",
-    "description": "This unit cloaks at the beginning of each turn if it can see an enemy, has ammo, and is idle. All cloak/hiding (including from non-Hunter sources) breaks at the end of turn or after a non-movement action. When cloaked, shots gain +50% base weapon damage and +30 crit. Grants Combined Arms.",
-    "grants": [
-      "combined-arms"
-    ]
-  },
   "impact": {
     "code": 27,
     "name": "Impact",
@@ -196,11 +138,6 @@
     "code": 28,
     "name": "In The Zone",
     "description": "Shots gain aim equal to the percent of HP the target is missing. Shooting with a steadied weapon allows this unit to fire chain shots (with a stacking -10 max hit chance) until they run out of ammo or targets. Standard shots (outside an ITZ chain) trigger a free reload."
-  },
-  "jetboot-module": {
-    "code": 85,
-    "name": "Jetboot Module",
-    "description": "When activated, grants +3.3 mobility and the ability to jump to normally inaccessible heights for the rest of the turn. 1 turn cooldown. Does not break hidden abilities (Cloaking, Shadow, Stealth, or Ghosting)."
   },
   "killer-instinct": {
     "code": 29,
@@ -261,14 +198,6 @@
     "name": "On The Ready",
     "description": "Shots gain +35% base weapon damage if this unit is Steadying or Combat Ready. Non-reaction shots grant Combat Readiness. If this unit's last action was a shot or a manual activation of combat readiness, overwatch activates at the end of the turn (except when bleeding or at risk of triggering reaction fire)."
   },
-  "onslaught": {
-    "code": 86,
-    "name": "Onslaught",
-    "description": "The first Kinetic Strike each turn will leave this unit with 1 AP but reduces mobility to 3.3 until out of AP. Grants immunity to Pincer. Grants Ram.",
-    "grants": [
-      "ram"
-    ]
-  },
   "opportunist": {
     "code": 40,
     "name": "Opportunist",
@@ -299,20 +228,10 @@
     "name": "Precision Shot",
     "description": "Fire a shot that has no squadsight penalties, +30 aim, and +30 crit. The shot will never graze. 3 turn cooldown. Only for Strike/Sniper Rifles."
   },
-  "pyro": {
-    "code": 87,
-    "name": "Pyro",
-    "description": "The first Flamethrower use each turn will leave this unit with 1 AP. Flamethrowers deal -3 damage and gain +5 charges."
-  },
   "raking-fire": {
     "code": 46,
     "name": "Raking Fire",
     "description": "Fire 2 additional reaction shots during overwatch. Increases the cone of Bulletstorm from 30 to 40 degrees."
-  },
-  "ram": {
-    "code": 88,
-    "name": "Ram",
-    "description": "When this unit moves at least 6 tiles to an enemy, this unit will deal x melee damage, where x is 1/2 of the distance moved + 1 for every 10 max HP this unit has."
   },
   "ranger": {
     "code": 47,
@@ -332,11 +251,6 @@
       "rapid-fire"
     ]
   },
-  "reactive-targeting-sensors": {
-    "code": 89,
-    "name": "Reactive Targeting Sensors",
-    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +30% DR against that attack, returns fire with a +30 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
-  },
   "ready-for-anything": {
     "code": 50,
     "name": "Ready for Anything",
@@ -354,16 +268,6 @@
     "code": 52,
     "name": "Repair",
     "description": "Heal a mechanical unit for 5 HP and remove corrosion."
-  },
-  "repair-servos": {
-    "code": 90,
-    "name": "Repair Servos",
-    "description": "Repairs damage sustained in battle: When damaged, gain servos equal to 50% of the damage sustained. Each servo can heal 1 HP. At end of turn, use 20% of the servos available (minimum 1) and then lose 1 servo. Active servos are removed if this unit is fully healed or corroded."
-  },
-  "repulsor": {
-    "code": 91,
-    "name": "Repulsor",
-    "description": "If at full HP, non-psionic attacks are repulsed, causing them to graze (dealing only half of the original damage)."
   },
   "revive": {
     "code": 53,
@@ -395,11 +299,6 @@
     "grants": [
       "opportunist"
     ]
-  },
-  "sentry": {
-    "code": 92,
-    "name": "Sentry",
-    "description": "Reaction shots deal +50% base weapon damage. If idle or on overwatch, grants +50 crit resist against the first damage taken each turn."
   },
   "shadowstep": {
     "code": 58,
@@ -483,5 +382,156 @@
     "grants": [
       "steadfast"
     ]
+  },
+  "absorption-fields": {
+    "code": 74,
+    "name": "Absorption Fields",
+    "description": "Gain +10% DR. Shots from beam weapons (laser/pulse/drone/cyberdisc) lose their penetration when targeting this unit."
+  },
+  "arsenal": {
+    "code": 75,
+    "name": "Arsenal",
+    "description": "Grenade Launchers, Restorative Mists, and Flamethrowers receive +2 uses. Grenades deal +1 damage and Restorative Mists heal 1 more HP. Reloading costs only 1 AP."
+  },
+  "awareness": {
+    "code": 76,
+    "name": "Awareness",
+    "description": "A state of constant alertness grants this unit +20 defense at all times. Does not apply against attacks from steadied shots."
+  },
+  "close-combat-specialist": {
+    "code": 77,
+    "name": "Close Combat Specialist",
+    "description": "Grants a reaction shot at any enemy within 4 tiles that acts. Reaction shot only activates on enemy's turn, once per enemy. [Basic reaction shots lower cover DR/def by half, cannot crit, and require hit chance >30]"
+  },
+  "collateral-damage": {
+    "code": 78,
+    "name": "Collateral Damage",
+    "description": "Use a full magazine of ammo to destroy some cover and deal 15% of base weapon damage per ammo spent in a 5 tile radius up to 8 tiles away and then reload the main weapon. Leaves this unit with 1 AP and reduces mobility to 3.3 until out of AP. Does not work while in One For All. Destroys Corpses. 3 turn cooldown."
+  },
+  "combined-arms": {
+    "code": 79,
+    "name": "Combined Arms",
+    "description": "All weapons and equipment deal +1 damage."
+  },
+  "dampening-shield": {
+    "code": 80,
+    "name": "Dampening Shield",
+    "description": "Grants proximity-based DR from shots against this unit over 10 tiles away (+3% DR per tile further than 10)."
+  },
+  "dash-and-bash": {
+    "code": 81,
+    "name": "Dash and Bash",
+    "description": "Activate to allow the use of a Kinetic Strike at 0 AP if the last AP was spent moving. When active, KSM attacks gain +80% base weapon damage and disables the AP discount from Onslaught. Cannot activate if out of ammo. 2 turn cooldown."
+  },
+  "fortified": {
+    "code": 82,
+    "name": "Fortified",
+    "description": "Grants immunity to critical hits. Injury and fatigue times are reduced by 15%."
+  },
+  "gattler": {
+    "code": 83,
+    "name": "Gattler",
+    "description": "Collateral Damage can fire 4 tiles further, deals 20% of base weapon damage per ammo spent, and has its cooldown reduced by 1 turn."
+  },
+  "hunter": {
+    "code": 84,
+    "name": "Hunter",
+    "description": "This unit cloaks at the beginning of each turn if it can see an enemy, has ammo, and is idle. All cloak/hiding (including from non-Hunter sources) breaks at the end of turn or after a non-movement action. When cloaked, shots gain +50% base weapon damage and +30 crit. Grants Combined Arms.",
+    "grants": [
+      "combined-arms"
+    ]
+  },
+  "jetboot-module": {
+    "code": 85,
+    "name": "Jetboot Module",
+    "description": "When activated, grants +3.3 mobility and the ability to jump to normally inaccessible heights for the rest of the turn. 1 turn cooldown. Does not break hidden abilities (Cloaking, Shadow, Stealth, or Ghosting)."
+  },
+  "onslaught": {
+    "code": 86,
+    "name": "Onslaught",
+    "description": "The first Kinetic Strike each turn will leave this unit with 1 AP but reduces mobility to 3.3 until out of AP. Grants immunity to Pincer. Grants Ram.",
+    "grants": [
+      "ram"
+    ]
+  },
+  "pyro": {
+    "code": 87,
+    "name": "Pyro",
+    "description": "The first Flamethrower use each turn will leave this unit with 1 AP. Flamethrowers deal -3 damage and gain +5 charges."
+  },
+  "ram": {
+    "code": 88,
+    "name": "Ram",
+    "description": "When this unit moves at least 6 tiles to an enemy, this unit will deal x melee damage, where x is 1/2 of the distance moved + 1 for every 10 max HP this unit has."
+  },
+  "reactive-targeting-sensors": {
+    "code": 89,
+    "name": "Reactive Targeting Sensors",
+    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +30% DR against that attack, returns fire with a +30 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
+  },
+  "repair-servos": {
+    "code": 90,
+    "name": "Repair Servos",
+    "description": "Repairs damage sustained in battle: When damaged, gain servos equal to 50% of the damage sustained. Each servo can heal 1 HP. At end of turn, use 20% of the servos available (minimum 1) and then lose 1 servo. Active servos are removed if this unit is fully healed or corroded."
+  },
+  "repulsor": {
+    "code": 91,
+    "name": "Repulsor",
+    "description": "If at full HP, non-psionic attacks are repulsed, causing them to graze (dealing only half of the original damage)."
+  },
+  "sentry": {
+    "code": 92,
+    "name": "Sentry",
+    "description": "Reaction shots deal +50% base weapon damage. If idle or on overwatch, grants +50 crit resist against the first damage taken each turn."
+  },
+  "neural-damping": {
+    "code": 93,
+    "name": "Neural Damping",
+    "description": "Grants immunity to panic. Reduces psionic damage received by 30%."
+  },
+  "smart-macrophages": {
+    "code": 94,
+    "name": "Smart Macrophages",
+    "description": "Grants complete immunity to corrosion and shredding."
+  },
+  "advanced-perception": {
+    "code": 95,
+    "name": "Advanced Perception",
+    "description": "Shots against flying targets gain +10 aim. This unit can react faster to incoming fire, causing 25% of incoming shots to graze, dealing half their original damage."
+  },
+  "predictive-tracking": {
+    "code": 96,
+    "name": "Predictive Tracking",
+    "description": "Reaction shots gain +10 aim. Bulletstorm gains +5% hit chance."
+  },
+  "dual-heart": {
+    "code": 97,
+    "name": "Dual Heart",
+    "description": "Increases throw range by 15% and reduces scatter by 30%. If above half HP, fatal non-psionic damage reduces this unit to 1 HP instead. Causes soldiers to bleed out instead of dying the first time they fall in a mission. The bleed-out timer is extended by 5 turns."
+  },
+  "adrenal-neurosympathy": {
+    "code": 98,
+    "name": "Adrenal Neurosympathy",
+    "description": "When this soldier takes an action, there is a chance (5% per enemy in sight) that the soldier emits pheromones for all allies in LoS that grant 10 aim, 5 crit, and 1.3 mob for 2 turns, and remove panic. 5 turn cooldown."
+  },
+  "enhanced-metabolism": {
+    "code": 99,
+    "name": "Enhanced Metabolism",
+    "description": "Fire an additional reaction shot during overwatch. Equipped grenades and medikits receive an additional use. When below 50% HP, gain +4 mobility and +40 defense."
+  },
+  "iron-skin": {
+    "code": 100,
+    "name": "Iron Skin",
+    "description": "Grants +10 base DR and +20 crit resistance."
+  },
+  "muscle-amp": {
+    "code": 101,
+    "name": "Muscle Amp",
+    "description": "Grants superhuman leg strength, enabling the soldier to reach high positions without the need for ladders or other climbing aids."
+  },
+  "regenesis": {
+    "code": 102,
+    "name": "Regenesis",
+    "description": "This unit has 15% less injury and fatigue time. Regenerates 1 base (non-armor) HP each turn (amount can vary on certain aliens/Exalt). Grants immunity to Bleeding."
   }
 }

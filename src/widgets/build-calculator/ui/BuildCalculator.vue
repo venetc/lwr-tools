@@ -1,10 +1,10 @@
-<script setup lang="ts" generic="Data extends NamedBuildData, Build extends ListedBuild<Data>">
+<script setup lang="ts" generic="Kind extends BuildCodeKind, Build extends ListedBuild<BuildDataByKind[Kind]>">
 import { ClipboardPaste } from '@lucide/vue';
 import type { VNode } from 'vue';
 
-import type { ListedBuild, NamedBuildData } from '@features/manage-builds';
+import type { ListedBuild } from '@features/manage-builds';
 import { useBuildNavItems } from '@features/manage-builds';
-import type { ShareCodeDecodeResult } from '@features/share-build';
+import type { BuildCodeKind, BuildDataByKind } from '@features/share-build';
 import { ShareCodeImport } from '@features/share-build';
 import { usePanelScroll } from '@shared/lib/panel-scroll';
 import { Button } from '@shared/ui/button';
@@ -13,13 +13,13 @@ import { ListNav } from '@shared/ui/list-nav';
 interface Props {
   /** Builds of the calculator, in page order. */
   builds: readonly Build[]
-  /** Build data of a share code, for importing a new build. */
-  decode: (code: string) => ShareCodeDecodeResult<Data>
+  /** Kind of build code, for importing a new build. */
+  kind: Kind
 }
 
 interface Emits {
   /** Requests a new build from imported data. */
-  import: [data: Data]
+  import: [data: BuildDataByKind[Kind]]
   /** Requests removal of the build. */
   remove: [buildId: string]
 }
@@ -49,7 +49,7 @@ const hasNavIcon = Boolean(slots['nav-icon']);
  *
  * @param data imported build data.
  */
-const requestImport = (data: Data) => emit('import', data);
+const requestImport = (data: BuildDataByKind[Kind]) => emit('import', data);
 
 /**
  * Requests removal of the build.
@@ -78,7 +78,7 @@ const requestRemove = (buildId: string) => emit('remove', buildId);
           <slot name="add" />
         </div>
 
-        <ShareCodeImport :decode="props.decode" @import="requestImport">
+        <ShareCodeImport :kind="props.kind" @import="requestImport">
           <template #trigger>
             <Button :class="$style.import">
               <span :class="$style.importContent">

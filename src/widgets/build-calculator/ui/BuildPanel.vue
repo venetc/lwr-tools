@@ -1,67 +1,108 @@
-<script setup lang="ts" generic="Data extends NamedBuildData, Tier extends TieredPickerTier">
+<script setup lang="ts" generic="Kind extends BuildCodeKind, Group extends TieredPickerGroup">
 import { ClipboardPaste, Share2 } from '@lucide/vue';
 import type { VNode } from 'vue';
-import { computed } from 'vue';
 
-import type { BuildEditorActions, ListedBuild, NamedBuildData } from '@features/manage-builds';
-import { useBuildEditor } from '@features/manage-builds';
-import type { ShareCodeDecodeResult } from '@features/share-build';
+import type { ListedBuild } from '@features/manage-builds';
+import type { BuildCodeKind, BuildDataByKind } from '@features/share-build';
 import { ShareCodeExport, ShareCodeImport } from '@features/share-build';
 import { ActionBar } from '@shared/ui/action-bar';
 import { EditableTitle } from '@shared/ui/editable-title';
-import type { TieredPickerItem, TieredPickerTier } from '@shared/ui/tiered-picker';
+import type { TieredPickerGroup, TieredPickerItem, TieredPickerTier } from '@shared/ui/tiered-picker';
 import { TieredPicker } from '@shared/ui/tiered-picker';
 
+import { useBuildPanelFields } from '../model/build-panel';
+
 interface Props {
-  /** Build to render and edit. */
-  build: Readonly<ListedBuild<Data>>
+  /** Kind of build code, for sharing and importing the build. */
+  kind: Kind
+  /** Build to render. */
+  build: ListedBuild<BuildDataByKind[Kind]>
   /** Accessible name of the build tree. */
   label: string
   /** Name restored when the build name is left blank. */
   fallbackName: string
-  /** Tree tiers from lowest to highest. */
-  tiers: Tier[]
-  /** Item described while the user inspects none. */
-  defaultItem: TieredPickerItem | null
-  /** Store actions that edit the build. */
-  actions: BuildEditorActions<Data>
-  /** Share code of the build data; null if it cannot be shared. */
-  encode: (data: Data) => string | null
-  /** Build data of a share code. */
-  decode: (code: string) => ShareCodeDecodeResult<Data>
+  /** Groups of tiers, such as trees; with more than one, they are shown behind tabs. */
+  groups: readonly Group[]
+}
+
+interface Emits {
+  /** Requests a new build name. */
+  rename: [name: string]
+  /** Requests locking or unlocking the build. */
+  lock: [isReadonly: boolean]
+  /** Requests replacing the build with imported data. */
+  replace: [data: BuildDataByKind[Kind]]
+  /** Requests removal of the build. */
+  remove: []
+  /** Requests an item selection on a tier of the group; null clears the tier. */
+  select: [groupId: string, tierIndex: number, itemId: string | null]
 }
 
 interface TierSlotProps {
-  tier: Tier
+  tier: Group['tiers'][number]
   /** Whether the tier is open for selection, for the label to stand out. */
   highlighted: boolean
 }
 
+interface GroupSlotProps {
+  group: Group
+}
+
+interface ItemNameSlotProps {
+  item: TieredPickerItem
+  group: Group
+}
+
 const props = defineProps<Props>();
 
+const emit = defineEmits<Emits>();
+
 defineSlots<{
-  icon?: () => VNode[]
-  tier?: (props: TierSlotProps) => VNode[]
+  'icon'?: () => VNode[]
+  'tier'?: (props: TierSlotProps) => VNode[]
+  'tab'?: (props: GroupSlotProps) => VNode[]
+  'item-name'?: (props: ItemNameSlotProps) => VNode[]
 }>();
 
-const { name, readonly, selectPerk, replace, remove } = useBuildEditor(() => props.build, props.actions);
+const { name, readonly, isEditable } = useBuildPanelFields(() => props.build, {
+  onRename: value => emit('rename', value),
+  onLock: isReadonly => emit('lock', isReadonly),
+});
 
-const isEditable = computed(() => !readonly.value);
+/**
+ * Requests replacing the build with imported data.
+ *
+ * @param data imported build data.
+ */
+const requestReplace = (data: BuildDataByKind[Kind]) => emit('replace', data);
+
+/**
+ * Requests removal of the build.
+ */
+const requestRemove = () => emit('remove');
+
+/**
+ * Requests an item selection on a tier of the group.
+ *
+ * @param groupId group id.
+ * @param tierIndex tier index in the group.
+ * @param itemId selected item id, or null to clear the tier.
+ */
+const requestSelect = (groupId: string, tierIndex: number, itemId: string | null) => emit('select', groupId, tierIndex, itemId);
 
 /**
  * Checks whether the tier is open for selection.
  *
  * @param tier picker tier.
  */
-const isTierHighlighted = (tier: Tier) => tier.state === 'available';
+const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available';
 </script>
 
 <template>
   <TieredPicker
     :label="props.label"
-    :tiers="props.tiers"
-    :default-item="props.defaultItem"
-    @select="selectPerk"
+    :groups="props.groups"
+    @select="requestSelect"
   >
     <template #header>
       <EditableTitle
@@ -78,13 +119,13 @@ const isTierHighlighted = (tier: Tier) => tier.state === 'available';
         v-model:locked="readonly"
         remove-label="Remove build"
         lock-label="Lock build"
-        @remove="remove"
+        @remove="requestRemove"
       >
         <template #default="{ actionClass }">
           <ShareCodeImport
             v-if="isEditable"
-            :decode="props.decode"
-            @import="replace"
+            :kind="props.kind"
+            @import="requestReplace"
           >
             <template #trigger>
               <button :class="actionClass" type="button">
@@ -94,7 +135,7 @@ const isTierHighlighted = (tier: Tier) => tier.state === 'available';
             </template>
           </ShareCodeImport>
 
-          <ShareCodeExport :value="props.build" :encode="props.encode">
+          <ShareCodeExport :kind="props.kind" :build="props.build">
             <template #trigger>
               <button :class="actionClass" type="button">
                 <Share2 :class="$style.actionIcon" aria-hidden="true" />
@@ -106,12 +147,28 @@ const isTierHighlighted = (tier: Tier) => tier.state === 'available';
       </ActionBar>
     </template>
 
+    <template #tab="{ group }">
+      <slot name="tab" :group="group">
+        {{ group.name }}
+      </slot>
+    </template>
+
     <template #tier="{ tier }">
       <slot
         name="tier"
         :tier="tier"
         :highlighted="isTierHighlighted(tier)"
       />
+    </template>
+
+    <template #item-name="{ item, group }">
+      <slot
+        name="item-name"
+        :item="item"
+        :group="group"
+      >
+        {{ item.name }}
+      </slot>
     </template>
   </TieredPicker>
 </template>

@@ -211,6 +211,36 @@ import supportSprinterDisabledIcon from '@entities/soldier/config/icons/abilitie
 import urbanCombatBadge2Eu2012OriginalIcon from '@entities/soldier/config/icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x.png';
 import urbanCombatBadge2Eu2012AvailableIcon from '@entities/soldier/config/icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x_available.png';
 import urbanCombatBadge2Eu2012DisabledIcon from '@entities/soldier/config/icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x_disabled.png';
+import geneModAdrenalNeurosympathyGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/adrenal_neurosympathy_gene_mod_eu2012/adrenal_neurosympathy_gene_mod_eu2012@4x.png';
+import geneModAdrenalNeurosympathyGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/adrenal_neurosympathy_gene_mod_eu2012/adrenal_neurosympathy_gene_mod_eu2012@4x_disabled.png';
+import geneModAdrenalNeurosympathyGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/adrenal_neurosympathy_gene_mod_eu2012/adrenal_neurosympathy_gene_mod_eu2012@4x_selected.png';
+import geneModBattlefatigueOriginalIcon from '@entities/soldier/config/icons/gene-mods/battlefatigue/battlefatigue@4x.png';
+import geneModBattlefatigueDisabledIcon from '@entities/soldier/config/icons/gene-mods/battlefatigue/battlefatigue@4x_disabled.png';
+import geneModBattlefatigueSelectedIcon from '@entities/soldier/config/icons/gene-mods/battlefatigue/battlefatigue@4x_selected.png';
+import geneModBioelectricSkinGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/bioelectric_skin_gene_mod_eu2012/bioelectric_skin_gene_mod_eu2012@4x.png';
+import geneModBioelectricSkinGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/bioelectric_skin_gene_mod_eu2012/bioelectric_skin_gene_mod_eu2012@4x_disabled.png';
+import geneModBioelectricSkinGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/bioelectric_skin_gene_mod_eu2012/bioelectric_skin_gene_mod_eu2012@4x_selected.png';
+import geneModDefendersMedal2Eu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/defenders_medal_2_eu2012/defenders_medal_2_eu2012@4x.png';
+import geneModDefendersMedal2Eu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/defenders_medal_2_eu2012/defenders_medal_2_eu2012@4x_disabled.png';
+import geneModDefendersMedal2Eu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/defenders_medal_2_eu2012/defenders_medal_2_eu2012@4x_selected.png';
+import geneModDepthPerceptionGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/depth_perception_gene_mod_eu2012/depth_perception_gene_mod_eu2012@4x.png';
+import geneModDepthPerceptionGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/depth_perception_gene_mod_eu2012/depth_perception_gene_mod_eu2012@4x_disabled.png';
+import geneModDepthPerceptionGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/depth_perception_gene_mod_eu2012/depth_perception_gene_mod_eu2012@4x_selected.png';
+import geneModHyperReactivePupilsGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/hyper_reactive_pupils_gene_mod_eu2012/hyper_reactive_pupils_gene_mod_eu2012@4x.png';
+import geneModHyperReactivePupilsGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/hyper_reactive_pupils_gene_mod_eu2012/hyper_reactive_pupils_gene_mod_eu2012@4x_disabled.png';
+import geneModHyperReactivePupilsGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/hyper_reactive_pupils_gene_mod_eu2012/hyper_reactive_pupils_gene_mod_eu2012@4x_selected.png';
+import geneModIronSkinGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/iron_skin_gene_mod_eu2012/iron_skin_gene_mod_eu2012@4x.png';
+import geneModIronSkinGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/iron_skin_gene_mod_eu2012/iron_skin_gene_mod_eu2012@4x_disabled.png';
+import geneModIronSkinGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/iron_skin_gene_mod_eu2012/iron_skin_gene_mod_eu2012@4x_selected.png';
+import geneModMuscleFiberDensityGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/muscle_fiber_density_gene_mod_eu2012/muscle_fiber_density_gene_mod_eu2012@4x.png';
+import geneModMuscleFiberDensityGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/muscle_fiber_density_gene_mod_eu2012/muscle_fiber_density_gene_mod_eu2012@4x_disabled.png';
+import geneModMuscleFiberDensityGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/muscle_fiber_density_gene_mod_eu2012/muscle_fiber_density_gene_mod_eu2012@4x_selected.png';
+import geneModNeuralDampingGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/neural_damping_gene_mod_eu2012/neural_damping_gene_mod_eu2012@4x.png';
+import geneModNeuralDampingGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/neural_damping_gene_mod_eu2012/neural_damping_gene_mod_eu2012@4x_disabled.png';
+import geneModNeuralDampingGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/neural_damping_gene_mod_eu2012/neural_damping_gene_mod_eu2012@4x_selected.png';
+import geneModSecondaryHeartGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/secondary_heart_gene_mod_eu2012/secondary_heart_gene_mod_eu2012@4x.png';
+import geneModSecondaryHeartGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/secondary_heart_gene_mod_eu2012/secondary_heart_gene_mod_eu2012@4x_disabled.png';
+import geneModSecondaryHeartGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/secondary_heart_gene_mod_eu2012/secondary_heart_gene_mod_eu2012@4x_selected.png';
 import type { DeepReadonly } from '@shared/lib/object';
 
 import type { AbilityIcon, AbilityId } from '../../model/abilities';
@@ -286,12 +316,24 @@ const supportSentinelIcon: AbilityIcon = { selected: supportSentinelOriginalIcon
 const supportSmokemirrorsIcon: AbilityIcon = { selected: supportSmokemirrorsOriginalIcon, available: supportSmokemirrorsAvailableIcon, disabled: supportSmokemirrorsDisabledIcon };
 const supportSprinterIcon: AbilityIcon = { selected: supportSprinterOriginalIcon, available: supportSprinterAvailableIcon, disabled: supportSprinterDisabledIcon };
 const urbanCombatBadge2Eu2012Icon: AbilityIcon = { selected: urbanCombatBadge2Eu2012OriginalIcon, available: urbanCombatBadge2Eu2012AvailableIcon, disabled: urbanCombatBadge2Eu2012DisabledIcon };
+const geneModNeuralDampingGeneModEu2012Icon: AbilityIcon = { selected: geneModNeuralDampingGeneModEu2012SelectedIcon, available: geneModNeuralDampingGeneModEu2012OriginalIcon, disabled: geneModNeuralDampingGeneModEu2012DisabledIcon };
+const geneModDefendersMedal2Eu2012Icon: AbilityIcon = { selected: geneModDefendersMedal2Eu2012SelectedIcon, available: geneModDefendersMedal2Eu2012OriginalIcon, disabled: geneModDefendersMedal2Eu2012DisabledIcon };
+const geneModHyperReactivePupilsGeneModEu2012Icon: AbilityIcon = { selected: geneModHyperReactivePupilsGeneModEu2012SelectedIcon, available: geneModHyperReactivePupilsGeneModEu2012OriginalIcon, disabled: geneModHyperReactivePupilsGeneModEu2012DisabledIcon };
+const geneModDepthPerceptionGeneModEu2012Icon: AbilityIcon = { selected: geneModDepthPerceptionGeneModEu2012SelectedIcon, available: geneModDepthPerceptionGeneModEu2012OriginalIcon, disabled: geneModDepthPerceptionGeneModEu2012DisabledIcon };
+const geneModSecondaryHeartGeneModEu2012Icon: AbilityIcon = { selected: geneModSecondaryHeartGeneModEu2012SelectedIcon, available: geneModSecondaryHeartGeneModEu2012OriginalIcon, disabled: geneModSecondaryHeartGeneModEu2012DisabledIcon };
+const geneModAdrenalNeurosympathyGeneModEu2012Icon: AbilityIcon = { selected: geneModAdrenalNeurosympathyGeneModEu2012SelectedIcon, available: geneModAdrenalNeurosympathyGeneModEu2012OriginalIcon, disabled: geneModAdrenalNeurosympathyGeneModEu2012DisabledIcon };
+const geneModBioelectricSkinGeneModEu2012Icon: AbilityIcon = { selected: geneModBioelectricSkinGeneModEu2012SelectedIcon, available: geneModBioelectricSkinGeneModEu2012OriginalIcon, disabled: geneModBioelectricSkinGeneModEu2012DisabledIcon };
+const geneModIronSkinGeneModEu2012Icon: AbilityIcon = { selected: geneModIronSkinGeneModEu2012SelectedIcon, available: geneModIronSkinGeneModEu2012OriginalIcon, disabled: geneModIronSkinGeneModEu2012DisabledIcon };
+const geneModMuscleFiberDensityGeneModEu2012Icon: AbilityIcon = { selected: geneModMuscleFiberDensityGeneModEu2012SelectedIcon, available: geneModMuscleFiberDensityGeneModEu2012OriginalIcon, disabled: geneModMuscleFiberDensityGeneModEu2012DisabledIcon };
+const geneModBattlefatigueIcon: AbilityIcon = { selected: geneModBattlefatigueSelectedIcon, available: geneModBattlefatigueOriginalIcon, disabled: geneModBattlefatigueDisabledIcon };
 
 /** Icon variants by ability id. */
 export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'absorption-fields': mecAbsortionFieldsIcon,
   'ace': sniperHeadshotIcon,
   'acid-tech': bombardTgaIcon,
+  'adrenal-neurosympathy': geneModAdrenalNeurosympathyGeneModEu2012Icon,
+  'advanced-perception': geneModHyperReactivePupilsGeneModEu2012Icon,
   'aggression': assaultAggressionIcon,
   'arsenal': mecExpandedStorageIcon,
   'awareness': mecAutomatedThreatAssessmentIcon,
@@ -311,6 +353,8 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'dense-smoke': supportDensesmokeIcon,
   'disabling-shot': sniperDisablingshotIcon,
   'double-tap': sniperDoubletapIcon,
+  'dual-heart': geneModSecondaryHeartGeneModEu2012Icon,
+  'enhanced-metabolism': geneModBioelectricSkinGeneModEu2012Icon,
   'executioner': sniperExecutionerIcon,
   'extra-conditioning': assaultExtraconditioningIcon,
   'field-medic': supportFieldmedicIcon,
@@ -328,6 +372,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'hunter': alienLaunchIcon,
   'impact': sniperDggIcon,
   'in-the-zone': itzIconIcon,
+  'iron-skin': geneModIronSkinGeneModEu2012Icon,
   'jetboot-module': mecJetBootModuleIcon,
   'killer-instinct': alienDeathblossomIcon,
   'kitted': supportSaviorIcon,
@@ -339,6 +384,8 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'master-mechanic': alienRepairIcon,
   'mayhem': heavyMayhemIcon,
   'mechanic': sentinelModuleIconIcon,
+  'muscle-amp': geneModMuscleFiberDensityGeneModEu2012Icon,
+  'neural-damping': geneModNeuralDampingGeneModEu2012Icon,
   'on-the-ready': mecAdvancedFireControlIcon,
   'onslaught': onslaughtLwrIcon,
   'opportunist': sniperOpportunistIcon,
@@ -347,6 +394,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'penetrator': heavyHeatAmmoIcon,
   'pistolero': assaultClosecombatIcon,
   'precision-shot': sniperHeadshotIcon,
+  'predictive-tracking': geneModDepthPerceptionGeneModEu2012Icon,
   'pyro': burnIcon,
   'raking-fire': supportSentinelIcon,
   'ram': alienBullrushIcon,
@@ -356,6 +404,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'reactive-targeting-sensors': mecReactiveTargetingSensorsIcon,
   'ready-for-anything': mecAdvancedFireControlIcon,
   'reconnaissance': reconLwrIcon,
+  'regenesis': geneModBattlefatigueIcon,
   'repair': alienRepairIcon,
   'repair-servos': mecRepairServosIcon,
   'repulsor': mecShockAbsorbentArmorIcon,
@@ -368,6 +417,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'shadowstep': assaultLightningreflexesIcon,
   'sharpshooter': urbanCombatBadge2Eu2012Icon,
   'shock-and-awe': heavyRocketeerIcon,
+  'smart-macrophages': geneModDefendersMedal2Eu2012Icon,
   'smoke-and-mirrors': supportSmokemirrorsIcon,
   'snapshot': sniperSnapshotIcon,
   'sprinter': supportSprinterIcon,

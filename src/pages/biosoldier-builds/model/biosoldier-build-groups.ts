@@ -1,0 +1,112 @@
+import type { MaybeRefOrGetter } from 'vue';
+import { computed, toValue } from 'vue';
+
+import type { BodyPartTier, ClassTreeRankTier } from '@entities/soldier';
+import { useClassTreeTiers, useGeneModTiers } from '@entities/soldier';
+import type { SvgIcon } from '@shared/ui/svg-icon';
+import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
+
+import { BRANCH_TITLE } from '../config/constants';
+import type { BiosoldierBuild } from './biosoldier-builds';
+import { useBiosoldierBuildsStore } from './biosoldier-builds';
+
+/**
+ * Branch of a biosoldier build: the class tree or the gene mods.
+ */
+export type BiosoldierBranch = keyof typeof BRANCH_TITLE;
+
+/**
+ * Tier of a biosoldier build panel: a rank of the class tree or a body part.
+ */
+export type BiosoldierBuildTier = ClassTreeRankTier | BodyPartTier;
+
+/**
+ * Tier group of a biosoldier build panel: one branch with its tab title and counter.
+ */
+export interface BiosoldierBuildGroup extends TieredPickerGroup<BiosoldierBuildTier> {
+  /** Branch of the group. */
+  id: BiosoldierBranch
+  /** Tab title of the branch. */
+  title: string
+  /** Selected abilities of the branch out of its tiers, such as `3/7`. */
+  counter: string
+  /** Whether nothing is selected in the branch. */
+  isEmpty: boolean
+}
+
+/**
+ * Tier group of a branch with its tab: the accessible name carries the counter, such as "Gene mods, 2 of 5".
+ *
+ * @param branch branch of the group.
+ * @param tiers branch tiers.
+ * @param selectedCount abilities selected in the branch.
+ * @param defaultItem item described while the user inspects none in the branch.
+ */
+const branchGroup = (
+  branch: BiosoldierBranch,
+  tiers: readonly BiosoldierBuildTier[],
+  selectedCount: number,
+  defaultItem: TieredPickerItem | null,
+): BiosoldierBuildGroup => ({
+  id: branch,
+  name: `${BRANCH_TITLE[branch]}, ${selectedCount} of ${tiers.length}`,
+  title: BRANCH_TITLE[branch],
+  counter: `${selectedCount}/${tiers.length}`,
+  isEmpty: selectedCount === 0,
+  tiers,
+  defaultItem,
+});
+
+/**
+ * Tier groups of a biosoldier build panel: the class tree and the gene mods, and the selection in them through the store.
+ *
+ * @param build biosoldier build.
+ */
+export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<BiosoldierBuild>>) => {
+  const biosoldierBuildsStore = useBiosoldierBuildsStore();
+
+  const classTree = useClassTreeTiers(build);
+
+  const geneMods = useGeneModTiers(build);
+
+  const groups = computed((): BiosoldierBuildGroup[] => {
+    const { perks, geneMods: selectedGeneMods } = toValue(build);
+
+    return [
+      branchGroup('class-tree', classTree.tiers.value, perks.length, classTree.featuredItem.value),
+      branchGroup(
+        'gene-mods',
+        geneMods.tiers.value,
+        selectedGeneMods.filter(geneModId => geneModId !== null).length,
+        geneMods.featuredItem.value,
+      ),
+    ];
+  });
+
+  /**
+   * Selects an ability on a tier of the branch, or clears the tier: a perk on a rank or a gene mod of a body part.
+   *
+   * @param branch branch of the tier.
+   * @param tierIndex tier index in the branch.
+   * @param abilityId selected ability id, or null to clear the tier.
+   */
+  const select = (branch: string, tierIndex: number, abilityId: string | null) => {
+    const buildId = toValue(build).id;
+
+    if (branch === 'gene-mods') {
+      biosoldierBuildsStore.selectBuildGeneMod(buildId, tierIndex, abilityId);
+      return;
+    }
+
+    biosoldierBuildsStore.selectBuildPerk(buildId, tierIndex, abilityId);
+  };
+
+  return { tree: classTree.tree, groups, select };
+};
+
+/**
+ * Icon of a tier label: the rank icon for the class tree, none for a body part.
+ *
+ * @param tier tier of a biosoldier build panel.
+ */
+export const tierIcon = (tier: BiosoldierBuildTier): SvgIcon | null => ('rank' in tier ? tier.rank.icon : null);

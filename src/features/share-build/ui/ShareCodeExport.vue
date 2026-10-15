@@ -1,17 +1,19 @@
-<script setup lang="ts" generic="Value">
-import { useClipboard } from '@vueuse/core';
-import { computed, useId } from 'vue';
+<script setup lang="ts" generic="Kind extends BuildCodeKind">
+import { useId } from 'vue';
 
 import { Button } from '@shared/ui/button';
 import { Input } from '@shared/ui/input';
 import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
 
+import type { BuildCodeKind, BuildDataByKind } from '../model/build-codecs';
+import { useShareCodeExport } from '../model/share-code-export';
+
 interface Props {
-  /** Value to share. */
-  value: Value
-  /** Encodes the value; null if it cannot be shared. */
-  encode: (value: Value) => string | null
+  /** Kind of build code. */
+  kind: Kind
+  /** Build to share. */
+  build: BuildDataByKind[Kind]
 }
 
 const props = defineProps<Props>();
@@ -21,30 +23,11 @@ const open = defineModel<boolean>('open', { default: false });
 
 const inputId = useId();
 
-/** Share code of the value while the popover is open: encoded on demand, not on every change. */
-const code = computed(() => open.value ? props.encode(props.value) : '');
-
-const hasCode = computed(() => code.value !== null);
-
-const shownCode = computed(() => code.value ?? '');
-
-const { copy, copied, isSupported } = useClipboard({ source: shownCode });
-
-const copyLabel = computed(() => copied.value ? 'Copied' : 'Copy');
-
-/**
- * Selects the whole code so that it can be copied by hand.
- *
- * @param event focus of the code field.
- */
-const selectCode = (event: FocusEvent) => {
-  if (event.target instanceof HTMLInputElement) event.target.select();
-};
-
-/**
- * Copies the code to the clipboard.
- */
-const copyCode = () => copy();
+const { hasCode, shownCode, isSupported, copyLabel, selectCode, copyCode } = useShareCodeExport(
+  () => props.kind,
+  () => props.build,
+  open,
+);
 </script>
 
 <template>

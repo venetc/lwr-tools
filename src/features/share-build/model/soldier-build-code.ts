@@ -1,5 +1,5 @@
-import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
-import { ABILITY_ID_BY_CODE, abilityById, BIOSOLDIER_CLASS_BY_CODE, isAbilityId, MEC_CLASS_BY_CODE, SOLDIER_RANKS } from '@entities/soldier';
+import type { BiosoldierBuildData, SoldierBuildData, SoldierClass } from '@entities/soldier';
+import { ABILITY_ID_BY_CODE, abilityById, BIOSOLDIER_CLASS_BY_CODE, EMPTY_GENE_MODS, isAbilityId, MEC_CLASS_BY_CODE, SOLDIER_RANKS } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 import type { DeepReadonly } from '@shared/lib/object';
@@ -113,11 +113,29 @@ export const soldierBuildCodec = (format: number, classByCode: ReadonlyMap<numbe
   return { encode, decode };
 };
 
-/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1 and the biosoldier classes. */
-export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = soldierBuildCodec(
-  SHARE_CODE_FORMAT.BIOSOLDIER_BUILD,
-  BIOSOLDIER_CLASS_BY_CODE,
-);
+/** Soldier build codec bound to format 1 and the biosoldier classes. */
+const biosoldierCodec = soldierBuildCodec(SHARE_CODE_FORMAT.BIOSOLDIER_BUILD, BIOSOLDIER_CLASS_BY_CODE);
+
+/**
+ * Share code of the biosoldier build: its soldier build; gene mods are not carried yet.
+ *
+ * @param build biosoldier build.
+ */
+export const encodeBiosoldierBuild = (build: BiosoldierBuildData) => biosoldierCodec.encode(build);
+
+/**
+ * Biosoldier build of the share code: its soldier build without gene mods.
+ *
+ * @param code share code.
+ * @param parts optional parts to read; all by default.
+ */
+export const decodeBiosoldierBuild = (code: string, parts = SOLDIER_BUILD_PARTS): ShareCodeDecodeResult<BiosoldierBuildData> => {
+  const result = biosoldierCodec.decode(code, parts);
+
+  if (result.status !== 'decoded') return result;
+
+  return { status: 'decoded', build: { ...result.build, geneMods: [...EMPTY_GENE_MODS] } };
+};
 
 /** Share code encoder and decoder of MEC builds: `soldierBuildCodec` bound to format 3 and the MEC classes. */
 export const { encode: encodeMecBuild, decode: decodeMecBuild } = soldierBuildCodec(

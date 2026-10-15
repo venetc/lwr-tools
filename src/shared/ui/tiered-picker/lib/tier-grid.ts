@@ -7,7 +7,7 @@ import type { TieredPickerTier } from '../model/tiered-picker';
 /**
  * Grid of the tier cells: as many columns as the widest tier has options, with shorter tiers centered.
  *
- * @param tiers picker tiers.
+ * @param tiers tiers of one group.
  */
 export const useTierGrid = (tiers: MaybeRefOrGetter<readonly TieredPickerTier[]>) => {
   const columnCount = computed(() => Math.max(1, ...toValue(tiers).map(tier => tier.options.length)));

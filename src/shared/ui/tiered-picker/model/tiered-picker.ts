@@ -86,3 +86,17 @@ export const tierOption = (item: TieredPickerItem, tierState: TieredPickerTierSt
   isDisabled: false,
   note: null,
 });
+
+/**
+ * Named group of tiers with its own description default; several groups are shown behind tabs.
+ */
+export interface TieredPickerGroup<Tier extends TieredPickerTier = TieredPickerTier> {
+  /** Group id, unique within the picker. */
+  id: string
+  /** Accessible name of the group tab. */
+  name: string
+  /** Tiers from lowest to highest. */
+  tiers: readonly Tier[]
+  /** Item described while the user inspects none in the group. */
+  defaultItem: TieredPickerItem | null
+}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { ABILITY_CONTENT } from '@entities/soldier/config/constants/ability-content';
 import { BIOSOLDIER_CLASS_CONTENT } from '@entities/soldier/config/constants/biosoldier-class-content';
+import { BODY_PART_CONTENT } from '@entities/soldier/config/constants/body-part-content';
 import { MEC_CLASS_CONTENT } from '@entities/soldier/config/constants/mec-class-content';
 import { SOLDIER_RANK_CONTENT } from '@entities/soldier/config/constants/soldier-rank-content';
 
@@ -14,6 +15,7 @@ describe('soldier content data', () => {
       biosoldierClasses: BIOSOLDIER_CLASS_CONTENT,
       mecClasses: MEC_CLASS_CONTENT,
       ranks: SOLDIER_RANK_CONTENT,
+      bodyParts: BODY_PART_CONTENT,
     };
 
     const result = soldierContentSchema.safeParse(content);

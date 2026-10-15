@@ -1,3 +1,5 @@
+export { BUILD_CODECS } from './model/build-codecs';
+export type { BuildCodeKind, BuildDataByKind } from './model/build-codecs';
 export type { ShareCodeDecodeResult } from './model/share-code';
 export { decodeShivBuild, encodeShivBuild } from './model/shiv-build-code';
 export { decodeBiosoldierBuild, decodeMecBuild, encodeBiosoldierBuild, encodeMecBuild } from './model/soldier-build-code';

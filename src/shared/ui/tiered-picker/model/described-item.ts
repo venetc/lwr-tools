@@ -60,5 +60,12 @@ export const useDescribedItem = (
     inspected.value = { tierId: tier.id, itemId: option.item.id };
   };
 
-  return { describedItem, describedNote, hasRelated, describe };
+  /**
+   * Drops the inspected option, so the default item is described.
+   */
+  const forget = () => {
+    inspected.value = null;
+  };
+
+  return { describedItem, describedNote, hasRelated, describe, forget };
 };

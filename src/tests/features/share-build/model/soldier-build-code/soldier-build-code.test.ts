@@ -44,6 +44,10 @@ vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => (
 
 vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
 
+vi.mock('@entities/soldier/config/constants/body-part-content', async () => ({
+  BODY_PART_CONTENT: (await import('./soldier-build-code.mock')).BODY_PART_CONTENT_MOCK,
+}));
+
 vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
 
 vi.mock('@entities/soldier/config/constants/mec-class-content', async () => ({

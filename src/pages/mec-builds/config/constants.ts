@@ -15,3 +15,6 @@ export const BUILD_KEY_PREFIX = `${BUILD_STORAGE_PREFIX}build.`;
  * save the same records instead of doubling the list.
  */
 export const DEFAULT_BUILD_ID_PREFIX = 'default-';
+
+/** Id of the only tier group of a MEC build panel: the class tree. */
+export const CLASS_TREE_GROUP_ID = 'class-tree';

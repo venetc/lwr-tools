@@ -1,19 +1,21 @@
-import { ref } from 'vue';
+import type { MaybeRefOrGetter } from 'vue';
+import { ref, toValue } from 'vue';
 
 import { useToastQueue } from '@shared/ui/toast';
 
-import type { ShareCodeDecodeResult } from './share-code';
+import type { BuildCodeKind, BuildDataByKind } from './build-codecs';
+import { BUILD_CODECS } from './build-codecs';
 
 /**
  * Share code import form: open state, entered code and its validity; a valid code is passed on and closes the form,
  * a code of another unit is reported with a toast and stays in the open form.
  *
- * @param decode decodes a pasted code.
- * @param onImport receives the value of a valid code.
+ * @param kind kind of build code the form accepts.
+ * @param onImport receives the build of a valid code.
  */
-export const useShareCodeImport = <Value>(
-  decode: (code: string) => ShareCodeDecodeResult<Value>,
-  onImport: (value: Value) => void,
+export const useShareCodeImport = <Kind extends BuildCodeKind>(
+  kind: MaybeRefOrGetter<Kind>,
+  onImport: (build: BuildDataByKind[Kind]) => void,
 ) => {
   const { showToast } = useToastQueue();
 
@@ -46,10 +48,10 @@ export const useShareCodeImport = <Value>(
 
   /**
    * Decodes the entered code: marks an invalid code, reports a code of another unit,
-   * otherwise passes the value on and closes the form.
+   * otherwise passes the build on and closes the form.
    */
   const submit = () => {
-    const result = decode(code.value);
+    const result = BUILD_CODECS[toValue(kind)].decode(code.value);
 
     if (result.status === 'invalid') {
       isInvalid.value = true;

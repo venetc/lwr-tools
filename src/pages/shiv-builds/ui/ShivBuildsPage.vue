@@ -2,7 +2,6 @@
 import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
-import { decodeShivBuild } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 import { BuildCalculator } from '@widgets/build-calculator';
 
@@ -17,7 +16,7 @@ const { builds } = storeToRefs(shivBuildsStore);
 <template>
   <BuildCalculator
     :builds="builds"
-    :decode="decodeShivBuild"
+    kind="shiv"
     @import="shivBuildsStore.importBuild"
     @remove="shivBuildsStore.removeBuild"
   >

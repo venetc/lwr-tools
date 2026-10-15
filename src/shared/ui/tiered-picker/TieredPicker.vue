@@ -1,117 +1,130 @@
-<script setup lang="ts" generic="Tier extends TieredPickerTier">
+<script setup lang="ts" generic="Group extends TieredPickerGroup">
 import type { VNode } from 'vue';
-import { useCssModule } from 'vue';
 
 import { ScrollArea } from '@shared/ui/scroll-area';
-import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
+import { Tabs } from '@shared/ui/tabs';
 
-import { useTierGrid } from './lib/tier-grid';
-import { useDescribedItem } from './model/described-item';
-import { useTierSelection } from './model/tier-selection';
-import type { TieredPickerItem, TieredPickerTier } from './model/tiered-picker';
-import TieredPickerCell from './TieredPickerCell.vue';
+import { usePickerGroups } from './model/picker-groups';
+import type { TieredPickerGroup, TieredPickerItem } from './model/tiered-picker';
+import TieredPickerTiers from './TieredPickerTiers.vue';
 
 interface Props {
   /** Accessible name of the picker. */
   label: string
-  /** Tiers from lowest to highest. */
-  tiers: Tier[]
-  /** Item described while the user inspects none. */
-  defaultItem?: TieredPickerItem | null
+  /** Groups of tiers; with more than one, they are shown behind tabs, the first one at start. */
+  groups: readonly Group[]
 }
 
 interface Emits {
-  /** Requests an item selection on the tier; null clears the tier. */
-  select: [tierIndex: number, itemId: string | null]
+  /** Requests an item selection on a tier of the group; null clears the tier. */
+  select: [groupId: string, tierIndex: number, itemId: string | null]
+}
+
+interface GroupSlotProps {
+  group: Group
 }
 
 interface TierSlotProps {
-  tier: Tier
+  tier: Group['tiers'][number]
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  defaultItem: null,
-});
+interface ItemNameSlotProps {
+  item: TieredPickerItem
+  group: Group
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
 defineSlots<{
-  header?: () => VNode[]
-  tier?: (props: TierSlotProps) => VNode[]
+  'header'?: () => VNode[]
+  'tab'?: (props: GroupSlotProps) => VNode[]
+  'tier'?: (props: TierSlotProps) => VNode[]
+  'item-name'?: (props: ItemNameSlotProps) => VNode[]
 }>();
 
-const style = useCssModule();
-
-const { describedItem, describedNote, hasRelated, describe } = useDescribedItem(() => props.tiers, () => props.defaultItem);
-
-const { toggle, getAriaDisabled } = useTierSelection((tierIndex, itemId) => emit('select', tierIndex, itemId));
-
-const { gridStyle, getOptionStyle } = useTierGrid(() => props.tiers);
+const {
+  activeGroup,
+  activeGroupId,
+  hasTabs,
+  described,
+  describedNote,
+  hasRelated,
+  describe,
+} = usePickerGroups(() => props.groups);
 
 /**
- * Tier classes based on its state.
+ * Requests an item selection on a tier of the shown group; only the shown group has its tiers on the page.
  *
- * @param tier tier with its state.
+ * @param tierIndex tier index in the group.
+ * @param itemId selected item id, or null to clear the tier.
  */
-const getTierClass = (tier: Tier) => {
-  return [style.tier, style[tier.state]];
+const select = (tierIndex: number, itemId: string | null) => {
+  if (!activeGroup.value) return;
+
+  emit('select', activeGroup.value.id, tierIndex, itemId);
 };
 </script>
 
 <template>
   <section
     :class="$style.panel"
-    :style="gridStyle"
-    :aria-label="label"
+    :aria-label="props.label"
   >
     <header :class="$style.header">
       <slot name="header" />
     </header>
 
-    <ol :class="$style.tiers">
-      <li
-        v-for="(tier, tierIndex) in tiers"
-        :key="tier.id"
-        :class="getTierClass(tier)"
-      >
-        <span :class="$style.tierLabel">
-          <slot name="tier" :tier="tier" />
-        </span>
+    <Tabs
+      v-if="hasTabs"
+      v-model="activeGroupId"
+      :items="props.groups"
+      :label="props.label"
+    >
+      <template #tab="{ item: group }">
+        <slot name="tab" :group="group">
+          {{ group.name }}
+        </slot>
+      </template>
 
-        <ToggleGroup
-          :class="$style.items"
-          :model-value="tier.selectedId"
-          :roving-focus="false"
-          :aria-label="tier.name"
-          @update:model-value="toggle(tier, tierIndex, $event)"
+      <template #panel="{ item: group }">
+        <TieredPickerTiers
+          :tiers="group.tiers"
+          @select="select"
+          @inspect="describe"
         >
-          <ToggleGroupOption
-            v-for="(option, optionIndex) in tier.options"
-            :key="option.item.id"
-            :class="$style.item"
-            :style="getOptionStyle(tier, optionIndex)"
-            :value="option.item.id"
-            :aria-disabled="getAriaDisabled(tier, option)"
-            @pointerenter="describe(tier, option)"
-            @focus="describe(tier, option)"
-          >
-            <TieredPickerCell
-              :icon="option.item.icon"
-              :name="option.item.name"
-              :appearance="option.appearance"
-            />
-          </ToggleGroupOption>
-        </ToggleGroup>
-      </li>
-    </ol>
+          <template #tier="{ tier }">
+            <slot name="tier" :tier="tier" />
+          </template>
+        </TieredPickerTiers>
+      </template>
+    </Tabs>
+
+    <TieredPickerTiers
+      v-else-if="activeGroup"
+      :tiers="activeGroup.tiers"
+      @select="select"
+      @inspect="describe"
+    >
+      <template #tier="{ tier }">
+        <slot name="tier" :tier="tier" />
+      </template>
+    </TieredPickerTiers>
 
     <div
-      v-if="describedItem"
+      v-if="described"
       :class="$style.description"
       aria-live="polite"
     >
       <p :class="$style.descriptionName">
-        {{ describedItem.name }}
+        <slot
+          name="item-name"
+          :item="described.item"
+          :group="described.group"
+        >
+          {{ described.item.name }}
+        </slot>
       </p>
 
       <ScrollArea :class="$style.descriptionScroll">
@@ -120,12 +133,12 @@ const getTierClass = (tier: Tier) => {
         </p>
 
         <p :class="$style.descriptionText">
-          {{ describedItem.description }}
+          {{ described.item.description }}
         </p>
 
         <ul v-if="hasRelated" :class="$style.related">
           <li
-            v-for="relatedItem in describedItem.related"
+            v-for="relatedItem in described.item.related"
             :key="relatedItem.id"
             :class="$style.relatedItem"
           >
@@ -151,9 +164,6 @@ const getTierClass = (tier: Tier) => {
 @use 'styles/colors';
 @use 'styles/typography';
 @use 'styles/shape';
-@use 'styles/media';
-
-$cell: 40px;
 
 .panel {
   @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
@@ -170,93 +180,6 @@ $cell: 40px;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-}
-
-.tiers {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tier {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 4px 8px 4px 10px;
-  background: colors.$surface-2;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 3px;
-}
-
-.completed {
-  border-color: colors.$border;
-
-  .tierLabel {
-    color: colors.$text-secondary;
-  }
-}
-
-.available {
-  border-color: colors.$highlight-muted;
-  box-shadow: 0 0 8px colors.$highlight-glow;
-
-  .tierLabel {
-    color: colors.$highlight;
-  }
-}
-
-.locked {
-  border-color: colors.$border;
-
-  .tierLabel {
-    color: colors.$text-disabled;
-  }
-}
-
-.tierLabel {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-}
-
-.items {
-  display: grid;
-  grid-template-columns: repeat(var(--tier-columns), $cell);
-  gap: 10px;
-}
-
-.item {
-  display: block;
-  width: $cell;
-  height: $cell;
-  padding: 0;
-  background: none;
-  transition: filter 0.12s ease-out;
-  will-change: filter;
-
-  @include media.with-hover {
-    &:hover:not(:focus-visible) {
-      filter: brightness(1.3);
-    }
-  }
-
-  &:not([aria-disabled='true']) {
-    cursor: pointer;
-  }
-
-  &[aria-disabled='true'] {
-    cursor: not-allowed;
-  }
-
-  &:focus-visible {
-    filter: brightness(1.3);
-    outline-offset: 6px;
-  }
 }
 
 .description {

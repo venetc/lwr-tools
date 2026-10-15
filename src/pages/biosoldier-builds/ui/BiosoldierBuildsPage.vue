@@ -3,7 +3,6 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { BIOSOLDIER_CLASSES } from '@entities/soldier';
-import { decodeBiosoldierBuild } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 import { BuildCalculator } from '@widgets/build-calculator';
 
@@ -18,7 +17,7 @@ const { builds } = storeToRefs(biosoldierBuildsStore);
 <template>
   <BuildCalculator
     :builds="builds"
-    :decode="decodeBiosoldierBuild"
+    kind="biosoldier"
     @import="biosoldierBuildsStore.importBuild"
     @remove="biosoldierBuildsStore.removeBuild"
   >

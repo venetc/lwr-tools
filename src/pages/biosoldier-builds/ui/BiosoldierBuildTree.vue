@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { useClassTreeTiers } from '@entities/soldier';
-import { decodeBiosoldierBuild, encodeBiosoldierBuild } from '@features/share-build';
+import { useCssModule } from 'vue';
+
+import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 import { BuildPanel } from '@widgets/build-calculator';
 
+import type { BiosoldierBranch, BiosoldierBuildGroup } from '../model/biosoldier-build-groups';
+import { tierIcon, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
 
@@ -14,9 +17,29 @@ interface Props {
 
 const props = defineProps<Props>();
 
+const style = useCssModule();
+
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
-const { tree, tiers, featuredItem } = useClassTreeTiers(() => props.build);
+const { rename, lock, replace, remove } = useBuildEditor(() => props.build, biosoldierBuildsStore);
+
+const { tree, groups, select } = useBiosoldierBuildGroups(() => props.build);
+
+/** Colours of each branch: its counter when the branch has a selection, and the described ability name. */
+const branchClasses: Record<BiosoldierBranch, { counter: string | undefined, name: string | undefined }> = {
+  'class-tree': { counter: style.counterClassTree, name: undefined },
+  'gene-mods': { counter: style.counterGeneMods, name: style.geneModName },
+};
+
+/**
+ * Classes of a branch: the tab counter, grey for an empty branch, and the described ability name.
+ *
+ * @param group tier group of the branch.
+ */
+const getBranchClasses = (group: BiosoldierBuildGroup) => ({
+  counter: [style.counter, group.isEmpty ? style.counterEmpty : branchClasses[group.id].counter],
+  name: branchClasses[group.id].name,
+});
 </script>
 
 <template>
@@ -25,11 +48,13 @@ const { tree, tiers, featuredItem } = useClassTreeTiers(() => props.build);
     :build="props.build"
     :label="tree.name"
     :fallback-name="props.build.soldierClass.name"
-    :tiers="tiers"
-    :default-item="featuredItem"
-    :actions="biosoldierBuildsStore"
-    :encode="encodeBiosoldierBuild"
-    :decode="decodeBiosoldierBuild"
+    kind="biosoldier"
+    :groups="groups"
+    @rename="rename"
+    @lock="lock"
+    @replace="replace"
+    @remove="remove"
+    @select="select"
   >
     <template #icon>
       <component
@@ -39,23 +64,64 @@ const { tree, tiers, featuredItem } = useClassTreeTiers(() => props.build);
       />
     </template>
 
+    <template #tab="{ group }">
+      <span :class="$style.tabLabel">
+        <span>{{ group.title }}</span>
+        <span :class="getBranchClasses(group).counter">{{ group.counter }}</span>
+      </span>
+    </template>
+
     <template #tier="{ tier, highlighted }">
       <TieredPickerTierLabel
-        :icon="tier.rank.icon"
-        :name="tier.rank.name"
+        :icon="tierIcon(tier)"
+        :name="tier.name"
         :highlighted="highlighted"
       />
+    </template>
+
+    <template #item-name="{ item, group }">
+      <span :class="getBranchClasses(group).name">{{ item.name }}</span>
     </template>
   </BuildPanel>
 </template>
 
 <style lang="scss" module>
 @use 'styles/colors';
+@use 'styles/typography';
+@use '@entities/soldier/config/styles/branches';
 
 .classIcon {
   flex: none;
   width: 34px;
   height: 34px;
   color: colors.$accent;
+}
+
+.tabLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 6px;
+}
+
+.counter {
+  @include typography.numeric-3;
+}
+
+.counterClassTree {
+  color: colors.$text-accent;
+}
+
+.counterGeneMods {
+  color: branches.$gene-mod-text;
+}
+
+.counterEmpty {
+  color: colors.$text-disabled;
+}
+
+.geneModName {
+  color: branches.$gene-mod-text;
 }
 </style>

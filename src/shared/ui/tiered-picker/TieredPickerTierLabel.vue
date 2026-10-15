@@ -4,8 +4,8 @@ import { computed, useCssModule } from 'vue';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
 interface Props {
-  /** Tier icon. */
-  icon: SvgIcon
+  /** Tier icon; null for a label of text only. */
+  icon?: SvgIcon | null
   /** Tier name. */
   name: string
   /** Whether the icon takes the label color instead of the accent. */
@@ -13,6 +13,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  icon: null,
   highlighted: false,
 });
 
@@ -25,6 +26,7 @@ const iconClass = computed(() => [style.icon, props.highlighted ? style.iconHigh
   <span :class="$style.label">
     <component
       :is="props.icon"
+      v-if="props.icon"
       :class="iconClass"
       aria-hidden="true"
     />

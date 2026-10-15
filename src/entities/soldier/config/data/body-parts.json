@@ -1,0 +1,22 @@
+{
+  "brain": {
+    "name": "Brain",
+    "geneMods": ["neural-damping", "smart-macrophages"]
+  },
+  "eyes": {
+    "name": "Eyes",
+    "geneMods": ["advanced-perception", "predictive-tracking"]
+  },
+  "chest": {
+    "name": "Chest",
+    "geneMods": ["dual-heart", "adrenal-neurosympathy"]
+  },
+  "skin": {
+    "name": "Skin",
+    "geneMods": ["enhanced-metabolism", "iron-skin"]
+  },
+  "legs": {
+    "name": "Legs",
+    "geneMods": ["muscle-amp", "regenesis"]
+  }
+}

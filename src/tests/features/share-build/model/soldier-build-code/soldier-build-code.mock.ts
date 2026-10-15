@@ -1,5 +1,6 @@
 import type { AbilityContent } from '@entities/soldier/model/abilities';
-import type { SoldierBuildData } from '@entities/soldier/model/build';
+import type { BodyPartContent } from '@entities/soldier/model/body-parts';
+import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier/model/build';
 import type { SoldierClass, SoldierClassContent } from '@entities/soldier/model/classes';
 import type { SoldierRankContent } from '@entities/soldier/model/ranks';
 import type { BinaryCodeSection, BitWriter } from '@shared/lib/binary-code';
@@ -9,6 +10,11 @@ export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
   left: { code: 11, name: 'Left', description: 'Left choice.' },
   right: { code: 12, name: 'Right', description: 'Right choice.' },
   top: { code: 13, name: 'Top', description: 'Top choice.' },
+};
+
+export const BODY_PART_CONTENT_MOCK: Record<string, BodyPartContent> = {
+  head: { name: 'Head', geneMods: [] },
+  feet: { name: 'Feet', geneMods: [] },
 };
 
 export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
@@ -41,11 +47,13 @@ export const BIOSOLDIER_CLASS_MOCK = {
   basePerk: 'granted',
 } as unknown as SoldierClass;
 
-export const DEFAULT_NAME_BUILD = {
+const SOLDIER_BUILD = {
   soldierClass: BIOSOLDIER_CLASS_MOCK,
   perks: ['granted', 'right', 'top'],
   name: 'Tester',
 } as SoldierBuildData;
+
+export const DEFAULT_NAME_BUILD: BiosoldierBuildData = { ...SOLDIER_BUILD, geneMods: [null, null] };
 
 export const OTHER_CLASS_MOCK = {
   id: 'other',
@@ -69,7 +77,7 @@ export const MEC_CLASS_MOCK = {
   basePerk: 'granted',
 } as unknown as SoldierClass;
 
-export const MEC_DEFAULT_NAME_BUILD = { ...DEFAULT_NAME_BUILD, soldierClass: MEC_CLASS_MOCK, name: 'Walker' };
+export const MEC_DEFAULT_NAME_BUILD = { ...SOLDIER_BUILD, soldierClass: MEC_CLASS_MOCK, name: 'Walker' };
 
 export const MEC_NAMED_BUILD = { ...MEC_DEFAULT_NAME_BUILD, name: 'Juggernaut' };
 

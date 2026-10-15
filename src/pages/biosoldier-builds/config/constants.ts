@@ -15,3 +15,9 @@ export const BUILD_KEY_PREFIX = `${BUILD_STORAGE_PREFIX}build.`;
  * save the same records instead of doubling the list.
  */
 export const DEFAULT_BUILD_ID_PREFIX = 'default-';
+
+/** Tab titles of the branches of a biosoldier build panel, in tab order. */
+export const BRANCH_TITLE = {
+  'class-tree': 'Class tree',
+  'gene-mods': 'Gene mods',
+} as const;

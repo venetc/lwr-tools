@@ -3,7 +3,6 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { MEC_CLASSES } from '@entities/soldier';
-import { decodeMecBuild } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 import { BuildCalculator } from '@widgets/build-calculator';
 
@@ -18,7 +17,7 @@ const { builds } = storeToRefs(mecBuildsStore);
 <template>
   <BuildCalculator
     :builds="builds"
-    :decode="decodeMecBuild"
+    kind="mec"
     @import="mecBuildsStore.importBuild"
     @remove="mecBuildsStore.removeBuild"
   >

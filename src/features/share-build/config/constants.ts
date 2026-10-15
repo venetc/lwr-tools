@@ -4,7 +4,7 @@ import type { DeepReadonly } from '@shared/lib/object';
 
 import type { ShareCodeFailure } from '../model/share-code';
 import type { ShivBuildPart } from '../model/shiv-build-code';
-import type { SoldierBuildPart } from '../model/soldier-build-code';
+import type { BiosoldierBuildPart, SoldierBuildPart } from '../model/soldier-build-code';
 
 /**
  * Formats of all share codes of the app; a new format gets the next number; numbers are never changed or reused.
@@ -29,6 +29,7 @@ export const SHARE_CODE_FORMAT_UNIT: ReadonlyMap<number, string> = new Map([
 export const SOLDIER_BUILD_SECTION = {
   PERKS: 1,
   NAME: 2,
+  GENE_MODS: 3,
 } as const;
 
 /** Width of the class number; part of the `PERKS` section, a change means a new section id. */
@@ -39,6 +40,9 @@ export const PERK_COUNT_BITS = 3;
 
 /** Width of the ability number; part of the `PERKS` section, a change means a new section id. */
 export const ABILITY_CODE_BITS = 8;
+
+/** Width of the gene mod count; part of the `GENE_MODS` section, a change means a new section id. */
+export const GENE_MOD_COUNT_BITS = 3;
 
 /** Width of the name byte length; part of the `NAME` section, a change means a new section id. */
 export const NAME_LENGTH_BITS = 5;
@@ -60,6 +64,9 @@ export const SHIV_PERK_CODE_BITS = 6;
 
 /** Optional parts of a soldier build read from a code by default. */
 export const SOLDIER_BUILD_PARTS: DeepReadonly<SoldierBuildPart[]> = ['name'];
+
+/** Optional parts of a biosoldier build read from a code by default. */
+export const BIOSOLDIER_BUILD_PARTS: DeepReadonly<BiosoldierBuildPart[]> = ['name', 'geneMods'];
 
 /** Optional parts of a SHIV build read from a code by default. */
 export const SHIV_BUILD_PARTS: DeepReadonly<ShivBuildPart[]> = ['name'];

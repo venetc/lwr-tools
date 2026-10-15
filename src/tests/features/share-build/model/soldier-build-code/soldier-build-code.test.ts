@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { decodeBiosoldierBuild, decodeMecBuild, encodeBiosoldierBuild, encodeMecBuild, soldierBuildCodec } from '@features/share-build/model/soldier-build-code';
+import { decodeBiosoldierBuild, decodeMecBuild, encodeBiosoldierBuild, encodeMecBuild, SOLDIER_BUILD_EXTENSION, soldierBuildCodec } from '@features/share-build/model/soldier-build-code';
 import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
 
 import {
@@ -11,12 +11,16 @@ import {
   BROKEN_NAME_SECTION,
   DEFAULT_NAME_BUILD,
   GARBAGE_CODE,
+  GENE_MODS_BUILD,
+  GENE_MODS_SECTION_ID,
+  geneModsSection,
   INVALID_RESULT,
   MEC_CLASS_CODE,
   MEC_CODE_RESULT,
   MEC_DEFAULT_NAME_BUILD,
   MEC_FORMAT,
   MEC_NAMED_BUILD,
+  MISPLACED_GENE_MOD_BUILD,
   NAME_SECTION_ID,
   NAMED_BUILD,
   OTHER_CLASS_BUILD,
@@ -59,12 +63,26 @@ vi.mock('@entities/soldier/config/constants/mec-class-icons', () => ({ MEC_CLASS
 vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 
 describe('encodeBiosoldierBuild', () => {
+  it('leaves out the gene mods section for a build without gene mods', () => {
+    const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
+
+    const binaryCode = openBinaryCode(code);
+
+    expect(binaryCode?.sections.has(GENE_MODS_SECTION_ID)).toBe(false);
+  });
+
   it('leaves out the name section for the default name', () => {
     const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
 
     const binaryCode = openBinaryCode(code);
 
     expect(binaryCode?.sections.has(NAME_SECTION_ID)).toBe(false);
+  });
+
+  it('gives null for a build with a gene mod outside its body part', () => {
+    const code = encodeBiosoldierBuild(MISPLACED_GENE_MOD_BUILD);
+
+    expect(code).toBeNull();
   });
 
   it('gives null for a build with an unknown perk', () => {
@@ -75,6 +93,78 @@ describe('encodeBiosoldierBuild', () => {
 });
 
 describe('decodeBiosoldierBuild', () => {
+  it('restores a build with gene mods', () => {
+    const code = encodeBiosoldierBuild(GENE_MODS_BUILD) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: GENE_MODS_BUILD });
+  });
+
+  it('gives no gene mods when the gene mods part is not requested', () => {
+    const code = encodeBiosoldierBuild(GENE_MODS_BUILD) ?? '';
+
+    const result = decodeBiosoldierBuild(code, ['name']);
+
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+  });
+
+  it('gives no gene mods for a code without the gene mods section', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+  });
+
+  it('skips a broken gene mods section when gene mods are not requested', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20], 1)]) ?? '';
+
+    const result = decodeBiosoldierBuild(code, ['name']);
+
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+  });
+
+  it('rejects a gene mods section with an ability that is not a gene mod', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([12])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a gene mods section with an unknown ability', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([99])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects two gene mods of one body part', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20, 21])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects gene mods out of body part order', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([22, 20])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a gene mods section with unread bits', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20], 1)]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
   it('restores a build with the default name', () => {
     const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
 
@@ -190,13 +280,13 @@ describe('soldierBuildCodec', () => {
   it('rejects a code with a class outside its class list', () => {
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(OTHER_CLASS_CODE, [12])]) ?? '';
 
-    const result = soldierBuildCodec(BIOSOLDIER_FORMAT, BOUND_CLASS_BY_CODE).decode(code);
+    const result = soldierBuildCodec(BIOSOLDIER_FORMAT, BOUND_CLASS_BY_CODE, SOLDIER_BUILD_EXTENSION).decode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
 
   it('gives null for a build with a class outside its class list', () => {
-    const code = soldierBuildCodec(BIOSOLDIER_FORMAT, BOUND_CLASS_BY_CODE).encode(OTHER_CLASS_BUILD);
+    const code = soldierBuildCodec(BIOSOLDIER_FORMAT, BOUND_CLASS_BY_CODE, SOLDIER_BUILD_EXTENSION).encode(OTHER_CLASS_BUILD);
 
     expect(code).toBeNull();
   });
@@ -219,6 +309,14 @@ describe('encodeMecBuild', () => {
 });
 
 describe('decodeMecBuild', () => {
+  it('skips a gene mods section', () => {
+    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), geneModsSection([20])]) ?? '';
+
+    const result = decodeMecBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: MEC_DEFAULT_NAME_BUILD });
+  });
+
   it('restores a build with the default name', () => {
     const code = encodeMecBuild(MEC_DEFAULT_NAME_BUILD) ?? '';
 

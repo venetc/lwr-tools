@@ -53,6 +53,42 @@ describe('useShivBuildTiers', () => {
     expect(tiers.value.map(tier => tier.isDisabled)).toEqual([true, true]);
   });
 
+  it('shows the perk selected on a level as selected', () => {
+    const { tiers } = useShivBuildTiers(createBuildMock(FIRST_FILLED_PERKS));
+
+    expect(tiers.value[0].options[1].appearance).toBe('selected');
+  });
+
+  it('shows the neighbour of the selected perk as disabled', () => {
+    const { tiers } = useShivBuildTiers(createBuildMock(FIRST_FILLED_PERKS));
+
+    expect(tiers.value[0].options[0].appearance).toBe('disabled');
+  });
+
+  it('shows a perk of an empty level as available', () => {
+    const { tiers } = useShivBuildTiers(createBuildMock(FIRST_FILLED_PERKS));
+
+    expect(tiers.value[1].options[0].appearance).toBe('available');
+  });
+
+  it('shows a perk of an empty level of a readonly build as disabled', () => {
+    const { tiers } = useShivBuildTiers(createBuildMock(FIRST_FILLED_PERKS, true));
+
+    expect(tiers.value[1].options[0].appearance).toBe('disabled');
+  });
+
+  it('keeps the selected perk of a readonly build selected', () => {
+    const { tiers } = useShivBuildTiers(createBuildMock(FIRST_FILLED_PERKS, true));
+
+    expect(tiers.value[0].options[1].appearance).toBe('selected');
+  });
+
+  it('leaves the neighbour of the selected perk free to replace it', () => {
+    const { tiers } = useShivBuildTiers(createBuildMock(FIRST_FILLED_PERKS));
+
+    expect(tiers.value[0].options[0].isDisabled).toBe(false);
+  });
+
   it('features the perk selected on the highest filled level', () => {
     const { featuredItem } = useShivBuildTiers(createBuildMock(FIRST_FILLED_PERKS));
 

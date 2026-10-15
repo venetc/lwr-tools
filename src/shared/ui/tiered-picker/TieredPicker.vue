@@ -1,13 +1,13 @@
 <script setup lang="ts" generic="Tier extends TieredPickerTier">
-import type { AcceptableValue } from 'reka-ui';
 import type { VNode } from 'vue';
 import { useCssModule } from 'vue';
 
 import { ScrollArea } from '@shared/ui/scroll-area';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
-import { COLUMNS } from './config/constants';
+import { useTierGrid } from './lib/tier-grid';
 import { useDescribedItem } from './model/described-item';
+import { useTierSelection } from './model/tier-selection';
 import type { TieredPickerItem, TieredPickerTier } from './model/tiered-picker';
 import TieredPickerCell from './TieredPickerCell.vue';
 
@@ -42,20 +42,11 @@ defineSlots<{
 
 const style = useCssModule();
 
-const { describedItem, hasRelated, describe } = useDescribedItem(() => props.defaultItem);
+const { describedItem, describedNote, hasRelated, describe } = useDescribedItem(() => props.tiers, () => props.defaultItem);
 
-/**
- * Requests an item selection on an editable tier.
- *
- * @param tier tier whose selection is toggled.
- * @param tierIndex tier index in the picker.
- * @param toggledValue selected item id; null or empty means the selection was cleared.
- */
-const onTierUpdate = (tier: Tier, tierIndex: number, toggledValue: AcceptableValue | null) => {
-  if (tier.isDisabled) return;
-  const itemId = typeof toggledValue === 'string' ? toggledValue : null;
-  emit('select', tierIndex, itemId);
-};
+const { toggle, getAriaDisabled } = useTierSelection((tierIndex, itemId) => emit('select', tierIndex, itemId));
+
+const { gridStyle, getOptionStyle } = useTierGrid(() => props.tiers);
 
 /**
  * Tier classes based on its state.
@@ -65,39 +56,14 @@ const onTierUpdate = (tier: Tier, tierIndex: number, toggledValue: AcceptableVal
 const getTierClass = (tier: Tier) => {
   return [style.tier, style[tier.state]];
 };
-
-/**
- * aria-disabled for items of a disabled tier.
- *
- * @param tier tier of the item.
- */
-const getAriaDisabled = (tier: Tier) => {
-  return tier.isDisabled ? 'true' : null;
-};
-
-/**
- * Whether the item is selected on its tier.
- *
- * @param tier tier of the item.
- * @param item tier item.
- */
-const isItemSelected = (tier: Tier, item: TieredPickerItem) => {
-  return tier.selectedId === item.id;
-};
-
-/**
- * Grid column for an item, keeping the tier items centered.
- *
- * @param tier tier of the item.
- * @param itemIndex item index in the tier.
- */
-const getItemStyle = (tier: Tier, itemIndex: number) => {
-  return { gridColumn: COLUMNS[tier.items.length]?.[itemIndex] ?? itemIndex + 1 };
-};
 </script>
 
 <template>
-  <section :class="$style.panel" :aria-label="label">
+  <section
+    :class="$style.panel"
+    :style="gridStyle"
+    :aria-label="label"
+  >
     <header :class="$style.header">
       <slot name="header" />
     </header>
@@ -117,23 +83,22 @@ const getItemStyle = (tier: Tier, itemIndex: number) => {
           :model-value="tier.selectedId"
           :roving-focus="false"
           :aria-label="tier.name"
-          @update:model-value="onTierUpdate(tier, tierIndex, $event)"
+          @update:model-value="toggle(tier, tierIndex, $event)"
         >
           <ToggleGroupOption
-            v-for="(item, itemIndex) in tier.items"
-            :key="item.id"
+            v-for="(option, optionIndex) in tier.options"
+            :key="option.item.id"
             :class="$style.item"
-            :style="getItemStyle(tier, itemIndex)"
-            :value="item.id"
-            :aria-disabled="getAriaDisabled(tier)"
-            @pointerenter="describe(item)"
-            @focus="describe(item)"
+            :style="getOptionStyle(tier, optionIndex)"
+            :value="option.item.id"
+            :aria-disabled="getAriaDisabled(tier, option)"
+            @pointerenter="describe(tier, option)"
+            @focus="describe(tier, option)"
           >
             <TieredPickerCell
-              :icon="item.icon"
-              :name="item.name"
-              :tier-state="tier.state"
-              :selected="isItemSelected(tier, item)"
+              :icon="option.item.icon"
+              :name="option.item.name"
+              :appearance="option.appearance"
             />
           </ToggleGroupOption>
         </ToggleGroup>
@@ -150,6 +115,10 @@ const getItemStyle = (tier: Tier, itemIndex: number) => {
       </p>
 
       <ScrollArea :class="$style.descriptionScroll">
+        <p v-if="describedNote" :class="$style.descriptionNote">
+          {{ describedNote }}
+        </p>
+
         <p :class="$style.descriptionText">
           {{ describedItem.description }}
         </p>
@@ -163,7 +132,7 @@ const getItemStyle = (tier: Tier, itemIndex: number) => {
             <span :class="$style.relatedTitle">
               <img
                 :class="$style.relatedIcon"
-                :src="relatedItem.icon.original"
+                :src="relatedItem.icon.selected"
                 alt=""
               >
               <span :class="$style.relatedName">{{ relatedItem.name }}</span>
@@ -257,7 +226,7 @@ $cell: 40px;
 
 .items {
   display: grid;
-  grid-template-columns: repeat(3, $cell);
+  grid-template-columns: repeat(var(--tier-columns), $cell);
   gap: 10px;
 }
 
@@ -312,6 +281,13 @@ $descent-overflow: 0.1em;
 .descriptionScroll {
   @include typography.body-1;
   block-size: calc(5lh + #{$descent-overflow * 2.5});
+}
+
+.descriptionNote {
+  @include typography.body-2;
+  margin: 0 0 4px;
+  padding-inline: 12px;
+  color: colors.$text-tertiary;
 }
 
 .descriptionText {

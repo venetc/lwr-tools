@@ -5,11 +5,11 @@ import type perksJson from '../config/data/perks.json';
 export type ShivPerkId = keyof typeof perksJson;
 
 export interface ShivPerkIcon {
-  /** Original icon, shown for a selected perk. */
-  original: string
-  /** Icon tinted for a perk available to select. */
+  /** Icon of a selected perk. */
+  selected: string
+  /** Icon of a perk available to select. */
   available: string
-  /** Icon tinted for a perk that cannot be selected. */
+  /** Icon of a perk that is locked or not selected. */
   disabled: string
 }
 

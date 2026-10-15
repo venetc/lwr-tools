@@ -5,6 +5,7 @@ import type { TechnologyLevel } from '@entities/shiv';
 import { featuredShivPerk, TECHNOLOGY_LEVELS, technologyLevelState } from '@entities/shiv';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerTier } from '@shared/ui/tiered-picker';
+import { tierOption } from '@shared/ui/tiered-picker';
 
 import { SHIV_PERK_ITEM_BY_ID, TECHNOLOGY_LEVEL_ITEMS } from '../config/constants';
 import type { ShivBuild } from './shiv-builds';
@@ -22,7 +23,8 @@ export interface TechnologyLevelTier extends TieredPickerTier {
  *
  * @description Picker items come from constants: the tree is static. Levels are independent: every level of an editable build can be changed at any time, as perks of
  * a SHIV can be swapped. A level without a selection is open for selection, a level with one is completed and its
- * unselected perks look disabled, as in the game. A readonly build makes every level unclickable and locks empty ones.
+ * unselected perks look disabled, as in the game, while still replacing the selection. A readonly build makes every level
+ * unclickable and locks empty ones.
  *
  * @param build SHIV build.
  */
@@ -32,15 +34,16 @@ export const useShivBuildTiers = (build: MaybeRefOrGetter<Readonly<ShivBuild>>) 
 
     return TECHNOLOGY_LEVELS.map((level, levelIndex): TechnologyLevelTier => {
       const selectedId = perks[levelIndex] ?? null;
+      const state = technologyLevelState(selectedId, readonly);
 
       return {
         id: level.id,
         name: level.name,
         level,
-        state: technologyLevelState(selectedId, readonly),
+        state,
         isDisabled: readonly,
         selectedId,
-        items: TECHNOLOGY_LEVEL_ITEMS[levelIndex] ?? [],
+        options: (TECHNOLOGY_LEVEL_ITEMS[levelIndex] ?? []).map(item => tierOption(item, state, selectedId)),
       };
     });
   });

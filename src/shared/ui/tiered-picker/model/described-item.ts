@@ -1,28 +1,64 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, shallowRef, toValue } from 'vue';
 
-import type { TieredPickerItem } from './tiered-picker';
+import type { TieredPickerItem, TieredPickerOption, TieredPickerTier } from './tiered-picker';
 
 /**
- * Item shown in the description panel: the last inspected one, otherwise the default one.
+ * Inspected option, kept by ids so its description follows the current tiers.
+ */
+interface InspectedOption {
+  /** Id of the option tier. */
+  tierId: string
+  /** Id of the option item. */
+  itemId: string
+}
+
+/**
+ * Item shown in the description panel with the note of its option: the last inspected one as the current tiers have it,
+ * otherwise the default one.
  *
+ * @param tiers current picker tiers.
  * @param defaultItem item described while none is inspected.
  */
-export const useDescribedItem = (defaultItem: MaybeRefOrGetter<TieredPickerItem | null>) => {
-  const inspectedItem = shallowRef<TieredPickerItem | null>(null);
+export const useDescribedItem = (
+  tiers: MaybeRefOrGetter<readonly TieredPickerTier[]>,
+  defaultItem: MaybeRefOrGetter<TieredPickerItem | null>,
+) => {
+  const inspected = shallowRef<InspectedOption | null>(null);
 
-  const describedItem = computed(() => inspectedItem.value ?? toValue(defaultItem));
+  const inspectedOption = computed((): TieredPickerOption | null => {
+    const inspectedIds = inspected.value;
+
+    if (!inspectedIds) return null;
+
+    const tier = toValue(tiers).find(({ id }) => id === inspectedIds.tierId);
+
+    return tier?.options.find(({ item }) => item.id === inspectedIds.itemId) ?? null;
+  });
+
+  const defaultOption = computed((): TieredPickerOption | null => {
+    const itemId = toValue(defaultItem)?.id ?? null;
+
+    if (itemId === null) return null;
+
+    return toValue(tiers).flatMap(tier => tier.options).find(({ item }) => item.id === itemId) ?? null;
+  });
+
+  const describedItem = computed(() => inspectedOption.value?.item ?? toValue(defaultItem));
+
+  const describedNote = computed(() => (inspectedOption.value ?? defaultOption.value)?.note ?? null);
 
   const hasRelated = computed(() => (describedItem.value?.related.length ?? 0) > 0);
 
   /**
-   * Shows the item in the description panel.
+   * Shows the option item in the description panel.
    *
-   * @param item item inspected by the user.
+   * @param tier tier of the option.
+   * @param option option inspected by the user.
    */
-  const describe = (item: TieredPickerItem) => {
-    inspectedItem.value = item;
+  const describe = (tier: TieredPickerTier, option: TieredPickerOption) => {
+    inspected.value = { tierId: tier.id, itemId: option.item.id };
   };
 
-  return { describedItem, hasRelated, describe };
+  return { describedItem, describedNote, hasRelated, describe };
 };

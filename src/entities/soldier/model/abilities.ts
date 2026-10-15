@@ -5,11 +5,11 @@ import type abilitiesJson from '../config/data/abilities.json';
 export type AbilityId = keyof typeof abilitiesJson;
 
 export interface AbilityIcon {
-  /** Original icon, shown for a selected perk. */
-  original: string
-  /** Icon tinted for a perk available to select. */
+  /** Icon of a selected ability. */
+  selected: string
+  /** Icon of an ability available to select. */
   available: string
-  /** Icon tinted for a perk that is locked or not selected. */
+  /** Icon of an ability that is locked, not selected or blocked. */
   disabled: string
 }
 

@@ -47,21 +47,21 @@ import type { DeepReadonly } from '@shared/lib/object';
 
 import type { ShivPerkIcon, ShivPerkId } from '../../model/perks';
 
-const adaptiveBoneMarrowGeneModEu2012Icon: ShivPerkIcon = { original: adaptiveBoneMarrowGeneModEu2012OriginalIcon, available: adaptiveBoneMarrowGeneModEu2012AvailableIcon, disabled: adaptiveBoneMarrowGeneModEu2012DisabledIcon };
-const assaultBringthemonIcon: ShivPerkIcon = { original: assaultBringthemonOriginalIcon, available: assaultBringthemonAvailableIcon, disabled: assaultBringthemonDisabledIcon };
-const assaultClosecombatIcon: ShivPerkIcon = { original: assaultClosecombatOriginalIcon, available: assaultClosecombatAvailableIcon, disabled: assaultClosecombatDisabledIcon };
-const assaultResillienceIcon: ShivPerkIcon = { original: assaultResillienceOriginalIcon, available: assaultResillienceAvailableIcon, disabled: assaultResillienceDisabledIcon };
-const defendersMedal2Eu2012Icon: ShivPerkIcon = { original: defendersMedal2Eu2012OriginalIcon, available: defendersMedal2Eu2012AvailableIcon, disabled: defendersMedal2Eu2012DisabledIcon };
-const heavyBulletswarmIcon: ShivPerkIcon = { original: heavyBulletswarmOriginalIcon, available: heavyBulletswarmAvailableIcon, disabled: heavyBulletswarmDisabledIcon };
-const heavyHoloIcon: ShivPerkIcon = { original: heavyHoloOriginalIcon, available: heavyHoloAvailableIcon, disabled: heavyHoloDisabledIcon };
-const heavyShredderIcon: ShivPerkIcon = { original: heavyShredderOriginalIcon, available: heavyShredderAvailableIcon, disabled: heavyShredderDisabledIcon };
-const mecAbsortionFieldsIcon: ShivPerkIcon = { original: mecAbsortionFieldsOriginalIcon, available: mecAbsortionFieldsAvailableIcon, disabled: mecAbsortionFieldsDisabledIcon };
-const mecDamageControlIcon: ShivPerkIcon = { original: mecDamageControlOriginalIcon, available: mecDamageControlAvailableIcon, disabled: mecDamageControlDisabledIcon };
-const mecPlatformStabilityIcon: ShivPerkIcon = { original: mecPlatformStabilityOriginalIcon, available: mecPlatformStabilityAvailableIcon, disabled: mecPlatformStabilityDisabledIcon };
-const mecReactiveTargetingSensorsIcon: ShivPerkIcon = { original: mecReactiveTargetingSensorsOriginalIcon, available: mecReactiveTargetingSensorsAvailableIcon, disabled: mecReactiveTargetingSensorsDisabledIcon };
-const mecRepairServosIcon: ShivPerkIcon = { original: mecRepairServosOriginalIcon, available: mecRepairServosAvailableIcon, disabled: mecRepairServosDisabledIcon };
-const mecVitalPointTargetingIcon: ShivPerkIcon = { original: mecVitalPointTargetingOriginalIcon, available: mecVitalPointTargetingAvailableIcon, disabled: mecVitalPointTargetingDisabledIcon };
-const supportDeeppocketsIcon: ShivPerkIcon = { original: supportDeeppocketsOriginalIcon, available: supportDeeppocketsAvailableIcon, disabled: supportDeeppocketsDisabledIcon };
+const adaptiveBoneMarrowGeneModEu2012Icon: ShivPerkIcon = { selected: adaptiveBoneMarrowGeneModEu2012OriginalIcon, available: adaptiveBoneMarrowGeneModEu2012AvailableIcon, disabled: adaptiveBoneMarrowGeneModEu2012DisabledIcon };
+const assaultBringthemonIcon: ShivPerkIcon = { selected: assaultBringthemonOriginalIcon, available: assaultBringthemonAvailableIcon, disabled: assaultBringthemonDisabledIcon };
+const assaultClosecombatIcon: ShivPerkIcon = { selected: assaultClosecombatOriginalIcon, available: assaultClosecombatAvailableIcon, disabled: assaultClosecombatDisabledIcon };
+const assaultResillienceIcon: ShivPerkIcon = { selected: assaultResillienceOriginalIcon, available: assaultResillienceAvailableIcon, disabled: assaultResillienceDisabledIcon };
+const defendersMedal2Eu2012Icon: ShivPerkIcon = { selected: defendersMedal2Eu2012OriginalIcon, available: defendersMedal2Eu2012AvailableIcon, disabled: defendersMedal2Eu2012DisabledIcon };
+const heavyBulletswarmIcon: ShivPerkIcon = { selected: heavyBulletswarmOriginalIcon, available: heavyBulletswarmAvailableIcon, disabled: heavyBulletswarmDisabledIcon };
+const heavyHoloIcon: ShivPerkIcon = { selected: heavyHoloOriginalIcon, available: heavyHoloAvailableIcon, disabled: heavyHoloDisabledIcon };
+const heavyShredderIcon: ShivPerkIcon = { selected: heavyShredderOriginalIcon, available: heavyShredderAvailableIcon, disabled: heavyShredderDisabledIcon };
+const mecAbsortionFieldsIcon: ShivPerkIcon = { selected: mecAbsortionFieldsOriginalIcon, available: mecAbsortionFieldsAvailableIcon, disabled: mecAbsortionFieldsDisabledIcon };
+const mecDamageControlIcon: ShivPerkIcon = { selected: mecDamageControlOriginalIcon, available: mecDamageControlAvailableIcon, disabled: mecDamageControlDisabledIcon };
+const mecPlatformStabilityIcon: ShivPerkIcon = { selected: mecPlatformStabilityOriginalIcon, available: mecPlatformStabilityAvailableIcon, disabled: mecPlatformStabilityDisabledIcon };
+const mecReactiveTargetingSensorsIcon: ShivPerkIcon = { selected: mecReactiveTargetingSensorsOriginalIcon, available: mecReactiveTargetingSensorsAvailableIcon, disabled: mecReactiveTargetingSensorsDisabledIcon };
+const mecRepairServosIcon: ShivPerkIcon = { selected: mecRepairServosOriginalIcon, available: mecRepairServosAvailableIcon, disabled: mecRepairServosDisabledIcon };
+const mecVitalPointTargetingIcon: ShivPerkIcon = { selected: mecVitalPointTargetingOriginalIcon, available: mecVitalPointTargetingAvailableIcon, disabled: mecVitalPointTargetingDisabledIcon };
+const supportDeeppocketsIcon: ShivPerkIcon = { selected: supportDeeppocketsOriginalIcon, available: supportDeeppocketsAvailableIcon, disabled: supportDeeppocketsDisabledIcon };
 
 /** Icon variants by SHIV perk id: wiki icons upscaled and tinted green as on the game's SHIV screen. */
 export const SHIV_PERK_ICON: DeepReadonly<Record<ShivPerkId, ShivPerkIcon>> = {

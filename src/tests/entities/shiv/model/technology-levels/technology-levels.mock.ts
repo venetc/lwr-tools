@@ -11,7 +11,7 @@ const perk = (id: string) => ({
   code: 0,
   name: id,
   description: `${id} description`,
-  icon: { original: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
 }) as unknown as ShivPerk;
 
 export const FIRST_PERK = perk('first');

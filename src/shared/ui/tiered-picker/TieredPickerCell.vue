@@ -1,41 +1,29 @@
 <script setup lang="ts">
-import { computed, useCssModule } from 'vue';
+import { useCssModule } from 'vue';
 
-import { ICON_VARIANT, ICON_VARIANTS } from './config/constants';
-import type { TieredPickerAppearance, TieredPickerIcon, TieredPickerIconVariant, TieredPickerTierState } from './model/tiered-picker';
+import { ICON_VARIANTS } from './config/constants';
+import type { TieredPickerAppearance, TieredPickerIcon } from './model/tiered-picker';
 
 interface Props {
   /** Item icon variants. */
   icon: TieredPickerIcon
   /** Item name. */
   name: string
-  /** State of the tier the item belongs to. */
-  tierState: TieredPickerTierState
-  /** Whether the item is selected. */
-  selected?: boolean
+  /** Look of the cell. */
+  appearance: TieredPickerAppearance
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  selected: false,
-});
+const props = defineProps<Props>();
 
 const style = useCssModule();
 
-const appearance = computed((): TieredPickerAppearance => {
-  if (props.tierState === 'available') return 'available';
-  if (props.tierState === 'completed' && props.selected) return 'selected';
-  return 'disabled';
-});
-
-const activeVariant = computed(() => ICON_VARIANT[appearance.value]);
-
 /**
- * Checks whether the variant matches the current appearance.
+ * Checks whether the variant matches the cell look.
  *
  * @param variant - Icon variant.
  */
-function isActive(variant: TieredPickerIconVariant) {
-  return variant === activeVariant.value;
+function isActive(variant: TieredPickerAppearance) {
+  return variant === props.appearance;
 }
 
 /**
@@ -43,7 +31,7 @@ function isActive(variant: TieredPickerIconVariant) {
  *
  * @param variant - Icon variant.
  */
-function getImageClass(variant: TieredPickerIconVariant) {
+function getImageClass(variant: TieredPickerAppearance) {
   return [style.image, isActive(variant) ? style.shown : style.concealed];
 }
 
@@ -52,7 +40,7 @@ function getImageClass(variant: TieredPickerIconVariant) {
  *
  * @param variant - Icon variant.
  */
-function getImageAlt(variant: TieredPickerIconVariant) {
+function getImageAlt(variant: TieredPickerAppearance) {
   return isActive(variant) ? props.name : '';
 }
 </script>

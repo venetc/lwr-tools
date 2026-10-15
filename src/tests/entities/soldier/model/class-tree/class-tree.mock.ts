@@ -9,7 +9,7 @@ const perk = (id: string): TreeAbility => ({
   id,
   name: id,
   description: `${id} description`,
-  icon: { original: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
   grants: [],
 });
 

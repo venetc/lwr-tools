@@ -59,6 +59,48 @@ describe('useClassTreeTiers', () => {
     expect(tiers.value[2].selectedId).toBeNull();
   });
 
+  it('shows the perk selected on a completed rank as selected', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS));
+
+    expect(tiers.value[1].options[1].appearance).toBe('selected');
+  });
+
+  it('shows the neighbour of the selected perk as disabled', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS));
+
+    expect(tiers.value[1].options[0].appearance).toBe('disabled');
+  });
+
+  it('shows a perk of the available rank as available', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS));
+
+    expect(tiers.value[2].options[0].appearance).toBe('available');
+  });
+
+  it('shows a perk of a locked rank as disabled', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(BASE_PERKS));
+
+    expect(tiers.value[2].options[0].appearance).toBe('disabled');
+  });
+
+  it('shows a perk above the completed ranks of a readonly build as disabled', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS, true));
+
+    expect(tiers.value[2].options[0].appearance).toBe('disabled');
+  });
+
+  it('keeps the selected perk of a readonly build selected', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS, true));
+
+    expect(tiers.value[1].options[1].appearance).toBe('selected');
+  });
+
+  it('leaves the neighbour of the selected perk free to replace it', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS));
+
+    expect(tiers.value[1].options[0].isDisabled).toBe(false);
+  });
+
   it('features the perk selected on the last completed rank', () => {
     const { featuredItem } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS));
 

@@ -1,9 +1,9 @@
 export interface TieredPickerIcon {
-  /** Original icon, shown for a selected item. */
-  original: string
-  /** Icon tinted for an item of the available tier. */
+  /** Icon of a selected item. */
+  selected: string
+  /** Icon of an item available to select. */
   available: string
-  /** Icon tinted for an item that is locked or not selected. */
+  /** Icon of an item that is locked, not selected or blocked. */
   disabled: string
 }
 
@@ -18,6 +18,25 @@ export interface TieredPickerItem {
   icon: TieredPickerIcon
   /** Items described together with this one, below its description. */
   related: readonly TieredPickerItem[]
+}
+
+/**
+ * Look of an item cell: selected, available to pick, or disabled.
+ */
+export type TieredPickerAppearance = keyof TieredPickerIcon;
+
+/**
+ * Item of a tier in the current build state; the item itself is shared and never copied per state.
+ */
+export interface TieredPickerOption {
+  /** Item of the cell. */
+  item: TieredPickerItem
+  /** Look of the cell. */
+  appearance: TieredPickerAppearance
+  /** Whether the item cannot be selected, cleared or replaced, while it can still be described. */
+  isDisabled: boolean
+  /** Short remark shown under the name in the description, such as why the item cannot be selected; null for none. */
+  note: string | null
 }
 
 /**
@@ -36,16 +55,34 @@ export interface TieredPickerTier {
   isDisabled: boolean
   /** Id of the selected item, or null. */
   selectedId: string | null
-  /** Items to choose from, one to three. */
-  items: readonly TieredPickerItem[]
+  /** Items to choose from with their cells. */
+  options: readonly TieredPickerOption[]
 }
 
 /**
- * Look of an item cell: selected, available to pick, or disabled.
+ * Look of an item on a tier where one item is chosen in turn: every item of the available tier is available,
+ * the selected item of a completed tier is selected, and the rest are disabled.
+ *
+ * @param tierState state of the item tier.
+ * @param isSelected whether the item is selected on its tier.
  */
-export type TieredPickerAppearance = 'selected' | 'available' | 'disabled';
+const tierItemAppearance = (tierState: TieredPickerTierState, isSelected: boolean): TieredPickerAppearance => {
+  if (tierState === 'available') return 'available';
+  if (tierState === 'completed' && isSelected) return 'selected';
+  return 'disabled';
+};
 
 /**
- * Variant of an item icon.
+ * Option of an item on a tier where one item is chosen in turn, with the look of `tierItemAppearance`;
+ * any item of an editable tier replaces the selection, and there is no note.
+ *
+ * @param item tier item.
+ * @param tierState state of the item tier.
+ * @param selectedId id of the item selected on the tier, or null.
  */
-export type TieredPickerIconVariant = keyof TieredPickerIcon;
+export const tierOption = (item: TieredPickerItem, tierState: TieredPickerTierState, selectedId: string | null): TieredPickerOption => ({
+  item,
+  appearance: tierItemAppearance(tierState, item.id === selectedId),
+  isDisabled: false,
+  note: null,
+});

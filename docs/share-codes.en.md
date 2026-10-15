@@ -60,9 +60,7 @@ Example: new ability, max `code` is N.
 
 ## Safe edits
 
-Add, move, reorder or remove abilities in trees; edit names, descriptions, icons; rename ids (keep `code`); add classes.
-
-If an ability on a rank is replaced by a different one, keep the old record. Old codes still open, with that rank shown as passed but empty.
+Add abilities to trees; reorder abilities within a rank; edit names, descriptions, icons; rename ids (keep `code`); add classes.
 
 ## Breaking edits
 
@@ -70,6 +68,7 @@ If an ability on a rank is replaced by a different one, keep the old record. Old
 |---|---|
 | change or reuse a `code` | show the wrong ability |
 | delete a record | "Invalid code" |
+| move an ability to another rank, remove it from a tree or replace it | codes that select it: "Invalid code" |
 | change a section's fields or their widths | "Invalid code" or wrong data |
 | change the section layout, CRC or base64url | every code is invalid |
 

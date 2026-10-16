@@ -2,7 +2,7 @@ import { TECHNOLOGY_LEVELS } from '@entities/shiv';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerItem } from '@shared/ui/tiered-picker';
 
-import { shivPerkItem } from '../model/perk-item';
+import { shivPerkPickerItem } from '../model/perk-picker-item';
 
 /**
  * Prefix of all stored keys of the SHIV Build calculator. Keys are never changed: a new shape of stored records
@@ -23,11 +23,11 @@ export const BUILD_KEY_PREFIX = `${BUILD_STORAGE_PREFIX}build.`;
 export const DEFAULT_BUILD_ID = 'default-shiv';
 
 /** Picker items of the SHIV tree by technology level, built once: the tree is static. */
-export const TECHNOLOGY_LEVEL_ITEMS: DeepReadonly<TieredPickerItem[][]> = TECHNOLOGY_LEVELS.map(level => level.perks.map(shivPerkItem));
+export const TECHNOLOGY_LEVEL_PICKER_ITEMS: DeepReadonly<TieredPickerItem[][]> = TECHNOLOGY_LEVELS.map(level => level.perks.map(shivPerkPickerItem));
 
 /** Picker items of SHIV perks by perk id. */
-export const SHIV_PERK_ITEM_BY_ID: ReadonlyMap<string, DeepReadonly<TieredPickerItem>> = new Map(
-  TECHNOLOGY_LEVEL_ITEMS.flat().map(item => [item.id, item]),
+export const SHIV_PERK_PICKER_ITEM_BY_ID: ReadonlyMap<string, DeepReadonly<TieredPickerItem>> = new Map(
+  TECHNOLOGY_LEVEL_PICKER_ITEMS.flat().map(item => [item.id, item]),
 );
 
 /** Id of the only tier group of a SHIV build panel: the SHIV tree. */

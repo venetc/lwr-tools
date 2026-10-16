@@ -533,5 +533,50 @@
     "code": 102,
     "name": "Regenesis",
     "description": "This unit has 15% less injury and fatigue time. Regenerates 1 base (non-armor) HP each turn (amount can vary on certain aliens/Exalt). Grants immunity to Bleeding."
+  },
+  "countercharge": {
+    "code": 103,
+    "name": "Countercharge",
+    "description": "Triggers a psionic attack against visible biological enemies that perform a non-movement end-in-idle action. The attack deals half of standard psionic damage (Will/30, +1 for every 10 target current HP) (with a 2% chance for double) and disorients the target but will never kill the target (will leave target with at least 1 HP). The chance to trigger is will/4 percent. Requires the caster to be idle and at full base HP."
+  },
+  "mind-fray": {
+    "code": 104,
+    "name": "Mind Fray",
+    "description": "Removes combat readiness from the target and, if the target's will is overcome, deals standard psionic damage (Will/30, +1 for every 10 target current HP), -25 aim/will, -25% mobility/ability range, and +25% scatter. Damage is reduced by 50% if caster is staggered. Hit chance is calculated using 80% of will. Purely mechanical units are immune. Lasts through 2 enemy turns. 2 turn cooldown."
+  },
+  "psi-panic": {
+    "code": 105,
+    "name": "Psi Panic",
+    "description": "Removes combat readiness from the target and, if the target's will is overcome, causes the target to panic. Hit chance is calculated using 50% of will. Purely mechanical units are immune. 4 turn cooldown."
+  },
+  "kinetic-blast": {
+    "code": 106,
+    "name": "Kinetic Blast",
+    "description": "Channel energy up to 10 tiles away (through walls) to create a kinetic (non-psionic) blast with a 2 tile radius and no fall off. Deals 4 + will/30 kinetic (non-psionic) damage. Destroys corpses but does not affect cover. 3 turn cooldown."
+  },
+  "psi-inspire": {
+    "code": 107,
+    "name": "Psi Inspire",
+    "description": "Inspires allied soldiers within a 6 radius area near the caster for 1 turn. Cleanses Mind Fray, Disorient, Shaken, Panic, Fear, and Red Fog. Grants Inspired allies +10 aim and +30 Will. 2 turn cooldown."
+  },
+  "fervor": {
+    "code": 108,
+    "name": "Fervor",
+    "description": "Grants +5 will per enemy in sight."
+  },
+  "inner-fire": {
+    "code": 109,
+    "name": "Inner Fire",
+    "description": "Grants +20% throw range and +2.0 mobility. Regenerates 2 base (non-armor) HP each turn. Fire an additional reaction shot during overwatch and gain immunity to bleeding. Psionic potential unlocks a deep connection to one's body."
+  },
+  "telekinetic-field": {
+    "code": 110,
+    "name": "Telekinetic Field",
+    "description": "Project an 8.5 radius protective field that grants +20 defense to all allies in the field. Non-psionic attacks against allies in the field deal only 80% of original damage. Mechanical enemies that enter the field take half of standard psionic damage (Will/30, +1 for every 10 target current HP). 3 turn cooldown."
+  },
+  "psi-mastery": {
+    "code": 111,
+    "name": "Psi Mastery",
+    "description": "All psionic abilities cost only 1 AP. If above half HP, fatal non-psionic damage reduces this unit to 1 HP instead. Psychic Storm still activates at half damage when interrupted."
   }
 }

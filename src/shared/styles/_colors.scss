@@ -6,6 +6,7 @@ $-cyan: #67d3e2;
 $-gold: #e6c04a;
 $-lime: #8fce3a;
 $-red: #ea3b32;
+$-violet: #a09cd4;
 
 // Palette step 50–900 from the base color: < 500 is lighter, > 500 is darker, 500 is the color itself.
 @function -shade($base, $step) {
@@ -56,6 +57,10 @@ $highlight: -shade($-gold, 500);
 $highlight-muted: -shade($-gold, 650);
 $highlight-subtle: -shade($-gold, 900);
 $highlight-glow: color.change($highlight, $alpha: 0.4);
+
+// Arcane (violet) is the second highlight, for content set apart from the gold one. Suffixes are the same as for accent.
+$arcane-light: -shade($-violet, 250);
+$arcane: -shade($-violet, 500);
 
 // Statuses: success is active/success, danger is errors and destructive actions.
 // muted is the border, subtle is the background.

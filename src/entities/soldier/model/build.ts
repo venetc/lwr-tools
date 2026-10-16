@@ -1,7 +1,9 @@
-import { BODY_PARTS } from '../config/constants/body-parts';
+import { BODY_PARTS, NEURAL_DAMPING_ID } from '../config/constants/body-parts';
+import { PSI_LEVELS } from '../config/constants/psi-levels';
 import type { SelectedGeneMods } from './body-parts';
 import type { SelectedPerks } from './class-tree';
 import type { SoldierClass } from './classes';
+import type { SelectedPsionicAbilities } from './psi-levels';
 
 /**
  * Soldier build: class, selected perks and name, without editor state.
@@ -16,11 +18,13 @@ export interface SoldierBuildData {
 }
 
 /**
- * Biosoldier build: a soldier build with gene mods.
+ * Biosoldier build: a soldier build with gene mods and psionic abilities.
  */
 export interface BiosoldierBuildData extends SoldierBuildData {
   /** Gene mods by body part; null for a body part without one. */
   geneMods: SelectedGeneMods
+  /** Psionic abilities by psi level, from Awakened, without gaps. */
+  psionicAbilities: SelectedPsionicAbilities
 }
 
 /**
@@ -43,7 +47,8 @@ export const selectSoldierBuildPerk = (build: SoldierBuildData, rankIndex: numbe
 
 /**
  * Selects a gene mod of the body part, replacing the other one, or clears the body part. Body parts are independent;
- * a body part outside the build or a gene mod of another body part is ignored.
+ * a body part outside the build, a gene mod of another body part or Neural Damping while any psionic ability is selected
+ * is ignored.
  *
  * @param build biosoldier build; its gene mods are mutated in place.
  * @param bodyPartIndex body part index.
@@ -63,5 +68,37 @@ export const selectBiosoldierBuildGeneMod = (build: BiosoldierBuildData, bodyPar
 
   if (!geneMod) return;
 
+  if (geneMod === NEURAL_DAMPING_ID && build.psionicAbilities.length > 0) return;
+
   build.geneMods[bodyPartIndex] = geneMod;
+};
+
+/**
+ * Selects a psionic ability on the psi level, keeping higher levels; clearing a level clears all higher levels too.
+ * A level after the next open one, an ability of another level or any selection while Neural Damping is selected
+ * is ignored.
+ *
+ * @param build biosoldier build; its psionic abilities are mutated in place.
+ * @param levelIndex psi level index.
+ * @param abilityId selected psionic ability id, or null to clear the level.
+ */
+export const selectBiosoldierBuildPsionicAbility = (build: BiosoldierBuildData, levelIndex: number, abilityId: string | null): void => {
+  if (build.geneMods.includes(NEURAL_DAMPING_ID)) return;
+
+  if (levelIndex > build.psionicAbilities.length) return;
+
+  const psiLevel = PSI_LEVELS[levelIndex] ?? null;
+
+  if (!psiLevel) return;
+
+  if (abilityId === null) {
+    build.psionicAbilities.length = levelIndex;
+    return;
+  }
+
+  const ability = psiLevel.abilities.find(id => id === abilityId) ?? null;
+
+  if (!ability) return;
+
+  build.psionicAbilities[levelIndex] = ability;
 };

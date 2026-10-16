@@ -241,6 +241,24 @@ import geneModNeuralDampingGeneModEu2012SelectedIcon from '@entities/soldier/con
 import geneModSecondaryHeartGeneModEu2012OriginalIcon from '@entities/soldier/config/icons/gene-mods/secondary_heart_gene_mod_eu2012/secondary_heart_gene_mod_eu2012@4x.png';
 import geneModSecondaryHeartGeneModEu2012DisabledIcon from '@entities/soldier/config/icons/gene-mods/secondary_heart_gene_mod_eu2012/secondary_heart_gene_mod_eu2012@4x_disabled.png';
 import geneModSecondaryHeartGeneModEu2012SelectedIcon from '@entities/soldier/config/icons/gene-mods/secondary_heart_gene_mod_eu2012/secondary_heart_gene_mod_eu2012@4x_selected.png';
+import psionicBurnDisabledIcon from '@entities/soldier/config/icons/psionic/burn/burn@4x_disabled.png';
+import psionicBurnSelectedIcon from '@entities/soldier/config/icons/psionic/burn/burn@4x_selected.png';
+import psionicMindmergeTga2DisabledIcon from '@entities/soldier/config/icons/psionic/mindmerge_tga2/mindmerge_tga2@4x_disabled.png';
+import psionicMindmergeTga2SelectedIcon from '@entities/soldier/config/icons/psionic/mindmerge_tga2/mindmerge_tga2@4x_selected.png';
+import psionicNeuralfeedbackTga2DisabledIcon from '@entities/soldier/config/icons/psionic/neuralfeedback_tga2/neuralfeedback_tga2@4x_disabled.png';
+import psionicNeuralfeedbackTga2SelectedIcon from '@entities/soldier/config/icons/psionic/neuralfeedback_tga2/neuralfeedback_tga2@4x_selected.png';
+import psionicPsiDrainTga2DisabledIcon from '@entities/soldier/config/icons/psionic/psi_drain_tga2/psi_drain_tga2@4x_disabled.png';
+import psionicPsiDrainTga2SelectedIcon from '@entities/soldier/config/icons/psionic/psi_drain_tga2/psi_drain_tga2@4x_selected.png';
+import psionicPsiInspirationTga2DisabledIcon from '@entities/soldier/config/icons/psionic/psi_inspiration_tga2/psi_inspiration_tga2@4x_disabled.png';
+import psionicPsiInspirationTga2SelectedIcon from '@entities/soldier/config/icons/psionic/psi_inspiration_tga2/psi_inspiration_tga2@4x_selected.png';
+import psionicPsiMindfrayTga2DisabledIcon from '@entities/soldier/config/icons/psionic/psi_mindfray_tga2/psi_mindfray_tga2@4x_disabled.png';
+import psionicPsiMindfrayTga2SelectedIcon from '@entities/soldier/config/icons/psionic/psi_mindfray_tga2/psi_mindfray_tga2@4x_selected.png';
+import psionicPsiPanicTga2DisabledIcon from '@entities/soldier/config/icons/psionic/psi_panic_tga2/psi_panic_tga2@4x_disabled.png';
+import psionicPsiPanicTga2SelectedIcon from '@entities/soldier/config/icons/psionic/psi_panic_tga2/psi_panic_tga2@4x_selected.png';
+import psionicPsiTelekineticfieldTga2DisabledIcon from '@entities/soldier/config/icons/psionic/psi_telekineticfield_tga2/psi_telekineticfield_tga2@4x_disabled.png';
+import psionicPsiTelekineticfieldTga2SelectedIcon from '@entities/soldier/config/icons/psionic/psi_telekineticfield_tga2/psi_telekineticfield_tga2@4x_selected.png';
+import psionicPsimindcontrolDisabledIcon from '@entities/soldier/config/icons/psionic/psimindcontrol/psimindcontrol@4x_disabled.png';
+import psionicPsimindcontrolSelectedIcon from '@entities/soldier/config/icons/psionic/psimindcontrol/psimindcontrol@4x_selected.png';
 import type { DeepReadonly } from '@shared/lib/object';
 
 import type { AbilityIcon, AbilityId } from '../../model/abilities';
@@ -326,6 +344,15 @@ const geneModBioelectricSkinGeneModEu2012Icon: AbilityIcon = { selected: geneMod
 const geneModIronSkinGeneModEu2012Icon: AbilityIcon = { selected: geneModIronSkinGeneModEu2012SelectedIcon, available: geneModIronSkinGeneModEu2012OriginalIcon, disabled: geneModIronSkinGeneModEu2012DisabledIcon };
 const geneModMuscleFiberDensityGeneModEu2012Icon: AbilityIcon = { selected: geneModMuscleFiberDensityGeneModEu2012SelectedIcon, available: geneModMuscleFiberDensityGeneModEu2012OriginalIcon, disabled: geneModMuscleFiberDensityGeneModEu2012DisabledIcon };
 const geneModBattlefatigueIcon: AbilityIcon = { selected: geneModBattlefatigueSelectedIcon, available: geneModBattlefatigueOriginalIcon, disabled: geneModBattlefatigueDisabledIcon };
+const psionicBurnIcon: AbilityIcon = { selected: psionicBurnSelectedIcon, available: psionicBurnDisabledIcon, disabled: psionicBurnDisabledIcon };
+const psionicMindmergeTga2Icon: AbilityIcon = { selected: psionicMindmergeTga2SelectedIcon, available: psionicMindmergeTga2DisabledIcon, disabled: psionicMindmergeTga2DisabledIcon };
+const psionicNeuralfeedbackTga2Icon: AbilityIcon = { selected: psionicNeuralfeedbackTga2SelectedIcon, available: psionicNeuralfeedbackTga2DisabledIcon, disabled: psionicNeuralfeedbackTga2DisabledIcon };
+const psionicPsiDrainTga2Icon: AbilityIcon = { selected: psionicPsiDrainTga2SelectedIcon, available: psionicPsiDrainTga2DisabledIcon, disabled: psionicPsiDrainTga2DisabledIcon };
+const psionicPsiInspirationTga2Icon: AbilityIcon = { selected: psionicPsiInspirationTga2SelectedIcon, available: psionicPsiInspirationTga2DisabledIcon, disabled: psionicPsiInspirationTga2DisabledIcon };
+const psionicPsiMindfrayTga2Icon: AbilityIcon = { selected: psionicPsiMindfrayTga2SelectedIcon, available: psionicPsiMindfrayTga2DisabledIcon, disabled: psionicPsiMindfrayTga2DisabledIcon };
+const psionicPsiPanicTga2Icon: AbilityIcon = { selected: psionicPsiPanicTga2SelectedIcon, available: psionicPsiPanicTga2DisabledIcon, disabled: psionicPsiPanicTga2DisabledIcon };
+const psionicPsiTelekineticfieldTga2Icon: AbilityIcon = { selected: psionicPsiTelekineticfieldTga2SelectedIcon, available: psionicPsiTelekineticfieldTga2DisabledIcon, disabled: psionicPsiTelekineticfieldTga2DisabledIcon };
+const psionicPsimindcontrolIcon: AbilityIcon = { selected: psionicPsimindcontrolSelectedIcon, available: psionicPsimindcontrolDisabledIcon, disabled: psionicPsimindcontrolDisabledIcon };
 
 /** Icon variants by ability id. */
 export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
@@ -347,6 +374,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'collateral-damage': mecCollateralDamageIcon,
   'combat-drugs': supportCombatdrugsIcon,
   'combined-arms': fireInTheHoleIcon,
+  'countercharge': psionicNeuralfeedbackTga2Icon,
   'critical-system-targeting': adaptiveBoneMarrowGeneModEu2012Icon,
   'dampening-shield': mecAbsortionFieldsIcon,
   'dash-and-bash': assaultRungunIcon,
@@ -357,6 +385,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'enhanced-metabolism': geneModBioelectricSkinGeneModEu2012Icon,
   'executioner': sniperExecutionerIcon,
   'extra-conditioning': assaultExtraconditioningIcon,
+  'fervor': psionicMindmergeTga2Icon,
   'field-medic': supportFieldmedicIcon,
   'fire-rocket': heavyFirerocketIcon,
   'firebase': heavyMayhemIcon,
@@ -372,9 +401,11 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'hunter': alienLaunchIcon,
   'impact': sniperDggIcon,
   'in-the-zone': itzIconIcon,
+  'inner-fire': psionicBurnIcon,
   'iron-skin': geneModIronSkinGeneModEu2012Icon,
   'jetboot-module': mecJetBootModuleIcon,
   'killer-instinct': alienDeathblossomIcon,
+  'kinetic-blast': psionicPsiDrainTga2Icon,
   'kitted': supportSaviorIcon,
   'light-em-up': heavyBulletswarmIcon,
   'lock-n-load': supportDeeppocketsIcon,
@@ -384,6 +415,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'master-mechanic': alienRepairIcon,
   'mayhem': heavyMayhemIcon,
   'mechanic': sentinelModuleIconIcon,
+  'mind-fray': psionicPsiMindfrayTga2Icon,
   'muscle-amp': geneModMuscleFiberDensityGeneModEu2012Icon,
   'neural-damping': geneModNeuralDampingGeneModEu2012Icon,
   'on-the-ready': mecAdvancedFireControlIcon,
@@ -395,6 +427,9 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'pistolero': assaultClosecombatIcon,
   'precision-shot': sniperHeadshotIcon,
   'predictive-tracking': geneModDepthPerceptionGeneModEu2012Icon,
+  'psi-inspire': psionicPsiInspirationTga2Icon,
+  'psi-mastery': psionicPsimindcontrolIcon,
+  'psi-panic': psionicPsiPanicTga2Icon,
   'pyro': burnIcon,
   'raking-fire': supportSentinelIcon,
   'ram': alienBullrushIcon,
@@ -427,6 +462,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'surgical-targeting': heavyMayhemIcon,
   'sustain': mecExpandedStorageIcon,
   'tandem-warheads': alienOverloadIcon,
+  'telekinetic-field': psionicPsiTelekineticfieldTga2Icon,
   'tenacious-defense': assaultKillerinstinctIcon,
   'tinker': bombardTgaIcon,
   'vital-point-targeting': mecVitalPointTargetingIcon,

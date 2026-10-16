@@ -7,7 +7,7 @@ import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 import { tierOption } from '@shared/ui/tiered-picker';
 
-import { SHIV_PERK_ITEM_BY_ID, TECHNOLOGY_LEVEL_ITEMS } from '../config/constants';
+import { SHIV_PERK_PICKER_ITEM_BY_ID, TECHNOLOGY_LEVEL_PICKER_ITEMS } from '../config/constants';
 import type { ShivBuild } from './shiv-builds';
 
 /**
@@ -43,18 +43,18 @@ export const useShivBuildTiers = (build: MaybeRefOrGetter<Readonly<ShivBuild>>) 
         state,
         isDisabled: readonly,
         selectedId,
-        options: (TECHNOLOGY_LEVEL_ITEMS[levelIndex] ?? []).map(item => tierOption(item, state, selectedId)),
+        options: (TECHNOLOGY_LEVEL_PICKER_ITEMS[levelIndex] ?? []).map(item => tierOption(item, state, selectedId)),
       };
     });
   });
 
-  const featuredItem = computed(() => {
+  const featuredPickerItem = computed(() => {
     const perk = featuredShivPerk(TECHNOLOGY_LEVELS, toValue(build).perks);
 
     if (!perk) return null;
 
-    return SHIV_PERK_ITEM_BY_ID.get(perk.id) ?? null;
+    return SHIV_PERK_PICKER_ITEM_BY_ID.get(perk.id) ?? null;
   });
 
-  return { tiers, featuredItem };
+  return { tiers, featuredPickerItem };
 };

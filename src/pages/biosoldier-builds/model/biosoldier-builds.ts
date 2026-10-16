@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia';
 
 import type { BiosoldierBuildData, SoldierClass } from '@entities/soldier';
-import { BIOSOLDIER_CLASSES, EMPTY_GENE_MODS, selectBiosoldierBuildGeneMod, selectSoldierBuildPerk } from '@entities/soldier';
+import {
+  BIOSOLDIER_CLASSES,
+  EMPTY_GENE_MODS,
+  selectBiosoldierBuildGeneMod,
+  selectBiosoldierBuildPsionicAbility,
+  selectSoldierBuildPerk,
+} from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
 import type { StoredBuild } from '@features/share-build';
 import { decodeBiosoldierBuild, encodeBiosoldierBuild, storedBuildCodec } from '@features/share-build';
@@ -18,7 +24,7 @@ export type BiosoldierBuildId = string;
 export type BiosoldierBuild = StoredBuild<BiosoldierBuildData>;
 
 /**
- * New editable build of the class with only the base perk selected and no gene mods.
+ * New editable build of the class with only the base perk selected, no gene mods and no psionic abilities.
  *
  * @param soldierClass biosoldier class.
  * @param id build id; random by default.
@@ -29,6 +35,7 @@ const createBiosoldierBuild = (soldierClass: SoldierClass, id: BiosoldierBuildId
     soldierClass,
     perks: [soldierClass.basePerk],
     geneMods: [...EMPTY_GENE_MODS],
+    psionicAbilities: [],
     name: soldierClass.name,
     readonly: false,
   };
@@ -85,6 +92,22 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
   };
 
   /**
+   * Selects a psionic ability on the psi level of an editable build, or clears the level and all levels above.
+   *
+   * @param buildId build id.
+   * @param levelIndex psi level index.
+   * @param abilityId selected psionic ability id, or null to clear the level.
+   */
+  const selectBuildPsionicAbility = (buildId: BiosoldierBuildId, levelIndex: number, abilityId: string | null) => {
+    const build = buildList.findEditableBuild(buildId);
+
+    if (!build) return;
+
+    selectBiosoldierBuildPsionicAbility(build, levelIndex, abilityId);
+    buildList.markBuildChanged(buildId);
+  };
+
+  /**
    * Adds a new build of the class with only the base perk selected.
    *
    * @param soldierClass biosoldier class of the new build.
@@ -95,6 +118,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
     builds: buildList.builds,
     selectBuildPerk,
     selectBuildGeneMod,
+    selectBuildPsionicAbility,
     setName: buildList.setName,
     setReadonly: buildList.setReadonly,
     addBuild,

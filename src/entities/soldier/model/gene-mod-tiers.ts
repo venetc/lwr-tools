@@ -2,18 +2,18 @@ import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
 import type { DeepReadonly } from '@shared/lib/object';
-import type { TieredPickerAppearance, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
+import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
-import { BODY_PART_ITEMS } from '../config/constants/body-part-items';
-import { BODY_PARTS } from '../config/constants/body-parts';
+import { BODY_PART_PICKER_ITEMS } from '../config/constants/body-part-picker-items';
+import { BODY_PARTS, NEURAL_DAMPING_ID, PSIONIC_BLOCK_NOTE } from '../config/constants/body-parts';
 import type { BodyPart } from './body-parts';
 import { bodyPartState } from './body-parts';
 import type { BiosoldierBuildData } from './build';
 
 /**
- * Biosoldier build shown in the gene mods: its gene mods with its lock.
+ * Biosoldier build shown in the gene mods: its gene mods and psionic abilities with its lock.
  */
-export type GeneModTreeBuild = Readonly<Pick<BiosoldierBuildData, 'geneMods'> & { readonly: boolean }>;
+export type GeneModTreeBuild = Readonly<Pick<BiosoldierBuildData, 'geneMods' | 'psionicAbilities'> & { readonly: boolean }>;
 
 /**
  * Picker tier of a body part.
@@ -38,18 +38,42 @@ const geneModAppearance = (geneModId: string, selectedId: string | null, isReado
 };
 
 /**
+ * Option of a gene mod: Neural Damping is blocked and noted while any psionic ability is selected; otherwise the look
+ * of `geneModAppearance`.
+ *
+ * @param item picker item of the gene mod.
+ * @param selectedId id of the gene mod of the body part, or null.
+ * @param isReadonly whether the build is readonly.
+ * @param hasPsionicAbilities whether the build has any psionic ability.
+ */
+const geneModOption = (
+  item: TieredPickerItem,
+  selectedId: string | null,
+  isReadonly: boolean,
+  hasPsionicAbilities: boolean,
+): TieredPickerOption => {
+  if (item.id === NEURAL_DAMPING_ID && hasPsionicAbilities) {
+    return { item, appearance: 'disabled', isDisabled: true, note: PSIONIC_BLOCK_NOTE };
+  }
+
+  return { item, appearance: geneModAppearance(item.id, selectedId, isReadonly), isDisabled: false, note: null };
+};
+
+/**
  * Gene mods of the build as picker tiers by body part, and the item described while the user inspects none:
  * the gene mod of the last body part with one, otherwise the first gene mod of the first body part.
  *
  * @description Body parts are independent: an empty one is open for selection, one with a gene mod is completed.
- * A readonly build makes every body part unclickable and locks empty ones. Picker items come from constants;
+ * A readonly build makes every body part unclickable and locks empty ones. Neural Damping is blocked with a note
+ * while any psionic ability is selected. Picker items come from constants;
  * a selection only rebuilds the options.
  *
  * @param build biosoldier build with its lock.
  */
 export const useGeneModTiers = (build: MaybeRefOrGetter<GeneModTreeBuild>) => {
   const tiers = computed(() => {
-    const { geneMods, readonly } = toValue(build);
+    const { geneMods, psionicAbilities, readonly } = toValue(build);
+    const hasPsionicAbilities = psionicAbilities.length > 0;
 
     return BODY_PARTS.map((bodyPart, bodyPartIndex): BodyPartTier => {
       const selectedId = geneMods[bodyPartIndex] ?? null;
@@ -61,23 +85,18 @@ export const useGeneModTiers = (build: MaybeRefOrGetter<GeneModTreeBuild>) => {
         state: bodyPartState(selectedId, readonly),
         isDisabled: readonly,
         selectedId,
-        options: (BODY_PART_ITEMS[bodyPartIndex] ?? []).map((item): TieredPickerOption => ({
-          item,
-          appearance: geneModAppearance(item.id, selectedId, readonly),
-          isDisabled: false,
-          note: null,
-        })),
+        options: (BODY_PART_PICKER_ITEMS[bodyPartIndex] ?? []).map(item => geneModOption(item, selectedId, readonly, hasPsionicAbilities)),
       };
     });
   });
 
-  const featuredItem = computed(() => {
+  const featuredPickerItem = computed(() => {
     const { geneMods } = toValue(build);
     const bodyPartIndex = geneMods.reduce((lastIndex, geneModId, index) => (geneModId === null ? lastIndex : index), -1);
-    const selectedItem = BODY_PART_ITEMS[bodyPartIndex]?.find(item => item.id === geneMods[bodyPartIndex]) ?? null;
+    const selectedPickerItem = BODY_PART_PICKER_ITEMS[bodyPartIndex]?.find(item => item.id === geneMods[bodyPartIndex]) ?? null;
 
-    return selectedItem ?? BODY_PART_ITEMS[0]?.[0] ?? null;
+    return selectedPickerItem ?? BODY_PART_PICKER_ITEMS[0]?.[0] ?? null;
   });
 
-  return { tiers, featuredItem };
+  return { tiers, featuredPickerItem };
 };

@@ -1,16 +1,8 @@
 import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
-import type { AbilityIcon, AbilityId } from './abilities';
-import { abilityById } from './abilities';
+import type { TreeAbility } from './abilities';
+import { treeAbility } from './abilities';
 import type { SoldierClass } from './classes';
 import type { SoldierRank } from './ranks';
-
-export interface TreeAbility {
-  id: string
-  name: string
-  description: string
-  icon: AbilityIcon
-  grants: TreeAbility[]
-}
 
 export interface ClassTreeRank extends SoldierRank {
   /** Perks to choose from on the rank. */
@@ -30,24 +22,6 @@ export interface ClassTree {
 export type SelectedPerks = TreeAbility['id'][];
 
 /**
- * Rank state in the build: completed, available for selection, or locked.
- */
-export type RankState = 'completed' | 'available' | 'locked';
-
-/**
- * Rank state in the build: completed, available for selection, or locked.
- *
- * @param perks selected perks by rank.
- * @param rankIndex rank index in the tree.
- * @param readonly readonly build: no rank is available for selection.
- */
-export const rankState = (perks: SelectedPerks, rankIndex: number, readonly: boolean): RankState => {
-  if (rankIndex < perks.length) return 'completed';
-  if (rankIndex === perks.length && !readonly) return 'available';
-  return 'locked';
-};
-
-/**
  * Perk to show when the user inspects none: the one selected on the last completed rank,
  * otherwise the first perk of the first rank; null for an empty tree.
  *
@@ -60,28 +34,6 @@ export const featuredPerk = (tree: ClassTree, perks: SelectedPerks): TreeAbility
   const lastSelectedPerk = lastRankPerks.find(perk => perk.id === perks[lastRankIndex]) ?? null;
 
   return lastSelectedPerk ?? tree.ranks[0]?.perks[0] ?? null;
-};
-
-/**
- * Tree ability built from an ability, together with the abilities it grants; a grant back into the chain is skipped.
- *
- * @param abilityId ability id.
- * @param grantChain ids of the abilities that granted this one; restored after the call.
- */
-export const treeAbility = (abilityId: AbilityId, grantChain = new Set<AbilityId>()): TreeAbility => {
-  const ability = abilityById(abilityId);
-
-  grantChain.add(abilityId);
-
-  const grants = ability.grants.reduce<TreeAbility[]>((abilities, grantedId) => {
-    if (!grantChain.has(grantedId)) abilities.push(treeAbility(grantedId, grantChain));
-
-    return abilities;
-  }, []);
-
-  grantChain.delete(abilityId);
-
-  return { ...ability, grants };
 };
 
 /**

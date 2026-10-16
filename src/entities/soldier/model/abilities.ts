@@ -27,6 +27,14 @@ export interface AbilityContent {
   grants?: readonly string[]
 }
 
+export interface TreeAbility {
+  id: string
+  name: string
+  description: string
+  icon: AbilityIcon
+  grants: TreeAbility[]
+}
+
 export interface Ability {
   id: AbilityId
   code: number
@@ -59,4 +67,26 @@ export const abilityById = (id: AbilityId): Ability => {
     icon: ABILITY_ICON[id],
     grants: (content.grants ?? []).filter(isAbilityId),
   };
+};
+
+/**
+ * Tree ability built from an ability, together with the abilities it grants; a grant back into the chain is skipped.
+ *
+ * @param abilityId ability id.
+ * @param grantChain ids of the abilities that granted this one; restored after the call.
+ */
+export const treeAbility = (abilityId: AbilityId, grantChain = new Set<AbilityId>()): TreeAbility => {
+  const ability = abilityById(abilityId);
+
+  grantChain.add(abilityId);
+
+  const grants = ability.grants.reduce<TreeAbility[]>((abilities, grantedId) => {
+    if (!grantChain.has(grantedId)) abilities.push(treeAbility(grantedId, grantChain));
+
+    return abilities;
+  }, []);
+
+  grantChain.delete(abilityId);
+
+  return { ...ability, grants };
 };

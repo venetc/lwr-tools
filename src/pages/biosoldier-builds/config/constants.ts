@@ -20,4 +20,5 @@ export const DEFAULT_BUILD_ID_PREFIX = 'default-';
 export const BRANCH_TITLE = {
   'class-tree': 'Class tree',
   'gene-mods': 'Gene mods',
+  'psionic': 'Psionic',
 } as const;

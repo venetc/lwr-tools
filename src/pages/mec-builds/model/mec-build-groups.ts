@@ -17,13 +17,13 @@ import { useMecBuildsStore } from './mec-builds';
 export const useMecBuildGroups = (build: MaybeRefOrGetter<Readonly<MecBuild>>) => {
   const mecBuildsStore = useMecBuildsStore();
 
-  const { tree, tiers, featuredItem } = useClassTreeTiers(build);
+  const { tree, tiers, featuredPickerItem } = useClassTreeTiers(build);
 
   const groups = computed((): TieredPickerGroup<ClassTreeRankTier>[] => [{
     id: CLASS_TREE_GROUP_ID,
     name: tree.value.name,
     tiers: tiers.value,
-    defaultItem: featuredItem.value,
+    defaultItem: featuredPickerItem.value,
   }]);
 
   /**

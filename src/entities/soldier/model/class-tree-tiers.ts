@@ -4,10 +4,11 @@ import { computed, toValue } from 'vue';
 import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 import { tierOption } from '@shared/ui/tiered-picker';
 
-import { treeAbilityItem } from './ability-item';
+import { treeAbilityPickerItem } from './ability-picker-item';
 import type { SoldierBuildData } from './build';
 import type { ClassTreeRank } from './class-tree';
-import { classTree, featuredPerk, rankState } from './class-tree';
+import { classTree, featuredPerk } from './class-tree';
+import { rankState } from './ranks';
 
 /**
  * Soldier build shown in a class tree: build data with its lock.
@@ -35,9 +36,9 @@ export interface ClassTreeRankTier extends TieredPickerTier {
 export const useClassTreeTiers = (build: MaybeRefOrGetter<ClassTreeBuild>) => {
   const tree = computed(() => classTree(toValue(build).soldierClass));
 
-  const rankItems = computed(() => tree.value.ranks.map(rank => rank.perks.map(treeAbilityItem)));
+  const rankPickerItems = computed(() => tree.value.ranks.map(rank => rank.perks.map(treeAbilityPickerItem)));
 
-  const itemById = computed(() => new Map(rankItems.value.flat().map(item => [item.id, item])));
+  const pickerItemById = computed(() => new Map(rankPickerItems.value.flat().map(item => [item.id, item])));
 
   const tiers = computed(() => {
     const { perks, readonly } = toValue(build);
@@ -53,18 +54,18 @@ export const useClassTreeTiers = (build: MaybeRefOrGetter<ClassTreeBuild>) => {
         state,
         isDisabled: readonly || rankIndex === 0 || state === 'locked',
         selectedId,
-        options: (rankItems.value[rankIndex] ?? []).map(item => tierOption(item, state, selectedId)),
+        options: (rankPickerItems.value[rankIndex] ?? []).map(item => tierOption(item, state, selectedId)),
       };
     });
   });
 
-  const featuredItem = computed(() => {
+  const featuredPickerItem = computed(() => {
     const perk = featuredPerk(tree.value, toValue(build).perks);
 
     if (!perk) return null;
 
-    return itemById.value.get(perk.id) ?? null;
+    return pickerItemById.value.get(perk.id) ?? null;
   });
 
-  return { tree, tiers, featuredItem };
+  return { tree, tiers, featuredPickerItem };
 };

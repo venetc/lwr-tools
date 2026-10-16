@@ -1,8 +1,8 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { BodyPartTier, ClassTreeRankTier } from '@entities/soldier';
-import { useClassTreeTiers, useGeneModTiers } from '@entities/soldier';
+import type { BodyPartTier, ClassTreeRankTier, PsiLevelTier } from '@entities/soldier';
+import { useClassTreeTiers, useGeneModTiers, usePsionicTiers } from '@entities/soldier';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
 
@@ -11,14 +11,14 @@ import type { BiosoldierBuild } from './biosoldier-builds';
 import { useBiosoldierBuildsStore } from './biosoldier-builds';
 
 /**
- * Branch of a biosoldier build: the class tree or the gene mods.
+ * Branch of a biosoldier build: the class tree, the gene mods or the psionic abilities.
  */
 export type BiosoldierBranch = keyof typeof BRANCH_TITLE;
 
 /**
- * Tier of a biosoldier build panel: a rank of the class tree or a body part.
+ * Tier of a biosoldier build panel: a rank of the class tree, a body part or a psi level.
  */
-export type BiosoldierBuildTier = ClassTreeRankTier | BodyPartTier;
+export type BiosoldierBuildTier = ClassTreeRankTier | BodyPartTier | PsiLevelTier;
 
 /**
  * Tier group of a biosoldier build panel: one branch with its tab title and counter.
@@ -58,7 +58,8 @@ const branchGroup = (
 });
 
 /**
- * Tier groups of a biosoldier build panel: the class tree and the gene mods, and the selection in them through the store.
+ * Tier groups of a biosoldier build panel: the class tree, the gene mods and the psionic abilities, and the selection
+ * in them through the store.
  *
  * @param build biosoldier build.
  */
@@ -69,22 +70,26 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
 
   const geneMods = useGeneModTiers(build);
 
+  const psionic = usePsionicTiers(build);
+
   const groups = computed((): BiosoldierBuildGroup[] => {
-    const { perks, geneMods: selectedGeneMods } = toValue(build);
+    const { perks, geneMods: selectedGeneMods, psionicAbilities } = toValue(build);
 
     return [
-      branchGroup('class-tree', classTree.tiers.value, perks.length, classTree.featuredItem.value),
+      branchGroup('class-tree', classTree.tiers.value, perks.length, classTree.featuredPickerItem.value),
       branchGroup(
         'gene-mods',
         geneMods.tiers.value,
         selectedGeneMods.filter(geneModId => geneModId !== null).length,
-        geneMods.featuredItem.value,
+        geneMods.featuredPickerItem.value,
       ),
+      branchGroup('psionic', psionic.tiers.value, psionicAbilities.length, psionic.featuredPickerItem.value),
     ];
   });
 
   /**
-   * Selects an ability on a tier of the branch, or clears the tier: a perk on a rank or a gene mod of a body part.
+   * Selects an ability on a tier of the branch, or clears the tier: a perk on a rank, a gene mod of a body part
+   * or a psionic ability on a psi level.
    *
    * @param branch branch of the tier.
    * @param tierIndex tier index in the branch.
@@ -98,6 +103,11 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
       return;
     }
 
+    if (branch === 'psionic') {
+      biosoldierBuildsStore.selectBuildPsionicAbility(buildId, tierIndex, abilityId);
+      return;
+    }
+
     biosoldierBuildsStore.selectBuildPerk(buildId, tierIndex, abilityId);
   };
 
@@ -105,7 +115,7 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
 };
 
 /**
- * Icon of a tier label: the rank icon for the class tree, none for a body part.
+ * Icon of a tier label: the rank icon for the class tree, none for a body part or a psi level.
  *
  * @param tier tier of a biosoldier build panel.
  */

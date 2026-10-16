@@ -6,6 +6,7 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
+      include: ['src/tests/unit/**/*.test.ts'],
       fsModuleCache: true,
       reporters: ['tree'],
     },

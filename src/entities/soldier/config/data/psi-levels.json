@@ -1,0 +1,22 @@
+{
+  "awakened": {
+    "name": "Awakened",
+    "abilities": ["countercharge", "mind-fray"]
+  },
+  "adept": {
+    "name": "Adept",
+    "abilities": ["psi-panic", "kinetic-blast", "psi-inspire"]
+  },
+  "empath": {
+    "name": "Empath",
+    "abilities": ["fervor"]
+  },
+  "psion": {
+    "name": "Psion",
+    "abilities": ["inner-fire", "telekinetic-field"]
+  },
+  "master": {
+    "name": "Master",
+    "abilities": ["psi-mastery"]
+  }
+}

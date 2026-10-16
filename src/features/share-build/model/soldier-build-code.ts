@@ -219,7 +219,10 @@ const readGeneMods = (reader: BitReader): SelectedGeneMods | null => {
   return geneMods;
 };
 
-/** Biosoldier format: the soldier build with its gene mods in the `GENE_MODS` section, written only when it has some. */
+/**
+ * Biosoldier format: the soldier build with its gene mods in the `GENE_MODS` section, written only when it has some.
+ * Psionic abilities are not encoded yet and decode as none.
+ */
 const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, BiosoldierBuildPart> = {
   parts: BIOSOLDIER_BUILD_PARTS,
   write: writeGeneMods,
@@ -229,7 +232,7 @@ const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, Bio
 
     if (!geneMods) return null;
 
-    return { ...build, geneMods };
+    return { ...build, geneMods, psionicAbilities: [] };
   },
 };
 

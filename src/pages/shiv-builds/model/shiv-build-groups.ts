@@ -18,13 +18,13 @@ import { useShivBuildsStore } from './shiv-builds';
 export const useShivBuildGroups = (build: MaybeRefOrGetter<Readonly<ShivBuild>>) => {
   const shivBuildsStore = useShivBuildsStore();
 
-  const { tiers, featuredItem } = useShivBuildTiers(build);
+  const { tiers, featuredPickerItem } = useShivBuildTiers(build);
 
   const groups = computed((): TieredPickerGroup<TechnologyLevelTier>[] => [{
     id: SHIV_TREE_GROUP_ID,
     name: SHIV_BUILD_NAME,
     tiers: tiers.value,
-    defaultItem: featuredItem.value,
+    defaultItem: featuredPickerItem.value,
   }]);
 
   /**

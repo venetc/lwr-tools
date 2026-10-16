@@ -29,6 +29,7 @@ const { tree, groups, select } = useBiosoldierBuildGroups(() => props.build);
 const branchClasses: Record<BiosoldierBranch, { counter: string | undefined, name: string | undefined }> = {
   'class-tree': { counter: style.counterClassTree, name: undefined },
   'gene-mods': { counter: style.counterGeneMods, name: style.geneModName },
+  'psionic': { counter: style.counterPsionic, name: style.psionicName },
 };
 
 /**
@@ -117,11 +118,19 @@ const getBranchClasses = (group: BiosoldierBuildGroup) => ({
   color: branches.$gene-mod-text;
 }
 
+.counterPsionic {
+  color: branches.$psionic-text;
+}
+
 .counterEmpty {
   color: colors.$text-disabled;
 }
 
 .geneModName {
   color: branches.$gene-mod-text;
+}
+
+.psionicName {
+  color: branches.$psionic-text;
 }
 </style>

@@ -1,4 +1,4 @@
-import type { BiosoldierBuildData, SelectedGeneMods, SoldierBuildData, SoldierClass } from '@entities/soldier';
+import type { BiosoldierBuildData, SelectedGeneMods, SelectedPsionicAbilities, SoldierBuildData, SoldierClass } from '@entities/soldier';
 import {
   ABILITY_ID_BY_CODE,
   abilityById,
@@ -7,6 +7,8 @@ import {
   EMPTY_GENE_MODS,
   isAbilityId,
   MEC_CLASS_BY_CODE,
+  NEURAL_DAMPING_ID,
+  PSI_LEVELS,
   SOLDIER_RANKS,
 } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
@@ -21,6 +23,7 @@ import {
   INVALID_SHARE_CODE,
   NAME_LENGTH_BITS,
   PERK_COUNT_BITS,
+  PSIONIC_ABILITY_COUNT_BITS,
   SHARE_CODE_FORMAT,
   SOLDIER_BUILD_PARTS,
   SOLDIER_BUILD_SECTION,
@@ -36,7 +39,7 @@ export type SoldierBuildPart = 'name';
 /**
  * Optional part of a biosoldier build code that decoding can skip.
  */
-export type BiosoldierBuildPart = SoldierBuildPart | 'geneMods';
+export type BiosoldierBuildPart = SoldierBuildPart | 'geneMods' | 'psionicAbilities';
 
 /**
  * Parts a soldier format carries beyond the class, perks and name: their sections and how they are read.
@@ -220,23 +223,89 @@ const readGeneMods = (reader: BitReader): SelectedGeneMods | null => {
 };
 
 /**
- * Biosoldier format: the soldier build with its gene mods in the `GENE_MODS` section, written only when it has some.
- * Psionic abilities are not encoded yet and decode as none.
+ * Whether each psionic ability is offered on its psi level, from Awakened, with no more abilities than psi levels.
+ *
+ * @param psionicAbilities psionic abilities by psi level.
+ */
+const isOnItsPsiLevels = (psionicAbilities: SelectedPsionicAbilities): boolean => (
+  psionicAbilities.length <= PSI_LEVELS.length
+  && psionicAbilities.every((abilityId, levelIndex) => PSI_LEVELS[levelIndex].abilities.includes(abilityId))
+);
+
+/**
+ * `PSIONIC` section of the psionic abilities, by psi level; an empty list without psionic abilities; null if an ability
+ * is not offered on its psi level, abilities outnumber the psi levels, or the build also has Neural Damping.
+ *
+ * @param build biosoldier build.
+ */
+const writePsionicAbilities = (build: BiosoldierBuildData): BinaryCodeSection[] | null => {
+  if (build.psionicAbilities.length === 0) return [];
+
+  if (!isOnItsPsiLevels(build.psionicAbilities)) return null;
+
+  if (build.geneMods.includes(NEURAL_DAMPING_ID)) return null;
+
+  return [{
+    id: SOLDIER_BUILD_SECTION.PSIONIC,
+    write: (writer) => {
+      writer.writeUint(build.psionicAbilities.length, PSIONIC_ABILITY_COUNT_BITS);
+      build.psionicAbilities.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
+    },
+  }];
+};
+
+/**
+ * Psionic abilities of the `PSIONIC` section by psi level; null if an ability is not offered on its psi level,
+ * abilities outnumber the psi levels, or the section is not read exactly to its end.
+ *
+ * @param reader section reader.
+ */
+const readPsionicAbilities = (reader: BitReader): SelectedPsionicAbilities | null => {
+  const abilityCount = reader.readUint(PSIONIC_ABILITY_COUNT_BITS);
+  const abilityIds = Array.from({ length: abilityCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null);
+  const psionicAbilities = abilityIds.filter(abilityId => abilityId !== null);
+
+  if (!reader.isComplete) return null;
+
+  if (psionicAbilities.length !== abilityCount) return null;
+
+  if (!isOnItsPsiLevels(psionicAbilities)) return null;
+
+  return psionicAbilities;
+};
+
+/**
+ * Biosoldier format: the soldier build with its gene mods in the `GENE_MODS` section and its psionic abilities in the
+ * `PSIONIC` section, each written only when the build has some.
  */
 const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, BiosoldierBuildPart> = {
   parts: BIOSOLDIER_BUILD_PARTS,
-  write: writeGeneMods,
+  write: (build) => {
+    const geneModSections = writeGeneMods(build);
+    const psionicSections = writePsionicAbilities(build);
+
+    if (!geneModSections || !psionicSections) return null;
+
+    return [...geneModSections, ...psionicSections];
+  },
   read: (build, sections, parts) => {
     const geneModsReader = parts.includes('geneMods') ? sections.get(SOLDIER_BUILD_SECTION.GENE_MODS) ?? null : null;
     const geneMods = geneModsReader ? readGeneMods(geneModsReader) : [...EMPTY_GENE_MODS];
 
     if (!geneMods) return null;
 
-    return { ...build, geneMods, psionicAbilities: [] };
+    const psionicReader = parts.includes('psionicAbilities') ? sections.get(SOLDIER_BUILD_SECTION.PSIONIC) ?? null : null;
+    const psionicAbilities = psionicReader ? readPsionicAbilities(psionicReader) : [];
+
+    if (!psionicAbilities) return null;
+
+    if (geneMods.includes(NEURAL_DAMPING_ID) && psionicAbilities.length > 0) return null;
+
+    return { ...build, geneMods, psionicAbilities };
   },
 };
 
-/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1, the biosoldier classes and gene mods. */
+/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1, the biosoldier classes, gene mods and psionic abilities. */
 export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = soldierBuildCodec(
   SHARE_CODE_FORMAT.BIOSOLDIER_BUILD,
   BIOSOLDIER_CLASS_BY_CODE,

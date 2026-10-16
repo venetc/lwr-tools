@@ -9,6 +9,7 @@ import type { BiosoldierBranch, BiosoldierBuildGroup } from '../model/biosoldier
 import { tierIcon, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
+import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
 
 interface Props {
   /** Biosoldier build to render and edit. */
@@ -58,11 +59,7 @@ const getBranchClasses = (group: BiosoldierBuildGroup) => ({
     @select="select"
   >
     <template #icon>
-      <component
-        :is="props.build.soldierClass.icon"
-        :class="$style.classIcon"
-        aria-hidden="true"
-      />
+      <BiosoldierClassIcon :build="props.build" :class="$style.classIcon" />
     </template>
 
     <template #tab="{ group }">
@@ -95,7 +92,6 @@ const getBranchClasses = (group: BiosoldierBuildGroup) => ({
   flex: none;
   width: 34px;
   height: 34px;
-  color: colors.$accent;
 }
 
 .tabLabel {

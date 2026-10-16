@@ -28,6 +28,11 @@ export interface BiosoldierBuildData extends SoldierBuildData {
 }
 
 /**
+ * Branches a biosoldier build has beyond the class tree: none, gene mods, psionic abilities or both.
+ */
+export type BiosoldierBranchSet = 'plain' | 'gene-mods' | 'psionic' | 'both';
+
+/**
  * Selects a perk on the rank of the build, keeping higher ranks; clearing a rank clears all higher ranks too.
  * Leaves ranks after the available one and the first rank, which holds the base perk, untouched.
  *
@@ -101,4 +106,20 @@ export const selectBiosoldierBuildPsionicAbility = (build: BiosoldierBuildData, 
   if (!ability) return;
 
   build.psionicAbilities[levelIndex] = ability;
+};
+
+/**
+ * Branches of the biosoldier build: any gene mod counts as gene mods, Neural Damping included; any psionic ability as
+ * psionic.
+ *
+ * @param build biosoldier build.
+ */
+export const biosoldierBuildBranchSet = (build: BiosoldierBuildData): BiosoldierBranchSet => {
+  const hasGeneMods = build.geneMods.some(geneModId => geneModId !== null);
+  const hasPsionicAbilities = build.psionicAbilities.length > 0;
+
+  if (hasGeneMods && hasPsionicAbilities) return 'both';
+  if (hasGeneMods) return 'gene-mods';
+  if (hasPsionicAbilities) return 'psionic';
+  return 'plain';
 };

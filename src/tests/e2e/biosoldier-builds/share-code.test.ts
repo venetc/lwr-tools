@@ -8,6 +8,7 @@ import {
   BROKEN_CODE,
   COPIED_LABEL,
   COPY_LABEL,
+  COUNTERCHARGE,
   EXPORT_LABEL,
   EXPORTED_NAME,
   GENE_MODS_TAB,
@@ -18,6 +19,8 @@ import {
   NOTIFICATIONS,
   PAGE_PATH,
   PANEL_NAME,
+  PSIONIC_TAB,
+  PSIONIC_TAB_WITH_ONE,
   RENAME_LABEL,
   REPLACE_LABEL,
   SHIV_CODE_TITLE,
@@ -40,7 +43,7 @@ const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
 const classPanels = (page: Page) => page.getByRole('region', { name: PANEL_NAME });
 
 /**
- * Selects a perk and a gene mod in the tested build, renames it and returns its Share code.
+ * Selects a perk, a gene mod and a psionic ability in the tested build, renames it and returns its Share code.
  *
  * @param page browser page.
  */
@@ -48,6 +51,7 @@ const exportFilledBuild = async (page: Page) => {
   const panel = await openPanel(page);
   await abilityCell(panel, MAGNUM).click();
   await selectAbility(panel, GENE_MODS_TAB, IRON_SKIN);
+  await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
   await panel.getByRole('textbox', { name: RENAME_LABEL }).fill(EXPORTED_NAME);
   await panel.getByRole('textbox', { name: RENAME_LABEL }).press('Enter');
 
@@ -69,6 +73,14 @@ test.describe('Build imported from its Share code', () => {
     await importCode(page, toolbarImport(page), code);
 
     await expect(classPanels(page).last().getByRole('tab', { name: GENE_MODS_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('has the psionic abilities', async ({ page }) => {
+    const code = await exportFilledBuild(page);
+
+    await importCode(page, toolbarImport(page), code);
+
+    await expect(classPanels(page).last().getByRole('tab', { name: PSIONIC_TAB_WITH_ONE })).toBeVisible();
   });
 
   test('has the name', async ({ page }) => {

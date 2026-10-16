@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 
 import { abilityCell, openBuildPanel, selectAbility } from '../utils/build-panel';
 import {
+  COUNTERCHARGE,
   GENE_MODS_TAB,
   GENE_MODS_TAB_WITH_ONE,
   IRON_SKIN,
@@ -11,6 +12,8 @@ import {
   NEW_NAME,
   PAGE_PATH,
   PANEL_NAME,
+  PSIONIC_TAB,
+  PSIONIC_TAB_WITH_ONE,
   RENAME_LABEL,
 } from './persistence.mock';
 
@@ -38,6 +41,15 @@ test.describe('Biosoldier build after a reload', () => {
     const reopened = await openPanel(page);
 
     await expect(reopened.getByRole('tab', { name: GENE_MODS_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('keeps a selected psionic ability', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
+
+    const reopened = await openPanel(page);
+
+    await expect(reopened.getByRole('tab', { name: PSIONIC_TAB_WITH_ONE })).toBeVisible();
   });
 
   test('keeps the name', async ({ page }) => {
@@ -77,6 +89,15 @@ test.describe('Biosoldier build in two browser tabs', () => {
     await selectAbility(panel, GENE_MODS_TAB, IRON_SKIN);
 
     await expect(otherPanel.getByRole('tab', { name: GENE_MODS_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('shows a psionic ability selected in one tab in the other', async ({ page }) => {
+    const panel = await openPanel(page);
+    const otherPanel = await openPanel(await page.context().newPage());
+
+    await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
+
+    await expect(otherPanel.getByRole('tab', { name: PSIONIC_TAB_WITH_ONE })).toBeVisible();
   });
 });
 

@@ -18,18 +18,18 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - Секции идут по возрастанию id, каждая не больше одного раза; `0` завершает список.
 - Неизвестные секции пропускаются по длине.
 - Прочитанная секция должна закончиться ровно на своей длине, иначе код невалиден; пропущенные секции не проверяются.
-- `decodeBiosoldierBuild(code, parts)` (части `'name' | 'geneMods'`) и `decodeMecBuild(code, parts)` (часть `'name'`) читают только запрошенные части, остальные получают значения по умолчанию.
+- `decodeBiosoldierBuild(code, parts)` (части `'name' | 'geneMods' | 'psionicAbilities'`) и `decodeMecBuild(code, parts)` (часть `'name'`) читают только запрошенные части, остальные получают значения по умолчанию.
 
 ## Результат декодирования
 
 Декодер возвращает `{ status: 'decoded', build }` или причину неудачи:
 
 - `{ status: 'other-unit', unit }` — CRC и заголовок валидны, но `format` принадлежит билдам другого юнита (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). Импорт показывает toast «This is a <unit> build code» и оставляет форму открытой с кодом.
-- `{ status: 'invalid' }` — всё остальное: битый код, неизвестный формат, отсутствующая или битая секция, класс другого формата, перк не из своего ранга дерева класса; в `GENE_MODS` — абилка, которая не Gene mod, два Gene mod одной Body part или Body part не по порядку. Импорт показывает «Invalid code» под полем.
+- `{ status: 'invalid' }` — всё остальное: битый код, неизвестный формат, отсутствующая или битая секция, класс другого формата, перк не из своего ранга дерева класса; в `GENE_MODS` — абилка, которая не Gene mod, два Gene mod одной Body part или Body part не по порядку; в `PSIONIC` — абилка не со своего Psi level или абилок больше, чем Psi level; Neural Damping вместе с непустой `PSIONIC`. Neural Damping против пси проверяется, только если запрошены и `geneMods`, и `psionicAbilities`. Импорт показывает «Invalid code» под полем.
 
 Сохранённый билд, чей код не декодируется, при загрузке пропускается.
 
-Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (поля и части билда; `soldierBuildCodec` собирает кодер и декодер формата солдат по его классам по коду и расширению — частям сверх `PERKS` и `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` — его пара для формата 1 с расширением Gene mods, `encodeMecBuild` / `decodeMecBuild` — пара для формата 3 без расширения), `model/stored-build.ts` (записи хранилища поверх share-кода). Поиск по `code` (абилки, классы каждого формата солдат, перки SHIV) дают `entities/soldier` и `entities/shiv`. Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
+Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (поля и части билда; `soldierBuildCodec` собирает кодер и декодер формата солдат по его классам по коду и расширению — частям сверх `PERKS` и `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` — его пара для формата 1 с расширением Gene mods и Psionic abilities, `encodeMecBuild` / `decodeMecBuild` — пара для формата 3 без расширения), `model/stored-build.ts` (записи хранилища поверх share-кода). Поиск по `code` (абилки, классы каждого формата солдат, перки SHIV) дают `entities/soldier` и `entities/shiv`. Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 
@@ -38,10 +38,15 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 | `PERKS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | всегда |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | если имя отличается от названия класса |
 | `GENE_MODS` | 3 | `count` 3 · `ability` 8 × count | только у биосолдат, если у билда есть Gene mods |
+| `PSIONIC` | 4 | `count` 3 · `ability` 8 × count | только у биосолдат, если у билда есть Psionic abilities |
 
 В `PERKS` `count` — число перков, выбранных сверх базового; абилки идут по рангам снизу вверх. Базовый перк при импорте берётся из текущего дерева.
 
-В `GENE_MODS` Gene mods идут по Body part от Brain к Legs; Body part каждого Gene mod берётся из данных, позиции не хранятся. Коды MEC эту секцию не пишут, декодер MEC пропускает её как неизвестную.
+В `GENE_MODS` Gene mods идут по Body part от Brain к Legs; Body part каждого Gene mod берётся из данных, позиции не хранятся.
+
+В `PSIONIC` Psionic abilities идут по Psi level от Awakened к Master, без пропусков; уровень абилки — её позиция.
+
+Коды MEC не пишут `GENE_MODS` и `PSIONIC`, декодер MEC пропускает их как неизвестные.
 
 ## Нумерация
 
@@ -63,7 +68,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 ## Безопасные правки
 
-Добавлять абилки в деревья; переставлять абилки внутри ранга; менять названия, описания, иконки; переименовывать id (с прежним `code`); добавлять классы; менять местами два Gene mod одной Body part; переименовывать Body part.
+Добавлять абилки в деревья; переставлять абилки внутри ранга; менять названия, описания, иконки; переименовывать id (с прежним `code`); добавлять классы; менять местами два Gene mod одной Body part; переименовывать Body part; переставлять Psionic abilities внутри Psi level; переименовывать Psi level.
 
 ## Ломающие правки
 
@@ -73,6 +78,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 | удалить запись | «Invalid code» |
 | перенести абилку на другой ранг, убрать из дерева или заменить другой | коды, где она выбрана: «Invalid code» |
 | переставить Body part, перенести Gene mod в другую Body part или удалить его | коды с ним: «Invalid code» или Gene mod не в той Body part |
+| переставить Psi level, перенести Psionic ability на другой Psi level или удалить её | коды с ней: «Invalid code» |
 | изменить поля секции или их ширины | «Invalid code» или неверные данные |
 | изменить разметку секций, CRC или base64url | недействительны все коды |
 
@@ -84,9 +90,9 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Чтение старых секций остаётся навсегда. Сама разметка секций меняется только новым номером в `SHARE_CODE_FORMAT`.
 
-Пример: в `PERKS` добавляется поле, максимальный id секции — 3.
+Пример: в `PERKS` добавляется поле, максимальный id секции — 4.
 
-1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 4`.
+1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 5`.
 2. `soldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` удалить.
 3. Новые `writePerks` / `readPerks`; `encode` из `soldierBuildCodec` пишет `PERKS_V2`.
 4. `decode` из `soldierBuildCodec`: `PERKS` → `readPerksV1` с новым полем по умолчанию, `PERKS_V2` → `readPerks`.
@@ -97,9 +103,9 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 2. Написать запись и чтение в `soldier-build-code.ts`. Часть любого солдата идёт в `encode` / `decode` из `soldierBuildCodec`, часть одного формата — в его расширение (`BIOSOLDIER_BUILD_EXTENSION` у биосолдат): `write` отдаёт секцию, только если у билда есть эта часть, `read` её читает.
 3. Добавить часть в `SoldierBuildPart` или `BiosoldierBuildPart` и в части по умолчанию; секция читается, только если часть запрошена, иначе часть получает значение по умолчанию.
 
-Пример: офицерское дерево (только биосолдаты), максимальный id секции — 3.
+Пример: офицерское дерево (только биосолдаты), максимальный id секции — 4.
 
-1. `SOLDIER_BUILD_SECTION`: `OFFICER: 4`.
+1. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
 2. `writeOfficer` / `readOfficer`; `BIOSOLDIER_BUILD_EXTENSION` пишет секцию только у офицера и читает её.
 3. `BiosoldierBuildPart`: `'officer'`; без секции или без части у билда нет офицерского дерева.
 

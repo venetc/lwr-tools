@@ -18,18 +18,18 @@ section = id (5) | length (9) | fields
 - Sections go by ascending id, each at most once; `0` ends the list.
 - Unknown sections are skipped by their length.
 - A section that is read must end exactly at its length, otherwise the code is invalid; skipped sections aren't checked.
-- `decodeBiosoldierBuild(code, parts)` (parts `'name' | 'geneMods'`) and `decodeMecBuild(code, parts)` (part `'name'`) read only the requested parts; the rest get defaults.
+- `decodeBiosoldierBuild(code, parts)` (parts `'name' | 'geneMods' | 'psionicAbilities'`) and `decodeMecBuild(code, parts)` (part `'name'`) read only the requested parts; the rest get defaults.
 
 ## Decoding result
 
 A decoder returns `{ status: 'decoded', build }`, or why it failed:
 
 - `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
-- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, a class of another format, a perk not offered on its rank of the class tree; in `GENE_MODS` an ability that is not a Gene mod, two Gene mods of one Body part, or Body parts out of order. The import shows "Invalid code" under the field.
+- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, a class of another format, a perk not offered on its rank of the class tree; in `GENE_MODS` an ability that is not a Gene mod, two Gene mods of one Body part, or Body parts out of order; in `PSIONIC` an ability not offered on its Psi level or more abilities than Psi levels; Neural Damping together with a non-empty `PSIONIC`. Neural Damping is checked against psionics only when both `geneMods` and `psionicAbilities` are requested. The import shows "Invalid code" under the field.
 
 A stored build whose code does not decode is skipped on loading.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts; `soldierBuildCodec` builds the encoder and decoder of a soldier format from its classes by code and its extension, the parts beyond `PERKS` and `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` are its format 1 pair with the Gene mods extension, `encodeMecBuild` / `decodeMecBuild` its format 3 pair without one), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` (abilities, the classes of each soldier format, SHIV perks) come from `entities/soldier` and `entities/shiv`. The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts; `soldierBuildCodec` builds the encoder and decoder of a soldier format from its classes by code and its extension, the parts beyond `PERKS` and `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` are its format 1 pair with the Gene mods and Psionic abilities extension, `encodeMecBuild` / `decodeMecBuild` its format 3 pair without one), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` (abilities, the classes of each soldier format, SHIV perks) come from `entities/soldier` and `entities/shiv`. The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
@@ -38,10 +38,15 @@ Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-
 | `PERKS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | always |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | if the name differs from the class name |
 | `GENE_MODS` | 3 | `count` 3 · `ability` 8 × count | Biosoldier only, if the build has Gene mods |
+| `PSIONIC` | 4 | `count` 3 · `ability` 8 × count | Biosoldier only, if the build has Psionic abilities |
 
 In `PERKS`, `count` is the number of perks selected beyond the base perk; abilities go by rank, bottom to top. The base perk is taken from the current tree on import.
 
-In `GENE_MODS`, Gene mods go by Body part, Brain to Legs; the Body part of each Gene mod comes from the data, positions are not stored. MEC codes never carry the section, and the MEC decoder skips it as unknown.
+In `GENE_MODS`, Gene mods go by Body part, Brain to Legs; the Body part of each Gene mod comes from the data, positions are not stored.
+
+In `PSIONIC`, Psionic abilities go by Psi level, Awakened to Master, without gaps; the level of each ability is its position.
+
+MEC codes never carry `GENE_MODS` or `PSIONIC`, and the MEC decoder skips them as unknown.
 
 ## Numbering
 
@@ -63,7 +68,7 @@ Example: new ability, max `code` is N.
 
 ## Safe edits
 
-Add abilities to trees; reorder abilities within a rank; edit names, descriptions, icons; rename ids (keep `code`); add classes; swap the two Gene mods of a Body part; rename Body parts.
+Add abilities to trees; reorder abilities within a rank; edit names, descriptions, icons; rename ids (keep `code`); add classes; swap the two Gene mods of a Body part; rename Body parts; reorder Psionic abilities within a Psi level; rename Psi levels.
 
 ## Breaking edits
 
@@ -73,6 +78,7 @@ Add abilities to trees; reorder abilities within a rank; edit names, description
 | delete a record | "Invalid code" |
 | move an ability to another rank, remove it from a tree or replace it | codes that select it: "Invalid code" |
 | reorder Body parts, move a Gene mod to another Body part or remove it | codes with it: "Invalid code" or the Gene mod in the wrong Body part |
+| reorder Psi levels, move a Psionic ability to another Psi level or remove it | codes with it: "Invalid code" |
 | change a section's fields or their widths | "Invalid code" or wrong data |
 | change the section layout, CRC or base64url | every code is invalid |
 
@@ -84,9 +90,9 @@ Section fields change only in a new section:
 
 Readers of old sections stay forever. The section layout itself changes only with a new number in `SHARE_CODE_FORMAT`.
 
-Example: `PERKS` gets a new field, max section id is 3.
+Example: `PERKS` gets a new field, max section id is 4.
 
-1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 4`.
+1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 5`.
 2. `soldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` deleted.
 3. New `writePerks` / `readPerks`; `encode` of `soldierBuildCodec` writes `PERKS_V2`.
 4. `decode` of `soldierBuildCodec`: `PERKS` → `readPerksV1` with the new field defaulted, `PERKS_V2` → `readPerks`.
@@ -97,9 +103,9 @@ Example: `PERKS` gets a new field, max section id is 3.
 2. Write the writer and reader in `soldier-build-code.ts`. A part of every soldier goes into `encode` / `decode` of `soldierBuildCodec`; a part of one format goes into its extension (`BIOSOLDIER_BUILD_EXTENSION` for Biosoldiers): `write` gives the section only when the build has the part, `read` reads it.
 3. Add the part to `SoldierBuildPart` or `BiosoldierBuildPart` and to the default parts; the section is read only if the part is requested, otherwise the part gets its default.
 
-Example: officer tree (Biosoldier only), max section id is 3.
+Example: officer tree (Biosoldier only), max section id is 4.
 
-1. `SOLDIER_BUILD_SECTION`: `OFFICER: 4`.
+1. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
 2. `writeOfficer` / `readOfficer`; `BIOSOLDIER_BUILD_EXTENSION` writes the section only for an officer and reads it.
 3. `BiosoldierBuildPart`: `'officer'`; without the section or the part the build has no officer tree.
 

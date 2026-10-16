@@ -1,12 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { selectBiosoldierBuildGeneMod, selectBiosoldierBuildPsionicAbility, selectSoldierBuildPerk } from '@entities/soldier/model/build';
+import { biosoldierBuildBranchSet, selectBiosoldierBuildGeneMod, selectBiosoldierBuildPsionicAbility, selectSoldierBuildPerk } from '@entities/soldier/model/build';
 
 import {
   ALL_PSIONICS,
   BASE_PERKS,
   createBiosoldierBuildMock,
   createBuildMock,
+  FEET_GENE_MODS,
   FULL_PERKS,
   LOW_AND_MIDDLE_PSIONICS,
   NEURAL_DAMPING_GENE_MODS,
@@ -188,5 +189,47 @@ describe('selectBiosoldierBuildPsionicAbility', () => {
     selectBiosoldierBuildPsionicAbility(build, 0, 'low-left');
 
     expect(build.psionicAbilities).toEqual([]);
+  });
+});
+
+describe('biosoldierBuildBranchSet', () => {
+  it('gives plain for a build without gene mods and psionic abilities', () => {
+    const build = createBiosoldierBuildMock(NO_GENE_MODS);
+
+    const branchSet = biosoldierBuildBranchSet(build);
+
+    expect(branchSet).toBe('plain');
+  });
+
+  it('gives gene mods for a build with a gene mod', () => {
+    const build = createBiosoldierBuildMock(FEET_GENE_MODS);
+
+    const branchSet = biosoldierBuildBranchSet(build);
+
+    expect(branchSet).toBe('gene-mods');
+  });
+
+  it('gives gene mods for a build with only Neural Damping', () => {
+    const build = createBiosoldierBuildMock(NEURAL_DAMPING_GENE_MODS);
+
+    const branchSet = biosoldierBuildBranchSet(build);
+
+    expect(branchSet).toBe('gene-mods');
+  });
+
+  it('gives psionic for a build with psionic abilities', () => {
+    const build = createBiosoldierBuildMock(NO_GENE_MODS, LOW_AND_MIDDLE_PSIONICS);
+
+    const branchSet = biosoldierBuildBranchSet(build);
+
+    expect(branchSet).toBe('psionic');
+  });
+
+  it('gives both for a build with gene mods and psionic abilities', () => {
+    const build = createBiosoldierBuildMock(FEET_GENE_MODS, LOW_AND_MIDDLE_PSIONICS);
+
+    const branchSet = biosoldierBuildBranchSet(build);
+
+    expect(branchSet).toBe('both');
   });
 });

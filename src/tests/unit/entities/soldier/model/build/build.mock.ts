@@ -61,6 +61,8 @@ export const NO_GENE_MODS = [null, null];
 
 export const NEURAL_DAMPING_GENE_MODS = ['neural-damping', null];
 
+export const FEET_GENE_MODS = [null, 'feet-second'];
+
 export const LOW_AND_MIDDLE_PSIONICS = ['low-left', 'middle'];
 
 export const ALL_PSIONICS = ['low-left', 'middle', 'high-right'];

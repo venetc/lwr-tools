@@ -8,6 +8,7 @@ import { BuildCalculator } from '@widgets/build-calculator';
 
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
 import BiosoldierBuildTree from './BiosoldierBuildTree.vue';
+import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
@@ -46,14 +47,12 @@ const { builds } = storeToRefs(biosoldierBuildsStore);
     </template>
 
     <template #nav-icon="{ build }">
-      <component :is="build.soldierClass.icon" :class="$style.navIcon" />
+      <BiosoldierClassIcon :build="build" :class="$style.navIcon" />
     </template>
   </BuildCalculator>
 </template>
 
 <style lang="scss" module>
-@use 'styles/colors';
-
 // Toolbar width from which the add buttons get side padding; matches the toolbar row breakpoint of the calculator.
 $toolbar-row-min-width: 720px;
 
@@ -77,7 +76,6 @@ $toolbar-row-min-width: 720px;
 .navIcon {
   width: 100%;
   height: 100%;
-  color: colors.$accent;
 }
 
 .plusIcon {

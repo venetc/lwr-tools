@@ -10,6 +10,7 @@ import {
   BOUND_CLASS_BY_CODE,
   BROKEN_NAME_SECTION,
   DEFAULT_NAME_BUILD,
+  EXCESS_PSIONIC_ABILITIES_BUILD,
   GARBAGE_CODE,
   GENE_MODS_BUILD,
   GENE_MODS_SECTION_ID,
@@ -21,11 +22,17 @@ import {
   MEC_FORMAT,
   MEC_NAMED_BUILD,
   MISPLACED_GENE_MOD_BUILD,
+  MISPLACED_PSIONIC_ABILITY_BUILD,
   NAME_SECTION_ID,
   NAMED_BUILD,
+  NEURAL_DAMPING_BUILD,
+  NEURAL_DAMPING_PSIONIC_BUILD,
   OTHER_CLASS_BUILD,
   OTHER_CLASS_CODE,
   perksSection,
+  PSIONIC_BUILD,
+  PSIONIC_SECTION_ID,
+  psionicSection,
   SHIV_CODE_RESULT,
   SHIV_FORMAT,
   UNKNOWN_FORMAT,
@@ -52,6 +59,10 @@ vi.mock('@entities/soldier/config/constants/body-part-content', async () => ({
   BODY_PART_CONTENT: (await import('./soldier-build-code.mock')).BODY_PART_CONTENT_MOCK,
 }));
 
+vi.mock('@entities/soldier/config/constants/psi-level-content', async () => ({
+  PSI_LEVEL_CONTENT: (await import('./soldier-build-code.mock')).PSI_LEVEL_CONTENT_MOCK,
+}));
+
 vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
 
 vi.mock('@entities/soldier/config/constants/mec-class-content', async () => ({
@@ -71,6 +82,14 @@ describe('encodeBiosoldierBuild', () => {
     expect(binaryCode?.sections.has(GENE_MODS_SECTION_ID)).toBe(false);
   });
 
+  it('leaves out the psionic section for a build without psionic abilities', () => {
+    const code = encodeBiosoldierBuild(GENE_MODS_BUILD) ?? '';
+
+    const binaryCode = openBinaryCode(code);
+
+    expect(binaryCode?.sections.has(PSIONIC_SECTION_ID)).toBe(false);
+  });
+
   it('leaves out the name section for the default name', () => {
     const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
 
@@ -81,6 +100,24 @@ describe('encodeBiosoldierBuild', () => {
 
   it('gives null for a build with a gene mod outside its body part', () => {
     const code = encodeBiosoldierBuild(MISPLACED_GENE_MOD_BUILD);
+
+    expect(code).toBeNull();
+  });
+
+  it('gives null for a build with a psionic ability outside its psi level', () => {
+    const code = encodeBiosoldierBuild(MISPLACED_PSIONIC_ABILITY_BUILD);
+
+    expect(code).toBeNull();
+  });
+
+  it('gives null for a build with more psionic abilities than psi levels', () => {
+    const code = encodeBiosoldierBuild(EXCESS_PSIONIC_ABILITIES_BUILD);
+
+    expect(code).toBeNull();
+  });
+
+  it('gives null for a build with Neural Damping and psionic abilities', () => {
+    const code = encodeBiosoldierBuild(NEURAL_DAMPING_PSIONIC_BUILD);
 
     expect(code).toBeNull();
   });
@@ -99,6 +136,14 @@ describe('decodeBiosoldierBuild', () => {
     const result = decodeBiosoldierBuild(code);
 
     expect(result).toEqual({ status: 'decoded', build: GENE_MODS_BUILD });
+  });
+
+  it('restores a build with gene mods and psionic abilities', () => {
+    const code = encodeBiosoldierBuild(PSIONIC_BUILD) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: PSIONIC_BUILD });
   });
 
   it('gives no gene mods when the gene mods part is not requested', () => {
@@ -163,6 +208,62 @@ describe('decodeBiosoldierBuild', () => {
     const result = decodeBiosoldierBuild(code);
 
     expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('gives no psionic abilities for a code without the psionic section', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([21, 22])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: GENE_MODS_BUILD });
+  });
+
+  it('rejects a psionic ability that is not offered on its psi level', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([32])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a psionic section with an unknown ability', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([99])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects more psionic abilities than psi levels', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([30, 32, 32])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a psionic section with unread bits', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([30], 1)]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects Neural Damping with psionic abilities', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20]), psionicSection([30])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('keeps Neural Damping with psionic abilities when psionic abilities are not requested', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20]), psionicSection([30])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code, ['name', 'geneMods']);
+
+    expect(result).toEqual({ status: 'decoded', build: NEURAL_DAMPING_BUILD });
   });
 
   it('restores a build with the default name', () => {
@@ -311,6 +412,14 @@ describe('encodeMecBuild', () => {
 describe('decodeMecBuild', () => {
   it('skips a gene mods section', () => {
     const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), geneModsSection([20])]) ?? '';
+
+    const result = decodeMecBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: MEC_DEFAULT_NAME_BUILD });
+  });
+
+  it('skips a psionic section', () => {
+    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), psionicSection([30])]) ?? '';
 
     const result = decodeMecBuild(code);
 

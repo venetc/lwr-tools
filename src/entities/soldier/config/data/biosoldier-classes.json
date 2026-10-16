@@ -58,8 +58,8 @@
       "specialist": ["suppression"],
       "lance-corporal": ["will-to-survive", "raking-fire", "mayhem"],
       "corporal": ["double-tap", "ready-for-anything", "holo-rounds"],
-      "sergeant": ["grit", "critical-system-targeting", "penetrator"],
-      "tech-sergeant": ["extra-conditioning"],
+      "sergeant": ["extra-conditioning", "critical-system-targeting", "penetrator"],
+      "tech-sergeant": ["grit"],
       "gunnery-sergeant": ["tenacious-defense", "bring-em-on", "impact"],
       "master-sergeant": ["kitted", "lock-n-load"]
     }

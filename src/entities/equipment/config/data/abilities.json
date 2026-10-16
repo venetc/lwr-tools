@@ -1,11 +1,11 @@
 {
   "grapple": {
     "name": "Grapple",
-    "description": "Using the Grapple costs 0 AP and can propel this soldier up to 15 tiles clearing this unit from all overwatching aliens. Single use only."
+    "description": "Using the Grapple costs 0 AP and can propel this soldier up to 15 tiles. Grants immunity to reaction fire during use. Single use only."
   },
   "advanced-grapple": {
     "name": "Advanced Grapple",
-    "description": "Using the Grapple costs 0 AP and can propel this soldier up to 15 tiles clearing this unit from all overwatching aliens. 3 uses."
+    "description": "Using the Grapple costs 0 AP and can propel this soldier up to 15 tiles. Grants immunity to reaction fire during use. 3 uses."
   },
   "damage-control": {
     "name": "Damage Control",
@@ -33,11 +33,11 @@
   },
   "psi-boost": {
     "name": "Psi Boost",
-    "description": "Infuses explosives to deal 1 bonus psionic damage. Increases Kinetic Blast and Rift damage by 2. Reduces accumulation of fatigue by 20%."
+    "description": "Infuses explosives to deal 1 bonus psionic damage. Increases Kinetic Blast and Rift damage by 2."
   },
   "advanced-psi-boost": {
     "name": "Advanced Psi Boost",
-    "description": "Infuses explosives to deal 2 bonus psionic damage. Increases Kinetic Blast and Rift damage by 4. Reduces accumulation of fatigue by 50%."
+    "description": "Infuses explosives to deal 2 bonus psionic damage. Increases Kinetic Blast and Rift damage by 4."
   },
   "steady-weapon": {
     "name": "Steady Weapon",
@@ -57,11 +57,11 @@
   },
   "hip-fire": {
     "name": "Hip Fire",
-    "description": "Accuracy gains on standard shots above 60% hit chance only contribute half to final hit chance."
+    "description": "Accuracy gains on standard shots above 60% hit chance only contribute half to final hit chance, except on consecutive shots at the same target."
   },
   "bulletstorm": {
     "name": "Bulletstorm",
-    "description": "Spray fire across a 30 degree cone out to 18 tiles. Every enemy in the cone has 2x 20% chances (10% with an LMG) to take Standard Shot Damage. Enemies not hit have a 50% chance to take 1 damage. Requires 2 ammo."
+    "description": "Spray fire across a 30 degree cone out to 18 tiles. Every enemy in the cone has 2x 24% chances (12% with an LMG) to take Standard Shot Damage. Requires 2 ammo."
   },
   "shredder": {
     "name": "Shredder",
@@ -110,5 +110,21 @@
   "carapace-shredder": {
     "name": "Carapace Shredder",
     "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) to any hardened biologic unit for the remainder of the battle."
+  },
+  "prototype-rigging": {
+    "name": "Prototype Rigging",
+    "description": "+1 utility slot. Does not gain extra effects from Tactical Rigging."
+  },
+  "gear-mounts": {
+    "name": "Gear Mounts",
+    "description": "The last two utility slots on this armor can only hold passive gear, such as plating, scopes, ammo, and mags."
+  },
+  "gear-mount": {
+    "name": "Gear Mount",
+    "description": "The last utility slot on this armor can only hold passive gear, such as plating, scopes, ammo, and mags."
+  },
+  "psi-mount": {
+    "name": "Psi Mount",
+    "description": "The last utility slot on this armor can only hold passive psi gear: the Conduit, Neural Scope, Psi Defender, Psi Frayer or Neuroregulator."
   }
 }

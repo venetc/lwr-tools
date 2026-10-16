@@ -32,12 +32,12 @@
   "reactive-targeting-sensors": {
     "code": 7,
     "name": "Reactive Targeting Sensors",
-    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +30% DR against that attack, returns fire with a +30 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
+    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +20% DR against that attack, returns fire with a +30 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
   },
   "light-em-up": {
     "code": 8,
     "name": "Light 'Em Up",
-    "description": "Standard shots cost only 1 AP and gain both +5 penetration and +1 damage for each instance of damage their target took this turn."
+    "description": "Standard shots cost only 1 AP and gain both +5 penetration and +0.5 damage (rounded down) for each instance of damage their target took this turn."
   },
   "close-combat-specialist": {
     "code": 9,
@@ -57,7 +57,7 @@
   "absorption-fields": {
     "code": 12,
     "name": "Absorption Fields",
-    "description": "Gain +10% DR. Shots from beam weapons (laser/pulse/drone/cyberdisc) lose their penetration when targeting this unit."
+    "description": "Gain +5% DR. Shots from beam weapons (laser/pulse/drone/cyberdisc) lose their penetration when targeting this unit."
   },
   "vital-point-targeting": {
     "code": 13,

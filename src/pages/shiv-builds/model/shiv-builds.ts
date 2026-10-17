@@ -61,6 +61,19 @@ export const useShivBuildsStore = defineStore('pages-shiv-builds', () => {
    */
   const addBuild = () => buildList.addBuild(createShivBuild());
 
+  /**
+   * Resets an editable build to a new build with no perk selected; the name stays.
+   *
+   * @param buildId build id.
+   */
+  const resetBuild = (buildId: ShivBuildId) => {
+    const build = buildList.findEditableBuild(buildId);
+
+    if (!build) return;
+
+    buildList.replaceBuild(buildId, { ...createShivBuild(), name: build.name });
+  };
+
   return {
     builds: buildList.builds,
     selectBuildPerk,
@@ -69,6 +82,7 @@ export const useShivBuildsStore = defineStore('pages-shiv-builds', () => {
     addBuild,
     importBuild: buildList.importBuild,
     replaceBuild: buildList.replaceBuild,
+    resetBuild,
     removeBuild: buildList.removeBuild,
   };
 });

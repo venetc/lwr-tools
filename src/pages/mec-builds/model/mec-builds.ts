@@ -74,6 +74,19 @@ export const useMecBuildsStore = defineStore('pages-mec-builds', () => {
    */
   const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(createMecBuild(soldierClass));
 
+  /**
+   * Resets an editable build to a new build of its class with only the base perk selected; the name stays.
+   *
+   * @param buildId build id.
+   */
+  const resetBuild = (buildId: MecBuildId) => {
+    const build = buildList.findEditableBuild(buildId);
+
+    if (!build) return;
+
+    buildList.replaceBuild(buildId, { ...createMecBuild(build.soldierClass), name: build.name });
+  };
+
   return {
     builds: buildList.builds,
     selectBuildPerk,
@@ -82,6 +95,7 @@ export const useMecBuildsStore = defineStore('pages-mec-builds', () => {
     addBuild,
     importBuild: buildList.importBuild,
     replaceBuild: buildList.replaceBuild,
+    resetBuild,
     removeBuild: buildList.removeBuild,
   };
 });

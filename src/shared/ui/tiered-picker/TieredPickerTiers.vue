@@ -103,6 +103,7 @@ const getTierClass = (tier: Tier) => {
 $cell: 40px;
 
 .tiers {
+  container: tiers / inline-size;
   display: flex;
   flex-direction: column;
   gap: 5px;

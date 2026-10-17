@@ -114,6 +114,19 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
    */
   const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(createBiosoldierBuild(soldierClass));
 
+  /**
+   * Resets an editable build to a new build of its class: only the base perk, no gene mods and no psionic abilities; the name stays.
+   *
+   * @param buildId build id.
+   */
+  const resetBuild = (buildId: BiosoldierBuildId) => {
+    const build = buildList.findEditableBuild(buildId);
+
+    if (!build) return;
+
+    buildList.replaceBuild(buildId, { ...createBiosoldierBuild(build.soldierClass), name: build.name });
+  };
+
   return {
     builds: buildList.builds,
     selectBuildPerk,
@@ -124,6 +137,7 @@ export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', (
     addBuild,
     importBuild: buildList.importBuild,
     replaceBuild: buildList.replaceBuild,
+    resetBuild,
     removeBuild: buildList.removeBuild,
   };
 });

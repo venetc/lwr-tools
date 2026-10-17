@@ -24,6 +24,17 @@ export const openBuildPanel = async (page: Page, path: string, panelName: string
 };
 
 /**
+ * Adds a build of the Class with the `Add` menu of the toolbar.
+ *
+ * @param page browser page.
+ * @param className name of the Class in the menu.
+ */
+export const addBuild = async (page: Page, className: string) => {
+  await page.getByRole('main').getByRole('button', { name: 'Add', exact: true }).click();
+  await page.getByRole('menuitem', { name: className, exact: true }).click();
+};
+
+/**
  * Cell of an ability, a Perk, a Gene mod or a Psionic ability, on the visible tab of the panel.
  *
  * @param panel build panel.

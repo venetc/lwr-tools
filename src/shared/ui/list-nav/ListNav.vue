@@ -1,7 +1,6 @@
 <script setup lang="ts" generic="Item extends ListNavItem">
 import { Trash2 } from '@lucide/vue';
 import type { VNode } from 'vue';
-import { useId } from 'vue';
 
 import { HoldButton } from '@shared/ui/hold-button';
 import { ScrollArea } from '@shared/ui/scroll-area';
@@ -11,8 +10,8 @@ import type { ListNavItem } from './model/list-nav';
 interface Props {
   /** Items to list, in page order. */
   items: readonly Item[]
-  /** Caption above the list; also the accessible name of the navigation. */
-  caption: string
+  /** Accessible name of the navigation. */
+  label: string
 }
 
 interface Emits {
@@ -33,8 +32,6 @@ const emit = defineEmits<Emits>();
 const slots = defineSlots<{
   icon?: (props: IconSlotProps) => VNode[]
 }>();
-
-const captionId = useId();
 
 const hasIcon = Boolean(slots.icon);
 
@@ -61,10 +58,7 @@ const isRemoveDisabled = (item: Item) => !item.isRemovable;
 </script>
 
 <template>
-  <nav :class="$style.nav" :aria-labelledby="captionId">
-    <p :id="captionId" :class="$style.caption">
-      {{ props.caption }}
-    </p>
+  <nav :class="$style.nav" :aria-label="props.label">
     <ScrollArea orientation="horizontal">
       <ul :class="$style.list">
         <li
@@ -90,7 +84,6 @@ const isRemoveDisabled = (item: Item) => !item.isRemovable;
           <HoldButton
             :class="$style.remove"
             :disabled="isRemoveDisabled(item)"
-            :duration="450"
             title="Hold to remove"
             @hold="remove(item.id)"
           >
@@ -108,21 +101,14 @@ const isRemoveDisabled = (item: Item) => !item.isRemovable;
 @use 'styles/typography';
 @use 'styles/media';
 
-$icon-size: 20px;
-$item-padding: 4px;
+$icon-size: 18px;
+$item-padding: 3px;
 // Fixed row height, so the list keeps its height with any number of items.
 $row-height: $icon-size + $item-padding * 2;
 
 .nav {
   display: grid;
-  gap: 2px;
   min-inline-size: 0;
-}
-
-.caption {
-  @include typography.caption;
-  margin: 0;
-  color: colors.$text-tertiary;
 }
 
 .list {
@@ -134,7 +120,8 @@ $row-height: $icon-size + $item-padding * 2;
   gap: 2px 4px;
   inline-size: max-content;
   margin: 0;
-  padding: 0 0 8px;
+  // Room for the horizontal scrollbar below, and the same above so the rows stay centered.
+  padding: 6px 0;
   list-style: none;
 }
 

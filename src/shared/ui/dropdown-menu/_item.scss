@@ -1,0 +1,22 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+@mixin base {
+  @include typography.caps-3;
+  text-decoration: none;
+  user-select: none;
+}
+
+@mixin selectable {
+  cursor: pointer;
+  outline: none;
+
+  &:not([data-highlighted]) {
+    color: colors.$text-secondary;
+  }
+
+  &[data-highlighted] {
+    background: colors.$surface-3;
+    color: colors.$accent-hover;
+  }
+}

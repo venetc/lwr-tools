@@ -22,7 +22,7 @@ const style = useCssModule();
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
-const { rename, lock, replace, remove } = useBuildEditor(() => props.build, biosoldierBuildsStore);
+const { rename, lock, replace, reset, remove } = useBuildEditor(() => props.build, biosoldierBuildsStore);
 
 const { tree, groups, select } = useBiosoldierBuildGroups(() => props.build);
 
@@ -55,6 +55,7 @@ const getBranchClasses = (group: BiosoldierBuildGroup) => ({
     @rename="rename"
     @lock="lock"
     @replace="replace"
+    @reset="reset"
     @remove="remove"
     @select="select"
   >

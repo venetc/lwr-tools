@@ -8,7 +8,7 @@ export const OTHER_PANEL_NAME = 'Scout';
 
 export const MEC_PANEL_NAME = 'Jaeger';
 
-export const NAVIGATION = 'Click to scroll to a build';
+export const NAVIGATION = 'Builds';
 
 export const GENE_MODS_TAB = /^Gene mods, /;
 

@@ -17,7 +17,7 @@ const props = defineProps<Props>();
 
 const shivBuildsStore = useShivBuildsStore();
 
-const { rename, lock, replace, remove } = useBuildEditor(() => props.build, shivBuildsStore);
+const { rename, lock, replace, reset, remove } = useBuildEditor(() => props.build, shivBuildsStore);
 
 const { groups, select } = useShivBuildGroups(() => props.build);
 </script>
@@ -32,6 +32,7 @@ const { groups, select } = useShivBuildGroups(() => props.build);
     @rename="rename"
     @lock="lock"
     @replace="replace"
+    @reset="reset"
     @remove="remove"
     @select="select"
   >

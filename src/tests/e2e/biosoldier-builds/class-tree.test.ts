@@ -1,8 +1,8 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { abilityCell, openBuildPanel } from '../utils/build-panel';
-import { ADD_LABEL, MAGNUM, PAGE_PATH, PANEL_NAME, SHARPSHOOTER } from './class-tree.mock';
+import { abilityCell, addBuild, openBuildPanel } from '../utils/build-panel';
+import { MAGNUM, PAGE_PATH, PANEL_NAME, SHARPSHOOTER } from './class-tree.mock';
 
 /**
  * Opens the Biosoldier Build calculator and returns the panel of the tested build.
@@ -40,7 +40,7 @@ test.describe('Biosoldier Class tree', () => {
 
   test('leaves another build of the Class untouched', async ({ page }) => {
     const panel = await openPanel(page);
-    await page.getByRole('button', { name: ADD_LABEL }).click();
+    await addBuild(page, PANEL_NAME);
 
     await abilityCell(panel, MAGNUM).click();
 

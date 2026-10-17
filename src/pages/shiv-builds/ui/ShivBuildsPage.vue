@@ -28,7 +28,7 @@ const { builds } = storeToRefs(shivBuildsStore);
       <Button @click="shivBuildsStore.addBuild">
         <span :class="$style.addContent">
           <Plus :class="$style.plusIcon" aria-hidden="true" />
-          Add SHIV
+          Add
         </span>
       </Button>
     </template>
@@ -40,7 +40,7 @@ const { builds } = storeToRefs(shivBuildsStore);
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px;
+  padding: 3px 12px;
 }
 
 .plusIcon {

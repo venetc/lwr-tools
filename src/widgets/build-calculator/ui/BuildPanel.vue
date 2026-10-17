@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="Kind extends BuildCodeKind, Group extends TieredPickerGroup">
-import { ClipboardPaste, Share2 } from '@lucide/vue';
+import { ClipboardPaste, RotateCcw, Share2 } from '@lucide/vue';
 import type { VNode } from 'vue';
 
 import type { ListedBuild } from '@features/manage-builds';
@@ -32,6 +32,8 @@ interface Emits {
   lock: [isReadonly: boolean]
   /** Requests replacing the build with imported data. */
   replace: [data: BuildDataByKind[Kind]]
+  /** Requests resetting the build to a new one; the name stays. */
+  reset: []
   /** Requests removal of the build. */
   remove: []
   /** Requests an item selection on a tier of the group; null clears the tier. */
@@ -64,7 +66,7 @@ defineSlots<{
   'item-name'?: (props: ItemNameSlotProps) => VNode[]
 }>();
 
-const { name, readonly, isEditable } = useBuildPanelFields(() => props.build, {
+const { name, readonly } = useBuildPanelFields(() => props.build, {
   onRename: value => emit('rename', value),
   onLock: isReadonly => emit('lock', isReadonly),
 });
@@ -75,6 +77,11 @@ const { name, readonly, isEditable } = useBuildPanelFields(() => props.build, {
  * @param data imported build data.
  */
 const requestReplace = (data: BuildDataByKind[Kind]) => emit('replace', data);
+
+/**
+ * Requests resetting the build to a new one.
+ */
+const requestReset = () => emit('reset');
 
 /**
  * Requests removal of the build.
@@ -121,12 +128,8 @@ const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available'
         lock-label="Lock build"
         @remove="requestRemove"
       >
-        <template #default="{ actionClass }">
-          <ShareCodeImport
-            v-if="isEditable"
-            :kind="props.kind"
-            @import="requestReplace"
-          >
+        <template #editable="{ actionClass }">
+          <ShareCodeImport :kind="props.kind" @import="requestReplace">
             <template #trigger>
               <button :class="actionClass" type="button">
                 <ClipboardPaste :class="$style.actionIcon" aria-hidden="true" />
@@ -135,6 +138,17 @@ const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available'
             </template>
           </ShareCodeImport>
 
+          <button
+            :class="actionClass"
+            type="button"
+            @click="requestReset"
+          >
+            <RotateCcw :class="$style.actionIcon" aria-hidden="true" />
+            <span :class="$style.visuallyHidden">Reset build</span>
+          </button>
+        </template>
+
+        <template #default="{ actionClass }">
           <ShareCodeExport :kind="props.kind" :build="props.build">
             <template #trigger>
               <button :class="actionClass" type="button">

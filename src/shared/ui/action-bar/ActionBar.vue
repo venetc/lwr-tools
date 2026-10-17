@@ -3,6 +3,7 @@ import { Lock, LockOpen, Trash2 } from '@lucide/vue';
 import type { VNode } from 'vue';
 import { computed, useCssModule } from 'vue';
 
+import { HoldButton } from '@shared/ui/hold-button';
 import { Toggle } from '@shared/ui/toggle';
 
 interface Props {
@@ -13,7 +14,7 @@ interface Props {
 }
 
 interface Emits {
-  /** Requests removal. */
+  /** Requests removal once the remove button is held. */
   remove: []
 }
 
@@ -27,6 +28,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 defineSlots<{
+  editable?: (props: DefaultSlotProps) => VNode[]
   default?: (props: DefaultSlotProps) => VNode[]
 }>();
 
@@ -35,6 +37,8 @@ const style = useCssModule();
 const lockClass = [style.action, style.lock];
 
 const secondaryClass = [style.action, style.secondary];
+
+const removeClass = [style.action, style.remove];
 
 /** Whether editing is locked; the remove button is hidden while locked. */
 const locked = defineModel<boolean>('locked', { required: true });
@@ -51,17 +55,20 @@ const requestRemove = () => emit('remove');
 
 <template>
   <div :class="$style.actions">
-    <slot :action-class="secondaryClass" />
+    <template v-if="isEditable">
+      <slot name="editable" :action-class="secondaryClass" />
 
-    <button
-      v-if="isEditable"
-      :class="secondaryClass"
-      type="button"
-      @click="requestRemove"
-    >
-      <Trash2 :class="$style.icon" aria-hidden="true" />
-      <span :class="$style.visuallyHidden">{{ props.removeLabel }}</span>
-    </button>
+      <HoldButton
+        :class="removeClass"
+        title="Hold to remove"
+        @hold="requestRemove"
+      >
+        <Trash2 :class="$style.icon" aria-hidden="true" />
+        <span :class="$style.visuallyHidden">{{ props.removeLabel }}</span>
+      </HoldButton>
+    </template>
+
+    <slot :action-class="secondaryClass" />
 
     <Toggle v-model="locked" :class="lockClass">
       <component
@@ -123,6 +130,17 @@ const requestRemove = () => emit('remove');
 .secondary {
   @include -dimmed;
   color: colors.$text-tertiary;
+}
+
+.remove {
+  &[data-state='idle'] {
+    @include -dimmed;
+    color: colors.$text-tertiary;
+  }
+
+  &[data-state='holding'] {
+    color: colors.$danger;
+  }
 }
 
 .icon {

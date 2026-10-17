@@ -172,4 +172,16 @@ test.describe('Share code of another unit', () => {
 
     await expect(page.getByRole('region', { name: NOTIFICATIONS }).getByText(BIOSOLDIER_CODE_TITLE)).toBeVisible();
   });
+
+  test('disappears once closed', async ({ page }) => {
+    const shivPanel = await openBuildPanel(page, SHIV_PAGE_PATH, SHIV_PANEL_NAME);
+    const code = await exportCode(page, shivPanel);
+    await openPanel(page);
+    await importCode(page, toolbarImport(page), code);
+    const notifications = page.getByRole('region', { name: NOTIFICATIONS });
+
+    await notifications.getByRole('button', { name: 'Close' }).click();
+
+    await expect(notifications.getByText(SHIV_CODE_TITLE)).toHaveCount(0);
+  });
 });

@@ -1,38 +1,47 @@
 <template>
   <footer :class="$style.footer">
-    <p :class="$style.download">
-      Get
-      <a
-        :class="$style.downloadLink"
-        href="https://www.nexusmods.com/xcom/mods/686"
-        target="_blank"
-        rel="noopener noreferrer"
-      >Long War Rebalance</a>
-      on Nexus Mods — requires
-      <a
-        :class="$style.downloadLink"
-        href="https://www.nexusmods.com/xcom/mods/88"
-        target="_blank"
-        rel="noopener noreferrer"
-      >Long War 1.0</a>.
-      See the
-      <a
-        :class="$style.downloadLink"
-        href="https://www.ufopaedia.org/Change_Log_(LWR)"
-        target="_blank"
-        rel="noopener noreferrer"
-      >Long War Rebalance changelog</a>.
-    </p>
+    <div :class="$style.links">
+      <ul :class="$style.group">
+        <li :class="$style.item">
+          <a
+            :class="$style.link"
+            href="https://www.nexusmods.com/xcom/mods/686"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Long War Rebalance</a>
+        </li>
+        <li :class="$style.item">
+          requires
+          <a
+            :class="$style.link"
+            href="https://www.nexusmods.com/xcom/mods/88"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Long War 1.0</a>
+        </li>
+      </ul>
+      <ul :class="$style.group">
+        <li :class="$style.item">
+          <a
+            :class="$style.link"
+            href="https://www.ufopaedia.org/Change_Log_(LWR)"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Changelog</a>
+        </li>
+        <li :class="$style.item">
+          Data:
+          <a
+            :class="$style.link"
+            href="https://www.ufopaedia.org/Long_War_Rebalance"
+            target="_blank"
+            rel="noopener noreferrer"
+          >UFOpaedia</a>
+        </li>
+      </ul>
+    </div>
     <p :class="$style.disclaimer">
-      Unofficial fan-made tool, not affiliated with or endorsed by Firaxis Games, 2K or Take-Two Interactive.
-      XCOM and all related names, images and game assets are trademarks and property of their respective owners.
-      Long War Rebalance is a community mod by its authors. Ability data from
-      <a
-        :class="$style.link"
-        href="https://www.ufopaedia.org/Long_War_Rebalance"
-        target="_blank"
-        rel="noopener noreferrer"
-      >UFOpaedia</a>.
+      Unofficial fan tool, not affiliated with Firaxis Games or 2K. XCOM is a trademark of its respective owners.
     </p>
   </footer>
 </template>
@@ -42,7 +51,11 @@
 @use 'styles/typography';
 @use 'styles/media';
 
+// Footer width from which both link groups fit in one line.
+$links-row-min-width: 600px;
+
 .footer {
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -51,46 +64,73 @@
   border-block-start: 1px solid colors.$border-subtle;
 }
 
-.download {
+@mixin -separator {
+  content: '·' / '';
+  padding-inline: 8px;
+  color: colors.$text-tertiary;
+}
+
+.links {
   @include typography.body-2;
-  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: colors.$text-secondary;
-  text-align: center;
+
+  @container (width >= #{$links-row-min-width}) {
+    flex-direction: row;
+  }
+
+  @container (width < #{$links-row-min-width}) {
+    flex-direction: column;
+  }
+}
+
+.group {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @container (width >= #{$links-row-min-width}) {
+    &:not(:first-child)::before {
+      @include -separator;
+    }
+  }
+}
+
+.item {
+  white-space: nowrap;
+
+  &:not(:first-child)::before {
+    @include -separator;
+  }
 }
 
 .disclaimer {
   @include typography.caption;
-  max-width: 960px;
-  margin: 0 auto;
+  margin: 0;
   color: colors.$text-tertiary;
   text-align: center;
 }
 
-@mixin -link($color, $hover-color) {
+.link {
   text-decoration: underline;
   text-underline-position: from-font;
   text-decoration-thickness: from-font;
 
   @include media.with-hover {
     &:not(:hover) {
-      color: $color;
+      color: colors.$accent;
     }
 
     &:hover {
-      color: $hover-color;
+      color: colors.$accent-hover;
     }
   }
 
   @include media.with-touch {
-    color: $color;
+    color: colors.$accent;
   }
-}
-
-.link {
-  @include -link(colors.$text-secondary, colors.$accent);
-}
-
-.downloadLink {
-  @include -link(colors.$accent, colors.$accent-hover);
 }
 </style>

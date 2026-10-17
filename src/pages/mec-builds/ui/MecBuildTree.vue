@@ -16,7 +16,7 @@ const props = defineProps<Props>();
 
 const mecBuildsStore = useMecBuildsStore();
 
-const { rename, lock, replace, remove } = useBuildEditor(() => props.build, mecBuildsStore);
+const { rename, lock, replace, reset, remove } = useBuildEditor(() => props.build, mecBuildsStore);
 
 const { tree, groups, select } = useMecBuildGroups(() => props.build);
 </script>
@@ -32,6 +32,7 @@ const { tree, groups, select } = useMecBuildGroups(() => props.build);
     @rename="rename"
     @lock="lock"
     @replace="replace"
+    @reset="reset"
     @remove="remove"
     @select="select"
   >

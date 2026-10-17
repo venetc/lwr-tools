@@ -73,14 +73,12 @@ const requestRemove = (buildId: string) => emit('remove', buildId);
     </div>
 
     <div :class="$style.toolbar">
-      <div :class="$style.toolbarContent">
-        <div :class="$style.add">
-          <slot name="add" />
-        </div>
+      <div :class="$style.actions">
+        <slot name="add" />
 
         <ShareCodeImport :kind="props.kind" @import="requestImport">
           <template #trigger>
-            <Button :class="$style.import">
+            <Button>
               <span :class="$style.importContent">
                 <ClipboardPaste :class="$style.importIcon" aria-hidden="true" />
                 Import
@@ -88,19 +86,19 @@ const requestRemove = (buildId: string) => emit('remove', buildId);
             </Button>
           </template>
         </ShareCodeImport>
-
-        <ListNav
-          :class="$style.nav"
-          :items="navItems"
-          caption="Click to scroll to a build"
-          @select="scrollToPanel"
-          @remove="requestRemove"
-        >
-          <template v-if="hasNavIcon" #icon="{ item }">
-            <slot name="nav-icon" :build="item.build" />
-          </template>
-        </ListNav>
       </div>
+
+      <ListNav
+        :class="$style.nav"
+        :items="navItems"
+        label="Builds"
+        @select="scrollToPanel"
+        @remove="requestRemove"
+      >
+        <template v-if="hasNavIcon" #icon="{ item }">
+          <slot name="nav-icon" :build="item.build" />
+        </template>
+      </ListNav>
     </div>
   </main>
 </template>
@@ -108,9 +106,6 @@ const requestRemove = (buildId: string) => emit('remove', buildId);
 <style lang="scss" module>
 @use 'styles/colors';
 @use 'styles/layout';
-
-// Toolbar width from which the add buttons, the import button and the build list fit in one row.
-$toolbar-row-min-width: 720px;
 
 .page {
   flex: 1;
@@ -137,42 +132,26 @@ $toolbar-row-min-width: 720px;
   position: sticky;
   inset-block-end: 0;
   z-index: 4;
-  container-type: inline-size;
-  padding: 8px 16px max(8px, env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px max(4px, env(safe-area-inset-bottom));
   background: colors.$surface-translucent;
   backdrop-filter: blur(8px);
   border-block-start: 1px solid colors.$border-subtle;
 }
 
-.toolbarContent {
+.actions {
   display: grid;
-  gap: 8px;
-
-  @container (width >= #{$toolbar-row-min-width}) {
-    grid-template-columns: auto auto minmax(0, 1fr);
-    grid-template-areas: 'add import nav';
-    align-items: center;
-  }
-
-  @container (width < #{$toolbar-row-min-width}) {
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-areas: 'nav nav' 'add import';
-  }
-}
-
-.add {
-  grid-area: add;
-}
-
-.import {
-  grid-area: import;
+  gap: 6px;
 }
 
 .importContent {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 10px;
+  padding: 3px 12px;
 }
 
 .importIcon {
@@ -182,11 +161,7 @@ $toolbar-row-min-width: 720px;
 }
 
 .nav {
-  grid-area: nav;
-
-  @container (width >= #{$toolbar-row-min-width}) {
-    padding-inline-start: 8px;
-    border-inline-start: 1px solid colors.$border-subtle;
-  }
+  padding-inline-start: 8px;
+  border-inline-start: 1px solid colors.$border-subtle;
 }
 </style>

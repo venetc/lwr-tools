@@ -1,9 +1,8 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { abilityCell, openBuildPanel } from '../utils/build-panel';
+import { abilityCell, addBuild, openBuildPanel } from '../utils/build-panel';
 import {
-  ADD_LABEL,
   COUNTERCHARGE,
   EXTRA_BUILD_COUNT,
   GENE_MODS_TAB,
@@ -15,8 +14,10 @@ import {
   PAGE_PATH,
   PANEL_NAME,
   PSIONIC_TAB,
+  REMOVE_HOLD_TIME,
   REMOVE_LABEL,
   RENAME_LABEL,
+  RESET_LABEL,
 } from './build-management.mock';
 
 /**
@@ -44,7 +45,7 @@ test.describe('Build management', () => {
   test('adds a build of the Class', async ({ page }) => {
     await openPanel(page);
 
-    await page.getByRole('button', { name: ADD_LABEL }).click();
+    await addBuild(page, PANEL_NAME);
 
     await expect(classPanels(page)).toHaveCount(2);
   });
@@ -60,19 +61,74 @@ test.describe('Build management', () => {
   test('removes a build', async ({ page }) => {
     const panel = await openPanel(page);
 
-    await panel.getByRole('button', { name: REMOVE_LABEL }).click();
+    await panel.getByRole('button', { name: REMOVE_LABEL }).click({ delay: REMOVE_HOLD_TIME });
 
     await expect(classPanels(page)).toHaveCount(0);
   });
 
+  test('keeps a build clicked without holding', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await panel.getByRole('button', { name: REMOVE_LABEL }).click();
+
+    await expect(classPanels(page)).toHaveCount(1);
+  });
+
   test('scrolls to a build chosen in the build navigation', async ({ page }) => {
     await openPanel(page);
-    for (let index = 0; index < EXTRA_BUILD_COUNT; index++) await page.getByRole('button', { name: ADD_LABEL }).click();
+    for (let index = 0; index < EXTRA_BUILD_COUNT; index++) await addBuild(page, PANEL_NAME);
     await page.evaluate(() => window.scrollTo(0, 0));
 
     await page.getByRole('navigation', { name: NAVIGATION }).getByRole('button', { name: PANEL_NAME, exact: true }).last().click();
 
     await expect(classPanels(page).last()).toBeInViewport({ ratio: 0.5 });
+  });
+});
+
+/**
+ * Resets the build.
+ *
+ * @param panel build panel.
+ */
+const resetBuild = (panel: Locator) => panel.getByRole('button', { name: RESET_LABEL }).click();
+
+test.describe('Build reset', () => {
+  test('clears the selected perks', async ({ page }) => {
+    const panel = await openPanel(page);
+    await abilityCell(panel, MAGNUM).click();
+
+    await resetBuild(panel);
+
+    await expect(abilityCell(panel, MAGNUM)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('clears the gene mods', async ({ page }) => {
+    const panel = await openPanel(page);
+    await panel.getByRole('tab', { name: GENE_MODS_TAB }).click();
+    await abilityCell(panel, IRON_SKIN).click();
+
+    await resetBuild(panel);
+
+    await expect(abilityCell(panel, IRON_SKIN)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('clears the psionic abilities', async ({ page }) => {
+    const panel = await openPanel(page);
+    await panel.getByRole('tab', { name: PSIONIC_TAB }).click();
+    await abilityCell(panel, COUNTERCHARGE).click();
+
+    await resetBuild(panel);
+
+    await expect(abilityCell(panel, COUNTERCHARGE)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('keeps the build name', async ({ page }) => {
+    const panel = await openPanel(page);
+    await panel.getByRole('textbox', { name: RENAME_LABEL }).fill(NEW_NAME);
+
+    await resetBuild(panel);
+
+    await expect(panel.getByRole('textbox', { name: RENAME_LABEL })).toHaveValue(NEW_NAME);
   });
 });
 
@@ -131,5 +187,13 @@ test.describe('Locked build', () => {
     await lockBuild(panel);
 
     await expect(panel.getByRole('button', { name: REMOVE_LABEL })).toHaveCount(0);
+  });
+
+  test('cannot be reset', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await lockBuild(panel);
+
+    await expect(panel.getByRole('button', { name: RESET_LABEL })).toHaveCount(0);
   });
 });

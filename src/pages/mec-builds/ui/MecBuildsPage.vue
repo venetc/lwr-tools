@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 
 import { MEC_CLASSES } from '@entities/soldier';
 import { Button } from '@shared/ui/button';
+import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
 import { BuildCalculator } from '@widgets/build-calculator';
 
 import { useMecBuildsStore } from '../model/mec-builds';
@@ -26,23 +27,29 @@ const { builds } = storeToRefs(mecBuildsStore);
     </template>
 
     <template #add>
-      <div :class="$style.addButtons">
-        <Button
+      <DropdownMenu>
+        <template #trigger>
+          <Button>
+            <span :class="$style.addContent">
+              <Plus :class="$style.plusIcon" aria-hidden="true" />
+              Add
+            </span>
+          </Button>
+        </template>
+
+        <DropdownMenuAction
           v-for="soldierClass in MEC_CLASSES"
           :key="soldierClass.id"
-          @click="mecBuildsStore.addBuild(soldierClass)"
+          @select="mecBuildsStore.addBuild(soldierClass)"
         >
-          <span :class="$style.addContent">
-            <Plus :class="$style.plusIcon" aria-hidden="true" />
-            <component
-              :is="soldierClass.icon"
-              :class="$style.classIcon"
-              aria-hidden="true"
-            />
-            <span :class="$style.visuallyHidden">Add {{ soldierClass.name }}</span>
-          </span>
-        </Button>
-      </div>
+          <component
+            :is="soldierClass.icon"
+            :class="$style.classIcon"
+            aria-hidden="true"
+          />
+          {{ soldierClass.name }}
+        </DropdownMenuAction>
+      </DropdownMenu>
     </template>
 
     <template #nav-icon="{ build }">
@@ -54,24 +61,11 @@ const { builds } = storeToRefs(mecBuildsStore);
 <style lang="scss" module>
 @use 'styles/colors';
 
-// Toolbar width from which the add buttons get side padding; matches the toolbar row breakpoint of the calculator.
-$toolbar-row-min-width: 720px;
-
-.addButtons {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4px;
-}
-
 .addContent {
   display: flex;
   align-items: center;
-  gap: 1px;
-  padding-block: 3px;
-
-  @container (width >= #{$toolbar-row-min-width}) {
-    padding-inline: 8px;
-  }
+  gap: 6px;
+  padding: 3px 12px;
 }
 
 .navIcon {
@@ -88,16 +82,7 @@ $toolbar-row-min-width: 720px;
 
 .classIcon {
   flex: none;
-  width: 22px;
-  height: 22px;
-}
-
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  width: 20px;
+  height: 20px;
 }
 </style>

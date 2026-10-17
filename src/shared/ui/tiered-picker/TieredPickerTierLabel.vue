@@ -38,11 +38,21 @@ const iconClass = computed(() => [style.icon, props.highlighted ? style.iconHigh
 @use 'styles/colors';
 @use 'styles/typography';
 
+// Tier list width below which the names get a smaller font to fit beside the items: about a 450px screen.
+$compact-max-width: 390px;
+
 .label {
-  @include typography.caps-2;
   display: flex;
   align-items: center;
   gap: 8px;
+
+  @container tiers (width >= #{$compact-max-width}) {
+    @include typography.caps-2;
+  }
+
+  @container tiers (width < #{$compact-max-width}) {
+    @include typography.caps-3;
+  }
 }
 
 .name {

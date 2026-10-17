@@ -30,7 +30,5 @@ export const useBuildPanelFields = (build: MaybeRefOrGetter<Readonly<ListedBuild
     set: requests.onLock,
   });
 
-  const isEditable = computed(() => !readonly.value);
-
-  return { name, readonly, isEditable };
+  return { name, readonly };
 };

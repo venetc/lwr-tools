@@ -111,6 +111,6 @@ Example: officer tree (Biosoldier only), max section id is 4.
 
 ## Checks
 
-`npm test` checks `code` ranges and uniqueness (class ids and codes across both class lists), ids and `grants` cycles, and the code format itself; the pre-push hook runs it with `vue-tsc` and lint.
+`npm test` checks `code` ranges and uniqueness (class ids and codes across both class lists), ids and `grants` cycles, and the code format itself; the pre-push hook runs it with `vue-tsc` and lint, followed by the end-to-end tests.
 
 Changing or reusing a `code` is caught only in review.

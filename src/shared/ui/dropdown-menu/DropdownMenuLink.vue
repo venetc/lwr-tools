@@ -36,30 +36,18 @@ withDefaults(defineProps<Props>(), {
 
 <style lang="scss" module>
 @use 'styles/colors';
-@use 'styles/typography';
+@use './item';
 
 @mixin -item {
-  @include typography.caps-3;
+  @include item.base;
   display: block;
   padding: 11px 10px;
   text-box: trim-both cap alphabetic;
-  text-decoration: none;
-  user-select: none;
 }
 
 .link {
   @include -item;
-  cursor: pointer;
-  outline: none;
-
-  &:not([data-highlighted]) {
-    color: colors.$text-secondary;
-  }
-
-  &[data-highlighted] {
-    background: colors.$surface-3;
-    color: colors.$accent-hover;
-  }
+  @include item.selectable;
 }
 
 .current {

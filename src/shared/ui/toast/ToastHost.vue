@@ -8,13 +8,15 @@ import { useToastQueue } from './model/toast-queue';
 const { messages, dismissToast } = useToastQueue();
 
 /**
- * Removes the notification from the queue once it closes.
+ * Removes the notification from the queue once its closing animation ends: removing it on close would cut the
+ * animation off.
  *
  * @param id notification id.
- * @param isOpen whether the notification is open after the change.
+ * @param event animation end event of the notification.
  */
-const onOpenUpdate = (id: string, isOpen: boolean) => {
-  if (isOpen) return;
+const onAnimationEnd = (id: string, event: AnimationEvent) => {
+  const toast = event.currentTarget as HTMLElement;
+  if (toast.dataset.state !== 'closed') return;
   dismissToast(id);
 };
 </script>
@@ -26,7 +28,7 @@ const onOpenUpdate = (id: string, isOpen: boolean) => {
       :key="message.id"
       :class="$style.toast"
       :default-open="true"
-      @update:open="onOpenUpdate(message.id, $event)"
+      @animationend="onAnimationEnd(message.id, $event)"
     >
       <ToastTitle :class="$style.title">
         {{ message.title }}
@@ -71,6 +73,28 @@ const onOpenUpdate = (id: string, isOpen: boolean) => {
   column-gap: 12px;
   row-gap: 4px;
   padding: 12px 14px 14px 16px;
+
+  &[data-state='open'] {
+    animation: toast-enter 0.12s ease-out;
+  }
+
+  &[data-state='closed'] {
+    animation: toast-exit 0.1s ease-in forwards;
+  }
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + 16px));
+  }
+}
+
+@keyframes toast-exit {
+  to {
+    opacity: 0;
+    transform: translateX(calc(100% + 16px));
+  }
 }
 
 .title {

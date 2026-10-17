@@ -18,7 +18,7 @@ interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  duration: 800,
+  duration: 450,
   disabled: false,
 });
 

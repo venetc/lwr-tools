@@ -1,10 +1,10 @@
 import { WEAPON_SLOTS, WEAPON_TIERS, WEAPON_TYPES } from '../config/constants/weapon-categories';
 import { WEAPON_ICON } from '../config/constants/weapon-icons';
 import type weaponsJson from '../config/data/weapons.json';
-import type { EquipmentAbility } from './equipment-abilities';
-import { equipmentAbilityById, isEquipmentAbilityId } from './equipment-abilities';
-import type { EquipmentUnitId } from './equipment-units';
-import { isEquipmentUnitId } from './equipment-units';
+import type { LoadoutAbility } from './loadout-abilities';
+import { isLoadoutAbilityId, loadoutAbilityById } from './loadout-abilities';
+import type { LoadoutUnitId } from './loadout-units';
+import { isLoadoutUnitId } from './loadout-units';
 
 export type WeaponId = keyof typeof weaponsJson;
 
@@ -58,8 +58,8 @@ export interface WeaponContent {
   mobility: number
   /** Range in tiles. */
   range: number
-  /** Small equipment slots the weapon adds or takes. */
-  smallSlots: number
+  /** Utility slots the weapon takes away, as 0 or a negative number. */
+  utilitySlots: number
   /** Extra ammo from a Foundry project. */
   ammoUpgrade?: number
   /** Extra damage from a Foundry project. */
@@ -76,7 +76,7 @@ export interface WeaponContent {
   vsMechanical?: WeaponMechanicalBonus
   /** Tactical info text from the game. */
   info: string
-  /** Ids of the equipment abilities the weapon grants. */
+  /** Ids of the non-perk abilities the weapon grants. */
   grants?: readonly string[]
 }
 
@@ -87,7 +87,7 @@ export interface Weapon extends Required<Omit<WeaponContent, 'unit' | 'tier' | '
   /** Weapon id, the key in `weapons.json`. */
   id: WeaponId
   /** Id of the unit type that uses the weapon. */
-  unit: EquipmentUnitId
+  unit: LoadoutUnitId
   /** Technology tier. */
   tier: WeaponTier
   /** Weapon type. */
@@ -100,8 +100,8 @@ export interface Weapon extends Required<Omit<WeaponContent, 'unit' | 'tier' | '
   vsMechanical: WeaponMechanicalBonus | null
   /** Weapon image URL. */
   icon: string
-  /** Equipment abilities the weapon grants. */
-  grants: EquipmentAbility[]
+  /** Non-perk abilities the weapon grants. */
+  grants: LoadoutAbility[]
 }
 
 /**
@@ -134,7 +134,7 @@ export const isWeaponSlot = (slot: string): slot is WeaponSlot => (WEAPON_SLOTS 
 export const weaponsFromEntry = (entry: [WeaponId, WeaponContent]): Weapon[] => {
   const [id, content] = entry;
 
-  if (!isEquipmentUnitId(content.unit) || !isWeaponTier(content.tier) || !isWeaponType(content.type) || !isWeaponSlot(content.slot)) return [];
+  if (!isLoadoutUnitId(content.unit) || !isWeaponTier(content.tier) || !isWeaponType(content.type) || !isWeaponSlot(content.slot)) return [];
 
   return [{
     ...content,
@@ -152,6 +152,6 @@ export const weaponsFromEntry = (entry: [WeaponId, WeaponContent]): Weapon[] => 
     canCrit: content.canCrit ?? true,
     vsMechanical: content.vsMechanical ?? null,
     icon: WEAPON_ICON[id],
-    grants: (content.grants ?? []).filter(isEquipmentAbilityId).map(equipmentAbilityById),
+    grants: (content.grants ?? []).filter(isLoadoutAbilityId).map(loadoutAbilityById),
   }];
 };

@@ -1,7 +1,7 @@
 import type { DeepReadonly } from '@shared/lib/object';
 import { PLACEHOLDER_ICON } from '@shared/ui/placeholder-icon';
 
-import type { EquipmentAbilityId } from '../../model/equipment-abilities';
+import type { LoadoutAbilityId } from '../../model/loadout-abilities';
 import ghostIcon from '../icons/abilities/ability_ghost/ability_ghost@4x.png';
 import stunIcon from '../icons/abilities/ability_stun/ability_stun@4x.png';
 import bulletstormIcon from '../icons/abilities/alien_clusterbomb/alien_clusterbomb@4x.png';
@@ -17,8 +17,8 @@ import sublimatorIcon from '../icons/abilities/mec_collateral_damage/mec_collate
 import damageControlIcon from '../icons/abilities/mec_damage_control/mec_damage_control@4x.png';
 import repulsorIcon from '../icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x.png';
 
-/** Upscaled equipment ability icons by ability id; the placeholder icon for an ability without an original icon. */
-export const EQUIPMENT_ABILITY_ICON: DeepReadonly<Record<EquipmentAbilityId, string>> = {
+/** Upscaled non-perk ability icons by ability id; the placeholder icon for an ability without an original icon. */
+export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>> = {
   'grapple': grappleIcon,
   'advanced-grapple': grappleIcon,
   'damage-control': damageControlIcon,

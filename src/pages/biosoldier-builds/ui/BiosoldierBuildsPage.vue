@@ -3,10 +3,9 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { BIOSOLDIER_CLASSES } from '@entities/soldier';
-import { useBiosoldierBuildsStore } from '@features/manage-builds';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
-import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator } from '@widgets/build-calculator';
+import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator, useBiosoldierBuildsStore } from '@widgets/build-calculator';
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 

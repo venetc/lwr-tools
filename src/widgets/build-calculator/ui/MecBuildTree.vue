@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { MecBuild } from '@features/manage-builds';
-import { useBuildEditor, useMecBuildGroups, useMecBuildsStore } from '@features/manage-builds';
+import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
+import { useMecBuildGroups } from '../model/mec-build-groups';
+import type { MecBuild } from '../model/mec-builds';
+import { useMecBuildsStore } from '../model/mec-builds';
 import BuildPanel from './BuildPanel.vue';
 
 interface Props {

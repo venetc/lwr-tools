@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { useCssModule } from 'vue';
 
-import type { BiosoldierBranch, BiosoldierBuild, BiosoldierBuildGroup } from '@features/manage-builds';
-import { tierIcon, useBiosoldierBuildGroups, useBiosoldierBuildsStore, useBuildEditor } from '@features/manage-builds';
+import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
+import type { BiosoldierBranch, BiosoldierBuildGroup } from '../model/biosoldier-build-groups';
+import { tierIcon, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
+import type { BiosoldierBuild } from '../model/biosoldier-builds';
+import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
 import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
 import BuildPanel from './BuildPanel.vue';
 

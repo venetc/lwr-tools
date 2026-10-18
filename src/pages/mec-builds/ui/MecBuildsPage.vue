@@ -3,10 +3,9 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { MEC_CLASSES } from '@entities/soldier';
-import { useMecBuildsStore } from '@features/manage-builds';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
-import { BuildCalculator, MecBuildTree } from '@widgets/build-calculator';
+import { BuildCalculator, MecBuildTree, useMecBuildsStore } from '@widgets/build-calculator';
 
 const mecBuildsStore = useMecBuildsStore();
 

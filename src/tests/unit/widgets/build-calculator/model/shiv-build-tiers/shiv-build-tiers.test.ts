@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { useShivBuildTiers } from '@features/manage-builds/model/shiv-build-tiers';
+import { useShivBuildTiers } from '@widgets/build-calculator/model/shiv-build-tiers';
 
 import { createBuildMock, FIRST_FILLED_PERKS } from './shiv-build-tiers.mock';
 

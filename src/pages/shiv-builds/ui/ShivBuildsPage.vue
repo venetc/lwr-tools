@@ -2,9 +2,8 @@
 import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
-import { useShivBuildsStore } from '@features/manage-builds';
 import { Button } from '@shared/ui/button';
-import { BuildCalculator, ShivBuildTree } from '@widgets/build-calculator';
+import { BuildCalculator, ShivBuildTree, useShivBuildsStore } from '@widgets/build-calculator';
 
 const shivBuildsStore = useShivBuildsStore();
 

@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { SHIV_BUILD_NAME } from '@entities/shiv';
-import type { ShivBuild } from '@features/manage-builds';
-import { useBuildEditor, useShivBuildGroups, useShivBuildsStore } from '@features/manage-builds';
+import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
+import { useShivBuildGroups } from '../model/shiv-build-groups';
+import type { ShivBuild } from '../model/shiv-builds';
+import { useShivBuildsStore } from '../model/shiv-builds';
 import BuildPanel from './BuildPanel.vue';
 
 interface Props {

@@ -1,17 +1,8 @@
-import type { InjectionKey } from 'vue';
-
 import { TECHNOLOGY_LEVELS } from '@entities/shiv';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerItem } from '@shared/ui/tiered-picker';
 
-import type { BuildStorageCodecs } from '../model/build-storage';
 import { shivPerkPickerItem } from '../model/shiv-perk-picker-item';
-
-/**
- * Injection key of the stored records of builds of every kind. The app provides them: the records are share codes,
- * and the builds know nothing of their format.
- */
-export const BUILD_STORAGE_CODECS_KEY: InjectionKey<DeepReadonly<BuildStorageCodecs>> = Symbol('build-storage-codecs');
 
 /**
  * Prefix of all stored keys of Biosoldier builds. Keys are never changed: a new shape of stored records

@@ -58,8 +58,16 @@ export const useShivBuildsStore = defineStore('build-calculator-shiv-builds', ()
 
   /**
    * Adds a new build with no perk selected.
+   *
+   * @returns id of the new build.
    */
-  const addBuild = () => buildList.addBuild(createShivBuild());
+  const addBuild = () => {
+    const build = createShivBuild();
+
+    buildList.addBuild(build);
+
+    return build.id;
+  };
 
   /**
    * Resets an editable build to a new build with no perk selected; the name stays.

@@ -1,0 +1,101 @@
+@use 'styles/colors';
+@use 'styles/media';
+@use 'styles/shape';
+@use 'styles/typography';
+
+// Below the toasts, so notifications stay visible over an open dialog.
+$z-index: 15;
+
+.overlay {
+  position: fixed;
+  z-index: $z-index;
+  inset: 0;
+  background: colors.$surface-overlay;
+}
+
+.content {
+  position: fixed;
+  z-index: $z-index;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+
+  @include media.wider-than-phone {
+    inset-block-start: 40px;
+    inset-inline-start: 50%;
+    width: min(580px, calc(100vw - 32px));
+    max-height: calc(100dvh - 80px);
+    translate: -50% 0;
+  }
+
+  @include media.phone {
+    inset: 0;
+  }
+}
+
+.frame {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+
+  @include media.wider-than-phone {
+    @include shape.frame(shape.$cut-md, 1px, colors.$accent, colors.$surface-1);
+  }
+
+  @include media.phone {
+    flex: 1;
+    background: colors.$surface-1;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px 12px 16px;
+  border-block-end: 1px solid colors.$border-subtle;
+}
+
+.title {
+  @include typography.heading-4;
+  flex: 1;
+  min-inline-size: 0;
+  margin: 0;
+  color: colors.$text-primary;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  background: none;
+  cursor: pointer;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      color: colors.$text-secondary;
+    }
+
+    &:hover {
+      color: colors.$text-primary;
+    }
+  }
+
+  @include media.with-touch {
+    color: colors.$text-secondary;
+  }
+}
+
+.closeIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-block-size: 0;
+  padding: 14px 16px 16px;
+  overflow-y: auto;
+}

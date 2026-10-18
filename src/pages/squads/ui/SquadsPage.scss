@@ -44,24 +44,6 @@ $grid-gap: 24px;
   gap: $grid-gap;
 }
 
-.addCell {
-  @include typography.caps-3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-block-size: 160px;
-  background: none;
-  border: 1px dashed colors.$border;
-  color: colors.$text-disabled;
-}
-
-.addCellIcon {
-  width: 32px;
-  height: 32px;
-}
-
 .newContent {
   display: flex;
   align-items: center;

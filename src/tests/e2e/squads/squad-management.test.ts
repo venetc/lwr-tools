@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import { addSquad, openSquads, removeSquad, renameSquad, squadItem, squadList } from '../utils/squads';
-import { ADD_UNIT_LABEL, EMPTY_SUMMARY, FIRST_SQUAD, NEW_NAME, SECOND_SQUAD } from './squad-management.mock';
+import { addSquad, addUnitCell, openSquads, removeSquad, renameSquad, squadItem, squadList } from '../utils/squads';
+import { EMPTY_SUMMARY, FIRST_SQUAD, NEW_NAME, SECOND_SQUAD } from './squad-management.mock';
 
 test.describe('Squad management', () => {
   test('opens an empty Squad 1 on the first visit', async ({ page }) => {
@@ -16,10 +16,10 @@ test.describe('Squad management', () => {
     await expect(page.getByRole('main').getByText(EMPTY_SUMMARY, { exact: true })).toBeVisible();
   });
 
-  test('shows only the inactive add cell in an empty Squad', async ({ page }) => {
+  test('shows the add cell in an empty Squad', async ({ page }) => {
     await openSquads(page);
 
-    await expect(page.getByRole('main').getByRole('button', { name: ADD_UNIT_LABEL, exact: true })).toBeDisabled();
+    await expect(addUnitCell(page)).toBeVisible();
   });
 
   test('shows a new name in the Squad list', async ({ page }) => {

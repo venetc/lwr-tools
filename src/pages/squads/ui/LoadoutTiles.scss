@@ -1,0 +1,97 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+$large-image-width: 64px;
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: flex;
+  gap: 4px;
+  min-inline-size: 0;
+  min-block-size: 60px;
+  padding: 4px;
+  background: colors.$surface-base;
+  border-width: 1px;
+}
+
+.large {
+  grid-column: span 2;
+  flex-direction: row;
+  text-align: start;
+}
+
+.small {
+  flex-direction: column;
+  text-align: center;
+}
+
+.filled {
+  align-items: center;
+  border-style: solid;
+  border-color: colors.$border-subtle;
+}
+
+.empty {
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  border-color: colors.$border;
+}
+
+.largeImage {
+  flex: none;
+  inline-size: $large-image-width;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+
+.smallImage {
+  inline-size: 100%;
+  max-inline-size: $large-image-width;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+
+.plus {
+  @include typography.heading-4;
+  color: colors.$border-strong;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-inline-size: 0;
+}
+
+.caption {
+  @include typography.caps-4;
+  font-size: 0.5625rem;
+}
+
+.regularCaption {
+  color: colors.$text-tertiary;
+}
+
+.gearMountCaption {
+  color: colors.$success;
+}
+
+.psiMountCaption {
+  color: colors.$arcane;
+}
+
+.name {
+  @include typography.caption;
+  overflow-wrap: anywhere;
+  color: colors.$text-primary;
+  line-height: 1.15;
+}

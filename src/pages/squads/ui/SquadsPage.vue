@@ -8,8 +8,13 @@ import { ListNav } from '@shared/ui/list-nav';
 import { PageToolbar } from '@shared/ui/page-toolbar';
 
 import { useSquadsPage } from '../model/squads-page';
+import { useUnitCards } from '../model/unit-cards';
+import AddUnitDialog from './AddUnitDialog.vue';
+import UnitCard from './UnitCard.vue';
 
 const { openSquad, name, summary, navItems, switchSquad, addSquad, removeSquad } = useSquadsPage();
+
+const { unitCards, removeUnit } = useUnitCards();
 </script>
 
 <template>
@@ -27,14 +32,14 @@ const { openSquad, name, summary, navItems, switchSquad, addSquad, removeSquad }
       </header>
 
       <div :class="$style.units">
-        <button
-          :class="$style.addCell"
-          type="button"
-          disabled
-        >
-          <Plus :class="$style.addCellIcon" aria-hidden="true" />
-          Add Unit
-        </button>
+        <UnitCard
+          v-for="card in unitCards"
+          :key="card.id"
+          :card="card"
+          @remove="removeUnit(card)"
+        />
+
+        <AddUnitDialog />
       </div>
     </div>
 

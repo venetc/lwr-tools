@@ -111,8 +111,16 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
    * Adds a new build of the class with only the base perk selected.
    *
    * @param soldierClass biosoldier class of the new build.
+   *
+   * @returns id of the new build.
    */
-  const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(createBiosoldierBuild(soldierClass));
+  const addBuild = (soldierClass: SoldierClass) => {
+    const build = createBiosoldierBuild(soldierClass);
+
+    buildList.addBuild(build);
+
+    return build.id;
+  };
 
   /**
    * Resets an editable build to a new build of its class: only the base perk, no gene mods and no psionic abilities; the name stays.

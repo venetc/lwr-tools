@@ -5,5 +5,3 @@ export const SECOND_SQUAD = 'Squad 2';
 export const NEW_NAME = 'Alpha';
 
 export const EMPTY_SUMMARY = '0 Units';
-
-export const ADD_UNIT_LABEL = 'Add Unit';

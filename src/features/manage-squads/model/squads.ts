@@ -6,6 +6,7 @@ import { readLocalStorage, writeLocalStorage } from '@shared/lib/local-storage';
 import { useStoredList } from '@shared/lib/stored-list';
 
 import { OPEN_SQUAD_KEY, SQUAD_KEY_PREFIX, SQUAD_ORDER_KEY } from '../config/constants';
+import type { SquadUnitBuild, UnitLoadout } from './squad';
 import { createSquad, defaultSquads, nextSquadName } from './squad';
 import { parseSquad, serializeSquad } from './squad-record';
 
@@ -94,6 +95,38 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     switchSquad(nextSquad.id);
   };
 
+  /**
+   * Adds a Unit of the build with the Loadout last in the Squad; one build may stand in a Squad more than once.
+   *
+   * @param squadId Squad id.
+   * @param build build the Unit refers to.
+   * @param loadout Loadout of the new Unit; the Unit takes it over.
+   */
+  const addUnit = (squadId: string, build: SquadUnitBuild, loadout: UnitLoadout) => {
+    const squad = squadList.getItem(squadId);
+
+    if (!squad) return;
+
+    squad.units.push({ id: createId(), build: { kind: build.kind, id: build.id }, isOfficer: false, loadout });
+    squadList.markItemChanged(squadId);
+  };
+
+  /**
+   * Removes the Unit from the Squad; its build stays in its Build calculator.
+   *
+   * @param squadId Squad id.
+   * @param unitId Unit id.
+   */
+  const removeUnit = (squadId: string, unitId: string) => {
+    const squad = squadList.getItem(squadId);
+    const index = squad ? squad.units.findIndex(unit => unit.id === unitId) : -1;
+
+    if (!squad || index === -1) return;
+
+    squad.units.splice(index, 1);
+    squadList.markItemChanged(squadId);
+  };
+
   return {
     squads: squadList.items,
     openSquad,
@@ -101,5 +134,7 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     addSquad,
     renameSquad,
     removeSquad,
+    addUnit,
+    removeUnit,
   };
 });

@@ -71,8 +71,16 @@ export const useMecBuildsStore = defineStore('build-calculator-mec-builds', () =
    * Adds a new build of the class with only the base perk selected.
    *
    * @param soldierClass MEC class of the new build.
+   *
+   * @returns id of the new build.
    */
-  const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(createMecBuild(soldierClass));
+  const addBuild = (soldierClass: SoldierClass) => {
+    const build = createMecBuild(soldierClass);
+
+    buildList.addBuild(build);
+
+    return build.id;
+  };
 
   /**
    * Resets an editable build to a new build of its class with only the base perk selected; the name stays.

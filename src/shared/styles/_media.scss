@@ -9,3 +9,18 @@
     @content;
   }
 }
+
+// Phone width and anything wider: mutually exclusive, so a rule for one never overrides the other.
+$phone-max-width: 599.98px;
+
+@mixin phone {
+  @media (max-width: $phone-max-width) {
+    @content;
+  }
+}
+
+@mixin wider-than-phone {
+  @media (min-width: $phone-max-width + 0.02px) {
+    @content;
+  }
+}

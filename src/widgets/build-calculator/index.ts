@@ -1,6 +1,9 @@
 export { useBiosoldierBuildsStore } from './model/biosoldier-builds';
+export type { BiosoldierBuild } from './model/biosoldier-builds';
 export { useMecBuildsStore } from './model/mec-builds';
+export type { MecBuild } from './model/mec-builds';
 export { useShivBuildsStore } from './model/shiv-builds';
+export type { ShivBuild } from './model/shiv-builds';
 export { default as BiosoldierBuildTree } from './ui/BiosoldierBuildTree.vue';
 export { default as BiosoldierClassIcon } from './ui/BiosoldierClassIcon.vue';
 export { default as BuildCalculator } from './ui/BuildCalculator.vue';

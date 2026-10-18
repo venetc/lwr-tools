@@ -1,0 +1,183 @@
+@use 'styles/colors';
+@use 'styles/media';
+@use 'styles/shape';
+@use 'styles/typography';
+
+@mixin -hoverable($idle-background: none) {
+  @include media.with-hover {
+    &:not(:hover) {
+      background: $idle-background;
+    }
+
+    &:hover {
+      background: colors.$surface-2;
+    }
+  }
+
+  @include media.with-touch {
+    background: $idle-background;
+  }
+}
+
+.addCell {
+  @include typography.caps-3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-block-size: 160px;
+  border: 1px dashed colors.$accent;
+  color: colors.$text-accent;
+  clip-path: shape.cut-polygon(shape.$cut-lg);
+  cursor: pointer;
+  @include -hoverable;
+}
+
+.addCellIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-block-start: 4px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.filter {
+  @include typography.label-2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid;
+  cursor: pointer;
+
+  &[data-state='on'] {
+    border-color: colors.$accent;
+    background: colors.$surface-2;
+    color: colors.$text-accent;
+  }
+
+  &[data-state='off'] {
+    border-color: colors.$border;
+    background: none;
+    color: colors.$text-secondary;
+  }
+}
+
+.filterCount {
+  @include typography.caption;
+  color: colors.$text-tertiary;
+}
+
+.note {
+  @include typography.body-2;
+  margin: 0;
+  color: colors.$text-tertiary;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.groupTitle {
+  @include typography.caps-4;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  color: colors.$text-tertiary;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  @include typography.body-1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: 6px 8px;
+  border-block-end: 1px solid colors.$border-subtle;
+  color: colors.$text-primary;
+  text-align: start;
+  cursor: pointer;
+  @include -hoverable;
+}
+
+.rowIcon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.rowName {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  @include typography.caps-4;
+  flex: none;
+  padding: 1px 6px;
+  border: 1px solid colors.$border;
+  color: colors.$text-secondary;
+  white-space: nowrap;
+}
+
+.rowClass {
+  @include typography.body-2;
+  flex: none;
+  color: colors.$text-tertiary;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.option {
+  @include typography.label-2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  inline-size: 100%;
+  min-block-size: 76px;
+  padding: 8px 4px;
+  border: 1px solid colors.$border;
+  color: colors.$text-primary;
+  cursor: pointer;
+  @include -hoverable;
+}
+
+.optionIcon {
+  width: 36px;
+  height: 36px;
+  color: colors.$accent;
+}

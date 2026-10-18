@@ -134,5 +134,125 @@
   "body-shield": {
     "name": "Body Shield",
     "description": "Grants a 50% chance for incoming shots to graze, dealing half their original damage. The nearest visible enemy suffers -20 aim against this unit and cannot critically hit it."
+  },
+  "concussive-blast": {
+    "name": "Concussive Blast",
+    "description": "Damaging an enemy clears their overwatch and has a chance to disorient them equal to the percent of max base HP they lost from this attack."
+  },
+  "explosive-shredder": {
+    "name": "Explosive Shredder",
+    "description": "Applies Shred equal to 2x the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred)."
+  },
+  "disorient": {
+    "name": "Disorient",
+    "description": "Cancels overwatch and suppression, -10 defense, -30 will, -60 aim, -60% ability range, -60% mobility, -60% melee damage, +60% scatter. Lasts 1 turn."
+  },
+  "in-smoke": {
+    "name": "In Smoke",
+    "description": "Units in the area of effect gain In Smoke [-10 aim, +30 def, prevents extra crit from exposed, and does not trigger reaction shots -- aim/def affects psi as well]. Lasts through 1 enemy turn."
+  },
+  "corroded": {
+    "name": "Corroded",
+    "description": "Disables passive healing, reduces base DR by half, strips 2 + 10% of armor HP at start of turn, -20 aim, -20% mobility, and -20% range for AoE attacks; lasts 3 turns. The acid can be removed by a Medikit."
+  },
+  "shadow": {
+    "name": "Shadow",
+    "description": "A single target within the AoE is cleansed of holo and is temporarily Shadowed (rendering them invisible to the enemy) until the start of their next turn. Performing any action removes the shadow. Attacking while shadowed provides +30% critical hit chance. Does not affect this unit, units capable of flight, hidden units, panicking units, units in One For All, or units in Ghost Armor."
+  },
+  "heal": {
+    "name": "Heal",
+    "description": "Use a Medikit to heal 4 missing HP and remove corrosion on a biosoldier."
+  },
+  "stabilize": {
+    "name": "Stabilize",
+    "description": "Prevent a critically wounded biosoldier or MEC from bleeding out."
+  },
+  "stimmed": {
+    "name": "Stimmed",
+    "description": "+2 regeneration, +2.0 mobility, +20 aim, +20 will, and immunity to fatigued/exhausted for 4 turns."
+  },
+  "dense-carapace": {
+    "name": "Dense Carapace",
+    "description": "Reduces melee damage taken by 30%."
+  },
+  "corrosion-resistance": {
+    "name": "Corrosion Resistance",
+    "description": "Corrosion only lasts a single turn."
+  },
+  "squadsight": {
+    "name": "Squadsight",
+    "description": "Allows firing with long-range weapons around some obstacles and beyond 18 tiles at targets with a spotter (a unconcealed ally at 0 AP that can see the target). Grants +2 aim per ally (+8 per scout) that can see the target and -5 aim for each tile beyond 18.Does not apply to overwatch or reaction shots."
+  },
+  "shadowstep": {
+    "name": "Shadowstep",
+    "description": "This unit gains +0.6 mobility and does not trigger reaction shots or pursuit when walking (not dashing). After repositioning, shots gain +25% crit damage until next turn."
+  },
+  "platform-stability": {
+    "name": "Platform Stability",
+    "description": "If this soldier is on the ground and has not moved, they gain: +15 aim, -80% rocket scatter, and +1 damage to suppressive fire. Prevents damage from breaking a steadied weapon. Allows steadying of SAWs and LMGs."
+  },
+  "breach": {
+    "name": "Breach",
+    "description": "Against targets within 4 tiles, the primary weapon deals +1 damage and its shots do not graze."
+  },
+  "shred-resistance": {
+    "name": "Shred Resistance",
+    "description": "Applications of shred on this unit have a quarter the effect."
+  },
+  "tracker": {
+    "name": "Tracker",
+    "description": "This unit passively uncloaks seekers within 6 tiles through walls/obstacles. Provides immunity to strangulation."
+  },
+  "unphased-mobility": {
+    "name": "Unphased Mobility",
+    "description": "Sets unit mobility to 8.6 and ignores all mobility modifying effects."
+  },
+  "psiscopic-vision": {
+    "name": "Psiscopic Vision",
+    "description": "Grants +15 aim to non-reaction shots if a psionic ally can also see the target."
+  },
+  "conduit": {
+    "name": "Conduit",
+    "description": "Reduces accumulation of fatigue by 20%."
+  },
+  "holo-sync": {
+    "name": "Holo Sync",
+    "description": "Non-reaction shots gain 2x the bonus from Holo (3x if this unit has Holo Rounds)."
+  },
+  "incineration": {
+    "name": "Incineration",
+    "description": "Flamethrowers apply 10 shred to any target they damage."
+  },
+  "sprinter": {
+    "name": "Sprinter",
+    "description": "Grants +1.3 mobility and +10 defense. Doubles damage from Ram."
+  },
+  "psionic-resistance": {
+    "name": "Psionic Resistance",
+    "description": "Decreases the mind fray/rend damage dealt to this unit by 50%. If this unit panics, it only lasts a single turn. This unit's actions will not trigger countercharge."
+  },
+  "awareness": {
+    "name": "Awareness",
+    "description": "A state of constant alertness grants this unit +20 defense at all times."
+  },
+  "cognitive-enhancement": {
+    "name": "Cognitive Enchancement",
+    "description": "Provides a 10% chance for all end-in-idle actions to cost 0 AP."
+  },
+  "penetrator": {
+    "name": "Penetrator",
+    "description": "The primary weapon gains +15 penetration."
+  },
+  "flak": {
+    "name": "Flak",
+    "description": "Shots from the primary weapon ignore half of the 30 defense bonus flying targets receive. Non-reaction standard shots from the primary weapon deal 1 damage to all flying units within 4 tiles of the primary target."
+  },
+  "gravity-well": {
+    "name": "Gravity Well",
+    "description": "Affects all units within 4 tiles of the mine reducing their defense by 10. Any unit that starts their turn in the gravity well will take damage that bypasses DR equal to 10% of their current HP."
+  },
+  "mist": {
+    "name": "Mist",
+    "description": "Heals all units within 2 tiles of this unit for 5 HP."
   }
 }

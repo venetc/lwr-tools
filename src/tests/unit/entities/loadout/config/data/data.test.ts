@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { ARMOR_CONTENT } from '@entities/loadout/config/constants/armor-content';
+import { EQUIPMENT_CONTENT } from '@entities/loadout/config/constants/equipment-content';
 import { LOADOUT_ABILITY_CONTENT } from '@entities/loadout/config/constants/loadout-ability-content';
 import { LOADOUT_UNIT_CONTENT } from '@entities/loadout/config/constants/loadout-unit-content';
 import { SHIV_TYPE_CONTENT } from '@entities/loadout/config/constants/shiv-type-content';
@@ -16,6 +17,7 @@ describe('loadout content data', () => {
       armors: ARMOR_CONTENT,
       shivTypes: SHIV_TYPE_CONTENT,
       weapons: WEAPON_CONTENT,
+      equipment: EQUIPMENT_CONTENT,
     };
 
     const result = loadoutContentSchema.safeParse(content);

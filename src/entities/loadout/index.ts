@@ -1,7 +1,9 @@
 export { ARMORS } from './config/constants/armors';
+export { EQUIPMENT } from './config/constants/equipment';
 export { SHIV_TYPES } from './config/constants/shiv-types';
 export { WEAPONS } from './config/constants/weapons';
 export type { Armor, ArmorCategory, ArmorId } from './model/armors';
+export type { Equipment, EquipmentId, EquipmentSlot, EquipmentStackGroup, EquipmentStat } from './model/equipment';
 export type { LoadoutAbility, LoadoutAbilityId } from './model/loadout-abilities';
 export type { LoadoutRequirement } from './model/loadout-requirements';
 export type { LoadoutUnitId } from './model/loadout-units';

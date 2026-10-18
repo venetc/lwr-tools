@@ -1,0 +1,1800 @@
+{
+  "he-grenade": {
+    "code": 1,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "HE Grenade",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "6 (+2 upg)"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "35"
+      },
+      {
+        "name": "Pen",
+        "value": "0"
+      },
+      {
+        "name": "Range",
+        "value": "8"
+      },
+      {
+        "name": "Radius",
+        "value": "2.5"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "HE grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by all Biosoldiers. Destructive grenade.",
+    "grants": [
+      "concussive-blast"
+    ]
+  },
+  "ap-grenade": {
+    "code": 2,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "AP Grenade",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "3 (+1 upg)"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "0"
+      },
+      {
+        "name": "Pen",
+        "value": "30"
+      },
+      {
+        "name": "Range",
+        "value": "10"
+      },
+      {
+        "name": "Radius",
+        "value": "1.5"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Highly effective at penetrating armored or hardened targets. Targets in cover relative to center of blast radius will not take damage. Targets within the AoE become shredded. AP grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by all Biosoldiers. Destructive grenade.",
+    "grants": [
+      "concussive-blast",
+      "explosive-shredder"
+    ]
+  },
+  "concussion-grenade": {
+    "code": 3,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Concussion Grenade",
+    "stackGroup": "disorient-grenade",
+    "stats": [
+      {
+        "name": "Range",
+        "value": "12"
+      },
+      {
+        "name": "Radius",
+        "value": "1.5"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Disorients targets and applies debuffs. Cancels enemy overwatch and suppression. Provides a means of crowd control. Leaves targets vulnerable to further attacks. Mechanical targets are immune. Equippable by all Biosoldiers. Support grenade.",
+    "grants": [
+      "disorient"
+    ]
+  },
+  "smoke-grenade": {
+    "code": 4,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Smoke Grenade",
+    "stats": [
+      {
+        "name": "Range",
+        "value": "14"
+      },
+      {
+        "name": "Radius",
+        "value": "2.5"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Using a Smoke Grenade does not trigger reaction fire. Equippable by all Biosoldiers. Support grenade.",
+    "grants": [
+      "in-smoke"
+    ]
+  },
+  "battle-scanner": {
+    "code": 5,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Battle Scanner",
+    "classes": [
+      "scout"
+    ],
+    "stats": [
+      {
+        "name": "Range",
+        "value": "10"
+      },
+      {
+        "name": "Radius",
+        "value": "12"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      },
+      {
+        "name": "Scanners",
+        "value": "1"
+      }
+    ],
+    "info": "Using a battle scanner does not trigger reaction fire. Scanning device that extends sight range and helps with targeting of hostile forces. Deployed by throwing like a grenade. Provides +20 aim and crit on attacks against targets within a 12 tile radius. Lasts until the end of the turn. Contains 1 scanner. Equippable by Scout only. Scanning Mechanical Device."
+  },
+  "alien-grenade": {
+    "code": 6,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Alien Grenade",
+    "stackGroup": "alien-grenade",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "9"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "35"
+      },
+      {
+        "name": "Pen",
+        "value": "0"
+      },
+      {
+        "name": "Range",
+        "value": "10"
+      },
+      {
+        "name": "Radius",
+        "value": "2"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Alien grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by all Biosoldiers. Destructive grenade.",
+    "grants": [
+      "concussive-blast"
+    ]
+  },
+  "plasma-grenade": {
+    "code": 7,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Plasma Grenade",
+    "stackGroup": "alien-grenade",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "12"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "35"
+      },
+      {
+        "name": "Pen",
+        "value": "0"
+      },
+      {
+        "name": "Range",
+        "value": "10"
+      },
+      {
+        "name": "Radius",
+        "value": "2"
+      },
+      {
+        "name": "Weight",
+        "value": "1.3"
+      }
+    ],
+    "info": "Plasma grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Cannot be equipped alongside alien grenades due to the volatile and unstable nature of their internal plasma cells causing unintended self detonation when in close proximity to each other. Equippable by all Biosoldiers. Destructive grenade."
+  },
+  "acid-grenade": {
+    "code": 8,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Acid Grenade",
+    "stats": [
+      {
+        "name": "Range",
+        "value": "10"
+      },
+      {
+        "name": "Radius",
+        "value": "2.5"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Creates an acidic cloud covering a 5 x 5 tile square (centered on targeted tile) with corner tiles not receiving acid (resembling a circle). The acidic AoE will either fully occupy or not occupy a tile. Targets caught within the AoE become corroded. Lasts until the end of turn. Equippable by all Biosoldiers. Support grenade.",
+    "grants": [
+      "corroded"
+    ]
+  },
+  "shadow-grenade": {
+    "code": 9,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Shadow Grenade",
+    "stats": [
+      {
+        "name": "Range",
+        "value": "8"
+      },
+      {
+        "name": "Radius",
+        "value": "2.0"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Cleanses holo, grants combat readiness, and temporarily shadows a friendly unit from a distance. Shadow lasts until the start of the target unit's next turn. Taking any action removes the Shadow. Attacking while Shadowed provides +30% critical hit chance. Equipable by all biosoldiers. Support Grenade.",
+    "grants": [
+      "shadow"
+    ]
+  },
+  "psi-grenade": {
+    "code": 10,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Psi Grenade",
+    "requires": "psionic",
+    "stackGroup": "disorient-grenade",
+    "stats": [
+      {
+        "name": "Range",
+        "value": "12"
+      },
+      {
+        "name": "Radius",
+        "value": "3.0"
+      },
+      {
+        "name": "Grenades",
+        "value": "2"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Disorients targets and applies debuffs. Cancels enemy overwatch and suppression. Cannot be equipped with regular concussion grenades (causes psionic charges to leak). Mechanical targets are immune. Equippable by Psi only. Support grenade.",
+    "grants": [
+      "disorient"
+    ]
+  },
+  "medikit": {
+    "code": 11,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Medikit",
+    "stats": [
+      {
+        "name": "HP Restored",
+        "value": "4"
+      },
+      {
+        "name": "Range",
+        "value": "2"
+      },
+      {
+        "name": "Charges",
+        "value": "1 (one use per turn)"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Used to stabilize a critically wounded biosoldier or MEC. Used to remove corrosion or heal biosoldiers (not MECs or SHIVs). Equippable by all Biosoldiers.",
+    "grants": [
+      "heal",
+      "stabilize"
+    ]
+  },
+  "combat-stims": {
+    "code": 12,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Combat Stims",
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Requires 0 AP to use. Limited to 1 per soldier. Equippable by all Biosoldiers.",
+    "grants": [
+      "stimmed"
+    ]
+  },
+  "chitin-plating": {
+    "code": 13,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Chitin Plating",
+    "requires": "gene-mod",
+    "isPassive": true,
+    "stackGroup": "plating",
+    "stats": [
+      {
+        "name": "HP",
+        "value": "+3"
+      },
+      {
+        "name": "Base DR",
+        "value": "+5"
+      },
+      {
+        "name": "Crit Resist",
+        "value": "+15"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Provides immunity to strangulation. Equippable by genetically modified soldiers only.",
+    "grants": [
+      "dense-carapace",
+      "corrosion-resistance"
+    ]
+  },
+  "alloy-plating": {
+    "code": 14,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Alloy Plating",
+    "isPassive": true,
+    "stackGroup": "plating",
+    "stats": [
+      {
+        "name": "HP",
+        "value": "+4"
+      },
+      {
+        "name": "Crit Resist",
+        "value": "+5"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Increases HP. Equippable by all Biosoldiers."
+  },
+  "psi-frayer": {
+    "code": 15,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Psi Frayer",
+    "requires": "psionic",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Will",
+        "value": "+20"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Resets the cooldown of Mind Fray after each use. Prevents strangulation. Equippable by Psi only."
+  },
+  "respirator-implant": {
+    "code": 16,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Respirator Implant",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Mob",
+        "value": "+1.3"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Prevents unit dying on first drop to 0 HP. Increases bleedout timer by 2 turns and exposes the value. Provides immunity to strangulation. Designed to fit with all armors. Limited to 1 per soldier. Equippable by all Biosoldiers."
+  },
+  "prediction-computer": {
+    "code": 17,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Prediction Computer",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "+2 (Reaction Fire Only)"
+      },
+      {
+        "name": "Pen",
+        "value": "+10 (Reaction Fire Only)"
+      },
+      {
+        "name": "Def",
+        "value": "+10"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Equippable by all units."
+  },
+  "marksman-scope": {
+    "code": 18,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Marksman Scope",
+    "classes": [
+      "scout"
+    ],
+    "isPassive": true,
+    "stackGroup": "scope",
+    "primaryTypes": [
+      "strike-rifle"
+    ],
+    "stats": [
+      {
+        "name": "Aim",
+        "value": "+5"
+      },
+      {
+        "name": "Crit",
+        "value": "+35"
+      },
+      {
+        "name": "Crit Dmg",
+        "value": "+35%"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Allows targeting enemies beyond normal visual range. Cannot be equipped alongside other scopes. Equippable by Scouts with Strike Rifles only.",
+    "grants": [
+      "squadsight"
+    ]
+  },
+  "airburst-actuators": {
+    "code": 19,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Airburst Actuators",
+    "classes": [
+      "rocketeer"
+    ],
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Rocket Scatter",
+        "value": "-25%"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Increases damage that rockets deal to airborne targets by 25%."
+  },
+  "javelin-rocket": {
+    "code": 20,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Javelin Rocket",
+    "classes": [
+      "rocketeer"
+    ],
+    "stats": [
+      {
+        "name": "Bonus Weapon Dmg",
+        "value": "+50%"
+      },
+      {
+        "name": "Radius",
+        "value": "1"
+      },
+      {
+        "name": "Rockets",
+        "value": "1"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Deals +50% base weapon damage. Scatter is reduced by 80%. Has a 1 tile radius. Does not destroy cover. Shreds targets within the radius. Javelin Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by Rocketeer only.",
+    "grants": [
+      "concussive-blast",
+      "explosive-shredder"
+    ]
+  },
+  "high-cap-mags": {
+    "code": 21,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "High-Cap Mags",
+    "isPassive": true,
+    "stackGroup": "ammo-capacity",
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg",
+      "shotgun",
+      "saw",
+      "lmg",
+      "strike-rifle",
+      "sniper-rifle",
+      "mec-weapon",
+      "autocannon",
+      "vulcan-cannon",
+      "stun-rifle"
+    ],
+    "stats": [
+      {
+        "name": "Primary Weapon Ammo",
+        "value": "+1"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Increases primary weapon ammo count by +1. Does not apply to arc weapons. Equippable by all Biosoldiers."
+  },
+  "chameleon-vest": {
+    "code": 22,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Chameleon Vest",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Crit",
+        "value": "+5"
+      },
+      {
+        "name": "Def",
+        "value": "+5"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Equippable by all Biosoldiers.",
+    "grants": [
+      "shadowstep"
+    ]
+  },
+  "ceramic-plating": {
+    "code": 23,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Ceramic Plating",
+    "isPassive": true,
+    "stackGroup": "plating",
+    "stats": [
+      {
+        "name": "HP",
+        "value": "+2"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Offers enhanced protection with reduced mobility. Equippable by all Biosoldiers."
+  },
+  "drum-mags": {
+    "code": 24,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Drum Mags",
+    "isPassive": true,
+    "stackGroup": "ammo-capacity",
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg"
+    ],
+    "stats": [
+      {
+        "name": "Ammo",
+        "value": "+3"
+      },
+      {
+        "name": "Weight",
+        "value": "1.3"
+      }
+    ],
+    "info": "Increases ammo capacity for SMGs, assault rifles, carbines, and battle rifles. Affects primary weapons only. Equippable by all Biosoldiers except rookies."
+  },
+  "alloy-bipod": {
+    "code": 25,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Alloy Bipod",
+    "classes": [
+      "sniper",
+      "scout",
+      "gunner",
+      "rocketeer"
+    ],
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Improves accuracy for stationary units. Equippable by Sniper, Scout, Gunner, Rocketeer.",
+    "grants": [
+      "platform-stability"
+    ]
+  },
+  "breaching-ammo": {
+    "code": 26,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Breaching Ammo",
+    "isPassive": true,
+    "stackGroup": "ammo-type",
+    "primaryTiers": [
+      "laser",
+      "pulse"
+    ],
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Harder-hitting, graze-proof close-range rounds for laser and pulse tiers of weapons. Applies to primary weapons only. Cannot be combined with Reaper Ammo. Equippable by anyone with laser or pulse primary weapons.",
+    "grants": [
+      "breach"
+    ]
+  },
+  "regenerative-plating": {
+    "code": 27,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Regenerative Plating",
+    "isPassive": true,
+    "stackGroup": "plating",
+    "stats": [
+      {
+        "name": "Base DR",
+        "value": "+5"
+      },
+      {
+        "name": "Crit Resist",
+        "value": "+10"
+      },
+      {
+        "name": "HP Restored (On 3+ Dmg)",
+        "value": "1"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Increases survivability through an automated self-repairing system. Heals 1 HP upon taking 3 or more damage. Equippable by all Biosoldiers.",
+    "grants": [
+      "shred-resistance"
+    ]
+  },
+  "proximity-sensor": {
+    "code": 28,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Proximity Sensor",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Range",
+        "value": "12"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Provides active and passive detection of aliens that are hidden using various means via on-screen radar display. Integrated enemy detection system. Equippable by all Biosoldiers.",
+    "grants": [
+      "tracker"
+    ]
+  },
+  "walker-servos": {
+    "code": 29,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Walker Servos",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "2.0 (not applicable)"
+      }
+    ],
+    "info": "Exoskeletal legs that provide an alternative source of mobility. Equippable by all Biosoldiers.",
+    "grants": [
+      "unphased-mobility"
+    ]
+  },
+  "neural-scope": {
+    "code": 30,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Neural Scope",
+    "requires": "psionic",
+    "isPassive": true,
+    "stackGroup": "scope",
+    "stats": [
+      {
+        "name": "Aim",
+        "value": "+10"
+      },
+      {
+        "name": "Crit",
+        "value": "+10"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Increases accuracy and improves critical hit chances. Cannot be equipped alongside other scopes. Equippable by Psi only.",
+    "grants": [
+      "psiscopic-vision"
+    ]
+  },
+  "shredder-ammo": {
+    "code": 31,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Shredder Ammo",
+    "classes": [
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
+    "isPassive": true,
+    "stackGroup": "ammo-type",
+    "primaryTiers": [
+      "ballistic",
+      "gauss"
+    ],
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "1.3"
+      }
+    ],
+    "info": "Increases damage enemies hit from primary weapon receive. Targets hit become shredded. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "grants": [
+      "shredder"
+    ]
+  },
+  "psi-defender": {
+    "code": 32,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Psi Defender",
+    "requires": "psionic",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "DR",
+        "value": "+10% (when protected by cover)"
+      },
+      {
+        "name": "Crit Resist",
+        "value": "+10 (when protected by cover)"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Offers increased protection when adjacent to cover. Equippable by Psi only."
+  },
+  "conduit": {
+    "code": 33,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Conduit",
+    "requires": "psionic",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Damage",
+        "value": "+1 (to all weapons and equipment)"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Powerful psionic device that allows a user to harness and channel raw psionic energy. Equippable by Psi only.",
+    "grants": [
+      "conduit"
+    ]
+  },
+  "reinforced-plating": {
+    "code": 34,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Reinforced Plating",
+    "isPassive": true,
+    "stackGroup": "plating",
+    "stats": [
+      {
+        "name": "HP",
+        "value": "+3"
+      },
+      {
+        "name": "Base DR",
+        "value": "+10"
+      },
+      {
+        "name": "Crit Resist",
+        "value": "+20"
+      },
+      {
+        "name": "Def",
+        "value": "-10"
+      },
+      {
+        "name": "Weight",
+        "value": "1.3"
+      }
+    ],
+    "info": "Offers enhanced protection through increased armor and damage reduction. Equippable by all Biosoldiers."
+  },
+  "neuroregulator": {
+    "code": 35,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "Neuroregulator",
+    "requires": "psionic",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Will",
+        "value": "+15"
+      },
+      {
+        "name": "Mob",
+        "value": "+2.6"
+      },
+      {
+        "name": "Exp",
+        "value": "+100% (Psi)"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "This equipment never requires repairs. Enhances a soldiers mental fortitude. Increases psi experience gained during combat. Equippable by Psi only."
+  },
+  "ar-targeter": {
+    "code": 36,
+    "units": [
+      "biosoldier"
+    ],
+    "slot": "utility",
+    "name": "AR Targeter",
+    "isPassive": true,
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg"
+    ],
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Amplifies the holo effect. Affects SMGs, assault rifles, carbines, and battle rifles. Equippable by all biosoldiers.",
+    "grants": [
+      "holo-sync"
+    ]
+  },
+  "the-thumper": {
+    "code": 37,
+    "units": [
+      "mec"
+    ],
+    "slot": "utility",
+    "name": "The Thumper",
+    "isPassive": true,
+    "requiredModule": "kinetic-strike-module",
+    "stats": [
+      {
+        "name": "KSM Dmg",
+        "value": "+10"
+      },
+      {
+        "name": "KSM Pen",
+        "value": "+20"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Triples damage against Plasma Shields. Increased damage for the Kinetic Strike Modules. Equippable by MECs only."
+  },
+  "incinerator-amp": {
+    "code": 38,
+    "units": [
+      "mec"
+    ],
+    "slot": "utility",
+    "name": "Incinerator Amp",
+    "isPassive": true,
+    "requiredModule": "flamethrower",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "+2 (Flamethrower)"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Enhances weapon damage for MEC flamethrower. Equippable by MECs only.",
+    "grants": [
+      "incineration"
+    ]
+  },
+  "elerium-turbos": {
+    "code": 39,
+    "units": [
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Elerium Turbos",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Provides greatly enhanced mobility for mechanical units. Equippable by SHIVs only.",
+    "grants": [
+      "sprinter"
+    ]
+  },
+  "motion-tracker": {
+    "code": 40,
+    "units": [
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Motion Tracker",
+    "stats": [
+      {
+        "name": "Range",
+        "value": "24"
+      },
+      {
+        "name": "Charges",
+        "value": "2"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Provides active and passive detection of target and ally units. Actively detected units/items are shown via on-screen radar display. Allies are colored blue, aliens/meld-enhanced humans red, civilians white, bombs/active plasma bomb power nodes green and meld canisters are yellow. Equippable by SHIVs only. Max 1 per unit."
+  },
+  "battle-computer": {
+    "code": 41,
+    "units": [
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Battle Computer",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Aim",
+        "value": "+15"
+      },
+      {
+        "name": "Crit",
+        "value": "+15"
+      },
+      {
+        "name": "Def",
+        "value": "+15"
+      },
+      {
+        "name": "Weight",
+        "value": "1.3"
+      }
+    ],
+    "info": "Increases both offensive and defensive capabilities. Equipable by MEC and SHIV only."
+  },
+  "heavy-mags": {
+    "code": 42,
+    "units": [
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Heavy Mags",
+    "isPassive": true,
+    "stackGroup": "ammo-capacity",
+    "stats": [
+      {
+        "name": "Pen",
+        "value": "+10"
+      },
+      {
+        "name": "Primary Weapon Ammo",
+        "value": "+2"
+      },
+      {
+        "name": "Weight",
+        "value": "1.3"
+      }
+    ],
+    "info": "Increases penetration and ammo capacity for MEC/SHIV units. Equippable by mechanized units only."
+  },
+  "core-plating": {
+    "code": 43,
+    "units": [
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Core Plating",
+    "isPassive": true,
+    "stackGroup": "plating",
+    "stats": [
+      {
+        "name": "HP",
+        "value": "+4"
+      },
+      {
+        "name": "Base DR",
+        "value": "+5"
+      },
+      {
+        "name": "Crit Resist",
+        "value": "+25"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "This equipment never requires repairs. Offers enhanced protection with reduced mobility. Equippable by mechanized units only.",
+    "grants": [
+      "corrosion-resistance",
+      "shred-resistance"
+    ]
+  },
+  "alloy-carbide-plating": {
+    "code": 44,
+    "units": [
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Alloy Carbide Plating",
+    "isPassive": true,
+    "stackGroup": "plating",
+    "stats": [
+      {
+        "name": "HP",
+        "value": "+3"
+      },
+      {
+        "name": "Crit Resist",
+        "value": "+20"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Improved survivability for mechanized units. Equippable by mechanized units only.",
+    "grants": [
+      "corrosion-resistance"
+    ]
+  },
+  "alien-trophy": {
+    "code": 45,
+    "units": [
+      "biosoldier",
+      "mec"
+    ],
+    "slot": "utility",
+    "name": "Alien Trophy",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Exp",
+        "value": "+15%"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Equippable by all soldiers.",
+    "grants": [
+      "psionic-resistance"
+    ]
+  },
+  "cognitive-enhancer": {
+    "code": 46,
+    "units": [
+      "biosoldier",
+      "mec"
+    ],
+    "slot": "utility",
+    "name": "Cognitive Enhancer",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Will",
+        "value": "+10"
+      },
+      {
+        "name": "Exp",
+        "value": "+70%"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "This equipment never requires repairs. Improves defensive capabilities. Enhances mental fortitude. Increases experience gained during combat. Cannot be equipped by anyone at Private rank. Equippable by all soldiers.",
+    "grants": [
+      "awareness",
+      "cognitive-enhancement"
+    ]
+  },
+  "scope": {
+    "code": 47,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "SCOPE",
+    "isPassive": true,
+    "stackGroup": "scope",
+    "stats": [
+      {
+        "name": "Aim",
+        "value": "+10"
+      },
+      {
+        "name": "Crit",
+        "value": "+10"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Increases accuracy for primary weapons only. Cannot be used alongside other scopes. Equippable by all units."
+  },
+  "reaper-ammo": {
+    "code": 48,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Reaper Ammo",
+    "isPassive": true,
+    "stackGroup": "ammo-type",
+    "primaryTiers": [
+      "laser",
+      "pulse"
+    ],
+    "stats": [
+      {
+        "name": "Crit",
+        "value": "+10"
+      },
+      {
+        "name": "Crit Dmg",
+        "value": "+35%"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Provides increased critical damage for laser and pulse tiers of weapons. Doubles the weapon range penalty for shotguns, strike and sniper rifles. Applies to primary weapons only. Cannot be combined with Breaching Ammo. Equippable by anyone with laser or pulse primary weapons."
+  },
+  "alloy-enhanced-rounds": {
+    "code": 49,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Alloy Enhanced Rounds",
+    "isPassive": true,
+    "primaryTiers": [
+      "ballistic",
+      "gauss"
+    ],
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "+1"
+      },
+      {
+        "name": "Pen",
+        "value": "+5"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Provides increased damage to shots from ballistic and gauss tiers of weapons. Applies to primary weapons only. Equippable by all soldiers."
+  },
+  "enhanced-beam-optics": {
+    "code": 50,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Enhanced Beam Optics",
+    "isPassive": true,
+    "primaryTiers": [
+      "laser",
+      "pulse"
+    ],
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "+1"
+      },
+      {
+        "name": "Aim",
+        "value": "+5"
+      },
+      {
+        "name": "Crit",
+        "value": "+5"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Provides increased damage to shots from laser and pulse tiers of weapons. Applies to primary weapons only. Equippable by all soldiers."
+  },
+  "plasma-stellerator": {
+    "code": 51,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Plasma Stellerator",
+    "isPassive": true,
+    "primaryTiers": [
+      "plasma"
+    ],
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "+1"
+      },
+      {
+        "name": "Pen",
+        "value": "+10"
+      },
+      {
+        "name": "Aim",
+        "value": "+10"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "This equipment never requires repairs. Equippable by all soldiers with primary plasma weapons."
+  },
+  "laser-sight": {
+    "code": 52,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Laser Sight",
+    "isPassive": true,
+    "stats": [
+      {
+        "name": "Crit",
+        "value": "+20"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "Offers increased critical hit chance for primary weapons. Equippable by all units."
+  },
+  "armor-piercing-ammo": {
+    "code": 53,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Armor Piercing Ammo",
+    "isPassive": true,
+    "stackGroup": "ammo-type",
+    "primaryTiers": [
+      "ballistic",
+      "gauss"
+    ],
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg",
+      "shotgun",
+      "saw",
+      "lmg",
+      "mec-weapon",
+      "autocannon",
+      "vulcan-cannon",
+      "arc-rifle",
+      "stun-rifle"
+    ],
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Enhanced penetration for ballistic and gauss tiers of weapons. Applies to assault rifles, carbines, battle rifles, shotguns, SAWs, LMGs, and SMGs. Applies to MEC/SHIV weapons. Equippable by all soldiers.",
+    "grants": [
+      "penetrator"
+    ]
+  },
+  "illuminator-scope": {
+    "code": 54,
+    "units": [
+      "biosoldier",
+      "mec"
+    ],
+    "slot": "utility",
+    "name": "Illuminator Scope",
+    "isPassive": true,
+    "stackGroup": "scope",
+    "stats": [
+      {
+        "name": "Aim",
+        "value": "+10"
+      },
+      {
+        "name": "Crit",
+        "value": "+30"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      }
+    ],
+    "info": "This equipment never requires repairs. Increased weapon accuracy. Applies to primary weapons only. Cannot be equipped alongside other scopes. Equippable by all soldiers."
+  },
+  "flak-ammo": {
+    "code": 55,
+    "units": [
+      "biosoldier",
+      "mec",
+      "shiv"
+    ],
+    "slot": "utility",
+    "name": "Flak Ammo",
+    "isPassive": true,
+    "stackGroup": "ammo-type",
+    "primaryTiers": [
+      "ballistic",
+      "gauss"
+    ],
+    "stats": [
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Defense mitigation against flying targets. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only. Equippable by all soldiers.",
+    "grants": [
+      "flak"
+    ]
+  },
+  "flamethrower": {
+    "code": 56,
+    "units": [
+      "mec"
+    ],
+    "slot": "module",
+    "name": "Flamethrower",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "7"
+      },
+      {
+        "name": "Range",
+        "value": "9"
+      },
+      {
+        "name": "Ammo",
+        "value": "2"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Burns the area the MEC can see and that is within the aiming template. Does not break Cloak. Bypasses all damage resistance. Flame will then spill up to 1 tile further, if unimpeded. Affected units have a 35% chance to panic (will test 60) and move. Does not affect mechanical or flame resistant units. Equippable by MEC only."
+  },
+  "kinetic-strike-module": {
+    "code": 57,
+    "units": [
+      "mec"
+    ],
+    "slot": "module",
+    "name": "Kinetic Strike Module",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "20"
+      },
+      {
+        "name": "Pen",
+        "value": "0 (+10 upg)"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "500"
+      },
+      {
+        "name": "Range",
+        "value": "Adjacent"
+      },
+      {
+        "name": "Weightless",
+        "value": ""
+      },
+      {
+        "name": "Charges",
+        "value": "1 per turn"
+      }
+    ],
+    "info": "Melee attachment for MEC units. Can only be used once per turn. Offers high damage capable of destroying most cover objects. Equippable by MECs only."
+  },
+  "gravity-mine-launcher": {
+    "code": 58,
+    "units": [
+      "mec"
+    ],
+    "slot": "module",
+    "name": "Gravity Mine Launcher",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "20"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "35"
+      },
+      {
+        "name": "Range",
+        "value": "8"
+      },
+      {
+        "name": "Radius",
+        "value": "4"
+      },
+      {
+        "name": "Rounds",
+        "value": "2"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Deploys a timed gravity mine remotely. The mine detonates automatically at the end of XCOM's next turn. Before detonation it creates a gravity well that slows the mobility of all units that stop within its area of effect. The gravity mine does full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by MECs only. Destructive grenade.",
+    "grants": [
+      "gravity-well",
+      "concussive-blast"
+    ]
+  },
+  "electropulse": {
+    "code": 59,
+    "units": [
+      "mec"
+    ],
+    "slot": "module",
+    "name": "Electropulse",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "3 (non-modifiable)"
+      },
+      {
+        "name": "Range",
+        "value": "Self"
+      },
+      {
+        "name": "Radius",
+        "value": "8"
+      },
+      {
+        "name": "Weight",
+        "value": "1.3"
+      },
+      {
+        "name": "Cooldown",
+        "value": "3"
+      }
+    ],
+    "info": "EMP burst that damages all enemy units and clears their overwatch status. Bypasses all damage resistance. Does not trigger reaction fire. Equippable by MECs only."
+  },
+  "grenade-launcher": {
+    "code": 60,
+    "units": [
+      "mec"
+    ],
+    "slot": "module",
+    "name": "Grenade Launcher",
+    "stackGroup": "launcher",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "10"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "35"
+      },
+      {
+        "name": "Range",
+        "value": "10"
+      },
+      {
+        "name": "Radius",
+        "value": "2.5"
+      },
+      {
+        "name": "Rounds",
+        "value": "4"
+      },
+      {
+        "name": "Weight",
+        "value": "2.0"
+      }
+    ],
+    "info": "Cannot be equipped with the Advanced Launcher. Provides MEC units with grenade capabilities. Grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by MECs only. Destructive grenade.",
+    "grants": [
+      "concussive-blast"
+    ]
+  },
+  "advanced-launcher": {
+    "code": 61,
+    "units": [
+      "mec"
+    ],
+    "slot": "module",
+    "name": "Advanced Launcher",
+    "stackGroup": "launcher",
+    "stats": [
+      {
+        "name": "Dmg",
+        "value": "13"
+      },
+      {
+        "name": "Env Dmg",
+        "value": "35"
+      },
+      {
+        "name": "Range",
+        "value": "10"
+      },
+      {
+        "name": "Radius",
+        "value": "2.5"
+      },
+      {
+        "name": "Rounds",
+        "value": "5"
+      },
+      {
+        "name": "Weight",
+        "value": "3.3"
+      }
+    ],
+    "info": "Cannot be equipped with the Grenade Launcher. Provides MEC units with advanced grenade capabilities. Grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by MECs only. Destructive grenade.",
+    "grants": [
+      "concussive-blast"
+    ]
+  },
+  "restorative-mist": {
+    "code": 62,
+    "units": [
+      "mec"
+    ],
+    "slot": "module",
+    "name": "Restorative Mist",
+    "stats": [
+      {
+        "name": "HP Restored",
+        "value": "5"
+      },
+      {
+        "name": "Range",
+        "value": "Self"
+      },
+      {
+        "name": "Radius",
+        "value": "2"
+      },
+      {
+        "name": "Charges",
+        "value": "1"
+      },
+      {
+        "name": "Weight",
+        "value": "0.6"
+      }
+    ],
+    "info": "Heals multiple biological and mechanical units within the area of effect. Equippable by MECs only.",
+    "grants": [
+      "mist"
+    ]
+  }
+}

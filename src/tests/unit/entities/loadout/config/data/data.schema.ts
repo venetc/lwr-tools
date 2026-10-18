@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import type { ArmorContent } from '@entities/loadout/model/armors';
+import type { EquipmentContent } from '@entities/loadout/model/equipment';
 import type { LoadoutAbilityContent } from '@entities/loadout/model/loadout-abilities';
 import { isLoadoutAbilityId } from '@entities/loadout/model/loadout-abilities';
 import type { LoadoutUnitContent } from '@entities/loadout/model/loadout-units';
@@ -64,6 +65,45 @@ const checkSecondaryClasses = (records: Record<string, WeaponContent>, context: 
 
     if (classes.includes('rocketeer') !== isRocketLauncher) {
       context.addIssue({ code: 'custom', message: 'A Rocketeer carries only a rocket launcher as a secondary weapon', path: [id, 'classes'] });
+    }
+  });
+};
+
+/**
+ * Reports equipment limited to biosoldier classes although it is not made for biosoldiers alone.
+ *
+ * @param records equipment records by id.
+ * @param context refinement context that collects issues.
+ */
+const checkEquipmentClassUnits = (records: Record<string, EquipmentContent>, context: z.RefinementCtx) => {
+  Object.entries(records).forEach(([id, record]) => {
+    if (!record.classes || (record.units.length === 1 && record.units[0] === 'biosoldier')) return;
+
+    context.addIssue({ code: 'custom', message: 'Only biosoldier equipment may list classes', path: [id, 'classes'] });
+  });
+};
+
+/**
+ * Reports Modules made for any unit but a MEC, and equipment whose required Module is not a Module of the catalog
+ * or that a unit without Module slots may carry.
+ *
+ * @param records equipment records by id.
+ * @param context refinement context that collects issues.
+ */
+const checkModules = (records: Record<string, EquipmentContent>, context: z.RefinementCtx) => {
+  Object.entries(records).forEach(([id, record]) => {
+    if (record.slot === 'module' && (record.units.length !== 1 || record.units[0] !== 'mec')) {
+      context.addIssue({ code: 'custom', message: 'A Module is MEC equipment only', path: [id, 'units'] });
+    }
+
+    if (!record.requiredModule) return;
+
+    if (records[record.requiredModule]?.slot !== 'module') {
+      context.addIssue({ code: 'custom', message: `Required Module "${record.requiredModule}" is not a Module`, path: [id, 'requiredModule'] });
+    }
+
+    if (record.units.length !== 1 || record.units[0] !== 'mec') {
+      context.addIssue({ code: 'custom', message: 'Only MEC equipment may require a Module', path: [id, 'units'] });
     }
   });
 };
@@ -135,6 +175,13 @@ const checkMountSlots = (records: Record<string, ArmorContent>, context: z.Refin
   });
 };
 
+/**
+ * Schema of a non-empty list without repeated items.
+ *
+ * @param item schema of one item.
+ */
+const uniqueListSchema = <Item extends z.ZodType<string>>(item: Item) => z.array(item).min(1).refine(items => new Set(items).size === items.length, { error: 'Repeated item' });
+
 const unitIdSchema = z.string().refine(isLoadoutUnitId, { error: 'Unknown unit id' });
 
 const abilityIdSchema = z.string().refine(isLoadoutAbilityId, { error: 'Unknown non-perk ability id' });
@@ -172,7 +219,7 @@ const armorContentSchema: z.ZodType<ArmorContent> = z.strictObject({
   fuel: z.int().min(0),
   requires: requirementSchema.optional(),
   info: z.string().min(1),
-  grants: z.array(abilityIdSchema).min(1).optional(),
+  grants: uniqueListSchema(abilityIdSchema).optional(),
 });
 
 const shivTypeContentSchema: z.ZodType<ShivTypeContent> = z.strictObject({
@@ -187,35 +234,54 @@ const shivTypeContentSchema: z.ZodType<ShivTypeContent> = z.strictObject({
   utilitySlots: z.int().min(0),
   fuel: z.int().min(0),
   info: z.string().min(1),
-  grants: z.array(abilityIdSchema).min(1).optional(),
+  grants: uniqueListSchema(abilityIdSchema).optional(),
+});
+
+const weaponTierSchema = z.enum(['ballistic', 'laser', 'arc', 'gauss', 'pulse', 'plasma']);
+
+const primaryWeaponTypeSchema = z.enum([
+  'assault-rifle',
+  'battle-rifle',
+  'carbine',
+  'smg',
+  'shotgun',
+  'saw',
+  'lmg',
+  'strike-rifle',
+  'sniper-rifle',
+  'mec-weapon',
+  'autocannon',
+  'vulcan-cannon',
+  'arc-rifle',
+  'stun-rifle',
+]);
+
+const equipmentContentSchema: z.ZodType<EquipmentContent> = z.strictObject({
+  code: z.int().min(1),
+  units: uniqueListSchema(unitIdSchema),
+  slot: z.enum(['utility', 'module']),
+  name: z.string().min(1),
+  classes: uniqueListSchema(biosoldierClassIdSchema).optional(),
+  requires: requirementSchema.optional(),
+  isPassive: z.literal(true).optional(),
+  stackGroup: z.enum(['plating', 'scope', 'ammo-capacity', 'ammo-type', 'launcher', 'alien-grenade', 'disorient-grenade']).optional(),
+  primaryTiers: uniqueListSchema(weaponTierSchema).optional(),
+  primaryTypes: uniqueListSchema(primaryWeaponTypeSchema).optional(),
+  requiredModule: z.string().min(1).optional(),
+  stats: z.array(z.strictObject({
+    name: z.string().min(1),
+    value: z.string(),
+  })).min(1),
+  info: z.string().min(1),
+  grants: uniqueListSchema(abilityIdSchema).optional(),
 });
 
 const weaponContentSchema: z.ZodType<WeaponContent> = z.strictObject({
   code: z.int().min(1),
   unit: unitIdSchema,
   name: z.string().min(1),
-  tier: z.enum(['ballistic', 'laser', 'arc', 'gauss', 'pulse', 'plasma']),
-  type: z.enum([
-    'assault-rifle',
-    'battle-rifle',
-    'carbine',
-    'smg',
-    'shotgun',
-    'saw',
-    'lmg',
-    'strike-rifle',
-    'sniper-rifle',
-    'mec-weapon',
-    'autocannon',
-    'vulcan-cannon',
-    'arc-rifle',
-    'stun-rifle',
-    'pistol',
-    'autopistol',
-    'arc-pistol',
-    'sawed-off-shotgun',
-    'rocket-launcher',
-  ]),
+  tier: weaponTierSchema,
+  type: z.enum([...primaryWeaponTypeSchema.options, 'pistol', 'autopistol', 'arc-pistol', 'sawed-off-shotgun', 'rocket-launcher']),
   slot: z.enum(['primary', 'secondary']),
   classes: z.array(biosoldierClassIdSchema).min(1).refine(ids => new Set(ids).size === ids.length, { error: 'Repeated class id' }).optional(),
   damage: z.int().min(0),
@@ -238,11 +304,11 @@ const weaponContentSchema: z.ZodType<WeaponContent> = z.strictObject({
     aim: z.int().min(0),
   }).optional(),
   info: z.string().min(1),
-  grants: z.array(abilityIdSchema).min(1).optional(),
+  grants: uniqueListSchema(abilityIdSchema).optional(),
 });
 
 /**
- * Schema of all Loadout content JSON: record shapes, unit, ability and class references, categories, slots, code ranges, uniqueness and order.
+ * Schema of all Loadout content JSON: record shapes, unit, ability, class and Module references, categories, slots, code ranges, uniqueness and order.
  */
 export const loadoutContentSchema = z.strictObject({
   units: z.record(z.string(), loadoutUnitContentSchema).superRefine(checkOrderedCodes),
@@ -250,4 +316,5 @@ export const loadoutContentSchema = z.strictObject({
   armors: z.record(z.string(), armorContentSchema).superRefine(checkOrderedCodes).superRefine(checkUnitArmor).superRefine(checkMountSlots),
   shivTypes: z.record(z.string(), shivTypeContentSchema).superRefine(checkOrderedCodes),
   weapons: z.record(z.string(), weaponContentSchema).superRefine(checkOrderedCodes).superRefine(checkClassUnits).superRefine(checkSecondaryClasses),
+  equipment: z.record(z.string(), equipmentContentSchema).superRefine(checkOrderedCodes).superRefine(checkEquipmentClassUnits).superRefine(checkModules),
 });

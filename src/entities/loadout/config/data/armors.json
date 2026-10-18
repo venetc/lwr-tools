@@ -13,6 +13,8 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "Default light armor set for soldiers and recruits. Offers enhanced protection with greatly improved mobility. Equippable by all Biosoldiers."
   },
@@ -30,6 +32,8 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "Default heavy armor set for soldiers and recruits. Offers enhanced protection with limited mobility. Equippable by all Biosoldiers."
   },
@@ -47,6 +51,8 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "Offers enhanced protection with improved mobility. Light armor set. Equippable by all Biosoldiers.",
     "grants": [
@@ -67,6 +73,8 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "Offers enhanced protection. Heavy armor set. Equippable by all Biosoldiers."
   },
@@ -84,6 +92,8 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "Offers enhanced protection with greatly improved mobility and defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
     "grants": [
@@ -104,6 +114,8 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
+    "gearMountSlots": 2,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "Provides greatly enhanced protection and mobility. Heavy armor set. Equippable by all Biosoldiers.",
     "grants": [
@@ -126,6 +138,8 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
     "grants": [
@@ -147,6 +161,8 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "This equipment never requires repairs. Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
     "grants": [
@@ -168,6 +184,8 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
+    "gearMountSlots": 2,
+    "psiMountSlots": 0,
     "fuel": 0,
     "info": "This equipment never requires repairs. Offers greatly enhanced protection with immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
     "grants": [
@@ -192,7 +210,10 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
+    "gearMountSlots": 1,
+    "psiMountSlots": 0,
     "fuel": 8,
+    "requires": "officer",
     "info": "Offers greatly enhanced protection with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Light armor set. Equippable by officers only.",
     "grants": [
       "tactical-mobility",
@@ -214,6 +235,8 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
+    "gearMountSlots": 2,
+    "psiMountSlots": 0,
     "fuel": 12,
     "info": "This equipment never requires repairs. Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Provides immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
     "grants": [
@@ -238,7 +261,10 @@
     "fullHpAim": 10,
     "utilitySlots": 2,
     "moduleSlots": 0,
+    "gearMountSlots": 1,
+    "psiMountSlots": 0,
     "fuel": 0,
+    "requires": "gene-mod",
     "info": "This equipment never requires repairs. Offers enhanced protection with greatly improved defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by genetically modified soldiers only.",
     "grants": [
       "ghost",
@@ -261,7 +287,10 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 1,
     "fuel": 0,
+    "requires": "psionic",
     "info": "Offers enhanced protection with improved mobility. Increases wearers psionic capabilities. Light armor set. Equippable by Psi only.",
     "grants": [
       "psi-mount",
@@ -282,12 +311,175 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
+    "gearMountSlots": 0,
+    "psiMountSlots": 1,
     "fuel": 0,
+    "requires": "psionic",
     "info": "This equipment never requires repairs. Offers enhanced protection. Gollop Chamber activation requires this armor and a soldier with the Fervor ability. Heavy armor set. Equippable by Psi only.",
     "grants": [
       "psi-mount",
       "advanced-psi-boost",
       "repulsor"
+    ]
+  },
+  "mec1-paladin": {
+    "code": 15,
+    "unit": "mec",
+    "name": "MEC1 'Paladin'",
+    "category": "standard",
+    "hp": 15,
+    "damageReduction": 10,
+    "defense": 30,
+    "mobility": 0,
+    "will": 0,
+    "critResist": 0,
+    "fullHpAim": 0,
+    "utilitySlots": 2,
+    "moduleSlots": 1,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
+    "fuel": 0,
+    "info": "Supports 1 module per loadout. MECs cannot use cover. Initial MEC suit design. Equippable by MECs only.",
+    "grants": [
+      "hardened"
+    ]
+  },
+  "hmec2-defender": {
+    "code": 16,
+    "unit": "mec",
+    "name": "HMEC2 'Defender'",
+    "category": "heavy",
+    "hp": 18,
+    "damageReduction": 15,
+    "defense": 10,
+    "mobility": 0,
+    "will": 0,
+    "critResist": 0,
+    "fullHpAim": 0,
+    "utilitySlots": 2,
+    "moduleSlots": 2,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
+    "fuel": 0,
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Heavy MEC suit. Equippable by MECs only.",
+    "grants": [
+      "hardened",
+      "damage-control"
+    ]
+  },
+  "lmec2-valiant": {
+    "code": 17,
+    "unit": "mec",
+    "name": "LMEC2 'Valiant'",
+    "category": "light",
+    "hp": 11,
+    "damageReduction": 5,
+    "defense": 40,
+    "mobility": 2,
+    "will": 0,
+    "critResist": 0,
+    "fullHpAim": 10,
+    "utilitySlots": 2,
+    "moduleSlots": 2,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
+    "fuel": 0,
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Light MEC suit. Equippable by MECs only.",
+    "grants": [
+      "hardened",
+      "body-shield"
+    ]
+  },
+  "hmec3-dauntless": {
+    "code": 18,
+    "unit": "mec",
+    "name": "HMEC3 'Dauntless'",
+    "category": "heavy",
+    "hp": 21,
+    "damageReduction": 20,
+    "defense": 10,
+    "mobility": 0.6,
+    "will": 0,
+    "critResist": 0,
+    "fullHpAim": 0,
+    "utilitySlots": 3,
+    "moduleSlots": 3,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
+    "fuel": 0,
+    "info": "This equipment never requires repairs. Supports 3 modules per loadout. MECs cannot use cover. Heavy MEC suit. Equippable by MECs only.",
+    "grants": [
+      "hardened",
+      "damage-control"
+    ]
+  },
+  "uhmec3-devastator": {
+    "code": 19,
+    "unit": "mec",
+    "name": "UHMEC3 'Devastator'",
+    "category": "ultra-heavy",
+    "hp": 26,
+    "damageReduction": 20,
+    "defense": 0,
+    "mobility": 0,
+    "will": 0,
+    "critResist": 0,
+    "fullHpAim": 0,
+    "utilitySlots": 3,
+    "moduleSlots": 2,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
+    "fuel": 0,
+    "info": "This equipment never requires repairs. Supports 2 modules per loadout. MECs cannot use cover. Ultra-Heavy MEC suit. Equippable by MECs only.",
+    "grants": [
+      "hardened",
+      "damage-control"
+    ]
+  },
+  "ulmec3-vanguard": {
+    "code": 20,
+    "unit": "mec",
+    "name": "ULMEC3 'Vanguard'",
+    "category": "ultra-light",
+    "hp": 10,
+    "damageReduction": 5,
+    "defense": 45,
+    "mobility": 4.6,
+    "will": 0,
+    "critResist": 0,
+    "fullHpAim": 25,
+    "utilitySlots": 3,
+    "moduleSlots": 2,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
+    "fuel": 0,
+    "info": "This equipment never requires repairs. Supports 2 modules per loadout. MECs cannot use cover. Ultra-Light MEC suit. Equippable by MECs only.",
+    "grants": [
+      "hardened",
+      "body-shield"
+    ]
+  },
+  "lmec3-vindicator": {
+    "code": 21,
+    "unit": "mec",
+    "name": "LMEC3 'Vindicator'",
+    "category": "light",
+    "hp": 14,
+    "damageReduction": 5,
+    "defense": 40,
+    "mobility": 2.6,
+    "will": 0,
+    "critResist": 0,
+    "fullHpAim": 15,
+    "utilitySlots": 3,
+    "moduleSlots": 3,
+    "gearMountSlots": 0,
+    "psiMountSlots": 0,
+    "fuel": 0,
+    "info": "This equipment never requires repairs. Supports 3 modules per loadout. MECs cannot use cover. Light MEC suit. Equippable by MECs only.",
+    "grants": [
+      "hardened",
+      "body-shield"
     ]
   }
 }

@@ -3,6 +3,8 @@ import { ARMOR_ICON } from '../config/constants/armor-icons';
 import type armorsJson from '../config/data/armors.json';
 import type { LoadoutAbility } from './loadout-abilities';
 import { isLoadoutAbilityId, loadoutAbilityById } from './loadout-abilities';
+import type { LoadoutRequirement } from './loadout-requirements';
+import { isLoadoutRequirement } from './loadout-requirements';
 import type { LoadoutUnitId } from './loadout-units';
 import { isLoadoutUnitId } from './loadout-units';
 
@@ -40,8 +42,14 @@ export interface ArmorContent {
   utilitySlots: number
   /** Module slots of a MEC exoskeleton; 0 for biosoldier armor. */
   moduleSlots: number
+  /** Gear Mounts: the last utility slots, for passive equipment only. */
+  gearMountSlots: number
+  /** Psi Mounts: the last utility slots, for passive psionic equipment only. */
+  psiMountSlots: number
   /** Flight fuel; 0 for armor without flight. */
   fuel: number
+  /** What the wearer needs besides the unit; absent if nothing. */
+  requires?: string
   /** Tactical info text from the game. */
   info: string
   /** Ids of the non-perk abilities the armor grants. */
@@ -49,15 +57,17 @@ export interface ArmorContent {
 }
 
 /**
- * Armor with its id, image, granted abilities and checked unit and category.
+ * Armor with its id, image, granted abilities and checked unit, category and requirement.
  */
-export interface Armor extends Omit<ArmorContent, 'unit' | 'category' | 'grants'> {
+export interface Armor extends Omit<ArmorContent, 'unit' | 'category' | 'requires' | 'grants'> {
   /** Armor id, the key in `armors.json`. */
   id: ArmorId
   /** Id of the unit type that wears the armor. */
   unit: LoadoutUnitId
   /** Weight category. */
   category: ArmorCategory
+  /** What the wearer needs besides the unit; null if nothing. */
+  requires: LoadoutRequirement | null
   /** Armor image URL. */
   icon: string
   /** Non-perk abilities the armor grants. */
@@ -75,18 +85,22 @@ export const isArmorCategory = (category: string): category is ArmorCategory => 
  * Armor of an `armors.json` entry, for `flatMap` over the records.
  *
  * @param entry armor id and its record.
- * @returns the armor alone, or nothing if its unit or category is unknown; unknown granted ids are skipped.
+ * @returns the armor alone, or nothing if its unit, category or requirement is unknown; unknown granted ids are skipped.
  */
 export const armorsFromEntry = (entry: [ArmorId, ArmorContent]): Armor[] => {
   const [id, content] = entry;
+  const requires = content.requires ?? null;
 
   if (!isLoadoutUnitId(content.unit) || !isArmorCategory(content.category)) return [];
+
+  if (requires !== null && !isLoadoutRequirement(requires)) return [];
 
   return [{
     ...content,
     id,
     unit: content.unit,
     category: content.category,
+    requires,
     icon: ARMOR_ICON[id],
     grants: (content.grants ?? []).filter(isLoadoutAbilityId).map(loadoutAbilityById),
   }];

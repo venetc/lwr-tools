@@ -1,0 +1,50 @@
+{
+  "shiv": {
+    "code": 1,
+    "name": "SHIV",
+    "hp": 20,
+    "damageReduction": 15,
+    "critResist": 15,
+    "defense": 25,
+    "mobility": 9.3,
+    "aim": 55,
+    "utilitySlots": 2,
+    "fuel": 0,
+    "info": "Mini-tank controlled remotely by the Skyranger pilot, 'Big Sky'. Only one SHIV can be controlled per turn. Does not accumulate post-battle fatigue. First remaining SHIV (post combat) shares its mission and kill experience gained with squadmates. Acts as mobile partial cover for ally units. Weapon loadouts are upgraded based on technology researched. Foundry projects unlock additional platform capabilities. Extraction requires 2 AP remaining while in the evac point to fully complete. Immune to fire damage.",
+    "grants": [
+      "hardened"
+    ]
+  },
+  "alloy-shiv": {
+    "code": 2,
+    "name": "Alloy SHIV",
+    "hp": 28,
+    "damageReduction": 20,
+    "critResist": 20,
+    "defense": 25,
+    "mobility": 9.3,
+    "aim": 55,
+    "utilitySlots": 4,
+    "fuel": 0,
+    "info": "Mini-tank controlled remotely by the Skyranger pilot, 'Big Sky'. Only one SHIV can be controlled per turn. Does not accumulate post-battle fatigue. First remaining SHIV (post combat) shares its mission and kill experience gained with squadmates. Acts as mobile partial cover for ally units. Weapon loadouts are upgraded based on technology researched. Foundry projects unlock additional platform capabilities. Extraction requires 2 AP remaining while in the evac point to fully complete. Immune to fire damage.",
+    "grants": [
+      "hardened"
+    ]
+  },
+  "hover-shiv": {
+    "code": 3,
+    "name": "Hover SHIV",
+    "hp": 32,
+    "damageReduction": 25,
+    "critResist": 25,
+    "defense": 25,
+    "mobility": 9.3,
+    "aim": 55,
+    "utilitySlots": 4,
+    "fuel": 14,
+    "info": "Mini-tank with limited flight capability controlled remotely by the Skyranger pilot, 'Big Sky'. Only one SHIV can be controlled per turn. Does not accumulate post-battle fatigue. Features limited flight capability with 16 fuel. Flight sets mobility to 8.6 and increases defense by +30. First remaining SHIV (post combat) shares its mission and kill experience gained with squadmates. Acts as mobile partial cover (out of flight) for ally units. Weapon loadouts are upgraded based on technology researched. Foundry projects unlock additional platform capabilities. Extraction requires 2 AP remaining while in the evac point to complete. Immune to fire damage.",
+    "grants": [
+      "hardened"
+    ]
+  }
+}

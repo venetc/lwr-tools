@@ -126,5 +126,13 @@
   "psi-mount": {
     "name": "Psi Mount",
     "description": "The last utility slot on this armor can only hold passive psi gear: the Conduit, Neural Scope, Psi Defender, Psi Frayer or Neuroregulator."
+  },
+  "hardened": {
+    "name": "Hardened",
+    "description": "This unit cannot be exposed and gains +35% DR."
+  },
+  "body-shield": {
+    "name": "Body Shield",
+    "description": "Grants a 50% chance for incoming shots to graze, dealing half their original damage. The nearest visible enemy suffers -20 aim against this unit and cannot critically hit it."
   }
 }

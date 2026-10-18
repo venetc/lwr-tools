@@ -286,6 +286,14 @@
     "tier": "ballistic",
     "type": "pistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 3,
     "penetration": 0,
     "crit": 0,
@@ -307,6 +315,14 @@
     "tier": "ballistic",
     "type": "autopistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 3,
     "penetration": 0,
     "crit": 15,
@@ -333,7 +349,6 @@
       "scout",
       "infantry",
       "assault",
-      "rocketeer",
       "medic",
       "engineer"
     ],
@@ -657,6 +672,14 @@
     "tier": "laser",
     "type": "pistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 3,
     "penetration": 0,
     "crit": 40,
@@ -729,7 +752,7 @@
     "range": 4,
     "utilitySlots": -1,
     "ammoUpgrade": 1,
-    "info": "Non-lethal, short-range rifle used to stun organic targets. Consumable items cannot be used when equipped as the primary weapon (switch to sidearm to use). Capacitor required to use occupies 1 equipment slot. Successful stun chance is higher if the target has low HP. Advanced versions have a better chance to stun targets. Does not work on mechanical units. Does not work with Run and Gun. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer. Cannot be equipped by PFCs.",
+    "info": "Non-lethal, short-range rifle used to stun organic targets. Consumable items cannot be used when equipped as the primary weapon (switch to sidearm to use). Capacitor required to use occupies 1 utility slot. Successful stun chance is higher if the target has low HP. Advanced versions have a better chance to stun targets. Does not work on mechanical units. Does not work with Run and Gun. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer. Cannot be equipped by PFCs.",
     "grants": [
       "stun"
     ]
@@ -741,6 +764,14 @@
     "tier": "arc",
     "type": "arc-pistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 1,
     "penetration": 0,
     "crit": 0,
@@ -1050,6 +1081,14 @@
     "tier": "gauss",
     "type": "autopistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 4,
     "penetration": 0,
     "crit": 20,
@@ -1375,6 +1414,14 @@
     "tier": "pulse",
     "type": "pistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 4,
     "penetration": 0,
     "crit": 80,
@@ -1690,6 +1737,14 @@
     "tier": "plasma",
     "type": "pistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 6,
     "penetration": 0,
     "crit": 0,
@@ -1711,6 +1766,14 @@
     "tier": "plasma",
     "type": "autopistol",
     "slot": "secondary",
+    "classes": [
+      "sniper",
+      "scout",
+      "infantry",
+      "assault",
+      "medic",
+      "engineer"
+    ],
     "damage": 6,
     "penetration": 0,
     "crit": 15,

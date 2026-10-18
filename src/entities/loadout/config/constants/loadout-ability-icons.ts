@@ -3,6 +3,7 @@ import { PLACEHOLDER_ICON } from '@shared/ui/placeholder-icon';
 
 import type { LoadoutAbilityId } from '../../model/loadout-abilities';
 import ghostIcon from '../icons/abilities/ability_ghost/ability_ghost@4x.png';
+import hardenedIcon from '../icons/abilities/ability_hardened/ability_hardened@4x.png';
 import stunIcon from '../icons/abilities/ability_stun/ability_stun@4x.png';
 import bulletstormIcon from '../icons/abilities/alien_clusterbomb/alien_clusterbomb@4x.png';
 import overloadIcon from '../icons/abilities/alien_overload/alien_overload@4x.png';
@@ -13,6 +14,7 @@ import grappleIcon from '../icons/abilities/grapple_eu2012/grapple_eu2012@4x.png
 import dangerZoneIcon from '../icons/abilities/heavy_dangerzone/heavy_dangerzone@4x.png';
 import shredderIcon from '../icons/abilities/heavy_shredder/heavy_shredder@4x.png';
 import aerialTrackingIcon from '../icons/abilities/itz_icon/itz_icon@4x.png';
+import bodyShieldIcon from '../icons/abilities/mec_body_shield/mec_body_shield@4x.png';
 import sublimatorIcon from '../icons/abilities/mec_collateral_damage/mec_collateral_damage@4x.png';
 import damageControlIcon from '../icons/abilities/mec_damage_control/mec_damage_control@4x.png';
 import repulsorIcon from '../icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x.png';
@@ -51,4 +53,6 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'gear-mounts': PLACEHOLDER_ICON.cyan,
   'gear-mount': PLACEHOLDER_ICON.cyan,
   'psi-mount': PLACEHOLDER_ICON.cyan,
+  'hardened': hardenedIcon,
+  'body-shield': bodyShieldIcon,
 };

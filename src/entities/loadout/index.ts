@@ -1,9 +1,14 @@
-export { ARMORS } from './config/constants/armors';
-export { EQUIPMENT } from './config/constants/equipment';
-export { SHIV_TYPES } from './config/constants/shiv-types';
-export { WEAPONS } from './config/constants/weapons';
+export { ARMOR_BY_ID, ARMORS } from './config/constants/armors';
+export { EQUIPMENT, EQUIPMENT_BY_ID } from './config/constants/equipment';
+export { LOADOUT_BLOCK_REASONS } from './config/constants/loadout-rules';
+export { SHIV_TYPE_BY_ID, SHIV_TYPES } from './config/constants/shiv-types';
+export { WEAPON_BY_ID, WEAPONS } from './config/constants/weapons';
 export type { Armor, ArmorCategory, ArmorId } from './model/armors';
 export type { Equipment, EquipmentId, EquipmentSlot, EquipmentStackGroup, EquipmentStat } from './model/equipment';
+export { fitLoadout } from './model/fit-loadout';
+export type { LoadoutAddition, LoadoutChange, LoadoutChangeReason, LoadoutFit, LoadoutMove, LoadoutRemoval, LoadoutReplacement } from './model/fit-loadout';
+export { blockReasons, canBeOfficer, defaultLoadout, loadoutSlots } from './model/loadout';
+export type { Loadout, LoadoutBlockReason, LoadoutItemId, LoadoutSlot, LoadoutSlotKind, LoadoutSlots, LoadoutWearer, UtilitySlotKind } from './model/loadout';
 export type { LoadoutAbility, LoadoutAbilityId } from './model/loadout-abilities';
 export type { LoadoutRequirement } from './model/loadout-requirements';
 export type { LoadoutUnitId } from './model/loadout-units';

@@ -1,3 +1,4 @@
+import { SHIV_TYPE_CONTENT } from '../config/constants/shiv-type-content';
 import { SHIV_TYPE_ICON } from '../config/constants/shiv-type-icons';
 import type shivTypesJson from '../config/data/shiv-types.json';
 import type { LoadoutAbility } from './loadout-abilities';
@@ -46,6 +47,13 @@ export interface ShivType extends Omit<ShivTypeContent, 'grants'> {
   /** Non-perk abilities the SHIV type grants. */
   grants: LoadoutAbility[]
 }
+
+/**
+ * Whether the string is a known SHIV type id.
+ *
+ * @param id SHIV type id candidate.
+ */
+export const isShivTypeId = (id: string): id is ShivTypeId => Object.hasOwn(SHIV_TYPE_CONTENT, id);
 
 /**
  * SHIV type of a `shiv-types.json` entry; unknown granted ids are skipped.

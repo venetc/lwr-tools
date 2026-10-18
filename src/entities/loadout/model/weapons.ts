@@ -1,4 +1,5 @@
 import { WEAPON_SLOTS, WEAPON_TIERS, WEAPON_TYPES } from '../config/constants/weapon-categories';
+import { WEAPON_CONTENT } from '../config/constants/weapon-content';
 import { WEAPON_ICON } from '../config/constants/weapon-icons';
 import type weaponsJson from '../config/data/weapons.json';
 import type { LoadoutAbility } from './loadout-abilities';
@@ -103,6 +104,13 @@ export interface Weapon extends Required<Omit<WeaponContent, 'unit' | 'tier' | '
   /** Non-perk abilities the weapon grants. */
   grants: LoadoutAbility[]
 }
+
+/**
+ * Whether the string is a known weapon id.
+ *
+ * @param id weapon id candidate.
+ */
+export const isWeaponId = (id: string): id is WeaponId => Object.hasOwn(WEAPON_CONTENT, id);
 
 /**
  * Whether the string is a known weapon tier.

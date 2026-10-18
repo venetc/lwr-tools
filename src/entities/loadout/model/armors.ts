@@ -1,4 +1,5 @@
 import { ARMOR_CATEGORIES } from '../config/constants/armor-categories';
+import { ARMOR_CONTENT } from '../config/constants/armor-content';
 import { ARMOR_ICON } from '../config/constants/armor-icons';
 import type armorsJson from '../config/data/armors.json';
 import type { LoadoutAbility } from './loadout-abilities';
@@ -73,6 +74,13 @@ export interface Armor extends Omit<ArmorContent, 'unit' | 'category' | 'require
   /** Non-perk abilities the armor grants. */
   grants: LoadoutAbility[]
 }
+
+/**
+ * Whether the string is a known armor id.
+ *
+ * @param id armor id candidate.
+ */
+export const isArmorId = (id: string): id is ArmorId => Object.hasOwn(ARMOR_CONTENT, id);
 
 /**
  * Whether the string is a known armor category.

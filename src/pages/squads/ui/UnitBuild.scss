@@ -1,0 +1,46 @@
+@use 'styles/colors';
+@use 'styles/media';
+
+.miniTree {
+  position: relative;
+  min-inline-size: 0;
+}
+
+// Covers the mini-tree, so a click anywhere on it opens the Build dialog while the tree stays readable.
+.edit {
+  position: absolute;
+  inset: -4px;
+  padding: 0;
+  background: none;
+  border-width: 1px;
+  border-style: solid;
+  cursor: pointer;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      border-color: transparent;
+    }
+
+    &:hover {
+      border-color: colors.$accent-muted;
+    }
+  }
+
+  @include media.with-touch {
+    border-color: transparent;
+  }
+}
+
+.panel {
+  display: flex;
+  justify-content: center;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

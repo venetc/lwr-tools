@@ -1,0 +1,5 @@
+// Stacking order of the layers over the page: dialogs, then popups (popovers and menus, which may open from a dialog),
+// then toasts, so notifications stay visible over everything.
+$dialog: 15;
+$popup: 16;
+$toast: 20;

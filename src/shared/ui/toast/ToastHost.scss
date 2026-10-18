@@ -1,11 +1,12 @@
 @use 'styles/colors';
+@use 'styles/layers';
 @use 'styles/typography';
 @use 'styles/shape';
 @use 'styles/media';
 
 .viewport {
   position: fixed;
-  z-index: 20;
+  z-index: layers.$toast;
   inset-block-end: 0;
   inset-inline-end: 0;
   display: flex;

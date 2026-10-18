@@ -1,0 +1,92 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use './branches';
+
+$cell-size: 28px;
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-inline-size: 0;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  min-inline-size: 0;
+}
+
+.title {
+  @include typography.caps-4;
+  flex: none;
+  inline-size: 56px;
+  padding-block-start: 6px;
+  font-size: 0.5625rem;
+}
+
+.classTreeTitle {
+  color: colors.$text-accent;
+}
+
+.geneModsTitle {
+  color: branches.$gene-mod-text;
+}
+
+.psionicTitle {
+  color: branches.$psionic-text;
+}
+
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  min-inline-size: $cell-size + 4px;
+}
+
+.cell {
+  display: grid;
+  inline-size: $cell-size;
+  block-size: $cell-size;
+  border-width: 1px;
+}
+
+.selectedCell {
+  border-style: none;
+}
+
+.openCell {
+  border-style: dashed;
+  border-color: colors.$accent;
+}
+
+.lockedCell {
+  border-style: dashed;
+  border-color: colors.$border;
+}
+
+.icon {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.caption {
+  @include typography.caps-4;
+  font-size: 0.5rem;
+  letter-spacing: 0.04em;
+  color: colors.$text-tertiary;
+  white-space: nowrap;
+}

@@ -6,6 +6,7 @@ import { HoldButton } from '@shared/ui/hold-button';
 
 import type { UnitCard } from '../model/unit-cards';
 import LoadoutTiles from './LoadoutTiles.vue';
+import UnitBuild from './UnitBuild.vue';
 import UnitBuildIcon from './UnitBuildIcon.vue';
 
 interface Props {
@@ -48,6 +49,8 @@ const headingId = createId();
         <span :class="$style.visuallyHidden">Remove {{ props.card.squadBuild.build.name }}</span>
       </HoldButton>
     </header>
+
+    <UnitBuild :squad-build="props.card.squadBuild" />
 
     <LoadoutTiles :tiles="props.card.tiles" />
   </article>

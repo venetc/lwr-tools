@@ -1,9 +1,10 @@
 @use 'styles/colors';
+@use 'styles/layers';
 @use 'styles/shape';
 
 .content {
   @include shape.frame(shape.$cut-sm, 1px, colors.$accent-muted, colors.$surface-2, colors.$accent-glow);
-  z-index: 10;
+  z-index: layers.$popup;
   display: flex;
   flex-direction: column;
   gap: 2px;

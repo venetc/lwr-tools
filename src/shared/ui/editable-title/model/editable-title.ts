@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter, Ref } from 'vue';
-import { computed, toValue } from 'vue';
+import { computed, onBeforeUnmount, toValue } from 'vue';
 
 export interface EditableTitleOptions {
   /** Title text. */
@@ -12,6 +12,7 @@ export interface EditableTitleOptions {
 
 /**
  * Editing of the title: whether it is editable, restoring the fallback for a blank title and finishing on Enter.
+ * A blank title is also restored when the field unmounts, such as with a closed dialog, since a removed field gets no blur.
  *
  * @param options title, its fallback and the readonly state.
  */
@@ -26,6 +27,8 @@ export const useEditableTitle = (options: EditableTitleOptions) => {
 
     options.title.value = toValue(options.fallback);
   };
+
+  onBeforeUnmount(restoreBlankTitle);
 
   /**
    * Finishes editing by removing focus.

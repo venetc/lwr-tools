@@ -1,3 +1,4 @@
+@use 'sass:math';
 @use 'styles/colors';
 @use 'styles/media';
 @use 'styles/shape';
@@ -19,19 +20,46 @@
   }
 }
 
+$add-cell-cut: shape.$cut-lg;
+$add-cell-border: 1px dashed colors.$accent;
+
 .addCell {
   @include typography.caps-3;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
   min-block-size: 160px;
-  border: 1px dashed colors.$accent;
+  border: $add-cell-border;
   color: colors.$text-accent;
-  clip-path: shape.cut-polygon(shape.$cut-lg);
+  clip-path: shape.cut-polygon($add-cell-cut);
   cursor: pointer;
   @include -hoverable;
+
+  // The cut corners clip the border away, so each cut edge gets its own dashed line, drawn inwards from the edge.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inline-size: $add-cell-cut * math.sqrt(2);
+    border-block-start: $add-cell-border;
+    transform-origin: 0 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    inset-block-start: $add-cell-cut - 1px;
+    inset-inline-start: -1px;
+    rotate: -45deg;
+  }
+
+  &::after {
+    inset-block-start: calc(100% - #{$add-cell-cut} + 1px);
+    inset-inline-start: calc(100% + 1px);
+    rotate: 135deg;
+  }
 }
 
 .addCellIcon {

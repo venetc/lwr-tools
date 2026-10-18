@@ -1,4 +1,6 @@
+import type { TechnologyLevel } from '@entities/shiv';
 import { TECHNOLOGY_LEVELS } from '@entities/shiv';
+import type { ClassTreeRankTier } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerItem } from '@shared/ui/tiered-picker';
 
@@ -72,3 +74,32 @@ export const TECHNOLOGY_LEVEL_PICKER_ITEMS: DeepReadonly<TieredPickerItem[][]> =
 export const SHIV_PERK_PICKER_ITEM_BY_ID: ReadonlyMap<string, DeepReadonly<TieredPickerItem>> = new Map(
   TECHNOLOGY_LEVEL_PICKER_ITEMS.flat().map(item => [item.id, item]),
 );
+
+/** Title of the row of the SHIV tree in a mini-tree. */
+export const SHIV_MINI_TREE_TITLE = 'SHIV tree';
+
+/** Short rank captions under the steps of a mini-tree: full rank names do not fit under a step. */
+export const MINI_TREE_RANK_CAPTION = {
+  'specialist': 'SPC',
+  'lance-corporal': 'LCPL',
+  'corporal': 'CPL',
+  'sergeant': 'SGT',
+  'tech-sergeant': 'TSGT',
+  'gunnery-sergeant': 'GSGT',
+  'master-sergeant': 'MSGT',
+} as const satisfies Record<ClassTreeRankTier['rank']['id'], string>;
+
+/** Short technology level captions under the steps of a SHIV mini-tree: full level names do not fit under a step. */
+export const MINI_TREE_TECHNOLOGY_LEVEL_CAPTION = {
+  'base-configuration': 'Basic',
+  'advancements-1': 'Adv I',
+  'advancements-2': 'Adv II',
+  'advancements-3a': 'Adv IIIa',
+  'advancements-3b': 'Adv IIIb',
+} as const satisfies Record<TechnologyLevel['id'], string>;
+
+/** Name a mini-tree gives an empty step open for selection, in place of an ability name. */
+export const MINI_TREE_OPEN_STEP_NAME = 'Empty';
+
+/** Name a mini-tree gives an empty locked step, in place of an ability name. */
+export const MINI_TREE_LOCKED_STEP_NAME = 'Locked';

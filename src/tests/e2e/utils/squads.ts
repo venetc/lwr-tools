@@ -174,3 +174,28 @@ export const seedSquad = (page: Page, units: SeededUnit[]) => page.addInitScript
  * @param page browser page.
  */
 export const notifications = (page: Page) => page.getByRole('region', { name: /^Notifications/ });
+
+/**
+ * Opens the Build dialog of the Unit from the mini-tree of its card and returns the dialog.
+ *
+ * @param page browser page.
+ * @param card Unit card.
+ * @param buildName build name of the Unit.
+ */
+export const openBuildDialog = async (page: Page, card: Locator, buildName: string) => {
+  await card.getByRole('button', { name: `Edit ${buildName}`, exact: true }).click();
+
+  const dialog = page.getByRole('dialog', { name: 'Build' });
+
+  await dialog.waitFor();
+
+  return dialog;
+};
+
+/**
+ * Step of the mini-tree of a Unit card: a rank, a body part, a psi level or a technology level.
+ *
+ * @param card Unit card.
+ * @param label step and its ability, such as `Lance Corporal: Magnum` or `Lance Corporal: Empty`.
+ */
+export const miniTreeStep = (card: Locator, label: string) => card.getByRole('listitem', { name: label, exact: true });

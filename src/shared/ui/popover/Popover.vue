@@ -41,21 +41,4 @@ const open = defineModel<boolean>('open', { default: false });
   </PopoverRoot>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use 'styles/shape';
-
-.content {
-  @include shape.frame(shape.$cut-md, 1px, colors.$accent-muted, colors.$surface-2, colors.$accent-glow);
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: min(320px, calc(100vw - 32px));
-  padding: 14px 16px 16px;
-}
-
-.arrow {
-  fill: colors.$accent-muted;
-}
-</style>
+<style lang="scss" module src="./Popover.scss" />

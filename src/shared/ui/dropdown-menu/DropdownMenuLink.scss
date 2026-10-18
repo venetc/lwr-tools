@@ -1,0 +1,20 @@
+@use 'styles/colors';
+@use './item';
+
+@mixin -item {
+  @include item.base;
+  display: block;
+  padding: 11px 10px;
+  text-box: trim-both cap alphabetic;
+}
+
+.link {
+  @include -item;
+  @include item.selectable;
+}
+
+.current {
+  @include -item;
+  background: colors.$accent-subtle;
+  color: colors.$text-accent;
+}

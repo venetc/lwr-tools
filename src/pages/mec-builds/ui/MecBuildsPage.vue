@@ -59,31 +59,4 @@ const { builds } = storeToRefs(mecBuildsStore);
   </BuildCalculator>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-
-.addContent {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 12px;
-}
-
-.navIcon {
-  width: 100%;
-  height: 100%;
-  color: colors.$accent;
-}
-
-.plusIcon {
-  flex: none;
-  width: 14px;
-  height: 14px;
-}
-
-.classIcon {
-  flex: none;
-  width: 20px;
-  height: 20px;
-}
-</style>
+<style lang="scss" module src="./MecBuildsPage.scss" />

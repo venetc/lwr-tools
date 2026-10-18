@@ -1,0 +1,81 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use 'styles/media';
+
+// Row height of a title with a leading icon, kept without one so titles line up.
+$row-height: 34px;
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: $row-height;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nameInput {
+  @include typography.caps-1;
+  min-inline-size: 4ch;
+  max-inline-size: 100%;
+  padding: 3px 6px 1px;
+  background: none;
+  border-radius: 3px;
+  color: colors.$text-primary;
+
+  &::placeholder {
+    color: colors.$text-disabled;
+  }
+
+  &:read-only {
+    cursor: default;
+  }
+
+  &:read-write:focus-visible {
+    outline-width: 1px;
+    outline-offset: 0;
+  }
+}
+
+.edit {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  cursor: pointer;
+  color: colors.$text-tertiary;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      opacity: 0.35;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  @include media.with-touch {
+    opacity: 0.35;
+  }
+}
+
+.editIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

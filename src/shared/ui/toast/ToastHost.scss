@@ -1,0 +1,92 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use 'styles/shape';
+@use 'styles/media';
+
+.viewport {
+  position: fixed;
+  z-index: 20;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(360px, 100vw);
+  margin: 0;
+  padding: 16px;
+  list-style: none;
+  outline: none;
+}
+
+.toast {
+  @include shape.frame(shape.$cut-md, 1px, colors.$highlight-muted, colors.$surface-2, colors.$highlight-glow);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 12px;
+  row-gap: 4px;
+  padding: 12px 14px 14px 16px;
+
+  &[data-state='open'] {
+    animation: toast-enter 0.12s ease-out;
+  }
+
+  &[data-state='closed'] {
+    animation: toast-exit 0.1s ease-in forwards;
+  }
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateX(calc(100% + 16px));
+  }
+}
+
+@keyframes toast-exit {
+  to {
+    opacity: 0;
+    transform: translateX(calc(100% + 16px));
+  }
+}
+
+.title {
+  @include typography.label-1;
+  grid-column: 1;
+  color: colors.$highlight;
+}
+
+.description {
+  @include typography.body-2;
+  grid-column: 1;
+  color: colors.$text-secondary;
+}
+
+.close {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  padding: 2px;
+  background: none;
+  cursor: pointer;
+
+  & > svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  @include media.with-hover {
+    &:not(:hover) {
+      color: colors.$text-tertiary;
+    }
+
+    &:hover {
+      color: colors.$text-primary;
+    }
+  }
+
+  @include media.with-touch {
+    color: colors.$text-tertiary;
+  }
+}

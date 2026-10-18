@@ -36,17 +36,4 @@ const { builds } = storeToRefs(shivBuildsStore);
   </BuildCalculator>
 </template>
 
-<style lang="scss" module>
-.addContent {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 12px;
-}
-
-.plusIcon {
-  flex: none;
-  width: 14px;
-  height: 14px;
-}
-</style>
+<style lang="scss" module src="./ShivBuildsPage.scss" />

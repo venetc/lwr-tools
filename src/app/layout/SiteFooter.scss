@@ -1,0 +1,86 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use 'styles/media';
+
+// Footer width from which both link groups fit in one line.
+$links-row-min-width: 600px;
+
+.footer {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  background: colors.$surface-1;
+  border-block-start: 1px solid colors.$border-subtle;
+}
+
+@mixin -separator {
+  content: '·' / '';
+  padding-inline: 8px;
+  color: colors.$text-tertiary;
+}
+
+.links {
+  @include typography.body-2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: colors.$text-secondary;
+
+  @container (width >= #{$links-row-min-width}) {
+    flex-direction: row;
+  }
+
+  @container (width < #{$links-row-min-width}) {
+    flex-direction: column;
+  }
+}
+
+.group {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @container (width >= #{$links-row-min-width}) {
+    &:not(:first-child)::before {
+      @include -separator;
+    }
+  }
+}
+
+.item {
+  white-space: nowrap;
+
+  &:not(:first-child)::before {
+    @include -separator;
+  }
+}
+
+.disclaimer {
+  @include typography.caption;
+  margin: 0;
+  color: colors.$text-tertiary;
+  text-align: center;
+}
+
+.link {
+  text-decoration: underline;
+  text-underline-position: from-font;
+  text-decoration-thickness: from-font;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      color: colors.$accent;
+    }
+
+    &:hover {
+      color: colors.$accent-hover;
+    }
+  }
+
+  @include media.with-touch {
+    color: colors.$accent;
+  }
+}

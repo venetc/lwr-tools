@@ -66,32 +66,4 @@ const progressStyle = computed(() => ({ '--hold-duration': `${props.duration}ms`
   </button>
 </template>
 
-<style lang="scss" module>
-.button {
-  position: relative;
-  -webkit-touch-callout: none;
-  user-select: none;
-}
-
-.progress {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  rotate: -90deg;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-dasharray: 1;
-  pointer-events: none;
-
-  .button[data-state='idle'] & {
-    stroke-dashoffset: 1;
-  }
-
-  .button[data-state='holding'] & {
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset var(--hold-duration) linear;
-  }
-}
-</style>
+<style lang="scss" module src="./HoldButton.scss" />

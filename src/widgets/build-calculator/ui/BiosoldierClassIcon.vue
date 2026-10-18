@@ -36,39 +36,4 @@ const layers = computed(() => branchSetLayers[biosoldierBuildBranchSet(props.bui
   </span>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use '@entities/soldier/config/styles/branches';
-
-.root {
-  display: grid;
-}
-
-.icon {
-  grid-area: 1 / 1;
-  width: 100%;
-  height: 100%;
-}
-
-.plain {
-  color: colors.$accent;
-}
-
-.geneMods {
-  color: branches.$gene-mod;
-}
-
-.psionic {
-  color: branches.$psionic;
-}
-
-.geneModHalf {
-  color: branches.$gene-mod;
-  clip-path: inset(0 50% 0 0);
-}
-
-.psionicHalf {
-  color: branches.$psionic;
-  clip-path: inset(0 0 0 50%);
-}
-</style>
+<style lang="scss" module src="./BiosoldierClassIcon.scss" />

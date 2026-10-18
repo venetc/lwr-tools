@@ -192,18 +192,4 @@ const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available'
   </TieredPicker>
 </template>
 
-<style lang="scss" module>
-.actionIcon {
-  width: 18px;
-  height: 18px;
-}
-
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-</style>
+<style lang="scss" module src="./BuildPanel.scss" />

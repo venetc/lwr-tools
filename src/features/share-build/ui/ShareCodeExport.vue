@@ -60,29 +60,4 @@ const { hasCode, shownCode, isSupported, copyLabel, selectCode, copyCode } = use
   </Popover>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use 'styles/typography';
-
-.label {
-  @include typography.caption;
-  color: colors.$text-secondary;
-}
-
-.field {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
-}
-
-.error {
-  @include typography.caption;
-  color: colors.$danger;
-}
-
-.buttonContent {
-  min-inline-size: 7ch;
-  padding: 6px 12px;
-  text-align: center;
-}
-</style>
+<style lang="scss" module src="./ShareCodeExport.scss" />

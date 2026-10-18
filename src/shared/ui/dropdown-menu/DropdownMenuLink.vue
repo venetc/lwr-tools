@@ -34,25 +34,4 @@ withDefaults(defineProps<Props>(), {
   </DropdownMenuItem>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use './item';
-
-@mixin -item {
-  @include item.base;
-  display: block;
-  padding: 11px 10px;
-  text-box: trim-both cap alphabetic;
-}
-
-.link {
-  @include -item;
-  @include item.selectable;
-}
-
-.current {
-  @include -item;
-  background: colors.$accent-subtle;
-  color: colors.$text-accent;
-}
-</style>
+<style lang="scss" module src="./DropdownMenuLink.scss" />

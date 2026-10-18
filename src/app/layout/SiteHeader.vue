@@ -12,20 +12,4 @@ const { breadcrumbs } = useBreadcrumbs();
   </header>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use 'styles/layout';
-
-.header {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  block-size: layout.$site-header-height;
-  padding: 8px 16px;
-  background: colors.$surface-translucent;
-  backdrop-filter: blur(8px);
-  border-block-end: 1px solid colors.$border-subtle;
-}
-</style>
+<style lang="scss" module src="./SiteHeader.scss" />

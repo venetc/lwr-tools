@@ -58,26 +58,4 @@ function getImageAlt(variant: TieredPickerAppearance) {
   </span>
 </template>
 
-<style lang="scss" module>
-.cell {
-  display: grid;
-  width: 100%;
-  height: 100%;
-}
-
-.image {
-  display: block;
-  grid-area: 1 / 1;
-  width: 100%;
-  height: 100%;
-}
-
-// Variants switch by opacity, not visibility: a hidden ancestor, such as an inactive tab panel, must hide every variant.
-.shown {
-  opacity: 1;
-}
-
-.concealed {
-  opacity: 0;
-}
-</style>
+<style lang="scss" module src="./TieredPickerCell.scss" />

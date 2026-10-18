@@ -20,15 +20,4 @@ const select = () => emit('select');
   </DropdownMenuItem>
 </template>
 
-<style lang="scss" module>
-@use './item';
-
-.action {
-  @include item.base;
-  @include item.selectable;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-}
-</style>
+<style lang="scss" module src="./DropdownMenuAction.scss" />

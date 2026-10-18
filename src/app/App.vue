@@ -20,16 +20,4 @@ import SiteHeader from './layout/SiteHeader.vue';
   </ConfigProvider>
 </template>
 
-<style lang="scss" module>
-.layout {
-  display: flex;
-  flex-direction: column;
-  min-block-size: 100vh;
-}
-
-.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-</style>
+<style lang="scss" module src="./App.scss" />

@@ -1,0 +1,92 @@
+@use 'styles/colors';
+@use 'styles/media';
+
+$cell: 40px;
+
+.tiers {
+  container: tiers / inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tier {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px 4px 10px;
+  background: colors.$surface-2;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 3px;
+}
+
+.completed {
+  border-color: colors.$border;
+
+  .tierLabel {
+    color: colors.$text-secondary;
+  }
+}
+
+.available {
+  border-color: colors.$highlight-muted;
+  box-shadow: 0 0 8px colors.$highlight-glow;
+
+  .tierLabel {
+    color: colors.$highlight;
+  }
+}
+
+.locked {
+  border-color: colors.$border;
+
+  .tierLabel {
+    color: colors.$text-disabled;
+  }
+}
+
+.tierLabel {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: repeat(var(--tier-columns), $cell);
+  gap: 10px;
+}
+
+.item {
+  display: block;
+  width: $cell;
+  height: $cell;
+  padding: 0;
+  background: none;
+  transition: filter 0.12s ease-out;
+  will-change: filter;
+
+  @include media.with-hover {
+    &:hover:not(:focus-visible) {
+      filter: brightness(1.3);
+    }
+  }
+
+  &:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    filter: brightness(1.3);
+    outline-offset: 6px;
+  }
+}

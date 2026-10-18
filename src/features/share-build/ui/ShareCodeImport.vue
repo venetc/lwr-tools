@@ -68,33 +68,4 @@ const errorDescribedBy = computed(() => isInvalid.value ? errorId : undefined);
   </Popover>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use 'styles/typography';
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.label {
-  @include typography.caption;
-  color: colors.$text-secondary;
-}
-
-.field {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
-}
-
-.buttonContent {
-  padding: 6px 12px;
-}
-
-.error {
-  @include typography.caption;
-  color: colors.$danger;
-}
-</style>
+<style lang="scss" module src="./ShareCodeImport.scss" />

@@ -1,0 +1,99 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use 'styles/shape';
+
+.panel {
+  @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+  padding: 12px 14px 18px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 16px 0;
+  text-align: center;
+}
+
+.descriptionName {
+  @include typography.heading-4;
+  display: grid;
+  place-items: center;
+  block-size: 1.5rem;
+  margin: 0;
+  color: colors.$text-primary;
+}
+
+$descent-overflow: 0.1em;
+
+.descriptionScroll {
+  @include typography.body-1;
+  block-size: calc(5lh + #{$descent-overflow * 2.5});
+}
+
+.descriptionNote {
+  @include typography.body-2;
+  margin: 0 0 4px;
+  padding-inline: 12px;
+  color: colors.$text-tertiary;
+}
+
+.descriptionText {
+  @include typography.body-1;
+  color: colors.$text-secondary;
+  margin: 0;
+  padding-inline: 12px;
+  padding-block-end: $descent-overflow;
+}
+
+.related {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 10px 12px $descent-overflow;
+  border-block-start: 1px solid colors.$border-subtle;
+  list-style: none;
+}
+
+.relatedItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.relatedTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.relatedIcon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+.relatedName {
+  @include typography.label-2;
+  color: colors.$text-primary;
+}
+
+.relatedText {
+  @include typography.body-2;
+  margin: 0;
+  color: colors.$text-secondary;
+}

@@ -26,48 +26,4 @@ const { parentTitle, items } = useSiblingRoutes();
   </main>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use 'styles/media';
-@use 'styles/typography';
-
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 24px 16px;
-}
-
-.title {
-  @include typography.heading-1;
-  margin: 0;
-}
-
-.list {
-  @include typography.label-1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.link {
-  text-decoration: none;
-
-  @include media.with-hover {
-    &:not(:hover) {
-      color: colors.$text-accent;
-    }
-
-    &:hover {
-      color: colors.$accent-hover;
-    }
-  }
-
-  @include media.with-touch {
-    color: colors.$text-accent;
-  }
-}
-</style>
+<style lang="scss" module src="./BuildsPage.scss" />

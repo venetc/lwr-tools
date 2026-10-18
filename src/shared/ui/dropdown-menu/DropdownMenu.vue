@@ -36,18 +36,4 @@ const open = defineModel<boolean>('open', { default: false });
   </DropdownMenuRoot>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-@use 'styles/shape';
-
-.content {
-  @include shape.frame(shape.$cut-sm, 1px, colors.$accent-muted, colors.$surface-2, colors.$accent-glow);
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-inline-size: 180px;
-  max-inline-size: calc(100vw - 32px);
-  padding: 6px;
-}
-</style>
+<style lang="scss" module src="./DropdownMenu.scss" />

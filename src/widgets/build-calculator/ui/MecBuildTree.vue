@@ -71,13 +71,4 @@ const requestRemove = () => emit('remove', props.build.id);
   </BuildPanel>
 </template>
 
-<style lang="scss" module>
-@use 'styles/colors';
-
-.classIcon {
-  flex: none;
-  width: 34px;
-  height: 34px;
-  color: colors.$accent;
-}
-</style>
+<style lang="scss" module src="./MecBuildTree.scss" />

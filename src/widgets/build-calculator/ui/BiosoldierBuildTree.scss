@@ -1,0 +1,45 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use './branches';
+
+.classIcon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+}
+
+.tabLabel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 6px;
+}
+
+.counter {
+  @include typography.numeric-3;
+}
+
+.counterClassTree {
+  color: colors.$text-accent;
+}
+
+.counterGeneMods {
+  color: branches.$gene-mod-text;
+}
+
+.counterPsionic {
+  color: branches.$psionic-text;
+}
+
+.counterEmpty {
+  color: colors.$text-disabled;
+}
+
+.geneModName {
+  color: branches.$gene-mod-text;
+}
+
+.psionicName {
+  color: branches.$psionic-text;
+}

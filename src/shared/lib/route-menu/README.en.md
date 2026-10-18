@@ -16,12 +16,18 @@ const { parentTitle, items } = useSiblingRoutes();
 // pages next to the current one, under the title of their parent route
 ```
 
+```ts
+const { items } = useTopLevelRoutes();
+// top-level pages of the app, for a home menu
+```
+
 ## API
 
 | Function / type | Arguments | Result |
 |---|---|---|
 | `routeMenuItems(records, route)` | route records, current route | `RouteMenuItem[]` of the records with `meta.title`, in their order |
 | `useSiblingRoutes()` | — | `{ parentTitle, items }`: computed title of the parent route and menu items of its children |
+| `useTopLevelRoutes()` | — | `{ items }`: computed menu items of the top-level routes of the router |
 | `RouteMenuItem` | — | `{ label, to, isCurrent }` |
 
 ## Behavior

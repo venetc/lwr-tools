@@ -10,25 +10,9 @@ import {
   BUILDS_URL,
   MEC_LINK,
   MEC_URL,
-  ROOT_PATH,
   SHIV_LINK,
   SHIV_URL,
-  UNKNOWN_PATH,
 } from './navigation.mock';
-
-test.describe('Redirects', () => {
-  test('lead from the root to the Build calculator menu', async ({ page }) => {
-    await page.goto(ROOT_PATH);
-
-    await expect(page).toHaveURL(BUILDS_URL);
-  });
-
-  test('lead from an unknown path to the Build calculator menu', async ({ page }) => {
-    await page.goto(UNKNOWN_PATH);
-
-    await expect(page).toHaveURL(BUILDS_URL);
-  });
-});
 
 test.describe('Build calculator menu', () => {
   test('leads to the Biosoldier calculator', async ({ page }) => {

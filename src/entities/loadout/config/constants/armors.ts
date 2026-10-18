@@ -1,7 +1,7 @@
 import type { DeepReadonly } from '@shared/lib/object';
 import { typedEntries } from '@shared/lib/object';
 
-import type { Armor } from '../../model/armors';
+import type { Armor, ArmorId } from '../../model/armors';
 import { armorsFromEntry } from '../../model/armors';
 import type { LoadoutItemId } from '../../model/loadout';
 import { ARMOR_CONTENT } from './armor-content';
@@ -11,3 +11,6 @@ export const ARMORS: DeepReadonly<Armor[]> = typedEntries(ARMOR_CONTENT).flatMap
 
 /** Armors by armor id; any other Loadout item id finds none. */
 export const ARMOR_BY_ID: ReadonlyMap<LoadoutItemId, DeepReadonly<Armor>> = new Map(ARMORS.map(armor => [armor.id, armor]));
+
+/** Armor ids by their stable code. */
+export const ARMOR_ID_BY_CODE: ReadonlyMap<number, ArmorId> = new Map(ARMORS.map(armor => [armor.code, armor.id]));

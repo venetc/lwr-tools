@@ -3,8 +3,12 @@ export interface ListNavItem {
   id: string
   /** Visible label. */
   label: string
+  /** Short text after the label, such as a count; null for none. */
+  detail: string | null
   /** Whether the item can be removed. */
   isRemovable: boolean
+  /** Whether the item is the current one. */
+  isCurrent: boolean
 }
 
 export interface ListNavSlots {
@@ -13,7 +17,8 @@ export interface ListNavSlots {
 }
 
 /**
- * Items of the list: whether they show an icon and which cannot be removed.
+ * Items of the list: whether they show an icon, their details and accessible names, which is current and which
+ * cannot be removed.
  *
  * @param slots slots of the list.
  */
@@ -27,5 +32,19 @@ export const useListNav = (slots: ListNavSlots) => {
    */
   const isRemoveDisabled = (item: ListNavItem) => !item.isRemovable;
 
-  return { hasIcon, isRemoveDisabled };
+  /**
+   * Checks whether the item shows a detail.
+   *
+   * @param item listed item.
+   */
+  const hasDetail = (item: ListNavItem) => item.detail !== null;
+
+  /**
+   * Accessible name of the item: the label, then the detail.
+   *
+   * @param item listed item.
+   */
+  const itemName = (item: ListNavItem) => (item.detail ? `${item.label}, ${item.detail}` : item.label);
+
+  return { hasIcon, isRemoveDisabled, hasDetail, itemName };
 };

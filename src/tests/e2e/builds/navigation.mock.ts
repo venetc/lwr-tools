@@ -1,7 +1,3 @@
-export const ROOT_PATH = '/';
-
-export const UNKNOWN_PATH = '/no-such-page';
-
 export const BUILDS_PATH = '/builds';
 
 export const BIOSOLDIER_PATH = '/builds/biosoldier';

@@ -19,3 +19,22 @@ export interface LoadoutUnitContent {
  * @param id unit type id candidate from the game data.
  */
 export const isLoadoutUnitId = (id: string): id is LoadoutUnitId => Object.hasOwn(LOADOUT_UNIT_CONTENT, id);
+
+/**
+ * Unit type with its id.
+ */
+export interface LoadoutUnit extends LoadoutUnitContent {
+  /** Unit type id, the key in `units.json`. */
+  id: LoadoutUnitId
+}
+
+/**
+ * Unit type of a `units.json` entry.
+ *
+ * @param entry unit type id and its record.
+ */
+export const loadoutUnitFromEntry = (entry: [LoadoutUnitId, LoadoutUnitContent]): LoadoutUnit => {
+  const [id, content] = entry;
+
+  return { ...content, id };
+};

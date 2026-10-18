@@ -16,12 +16,18 @@ const { parentTitle, items } = useSiblingRoutes();
 // соседние страницы под заголовком их родительского маршрута
 ```
 
+```ts
+const { items } = useTopLevelRoutes();
+// страницы верхнего уровня приложения, для меню главной
+```
+
 ## API
 
 | Функция / тип | Аргументы | Результат |
 |---|---|---|
 | `routeMenuItems(records, route)` | записи маршрутов, текущий маршрут | `RouteMenuItem[]` записей с `meta.title`, в их порядке |
 | `useSiblingRoutes()` | — | `{ parentTitle, items }`: computed-заголовок родительского маршрута и пункты меню его детей |
+| `useTopLevelRoutes()` | — | `{ items }`: computed-пункты меню маршрутов верхнего уровня роутера |
 | `RouteMenuItem` | — | `{ label, to, isCurrent }` |
 
 ## Поведение

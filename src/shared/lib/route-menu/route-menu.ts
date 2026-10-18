@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 import type { RouteLocationNormalizedLoaded, RouteLocationRaw, RouteRecordRaw } from 'vue-router';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 export interface RouteMenuItem {
   /** Visible label: `meta.title` of the route. */
@@ -47,4 +47,16 @@ export const useSiblingRoutes = () => {
   const items = computed(() => routeMenuItems(parent.value?.children ?? [], route));
 
   return { parentTitle, items };
+};
+
+/**
+ * Top-level pages of the app: menu items of the top-level routes of the router.
+ */
+export const useTopLevelRoutes = () => {
+  const route = useRoute();
+  const router = useRouter();
+
+  const items = computed(() => routeMenuItems(router.options.routes, route));
+
+  return { items };
 };

@@ -1,0 +1,76 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+// Widest Unit card: two of them with the gap make the widest grid.
+$card-max-width: 488px;
+$card-min-width: 400px;
+$grid-gap: 24px;
+
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.squad {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  inline-size: 100%;
+  max-inline-size: $card-max-width * 2 + $grid-gap + 32px;
+  margin-inline: auto;
+  padding: 24px 16px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  min-inline-size: 0;
+}
+
+.summary {
+  @include typography.label-2;
+  margin: 0;
+  color: colors.$text-tertiary;
+}
+
+.units {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, $card-min-width), 1fr));
+  align-items: start;
+  gap: $grid-gap;
+}
+
+.addCell {
+  @include typography.caps-3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-block-size: 160px;
+  background: none;
+  border: 1px dashed colors.$border;
+  color: colors.$text-disabled;
+}
+
+.addCellIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.newContent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+}
+
+.plusIcon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}

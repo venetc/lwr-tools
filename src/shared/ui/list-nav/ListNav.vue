@@ -34,7 +34,7 @@ const slots = defineSlots<{
   icon?: (props: IconSlotProps) => VNode[]
 }>();
 
-const { hasIcon, isRemoveDisabled } = useListNav(slots);
+const { hasIcon, isRemoveDisabled, hasDetail, itemName } = useListNav(slots);
 </script>
 
 <template>
@@ -50,6 +50,8 @@ const { hasIcon, isRemoveDisabled } = useListNav(slots);
             :class="$style.item"
             type="button"
             :title="item.label"
+            :aria-label="itemName(item)"
+            :aria-current="item.isCurrent"
             @click="emit('select', item.id)"
           >
             <span
@@ -60,6 +62,13 @@ const { hasIcon, isRemoveDisabled } = useListNav(slots);
               <slot name="icon" :item="item" />
             </span>
             <span :class="$style.name">{{ item.label }}</span>
+            <span
+              v-if="hasDetail(item)"
+              :class="$style.detail"
+              aria-hidden="true"
+            >
+              {{ item.detail }}
+            </span>
           </button>
           <HoldButton
             :class="$style.remove"

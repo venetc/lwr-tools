@@ -50,18 +50,24 @@ $row-height: $icon-size + $item-padding * 2;
   background: none;
   cursor: pointer;
 
+  &[aria-current='true'] {
+    color: colors.$text-accent;
+  }
+
   @include media.with-hover {
-    .entry:not(:hover) & {
+    .entry:not(:hover) &:not([aria-current='true']) {
       color: colors.$text-secondary;
     }
 
-    .entry:hover & {
+    .entry:hover &:not([aria-current='true']) {
       color: colors.$text-primary;
     }
   }
 
   @include media.with-touch {
-    color: colors.$text-secondary;
+    &:not([aria-current='true']) {
+      color: colors.$text-secondary;
+    }
   }
 }
 
@@ -84,6 +90,13 @@ $row-height: $icon-size + $item-padding * 2;
   text-align: start;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.detail {
+  @include typography.caps-4;
+  text-box: trim-both cap alphabetic;
+  flex: none;
+  color: colors.$text-tertiary;
 }
 
 .remove {

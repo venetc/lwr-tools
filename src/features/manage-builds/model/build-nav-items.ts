@@ -22,7 +22,9 @@ export const useBuildNavItems = <Build extends ListedBuild<NamedBuildData>>(buil
   return computed(() => toValue(builds).map((build): BuildNavItem<Build> => ({
     id: build.id,
     label: build.name,
+    detail: null,
     isRemovable: !build.readonly,
+    isCurrent: false,
     build,
   })));
 };

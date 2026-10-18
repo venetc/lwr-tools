@@ -1,0 +1,27 @@
+@use 'styles/colors';
+
+.toolbar {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px max(4px, env(safe-area-inset-bottom));
+  background: colors.$surface-translucent;
+  backdrop-filter: blur(8px);
+  border-block-start: 1px solid colors.$border-subtle;
+}
+
+.actions {
+  display: grid;
+  gap: 6px;
+}
+
+.content {
+  display: grid;
+  min-inline-size: 0;
+  padding-inline-start: 8px;
+  border-inline-start: 1px solid colors.$border-subtle;
+}

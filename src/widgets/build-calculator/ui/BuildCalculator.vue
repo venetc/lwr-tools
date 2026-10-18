@@ -8,6 +8,7 @@ import { ShareCodeImport } from '@features/share-build';
 import { usePanelScroll } from '@shared/lib/panel-scroll';
 import { Button } from '@shared/ui/button';
 import { ListNav } from '@shared/ui/list-nav';
+import { PageToolbar } from '@shared/ui/page-toolbar';
 
 import { useBuildCalculatorNav } from '../model/build-calculator';
 
@@ -57,8 +58,8 @@ const { navItems, hasNavIcon } = useBuildCalculatorNav(() => props.builds, slots
       </div>
     </div>
 
-    <div :class="$style.toolbar">
-      <div :class="$style.actions">
+    <PageToolbar>
+      <template #actions>
         <slot name="add" />
 
         <ShareCodeImport :kind="props.kind" @import="emit('import', $event)">
@@ -71,10 +72,9 @@ const { navItems, hasNavIcon } = useBuildCalculatorNav(() => props.builds, slots
             </Button>
           </template>
         </ShareCodeImport>
-      </div>
+      </template>
 
       <ListNav
-        :class="$style.nav"
         :items="navItems"
         label="Builds"
         @select="scrollToPanel"
@@ -84,7 +84,7 @@ const { navItems, hasNavIcon } = useBuildCalculatorNav(() => props.builds, slots
           <slot name="nav-icon" :build="item.build" />
         </template>
       </ListNav>
-    </div>
+    </PageToolbar>
   </main>
 </template>
 

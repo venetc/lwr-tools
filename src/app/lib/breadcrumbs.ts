@@ -1,7 +1,7 @@
 import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 
-import { routeMenuItems } from '@shared/lib/route-menu';
+import { routeMenuItems, useTopLevelRoutes } from '@shared/lib/route-menu';
 import type { BreadcrumbItem } from '@shared/ui/breadcrumbs';
 
 import { ROOT_BREADCRUMB } from '../config/constants';
@@ -12,7 +12,7 @@ import { ROOT_BREADCRUMB } from '../config/constants';
  */
 export const useBreadcrumbs = () => {
   const route = useRoute();
-  const router = useRouter();
+  const { items: topLevelItems } = useTopLevelRoutes();
 
   const breadcrumbs = computed(() => route.matched.reduce<BreadcrumbItem[]>((items, record, index) => {
     if (!record.meta.title) return items;
@@ -27,7 +27,7 @@ export const useBreadcrumbs = () => {
     items.push({ label: record.meta.title, to: record.path, menu: routeMenuItems(parent.children, route) });
 
     return items;
-  }, [{ ...ROOT_BREADCRUMB, menu: routeMenuItems(router.options.routes, route) }]));
+  }, [{ ...ROOT_BREADCRUMB, menu: topLevelItems.value }]));
 
   return { breadcrumbs };
 };

@@ -24,6 +24,10 @@ export const ROUTES = {
     name: 'shiv-builds',
     path: '/builds/shiv',
   },
+  SQUADS: {
+    name: 'squads',
+    path: '/squads',
+  },
 } as const;
 
 declare module 'vue-router' {
@@ -34,6 +38,7 @@ declare module 'vue-router' {
       [ROUTES.BIOSOLDIER_BUILDS.name]: RouteRecordInfo<typeof ROUTES.BIOSOLDIER_BUILDS.name, typeof ROUTES.BIOSOLDIER_BUILDS.path, Record<never, never>, Record<never, never>>
       [ROUTES.MEC_BUILDS.name]: RouteRecordInfo<typeof ROUTES.MEC_BUILDS.name, typeof ROUTES.MEC_BUILDS.path, Record<never, never>, Record<never, never>>
       [ROUTES.SHIV_BUILDS.name]: RouteRecordInfo<typeof ROUTES.SHIV_BUILDS.name, typeof ROUTES.SHIV_BUILDS.path, Record<never, never>, Record<never, never>>
+      [ROUTES.SQUADS.name]: RouteRecordInfo<typeof ROUTES.SQUADS.name, typeof ROUTES.SQUADS.path, Record<never, never>, Record<never, never>>
     }
   }
 

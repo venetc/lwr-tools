@@ -23,6 +23,8 @@ interface Props {
   fallbackName: string
   /** Groups of tiers, such as trees; with more than one, they are shown behind tabs. */
   groups: readonly Group[]
+  /** Whether the panel offers removal of the build. */
+  removable?: boolean
 }
 
 interface Emits {
@@ -55,7 +57,9 @@ interface ItemNameSlotProps {
   group: Group
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  removable: false,
+});
 
 const emit = defineEmits<Emits>();
 
@@ -126,6 +130,7 @@ const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available'
         v-model:locked="readonly"
         remove-label="Remove build"
         lock-label="Lock build"
+        :removable="props.removable"
         @remove="requestRemove"
       >
         <template #editable="{ actionClass }">

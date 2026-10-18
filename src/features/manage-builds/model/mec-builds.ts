@@ -2,20 +2,20 @@ import { defineStore } from 'pinia';
 
 import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
 import { MEC_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
-import { useBuildList } from '@features/manage-builds';
-import type { StoredBuild } from '@features/share-build';
-import { decodeMecBuild, encodeMecBuild, storedBuildCodec } from '@features/share-build';
 import { createId } from '@shared/lib/id';
 
-import { BUILD_KEY_PREFIX, BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
+import { DEFAULT_BUILD_ID_PREFIX, MEC_BUILD_KEY_PREFIX, MEC_BUILD_ORDER_KEY } from '../config/constants';
+import type { ListedBuild } from './build-list';
+import { useBuildList } from './build-list';
+import { injectBuildStorageCodec } from './build-storage';
 
-/** Id of a MEC build, unique in the calculator list. */
+/** Id of a MEC build, unique in the build list. */
 export type MecBuildId = string;
 
 /**
- * MEC build of the calculator: build data with its id and lock.
+ * Saved MEC build: build data with its id and lock.
  */
-export type MecBuild = StoredBuild<SoldierBuildData>;
+export type MecBuild = ListedBuild<SoldierBuildData>;
 
 /**
  * New editable build of the class with only the base perk selected.
@@ -41,13 +41,13 @@ const createDefaultBuilds = () => MEC_CLASSES.map(soldierClass => (
 ));
 
 /**
- * Builds of the MEC Build calculator, saved to the local storage and synced between tabs.
+ * Saved MEC builds, kept in the local storage and synced between tabs.
  */
-export const useMecBuildsStore = defineStore('pages-mec-builds', () => {
+export const useMecBuildsStore = defineStore('manage-builds-mec-builds', () => {
   const buildList = useBuildList<SoldierBuildData>({
-    orderKey: BUILD_ORDER_KEY,
-    itemKeyPrefix: BUILD_KEY_PREFIX,
-    ...storedBuildCodec(encodeMecBuild, decodeMecBuild),
+    orderKey: MEC_BUILD_ORDER_KEY,
+    itemKeyPrefix: MEC_BUILD_KEY_PREFIX,
+    ...injectBuildStorageCodec('mec'),
     defaultItems: createDefaultBuilds,
   });
 

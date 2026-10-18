@@ -5,7 +5,7 @@ import type { ClassTreeRankTier } from '@entities/soldier';
 import { useClassTreeTiers } from '@entities/soldier';
 import type { TieredPickerGroup } from '@shared/ui/tiered-picker';
 
-import { CLASS_TREE_GROUP_ID } from '../config/constants';
+import { MEC_TREE_GROUP_ID } from '../config/constants';
 import type { MecBuild } from './mec-builds';
 import { useMecBuildsStore } from './mec-builds';
 
@@ -20,7 +20,7 @@ export const useMecBuildGroups = (build: MaybeRefOrGetter<Readonly<MecBuild>>) =
   const { tree, tiers, featuredPickerItem } = useClassTreeTiers(build);
 
   const groups = computed((): TieredPickerGroup<ClassTreeRankTier>[] => [{
-    id: CLASS_TREE_GROUP_ID,
+    id: MEC_TREE_GROUP_ID,
     name: tree.value.name,
     tiers: tiers.value,
     defaultItem: featuredPickerItem.value,

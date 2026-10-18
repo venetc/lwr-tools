@@ -8,20 +8,20 @@ import {
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from '@entities/soldier';
-import { useBuildList } from '@features/manage-builds';
-import type { StoredBuild } from '@features/share-build';
-import { decodeBiosoldierBuild, encodeBiosoldierBuild, storedBuildCodec } from '@features/share-build';
 import { createId } from '@shared/lib/id';
 
-import { BUILD_KEY_PREFIX, BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
+import { BIOSOLDIER_BUILD_KEY_PREFIX, BIOSOLDIER_BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
+import type { ListedBuild } from './build-list';
+import { useBuildList } from './build-list';
+import { injectBuildStorageCodec } from './build-storage';
 
-/** Id of a biosoldier build, unique in the calculator list. */
+/** Id of a biosoldier build, unique in the build list. */
 export type BiosoldierBuildId = string;
 
 /**
- * Biosoldier build of the calculator: build data with its id and lock.
+ * Saved biosoldier build: build data with its id and lock.
  */
-export type BiosoldierBuild = StoredBuild<BiosoldierBuildData>;
+export type BiosoldierBuild = ListedBuild<BiosoldierBuildData>;
 
 /**
  * New editable build of the class with only the base perk selected, no gene mods and no psionic abilities.
@@ -49,13 +49,13 @@ const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map(soldierClass => (
 ));
 
 /**
- * Builds of the Biosoldier Build calculator, saved to the local storage and synced between tabs.
+ * Saved biosoldier builds, kept in the local storage and synced between tabs.
  */
-export const useBiosoldierBuildsStore = defineStore('pages-biosoldier-builds', () => {
+export const useBiosoldierBuildsStore = defineStore('manage-builds-biosoldier-builds', () => {
   const buildList = useBuildList<BiosoldierBuildData>({
-    orderKey: BUILD_ORDER_KEY,
-    itemKeyPrefix: BUILD_KEY_PREFIX,
-    ...storedBuildCodec(encodeBiosoldierBuild, decodeBiosoldierBuild),
+    orderKey: BIOSOLDIER_BUILD_ORDER_KEY,
+    itemKeyPrefix: BIOSOLDIER_BUILD_KEY_PREFIX,
+    ...injectBuildStorageCodec('biosoldier'),
     defaultItems: createDefaultBuilds,
   });
 

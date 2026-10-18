@@ -1,6 +1,6 @@
 import type { ShivPerkContent } from '@entities/shiv/model/perks';
 import type { TechnologyLevelContent } from '@entities/shiv/model/technology-levels';
-import type { ShivBuild } from '@pages/shiv-builds/model/shiv-builds';
+import type { ShivBuild } from '@features/manage-builds/model/shiv-builds';
 
 export const SHIV_PERK_CONTENT_MOCK: Record<string, ShivPerkContent> = {
   left: { code: 1, name: 'Left', description: 'Left choice.' },

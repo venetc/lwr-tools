@@ -22,7 +22,7 @@ export type ListedBuild<Data extends NamedBuildData> = Data & {
 
 /**
  * Builds of a Build calculator kept in the local storage and synced between tabs, with the operations every
- * calculator shares; a page store adds its own tree rules on top.
+ * calculator shares; the store of each build kind adds its own tree rules on top.
  *
  * @param options stored list options of the builds.
  */

@@ -3,12 +3,10 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { MEC_CLASSES } from '@entities/soldier';
+import { useMecBuildsStore } from '@features/manage-builds';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
-import { BuildCalculator } from '@widgets/build-calculator';
-
-import { useMecBuildsStore } from '../model/mec-builds';
-import MecBuildTree from './MecBuildTree.vue';
+import { BuildCalculator, MecBuildTree } from '@widgets/build-calculator';
 
 const mecBuildsStore = useMecBuildsStore();
 
@@ -23,7 +21,11 @@ const { builds } = storeToRefs(mecBuildsStore);
     @remove="mecBuildsStore.removeBuild"
   >
     <template #build="{ build }">
-      <MecBuildTree :build="build" />
+      <MecBuildTree
+        :build="build"
+        removable
+        @remove="mecBuildsStore.removeBuild"
+      />
     </template>
 
     <template #add>

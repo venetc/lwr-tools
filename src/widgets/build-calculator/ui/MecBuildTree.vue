@@ -1,24 +1,38 @@
 <script setup lang="ts">
-import { useBuildEditor } from '@features/manage-builds';
+import type { MecBuild } from '@features/manage-builds';
+import { useBuildEditor, useMecBuildGroups, useMecBuildsStore } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
-import { BuildPanel } from '@widgets/build-calculator';
 
-import { useMecBuildGroups } from '../model/mec-build-groups';
-import type { MecBuild } from '../model/mec-builds';
-import { useMecBuildsStore } from '../model/mec-builds';
+import BuildPanel from './BuildPanel.vue';
 
 interface Props {
   /** MEC build to render and edit. */
   build: Readonly<MecBuild>
+  /** Whether the tree offers removal of the build. */
+  removable?: boolean
 }
 
-const props = defineProps<Props>();
+interface Emits {
+  /** Requests removal of the build. */
+  remove: [buildId: string]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  removable: false,
+});
+
+const emit = defineEmits<Emits>();
 
 const mecBuildsStore = useMecBuildsStore();
 
-const { rename, lock, replace, reset, remove } = useBuildEditor(() => props.build, mecBuildsStore);
+const { rename, lock, replace, reset } = useBuildEditor(() => props.build, mecBuildsStore);
 
 const { tree, groups, select } = useMecBuildGroups(() => props.build);
+
+/**
+ * Requests removal of the build.
+ */
+const requestRemove = () => emit('remove', props.build.id);
 </script>
 
 <template>
@@ -29,11 +43,12 @@ const { tree, groups, select } = useMecBuildGroups(() => props.build);
     :fallback-name="props.build.soldierClass.name"
     kind="mec"
     :groups="groups"
+    :removable="props.removable"
     @rename="rename"
     @lock="lock"
     @replace="replace"
     @reset="reset"
-    @remove="remove"
+    @remove="requestRemove"
     @select="select"
   >
     <template #icon>

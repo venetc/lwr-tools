@@ -3,13 +3,10 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { BIOSOLDIER_CLASSES } from '@entities/soldier';
+import { useBiosoldierBuildsStore } from '@features/manage-builds';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
-import { BuildCalculator } from '@widgets/build-calculator';
-
-import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
-import BiosoldierBuildTree from './BiosoldierBuildTree.vue';
-import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
+import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator } from '@widgets/build-calculator';
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
@@ -24,7 +21,11 @@ const { builds } = storeToRefs(biosoldierBuildsStore);
     @remove="biosoldierBuildsStore.removeBuild"
   >
     <template #build="{ build }">
-      <BiosoldierBuildTree :build="build" />
+      <BiosoldierBuildTree
+        :build="build"
+        removable
+        @remove="biosoldierBuildsStore.removeBuild"
+      />
     </template>
 
     <template #add>

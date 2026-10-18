@@ -16,7 +16,7 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 - `order` is the display order. No `order` means nothing has been saved yet, and the page shows the default builds; `[]` means the user removed them all.
 - `lwr-tools.` is required: on GitHub Pages every `<user>.github.io` project shares one storage.
 
-Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `features/manage-builds` (build list operations: rename, lock, import, replace, remove), `features/share-build`: `config/constants.ts` (record schema) and `model/stored-build.ts` (build record ↔ build through the share code), and in each calculator page (`pages/biosoldier-builds`, `pages/mec-builds`, `pages/shiv-builds`) `config/constants.ts` (keys) and the store `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (default builds, tree rules).
+Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `features/manage-builds`: `model/build-list.ts` (build list operations: rename, lock, import, replace, remove), `config/constants.ts` (keys), the stores `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (default builds, tree rules) and `model/build-storage.ts` (the records the stores read and write); `features/share-build`: `config/constants.ts` (record schema) and `model/stored-build.ts` (build record ↔ build through the share code). The stores do not import `share-build`: `app` builds the records from it and provides them under `BUILD_STORAGE_CODECS_KEY`; without them the builds live only in the tab.
 
 ## Loading
 

@@ -2,11 +2,9 @@
 import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
+import { useShivBuildsStore } from '@features/manage-builds';
 import { Button } from '@shared/ui/button';
-import { BuildCalculator } from '@widgets/build-calculator';
-
-import { useShivBuildsStore } from '../model/shiv-builds';
-import ShivBuildTree from './ShivBuildTree.vue';
+import { BuildCalculator, ShivBuildTree } from '@widgets/build-calculator';
 
 const shivBuildsStore = useShivBuildsStore();
 
@@ -21,7 +19,11 @@ const { builds } = storeToRefs(shivBuildsStore);
     @remove="shivBuildsStore.removeBuild"
   >
     <template #build="{ build }">
-      <ShivBuildTree :build="build" />
+      <ShivBuildTree
+        :build="build"
+        removable
+        @remove="shivBuildsStore.removeBuild"
+      />
     </template>
 
     <template #add>

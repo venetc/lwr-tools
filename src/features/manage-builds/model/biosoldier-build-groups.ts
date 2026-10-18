@@ -6,14 +6,14 @@ import { useClassTreeTiers, useGeneModTiers, usePsionicTiers } from '@entities/s
 import type { SvgIcon } from '@shared/ui/svg-icon';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
 
-import { BRANCH_TITLE } from '../config/constants';
+import { BIOSOLDIER_BRANCH_TITLE } from '../config/constants';
 import type { BiosoldierBuild } from './biosoldier-builds';
 import { useBiosoldierBuildsStore } from './biosoldier-builds';
 
 /**
  * Branch of a biosoldier build: the class tree, the gene mods or the psionic abilities.
  */
-export type BiosoldierBranch = keyof typeof BRANCH_TITLE;
+export type BiosoldierBranch = keyof typeof BIOSOLDIER_BRANCH_TITLE;
 
 /**
  * Tier of a biosoldier build panel: a rank of the class tree, a body part or a psi level.
@@ -49,8 +49,8 @@ const branchGroup = (
   defaultItem: TieredPickerItem | null,
 ): BiosoldierBuildGroup => ({
   id: branch,
-  name: `${BRANCH_TITLE[branch]}, ${selectedCount} of ${tiers.length}`,
-  title: BRANCH_TITLE[branch],
+  name: `${BIOSOLDIER_BRANCH_TITLE[branch]}, ${selectedCount} of ${tiers.length}`,
+  title: BIOSOLDIER_BRANCH_TITLE[branch],
   counter: `${selectedCount}/${tiers.length}`,
   isEmpty: selectedCount === 0,
   tiers,

@@ -1,28 +1,36 @@
 <script setup lang="ts">
 import { useCssModule } from 'vue';
 
-import { useBuildEditor } from '@features/manage-builds';
+import type { BiosoldierBranch, BiosoldierBuild, BiosoldierBuildGroup } from '@features/manage-builds';
+import { tierIcon, useBiosoldierBuildGroups, useBiosoldierBuildsStore, useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
-import { BuildPanel } from '@widgets/build-calculator';
 
-import type { BiosoldierBranch, BiosoldierBuildGroup } from '../model/biosoldier-build-groups';
-import { tierIcon, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
-import type { BiosoldierBuild } from '../model/biosoldier-builds';
-import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
 import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
+import BuildPanel from './BuildPanel.vue';
 
 interface Props {
   /** Biosoldier build to render and edit. */
   build: Readonly<BiosoldierBuild>
+  /** Whether the tree offers removal of the build. */
+  removable?: boolean
 }
 
-const props = defineProps<Props>();
+interface Emits {
+  /** Requests removal of the build. */
+  remove: [buildId: string]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  removable: false,
+});
+
+const emit = defineEmits<Emits>();
 
 const style = useCssModule();
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
-const { rename, lock, replace, reset, remove } = useBuildEditor(() => props.build, biosoldierBuildsStore);
+const { rename, lock, replace, reset } = useBuildEditor(() => props.build, biosoldierBuildsStore);
 
 const { tree, groups, select } = useBiosoldierBuildGroups(() => props.build);
 
@@ -42,6 +50,11 @@ const getBranchClasses = (group: BiosoldierBuildGroup) => ({
   counter: [style.counter, group.isEmpty ? style.counterEmpty : branchClasses[group.id].counter],
   name: branchClasses[group.id].name,
 });
+
+/**
+ * Requests removal of the build.
+ */
+const requestRemove = () => emit('remove', props.build.id);
 </script>
 
 <template>
@@ -52,11 +65,12 @@ const getBranchClasses = (group: BiosoldierBuildGroup) => ({
     :fallback-name="props.build.soldierClass.name"
     kind="biosoldier"
     :groups="groups"
+    :removable="props.removable"
     @rename="rename"
     @lock="lock"
     @replace="replace"
     @reset="reset"
-    @remove="remove"
+    @remove="requestRemove"
     @select="select"
   >
     <template #icon>

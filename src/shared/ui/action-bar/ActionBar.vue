@@ -11,6 +11,8 @@ interface Props {
   removeLabel: string
   /** Accessible label of the lock toggle. */
   lockLabel: string
+  /** Whether the bar offers removal; the remove button still hides while locked. */
+  removable?: boolean
 }
 
 interface Emits {
@@ -23,7 +25,9 @@ interface DefaultSlotProps {
   actionClass: string[]
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  removable: false,
+});
 
 const emit = defineEmits<Emits>();
 
@@ -47,6 +51,8 @@ const lockIcon = computed(() => locked.value ? Lock : LockOpen);
 
 const isEditable = computed(() => !locked.value);
 
+const isRemovable = computed(() => props.removable && isEditable.value);
+
 /**
  * Requests removal.
  */
@@ -55,18 +61,21 @@ const requestRemove = () => emit('remove');
 
 <template>
   <div :class="$style.actions">
-    <template v-if="isEditable">
-      <slot name="editable" :action-class="secondaryClass" />
+    <slot
+      v-if="isEditable"
+      name="editable"
+      :action-class="secondaryClass"
+    />
 
-      <HoldButton
-        :class="removeClass"
-        title="Hold to remove"
-        @hold="requestRemove"
-      >
-        <Trash2 :class="$style.icon" aria-hidden="true" />
-        <span :class="$style.visuallyHidden">{{ props.removeLabel }}</span>
-      </HoldButton>
-    </template>
+    <HoldButton
+      v-if="isRemovable"
+      :class="removeClass"
+      title="Hold to remove"
+      @hold="requestRemove"
+    >
+      <Trash2 :class="$style.icon" aria-hidden="true" />
+      <span :class="$style.visuallyHidden">{{ props.removeLabel }}</span>
+    </HoldButton>
 
     <slot :action-class="secondaryClass" />
 

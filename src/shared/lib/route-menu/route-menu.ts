@@ -22,7 +22,7 @@ export const routeMenuItems = (
   records: readonly RouteRecordRaw[],
   route: Pick<RouteLocationNormalizedLoaded, 'matched'>,
 ) => {
-  const currentPath = route.matched.at(-1)?.path ?? null;
+  const currentPath = route.matched.at(-1)?.path;
 
   return records.reduce<RouteMenuItem[]>((items, record) => {
     if (!record.meta?.title) return items;

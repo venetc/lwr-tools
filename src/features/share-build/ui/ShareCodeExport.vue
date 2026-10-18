@@ -1,6 +1,5 @@
 <script setup lang="ts" generic="Kind extends BuildCodeKind">
-import { useId } from 'vue';
-
+import { createId } from '@shared/lib/id';
 import { Button } from '@shared/ui/button';
 import { Input } from '@shared/ui/input';
 import { Label } from '@shared/ui/label';
@@ -21,7 +20,7 @@ const props = defineProps<Props>();
 /** Whether the popover is open. */
 const open = defineModel<boolean>('open', { default: false });
 
-const inputId = useId();
+const inputId = createId();
 
 const { hasCode, shownCode, isSupported, copyLabel, selectCode, copyCode } = useShareCodeExport(
   () => props.kind,

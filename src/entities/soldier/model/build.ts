@@ -60,7 +60,7 @@ export const selectSoldierBuildPerk = (build: SoldierBuildData, rankIndex: numbe
  * @param geneModId selected gene mod id, or null to clear the body part.
  */
 export const selectBiosoldierBuildGeneMod = (build: BiosoldierBuildData, bodyPartIndex: number, geneModId: string | null): void => {
-  const bodyPart = BODY_PARTS[bodyPartIndex] ?? null;
+  const bodyPart = BODY_PARTS[bodyPartIndex];
 
   if (!bodyPart) return;
 
@@ -69,7 +69,7 @@ export const selectBiosoldierBuildGeneMod = (build: BiosoldierBuildData, bodyPar
     return;
   }
 
-  const geneMod = bodyPart.geneMods.find(id => id === geneModId) ?? null;
+  const geneMod = bodyPart.geneMods.find(id => id === geneModId);
 
   if (!geneMod) return;
 
@@ -92,7 +92,7 @@ export const selectBiosoldierBuildPsionicAbility = (build: BiosoldierBuildData, 
 
   if (levelIndex > build.psionicAbilities.length) return;
 
-  const psiLevel = PSI_LEVELS[levelIndex] ?? null;
+  const psiLevel = PSI_LEVELS[levelIndex];
 
   if (!psiLevel) return;
 
@@ -101,7 +101,7 @@ export const selectBiosoldierBuildPsionicAbility = (build: BiosoldierBuildData, 
     return;
   }
 
-  const ability = psiLevel.abilities.find(id => id === abilityId) ?? null;
+  const ability = psiLevel.abilities.find(id => id === abilityId);
 
   if (!ability) return;
 

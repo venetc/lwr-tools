@@ -7,15 +7,10 @@ interface Emits {
 }
 
 const emit = defineEmits<Emits>();
-
-/**
- * Reports the choice of the item.
- */
-const select = () => emit('select');
 </script>
 
 <template>
-  <DropdownMenuItem :class="$style.action" @select="select">
+  <DropdownMenuItem :class="$style.action" @select="emit('select')">
     <slot />
   </DropdownMenuItem>
 </template>

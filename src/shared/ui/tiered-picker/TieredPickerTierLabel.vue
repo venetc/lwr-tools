@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { computed, useCssModule } from 'vue';
+import { useCssModule } from 'vue';
 
 import type { SvgIcon } from '@shared/ui/svg-icon';
+
+import { useTierLabelIconClass } from './model/tier-label';
 
 interface Props {
   /** Tier icon; null for a label of text only. */
@@ -17,9 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
   highlighted: false,
 });
 
-const style = useCssModule();
-
-const iconClass = computed(() => [style.icon, props.highlighted ? style.iconHighlighted : style.iconRegular]);
+const iconClass = useTierLabelIconClass(() => props.highlighted, useCssModule());
 </script>
 
 <template>

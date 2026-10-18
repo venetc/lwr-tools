@@ -37,9 +37,9 @@ export const useDescribedItem = (
   });
 
   const defaultOption = computed((): TieredPickerOption | null => {
-    const itemId = toValue(defaultItem)?.id ?? null;
+    const itemId = toValue(defaultItem)?.id;
 
-    if (itemId === null) return null;
+    if (!itemId) return null;
 
     return toValue(tiers).flatMap(tier => tier.options).find(({ item }) => item.id === itemId) ?? null;
   });

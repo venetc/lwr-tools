@@ -3,12 +3,13 @@ import { ClipboardPaste } from '@lucide/vue';
 import type { VNode } from 'vue';
 
 import type { ListedBuild } from '@features/manage-builds';
-import { useBuildNavItems } from '@features/manage-builds';
 import type { BuildCodeKind, BuildDataByKind } from '@features/share-build';
 import { ShareCodeImport } from '@features/share-build';
 import { usePanelScroll } from '@shared/lib/panel-scroll';
 import { Button } from '@shared/ui/button';
 import { ListNav } from '@shared/ui/list-nav';
+
+import { useBuildCalculatorNav } from '../model/build-calculator';
 
 interface Props {
   /** Builds of the calculator, in page order. */
@@ -40,23 +41,7 @@ const slots = defineSlots<{
 
 const { panelRef, scrollToPanel } = usePanelScroll();
 
-const navItems = useBuildNavItems(() => props.builds);
-
-const hasNavIcon = Boolean(slots['nav-icon']);
-
-/**
- * Requests a new build from imported data.
- *
- * @param data imported build data.
- */
-const requestImport = (data: BuildDataByKind[Kind]) => emit('import', data);
-
-/**
- * Requests removal of the build.
- *
- * @param buildId build id.
- */
-const requestRemove = (buildId: string) => emit('remove', buildId);
+const { navItems, hasNavIcon } = useBuildCalculatorNav(() => props.builds, slots);
 </script>
 
 <template>
@@ -76,7 +61,7 @@ const requestRemove = (buildId: string) => emit('remove', buildId);
       <div :class="$style.actions">
         <slot name="add" />
 
-        <ShareCodeImport :kind="props.kind" @import="requestImport">
+        <ShareCodeImport :kind="props.kind" @import="emit('import', $event)">
           <template #trigger>
             <Button>
               <span :class="$style.importContent">
@@ -93,7 +78,7 @@ const requestRemove = (buildId: string) => emit('remove', buildId);
         :items="navItems"
         label="Builds"
         @select="scrollToPanel"
-        @remove="requestRemove"
+        @remove="emit('remove', $event)"
       >
         <template v-if="hasNavIcon" #icon="{ item }">
           <slot name="nav-icon" :build="item.build" />

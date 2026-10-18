@@ -1,6 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue';
-import { ref, toValue } from 'vue';
+import { computed, ref, toValue } from 'vue';
 
+import { createId } from '@shared/lib/id';
 import { useToastQueue } from '@shared/ui/toast';
 
 import type { BuildCodeKind, BuildDataByKind } from './build-codecs';
@@ -8,7 +9,7 @@ import { BUILD_CODECS } from './build-codecs';
 
 /**
  * Share code import form: open state, entered code and its validity; a valid code is passed on and closes the form,
- * a code of another unit is reported with a toast and stays in the open form.
+ * a code of another unit is reported with a toast and stays in the open form. The error is linked to the field while shown.
  *
  * @param kind kind of build code the form accepts.
  * @param onImport receives the build of a valid code.
@@ -24,6 +25,10 @@ export const useShareCodeImport = <Kind extends BuildCodeKind>(
   const code = ref('');
 
   const isInvalid = ref(false);
+
+  const errorId = createId();
+
+  const errorDescribedBy = computed(() => isInvalid.value ? errorId : null);
 
   /**
    * Hides the error once the code is edited.
@@ -69,5 +74,5 @@ export const useShareCodeImport = <Kind extends BuildCodeKind>(
     setOpen(false);
   };
 
-  return { isOpen, code, isInvalid, clearError, setOpen, submit };
+  return { isOpen, code, isInvalid, errorId, errorDescribedBy, clearError, setOpen, submit };
 };

@@ -1,6 +1,5 @@
 <script setup lang="ts" generic="Kind extends BuildCodeKind">
-import { computed, useId } from 'vue';
-
+import { createId } from '@shared/lib/id';
 import { Button } from '@shared/ui/button';
 import { Input } from '@shared/ui/input';
 import { Label } from '@shared/ui/label';
@@ -23,16 +22,12 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
-const inputId = useId();
+const inputId = createId();
 
-const errorId = useId();
-
-const { isOpen, code, isInvalid, clearError, setOpen, submit } = useShareCodeImport(
+const { isOpen, code, isInvalid, errorId, errorDescribedBy, clearError, setOpen, submit } = useShareCodeImport(
   () => props.kind,
   build => emit('import', build),
 );
-
-const errorDescribedBy = computed(() => isInvalid.value ? errorId : undefined);
 </script>
 
 <template>

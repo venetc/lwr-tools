@@ -7,10 +7,10 @@ import type { BuildCodeKind, BuildDataByKind } from '@features/share-build';
 import { ShareCodeExport, ShareCodeImport } from '@features/share-build';
 import { ActionBar } from '@shared/ui/action-bar';
 import { EditableTitle } from '@shared/ui/editable-title';
-import type { TieredPickerGroup, TieredPickerItem, TieredPickerTier } from '@shared/ui/tiered-picker';
+import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
 import { TieredPicker } from '@shared/ui/tiered-picker';
 
-import { useBuildPanelFields } from '../model/build-panel';
+import { useBuildPanel } from '../model/build-panel';
 
 interface Props {
   /** Kind of build code, for sharing and importing the build. */
@@ -70,50 +70,18 @@ defineSlots<{
   'item-name'?: (props: ItemNameSlotProps) => VNode[]
 }>();
 
-const { name, readonly } = useBuildPanelFields(() => props.build, {
+const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.build, {
   onRename: value => emit('rename', value),
   onLock: isReadonly => emit('lock', isReadonly),
+  onSelect: (groupId, tierIndex, itemId) => emit('select', groupId, tierIndex, itemId),
 });
-
-/**
- * Requests replacing the build with imported data.
- *
- * @param data imported build data.
- */
-const requestReplace = (data: BuildDataByKind[Kind]) => emit('replace', data);
-
-/**
- * Requests resetting the build to a new one.
- */
-const requestReset = () => emit('reset');
-
-/**
- * Requests removal of the build.
- */
-const requestRemove = () => emit('remove');
-
-/**
- * Requests an item selection on a tier of the group.
- *
- * @param groupId group id.
- * @param tierIndex tier index in the group.
- * @param itemId selected item id, or null to clear the tier.
- */
-const requestSelect = (groupId: string, tierIndex: number, itemId: string | null) => emit('select', groupId, tierIndex, itemId);
-
-/**
- * Checks whether the tier is open for selection.
- *
- * @param tier picker tier.
- */
-const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available';
 </script>
 
 <template>
   <TieredPicker
     :label="props.label"
     :groups="props.groups"
-    @select="requestSelect"
+    @select="select"
   >
     <template #header>
       <EditableTitle
@@ -131,10 +99,10 @@ const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available'
         remove-label="Remove build"
         lock-label="Lock build"
         :removable="props.removable"
-        @remove="requestRemove"
+        @remove="emit('remove')"
       >
         <template #editable="{ actionClass }">
-          <ShareCodeImport :kind="props.kind" @import="requestReplace">
+          <ShareCodeImport :kind="props.kind" @import="emit('replace', $event)">
             <template #trigger>
               <button :class="actionClass" type="button">
                 <ClipboardPaste :class="$style.actionIcon" aria-hidden="true" />
@@ -146,7 +114,7 @@ const isTierHighlighted = (tier: TieredPickerTier) => tier.state === 'available'
           <button
             :class="actionClass"
             type="button"
-            @click="requestReset"
+            @click="emit('reset')"
           >
             <RotateCcw :class="$style.actionIcon" aria-hidden="true" />
             <span :class="$style.visuallyHidden">Reset build</span>

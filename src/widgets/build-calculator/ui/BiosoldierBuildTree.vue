@@ -4,7 +4,7 @@ import { useCssModule } from 'vue';
 import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
-import type { BiosoldierBranch, BiosoldierBuildGroup } from '../model/biosoldier-build-groups';
+import { useBiosoldierBranchClasses } from '../model/biosoldier-branch-classes';
 import { tierIcon, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
@@ -29,35 +29,13 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const style = useCssModule();
-
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
 const { rename, lock, replace, reset } = useBuildEditor(() => props.build, biosoldierBuildsStore);
 
 const { tree, groups, select } = useBiosoldierBuildGroups(() => props.build);
 
-/** Colours of each branch: its counter when the branch has a selection, and the described ability name. */
-const branchClasses: Record<BiosoldierBranch, { counter: string | undefined, name: string | undefined }> = {
-  'class-tree': { counter: style.counterClassTree, name: undefined },
-  'gene-mods': { counter: style.counterGeneMods, name: style.geneModName },
-  'psionic': { counter: style.counterPsionic, name: style.psionicName },
-};
-
-/**
- * Classes of a branch: the tab counter, grey for an empty branch, and the described ability name.
- *
- * @param group tier group of the branch.
- */
-const getBranchClasses = (group: BiosoldierBuildGroup) => ({
-  counter: [style.counter, group.isEmpty ? style.counterEmpty : branchClasses[group.id].counter],
-  name: branchClasses[group.id].name,
-});
-
-/**
- * Requests removal of the build.
- */
-const requestRemove = () => emit('remove', props.build.id);
+const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
 </script>
 
 <template>
@@ -73,7 +51,7 @@ const requestRemove = () => emit('remove', props.build.id);
     @lock="lock"
     @replace="replace"
     @reset="reset"
-    @remove="requestRemove"
+    @remove="emit('remove', props.build.id)"
     @select="select"
   >
     <template #icon>

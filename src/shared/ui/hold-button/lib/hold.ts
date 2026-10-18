@@ -1,7 +1,9 @@
 import type { MaybeElementRef } from '@vueuse/core';
 import { onLongPress } from '@vueuse/core';
 import type { MaybeRefOrGetter } from 'vue';
-import { ref, toValue } from 'vue';
+import { computed, ref, toValue } from 'vue';
+
+export type HoldButtonState = 'idle' | 'holding';
 
 export interface HoldOptions {
   /** Time in milliseconds the target has to be held to fire. */
@@ -15,12 +17,17 @@ export interface HoldOptions {
 /**
  * Press-and-hold gesture on the target: tracks the hold and fires after the full duration;
  * keyboard activation, which has no pointer to hold, fires at once.
+ * The hold state and its duration are given for styling the progress.
  *
  * @param target element to hold.
  * @param options hold duration, disabled state and the action.
  */
 export const useHold = (target: MaybeElementRef, options: HoldOptions) => {
   const isHolding = ref(false);
+
+  const state = computed<HoldButtonState>(() => isHolding.value ? 'holding' : 'idle');
+
+  const progressStyle = computed(() => ({ '--hold-duration': `${toValue(options.duration)}ms` }));
 
   /**
    * Starts tracking the hold when the pointer presses the target.
@@ -66,5 +73,5 @@ export const useHold = (target: MaybeElementRef, options: HoldOptions) => {
     onMouseUp: stopHold,
   });
 
-  return { isHolding, startHold, activateFromKeyboard };
+  return { state, progressStyle, startHold, activateFromKeyboard };
 };

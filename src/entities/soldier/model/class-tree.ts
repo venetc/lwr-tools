@@ -31,7 +31,7 @@ export type SelectedPerks = TreeAbility['id'][];
 export const featuredPerk = (tree: ClassTree, perks: SelectedPerks): TreeAbility | null => {
   const lastRankIndex = perks.length - 1;
   const lastRankPerks = tree.ranks[lastRankIndex]?.perks ?? [];
-  const lastSelectedPerk = lastRankPerks.find(perk => perk.id === perks[lastRankIndex]) ?? null;
+  const lastSelectedPerk = lastRankPerks.find(perk => perk.id === perks[lastRankIndex]);
 
   return lastSelectedPerk ?? tree.ranks[0]?.perks[0] ?? null;
 };

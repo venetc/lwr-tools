@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, useCssModule } from 'vue';
+import { useCssModule } from 'vue';
 
-import type { BiosoldierBranchSet, BiosoldierBuildData } from '@entities/soldier';
-import { biosoldierBuildBranchSet } from '@entities/soldier';
+import type { BiosoldierBuildData } from '@entities/soldier';
+
+import { useBiosoldierClassIconLayers } from '../model/biosoldier-class-icon';
 
 interface Props {
   /** Biosoldier build whose class icon takes the colours of its branches. */
@@ -11,17 +12,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const style = useCssModule();
-
-/** Classes of the stacked icon copies for each branch set: one whole icon, or the gene mod and psionic halves for both. */
-const branchSetLayers: Record<BiosoldierBranchSet, (string | undefined)[][]> = {
-  'plain': [[style.icon, style.plain]],
-  'gene-mods': [[style.icon, style.geneMods]],
-  'psionic': [[style.icon, style.psionic]],
-  'both': [[style.icon, style.geneModHalf], [style.icon, style.psionicHalf]],
-};
-
-const layers = computed(() => branchSetLayers[biosoldierBuildBranchSet(props.build)]);
+const layers = useBiosoldierClassIconLayers(() => props.build, useCssModule());
 </script>
 
 <template>

@@ -52,19 +52,8 @@ const {
   describedNote,
   hasRelated,
   describe,
-} = usePickerGroups(() => props.groups);
-
-/**
- * Requests an item selection on a tier of the shown group; only the shown group has its tiers on the page.
- *
- * @param tierIndex tier index in the group.
- * @param itemId selected item id, or null to clear the tier.
- */
-const select = (tierIndex: number, itemId: string | null) => {
-  if (!activeGroup.value) return;
-
-  emit('select', activeGroup.value.id, tierIndex, itemId);
-};
+  select,
+} = usePickerGroups(() => props.groups, (groupId, tierIndex, itemId) => emit('select', groupId, tierIndex, itemId));
 </script>
 
 <template>

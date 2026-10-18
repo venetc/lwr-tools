@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, useCssModule } from 'vue';
+import { useCssModule } from 'vue';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger';
+import type { ButtonVariant } from './model/button';
+import { useButtonClass } from './model/button';
 
 interface Props {
   /** Visual variant. */
@@ -15,9 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   type: 'button',
 });
 
-const style = useCssModule();
-
-const buttonClass = computed(() => [style.button, style[props.variant]]);
+const buttonClass = useButtonClass(() => props.variant, useCssModule());
 </script>
 
 <template>

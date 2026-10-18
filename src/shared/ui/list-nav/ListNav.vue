@@ -6,6 +6,7 @@ import { HoldButton } from '@shared/ui/hold-button';
 import { ScrollArea } from '@shared/ui/scroll-area';
 
 import type { ListNavItem } from './model/list-nav';
+import { useListNav } from './model/list-nav';
 
 interface Props {
   /** Items to list, in page order. */
@@ -33,28 +34,7 @@ const slots = defineSlots<{
   icon?: (props: IconSlotProps) => VNode[]
 }>();
 
-const hasIcon = Boolean(slots.icon);
-
-/**
- * Requests going to the item.
- *
- * @param id item id.
- */
-const select = (id: string) => emit('select', id);
-
-/**
- * Requests removal of the item.
- *
- * @param id item id.
- */
-const remove = (id: string) => emit('remove', id);
-
-/**
- * Whether the item cannot be removed.
- *
- * @param item listed item.
- */
-const isRemoveDisabled = (item: Item) => !item.isRemovable;
+const { hasIcon, isRemoveDisabled } = useListNav(slots);
 </script>
 
 <template>
@@ -70,7 +50,7 @@ const isRemoveDisabled = (item: Item) => !item.isRemovable;
             :class="$style.item"
             type="button"
             :title="item.label"
-            @click="select(item.id)"
+            @click="emit('select', item.id)"
           >
             <span
               v-if="hasIcon"
@@ -85,7 +65,7 @@ const isRemoveDisabled = (item: Item) => !item.isRemovable;
             :class="$style.remove"
             :disabled="isRemoveDisabled(item)"
             title="Hold to remove"
-            @hold="remove(item.id)"
+            @hold="emit('remove', item.id)"
           >
             <Trash2 :class="$style.removeIcon" aria-hidden="true" />
             <span :class="$style.visuallyHidden">Remove {{ item.label }}</span>

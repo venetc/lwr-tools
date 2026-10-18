@@ -10,8 +10,12 @@ import type { TieredPickerGroup } from './tiered-picker';
  * Switching the group drops the inspected item, so the description falls back to the default of the new group.
  *
  * @param groups picker groups, at least one.
+ * @param onSelect receives the group id, the tier index and the selected item id; null clears the tier.
  */
-export const usePickerGroups = <Group extends TieredPickerGroup>(groups: MaybeRefOrGetter<readonly Group[]>) => {
+export const usePickerGroups = <Group extends TieredPickerGroup>(
+  groups: MaybeRefOrGetter<readonly Group[]>,
+  onSelect: (groupId: string, tierIndex: number, itemId: string | null) => void,
+) => {
   const chosenGroupId = shallowRef<string | null>(null);
 
   const activeGroup = computed(() => {
@@ -41,6 +45,18 @@ export const usePickerGroups = <Group extends TieredPickerGroup>(groups: MaybeRe
     return { item, group };
   });
 
+  /**
+   * Requests an item selection on a tier of the shown group; only the shown group has its tiers on the page.
+   *
+   * @param tierIndex tier index in the group.
+   * @param itemId selected item id, or null to clear the tier.
+   */
+  const select = (tierIndex: number, itemId: string | null) => {
+    if (!activeGroup.value) return;
+
+    onSelect(activeGroup.value.id, tierIndex, itemId);
+  };
+
   return {
     activeGroup,
     activeGroupId,
@@ -49,5 +65,6 @@ export const usePickerGroups = <Group extends TieredPickerGroup>(groups: MaybeRe
     describedNote: description.describedNote,
     hasRelated: description.hasRelated,
     describe: description.describe,
+    select,
   };
 };

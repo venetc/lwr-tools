@@ -30,11 +30,6 @@ const mecBuildsStore = useMecBuildsStore();
 const { rename, lock, replace, reset } = useBuildEditor(() => props.build, mecBuildsStore);
 
 const { tree, groups, select } = useMecBuildGroups(() => props.build);
-
-/**
- * Requests removal of the build.
- */
-const requestRemove = () => emit('remove', props.build.id);
 </script>
 
 <template>
@@ -50,7 +45,7 @@ const requestRemove = () => emit('remove', props.build.id);
     @lock="lock"
     @replace="replace"
     @reset="reset"
-    @remove="requestRemove"
+    @remove="emit('remove', props.build.id)"
     @select="select"
   >
     <template #icon>

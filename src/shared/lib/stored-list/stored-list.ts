@@ -58,7 +58,7 @@ export const useStoredList = <Item extends StoredListItem>(options: StoredListOp
 
     if (id === null) return;
 
-    const item = itemsById.value.get(id) ?? null;
+    const item = itemsById.value.get(id);
 
     if (!item) {
       removeLocalStorage(key);
@@ -170,7 +170,7 @@ export const useStoredList = <Item extends StoredListItem>(options: StoredListOp
     const hasMissingItems = [...items.keys()].some(id => !orderIds.has(id));
 
     itemsById.value = orderedIds(order, [...items.keys()]).reduce((acc, id) => {
-      const item = items.get(id) ?? null;
+      const item = items.get(id);
 
       if (item) acc.set(id, item);
 

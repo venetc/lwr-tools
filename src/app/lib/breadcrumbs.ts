@@ -17,7 +17,7 @@ export const useBreadcrumbs = () => {
   const breadcrumbs = computed(() => route.matched.reduce<BreadcrumbItem[]>((items, record, index) => {
     if (!record.meta.title) return items;
 
-    const parent = route.matched[index - 1] ?? null;
+    const parent = route.matched[index - 1];
 
     if (!parent) {
       items.push({ label: record.meta.title, to: record.path });

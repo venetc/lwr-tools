@@ -96,9 +96,12 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
    */
   const fitRequiredSlot = (slot: 'armor' | 'primary') => {
     const [reason] = blockReasons(fitted[slot], { kind: slot }, fitted, wearer);
-    const defaults = reason === undefined ? null : defaultLoadout(wearer);
 
-    if (reason === undefined || defaults === null) return;
+    if (!reason) return;
+
+    const defaults = defaultLoadout(wearer);
+
+    if (!defaults) return;
 
     changes.push({ kind: 'replaced', slot, item: fitted[slot], by: defaults[slot], reason });
 
@@ -119,7 +122,7 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
     const item = fitted.secondary;
     const [reason] = item === null ? [] : blockReasons(item, { kind: 'secondary' }, fitted, wearer);
 
-    if (item === null || reason === undefined) return;
+    if (item === null || !reason) return;
 
     const replacement = isRequired ? defaultLoadout(wearer)?.secondary ?? null : null;
 
@@ -135,9 +138,11 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
    * @param isRequired whether the secondary slot is never empty.
    */
   const fillSecondarySlot = (isRequired: boolean) => {
-    const item = fitted.secondary === null && isRequired ? defaultLoadout(wearer)?.secondary ?? null : null;
+    if (fitted.secondary !== null || !isRequired) return;
 
-    if (item === null) return;
+    const item = defaultLoadout(wearer)?.secondary;
+
+    if (!item) return;
 
     changes.push({ kind: 'added', slot: 'secondary', item });
     fitted.secondary = item;
@@ -180,11 +185,14 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
     const kinds = loadoutSlots(fitted, wearer).utility;
 
     kinds.forEach((kind, from) => {
-      const item = fitted.utility[from] ?? null;
-      const equipment = item === null ? null : EQUIPMENT_BY_ID.get(item) ?? null;
+      const item = fitted.utility[from];
+
+      if (!item) return;
+
+      const equipment = EQUIPMENT_BY_ID.get(item);
       const to = kinds.findIndex((other, index) => other === 'regular' && fitted.utility[index] === null);
 
-      if (item === null || equipment === null || isMountHolding(kind, equipment) || to === -1) return;
+      if (!equipment || isMountHolding(kind, equipment) || to === -1) return;
 
       fitted.utility[to] = item;
       fitted.utility[from] = null;
@@ -207,7 +215,7 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
 
         const [reason] = blockReasons(item, { kind: slot, index }, kept, wearer);
 
-        if (reason !== undefined) {
+        if (reason) {
           changes.push({ kind: 'removed', slot, item, reason });
           return;
         }

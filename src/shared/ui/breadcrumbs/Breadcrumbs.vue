@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ChevronDown, ChevronRight } from '@lucide/vue';
-import { computed } from 'vue';
 
 import { DropdownMenu, DropdownMenuLink } from '@shared/ui/dropdown-menu';
 
 import type { BreadcrumbItem } from './model/breadcrumbs';
+import { useCrumbs } from './model/breadcrumbs';
 
 interface Props {
   /** Trail from the root to the current page; the last item is the current page. */
@@ -13,11 +13,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const crumbs = computed(() => props.items.map((item, index) => {
-  const isCurrent = index === props.items.length - 1;
-
-  return { ...item, isCurrent, hasSeparator: !isCurrent };
-}));
+const crumbs = useCrumbs(() => props.items);
 </script>
 
 <template>

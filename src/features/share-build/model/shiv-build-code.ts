@@ -28,14 +28,16 @@ export type ShivBuildPart = 'name';
  */
 const readPerks = (reader: BitReader): SelectedShivPerks | null => {
   const perkCount = reader.readUint(SHIV_PERK_COUNT_BITS);
-  const perkIds = Array.from({ length: perkCount }, () => SHIV_PERK_ID_BY_CODE.get(reader.readUint(SHIV_PERK_CODE_BITS)) ?? null);
+  const perkIds = Array.from({ length: perkCount }, () => SHIV_PERK_ID_BY_CODE.get(reader.readUint(SHIV_PERK_CODE_BITS)));
 
   if (!reader.isComplete) return null;
+
+  if (!perkIds.every(perkId => typeof perkId === 'string')) return null;
 
   const perks: SelectedShivPerks = TECHNOLOGY_LEVELS.map(() => null);
 
   const isPlaced = perkIds.every((perkId) => {
-    const levelIndex = perkId === null ? -1 : TECHNOLOGY_LEVELS.findIndex(level => level.perks.some(perk => perk.id === perkId));
+    const levelIndex = TECHNOLOGY_LEVELS.findIndex(level => level.perks.some(perk => perk.id === perkId));
 
     if (levelIndex === -1 || perks[levelIndex] !== null) return false;
 
@@ -88,7 +90,7 @@ export const decodeShivBuild = (code: string, parts = SHIV_BUILD_PARTS): ShareCo
 
   if (shareCode.status !== 'opened') return shareCode;
 
-  const perksReader = shareCode.sections.get(SHIV_BUILD_SECTION.PERKS) ?? null;
+  const perksReader = shareCode.sections.get(SHIV_BUILD_SECTION.PERKS);
   const perks = perksReader && readPerks(perksReader);
 
   if (!perks) return INVALID_SHARE_CODE;

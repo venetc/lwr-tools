@@ -5,6 +5,7 @@ import { useCssModule } from 'vue';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
 import { useTierGrid } from './lib/tier-grid';
+import { useTierAppearance } from './model/tier-appearance';
 import { useTierSelection } from './model/tier-selection';
 import type { TieredPickerOption, TieredPickerTier } from './model/tiered-picker';
 import TieredPickerCell from './TieredPickerCell.vue';
@@ -33,28 +34,11 @@ defineSlots<{
   tier?: (props: TierSlotProps) => VNode[]
 }>();
 
-const style = useCssModule();
-
 const { toggle, getAriaDisabled } = useTierSelection((tierIndex, itemId) => emit('select', tierIndex, itemId));
 
 const { gridStyle, getOptionStyle } = useTierGrid(() => props.tiers);
 
-/**
- * Reports the option the user points at or focuses.
- *
- * @param tier tier of the option.
- * @param option inspected option.
- */
-const inspect = (tier: Tier, option: TieredPickerOption) => emit('inspect', tier, option);
-
-/**
- * Tier classes based on its state.
- *
- * @param tier tier with its state.
- */
-const getTierClass = (tier: Tier) => {
-  return [style.tier, style[tier.state]];
-};
+const { getTierClass } = useTierAppearance(useCssModule());
 </script>
 
 <template>
@@ -82,8 +66,8 @@ const getTierClass = (tier: Tier) => {
           :style="getOptionStyle(tier, optionIndex)"
           :value="option.item.id"
           :aria-disabled="getAriaDisabled(tier, option)"
-          @pointerenter="inspect(tier, option)"
-          @focus="inspect(tier, option)"
+          @pointerenter="emit('inspect', tier, option)"
+          @focus="emit('inspect', tier, option)"
         >
           <TieredPickerCell
             :icon="option.item.icon"

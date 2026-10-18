@@ -7,15 +7,12 @@ import { ARMORS_WITHOUT_TACTICAL_RIGGING, MAX_UTILITY_SLOTS, REQUIRED_SECONDARY_
 import { SHIV_TYPE_BY_ID, SHIV_TYPES } from '../config/constants/shiv-types';
 import { WEAPON_BY_ID, WEAPONS } from '../config/constants/weapons';
 import type { ArmorId } from './armors';
-import { isArmorId } from './armors';
 import type { Equipment, EquipmentId } from './equipment';
-import { isEquipmentId } from './equipment';
 import type { LoadoutRequirement } from './loadout-requirements';
 import type { LoadoutUnitId } from './loadout-units';
 import type { ShivTypeId } from './shiv-types';
 import { isShivTypeId } from './shiv-types';
 import type { WeaponId } from './weapons';
-import { isWeaponId } from './weapons';
 
 /**
  * What the Loadout rules need to know about the unit that carries it.
@@ -94,9 +91,9 @@ const isClassAllowed = (classes: readonly string[] | null, classId: string | nul
  * @param loadout armor and primary weapon of the unit.
  */
 const utilitySlotKinds = (loadout: Pick<Loadout, 'armor' | 'primary'>): UtilitySlotKind[] => {
-  const armor = isArmorId(loadout.armor) ? ARMOR_BY_ID.get(loadout.armor) ?? null : null;
-  const shivType = isShivTypeId(loadout.armor) ? SHIV_TYPE_BY_ID.get(loadout.armor) ?? null : null;
-  const primary = WEAPON_BY_ID.get(loadout.primary) ?? null;
+  const armor = ARMOR_BY_ID.get(loadout.armor);
+  const shivType = SHIV_TYPE_BY_ID.get(loadout.armor);
+  const primary = WEAPON_BY_ID.get(loadout.primary);
   const gearMounts = armor?.gearMountSlots ?? 0;
   const psiMounts = armor?.psiMountSlots ?? 0;
   const hasRigging = armor?.unit === 'biosoldier' && !ARMORS_WITHOUT_TACTICAL_RIGGING.includes(armor.id);
@@ -118,7 +115,7 @@ const utilitySlotKinds = (loadout: Pick<Loadout, 'armor' | 'primary'>): UtilityS
  * @param wearer unit that carries the Loadout.
  */
 export const loadoutSlots = (loadout: Pick<Loadout, 'armor' | 'primary'>, wearer: LoadoutWearer): LoadoutSlots => {
-  const armor = isArmorId(loadout.armor) ? ARMOR_BY_ID.get(loadout.armor) ?? null : null;
+  const armor = ARMOR_BY_ID.get(loadout.armor);
   const secondaries = WEAPONS.filter(weapon => weapon.slot === 'secondary' && weapon.unit === wearer.unit && isClassAllowed(weapon.classes, wearer.classId));
 
   return {
@@ -164,7 +161,7 @@ const heldReasons = (checks: [LoadoutBlockReason, boolean][]) => checks.filter((
 const armorReasons = (item: LoadoutItemId, wearer: LoadoutWearer): LoadoutBlockReason[] => {
   if (wearer.unit === 'shiv') return isShivTypeId(item) ? [] : ['wrong-unit'];
 
-  const armor = isArmorId(item) ? ARMOR_BY_ID.get(item) ?? null : null;
+  const armor = ARMOR_BY_ID.get(item);
 
   if (armor?.unit !== wearer.unit) return ['wrong-unit'];
 
@@ -179,7 +176,7 @@ const armorReasons = (item: LoadoutItemId, wearer: LoadoutWearer): LoadoutBlockR
  * @param wearer unit that carries the Loadout.
  */
 const weaponReasons = (item: LoadoutItemId, slot: 'primary' | 'secondary', wearer: LoadoutWearer): LoadoutBlockReason[] => {
-  const weapon = isWeaponId(item) ? WEAPON_BY_ID.get(item) ?? null : null;
+  const weapon = WEAPON_BY_ID.get(item);
 
   if (weapon?.unit !== wearer.unit || weapon.slot !== slot) return ['wrong-unit'];
 
@@ -209,23 +206,23 @@ export const isMountHolding = (kind: UtilitySlotKind, item: DeepReadonly<Equipme
  * @param wearer unit that carries the Loadout.
  */
 const equipmentReasons = (item: LoadoutItemId, slot: Extract<LoadoutSlot, { index: number }>, loadout: Loadout, wearer: LoadoutWearer): LoadoutBlockReason[] => {
-  const equipment = isEquipmentId(item) ? EQUIPMENT_BY_ID.get(item) ?? null : null;
+  const equipment = EQUIPMENT_BY_ID.get(item);
 
-  const armor = isArmorId(loadout.armor) ? ARMOR_BY_ID.get(loadout.armor) ?? null : null;
+  const armor = ARMOR_BY_ID.get(loadout.armor);
   const utilityKinds = utilitySlotKinds(loadout);
   const slotCount = slot.kind === 'utility' ? utilityKinds.length : armor?.moduleSlots ?? 0;
   const isSlotMissing = slot.index < 0 || slot.index >= slotCount;
 
-  if (equipment === null || !equipment.units.includes(wearer.unit) || equipment.slot !== slot.kind || isSlotMissing) return ['wrong-unit'];
+  if (!equipment || !equipment.units.includes(wearer.unit) || equipment.slot !== slot.kind || isSlotMissing) return ['wrong-unit'];
 
   const others = [
     ...loadout.utility.filter((_, index) => slot.kind !== 'utility' || index !== slot.index),
     ...loadout.modules.filter((_, index) => slot.kind !== 'module' || index !== slot.index),
   ].filter(id => id !== null);
-  const primary = WEAPON_BY_ID.get(loadout.primary) ?? null;
+  const primary = WEAPON_BY_ID.get(loadout.primary);
   const slotKind = slot.kind === 'utility' ? utilityKinds[slot.index] ?? 'regular' : 'regular';
-  const isTierSupported = equipment.primaryTiers === null || (primary !== null && equipment.primaryTiers.includes(primary.tier));
-  const isTypeSupported = equipment.primaryTypes === null || (primary !== null && equipment.primaryTypes.includes(primary.type));
+  const isTierSupported = equipment.primaryTiers === null || (primary ? equipment.primaryTiers.includes(primary.tier) : false);
+  const isTypeSupported = equipment.primaryTypes === null || (primary ? equipment.primaryTypes.includes(primary.type) : false);
 
   return heldReasons([
     ['class-limited', !isClassAllowed(equipment.classes, wearer.classId)],

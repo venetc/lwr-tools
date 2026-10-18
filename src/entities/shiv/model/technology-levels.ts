@@ -43,7 +43,7 @@ export interface TechnologyLevel {
 export const featuredShivPerk = (levels: DeepReadonly<TechnologyLevel[]>, perks: SelectedShivPerks): DeepReadonly<ShivPerk> | null => {
   const levelIndex = perks.reduce((lastIndex, perkId, index) => (perkId === null ? lastIndex : index), -1);
 
-  const selectedPerk = levels[levelIndex]?.perks.find(perk => perk.id === perks[levelIndex]) ?? null;
+  const selectedPerk = levels[levelIndex]?.perks.find(perk => perk.id === perks[levelIndex]);
 
   return selectedPerk ?? levels[0]?.perks[0] ?? null;
 };

@@ -32,9 +32,9 @@ export const openShareCode = (code: string, format: number): OpenedShareCode => 
 
   if (binaryCode.format === format) return { status: 'opened', sections: binaryCode.sections };
 
-  const unit = SHARE_CODE_FORMAT_UNIT.get(binaryCode.format) ?? null;
+  const unit = SHARE_CODE_FORMAT_UNIT.get(binaryCode.format);
 
-  if (unit === null) return INVALID_SHARE_CODE;
+  if (!unit) return INVALID_SHARE_CODE;
 
   return { status: 'other-unit', unit };
 };

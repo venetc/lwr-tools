@@ -100,7 +100,7 @@ export const usePsionicTiers = (build: MaybeRefOrGetter<PsionicTreeBuild>) => {
   const featuredPickerItem = computed(() => {
     const { psionicAbilities } = toValue(build);
     const levelIndex = psionicAbilities.length - 1;
-    const selectedPickerItem = PSI_LEVEL_PICKER_ITEMS[levelIndex]?.find(item => item.id === psionicAbilities[levelIndex]) ?? null;
+    const selectedPickerItem = PSI_LEVEL_PICKER_ITEMS[levelIndex]?.find(item => item.id === psionicAbilities[levelIndex]);
 
     return selectedPickerItem ?? PSI_LEVEL_PICKER_ITEMS[0]?.[0] ?? null;
   });

@@ -14,9 +14,9 @@ export const useTierSelection = (onSelect: (tierIndex: number, itemId: string | 
    *
    * @param tier tier whose selection is toggled.
    * @param tierIndex tier index in the picker.
-   * @param toggledValue selected item id; null or empty means the selection was cleared.
+   * @param toggledValue selected item id; any other value means the selection was cleared.
    */
-  const toggle = (tier: TieredPickerTier, tierIndex: number, toggledValue: AcceptableValue | null) => {
+  const toggle = (tier: TieredPickerTier, tierIndex: number, toggledValue: AcceptableValue | undefined) => {
     if (tier.isDisabled) return;
 
     const itemId = typeof toggledValue === 'string' ? toggledValue : null;

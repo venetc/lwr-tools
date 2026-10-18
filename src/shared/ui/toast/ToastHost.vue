@@ -3,22 +3,9 @@ import { X } from '@lucide/vue';
 import { ToastClose, ToastDescription, ToastProvider, ToastRoot, ToastTitle, ToastViewport } from 'reka-ui';
 
 import { TOAST_DURATION } from './config/constants';
-import { useToastQueue } from './model/toast-queue';
+import { useToastHost } from './model/toast-host';
 
-const { messages, dismissToast } = useToastQueue();
-
-/**
- * Removes the notification from the queue once its closing animation ends: removing it on close would cut the
- * animation off.
- *
- * @param id notification id.
- * @param event animation end event of the notification.
- */
-const onAnimationEnd = (id: string, event: AnimationEvent) => {
-  const toast = event.currentTarget as HTMLElement;
-  if (toast.dataset.state !== 'closed') return;
-  dismissToast(id);
-};
+const { messages, onAnimationEnd } = useToastHost();
 </script>
 
 <template>

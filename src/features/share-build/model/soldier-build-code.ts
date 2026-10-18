@@ -74,14 +74,13 @@ export const soldierBuildCodec = <Build extends SoldierBuildData, Part extends s
    * @param reader section reader.
    */
   const readPerks = (reader: BitReader): Omit<SoldierBuildData, 'name'> | null => {
-    const soldierClass = classByCode.get(reader.readUint(CLASS_CODE_BITS)) ?? null;
+    const soldierClass = classByCode.get(reader.readUint(CLASS_CODE_BITS));
     const perkCount = reader.readUint(PERK_COUNT_BITS);
-    const selectedPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null)
-      .filter(abilityId => abilityId !== null);
+    const selectedPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
 
     if (!soldierClass || !reader.isComplete) return null;
 
-    if (selectedPerks.length !== perkCount) return null;
+    if (!selectedPerks.every(perkId => typeof perkId === 'string')) return null;
 
     if (selectedPerks.length >= SOLDIER_RANKS.length) return null;
 
@@ -141,7 +140,7 @@ export const soldierBuildCodec = <Build extends SoldierBuildData, Part extends s
 
     if (shareCode.status !== 'opened') return shareCode;
 
-    const perksReader = shareCode.sections.get(SOLDIER_BUILD_SECTION.PERKS) ?? null;
+    const perksReader = shareCode.sections.get(SOLDIER_BUILD_SECTION.PERKS);
     const perks = perksReader && readPerks(perksReader);
 
     if (!perks) return INVALID_SHARE_CODE;
@@ -203,17 +202,19 @@ const writeGeneMods = (build: BiosoldierBuildData): BinaryCodeSection[] | null =
  */
 const readGeneMods = (reader: BitReader): SelectedGeneMods | null => {
   const geneModCount = reader.readUint(GENE_MOD_COUNT_BITS);
-  const geneModIds = Array.from({ length: geneModCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null);
+  const geneModIds = Array.from({ length: geneModCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
 
   if (!reader.isComplete) return null;
+
+  if (!geneModIds.every(geneModId => typeof geneModId === 'string')) return null;
 
   const geneMods: SelectedGeneMods = [...EMPTY_GENE_MODS];
   let lastBodyPartIndex = -1;
 
   for (const geneModId of geneModIds) {
-    const bodyPartIndex = geneModId === null ? null : BODY_PART_INDEX_BY_GENE_MOD.get(geneModId) ?? null;
+    const bodyPartIndex = BODY_PART_INDEX_BY_GENE_MOD.get(geneModId);
 
-    if (bodyPartIndex === null || bodyPartIndex <= lastBodyPartIndex) return null;
+    if (typeof bodyPartIndex !== 'number' || bodyPartIndex <= lastBodyPartIndex) return null;
 
     geneMods[bodyPartIndex] = geneModId;
     lastBodyPartIndex = bodyPartIndex;
@@ -262,12 +263,11 @@ const writePsionicAbilities = (build: BiosoldierBuildData): BinaryCodeSection[] 
  */
 const readPsionicAbilities = (reader: BitReader): SelectedPsionicAbilities | null => {
   const abilityCount = reader.readUint(PSIONIC_ABILITY_COUNT_BITS);
-  const abilityIds = Array.from({ length: abilityCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)) ?? null);
-  const psionicAbilities = abilityIds.filter(abilityId => abilityId !== null);
+  const psionicAbilities = Array.from({ length: abilityCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
 
   if (!reader.isComplete) return null;
 
-  if (psionicAbilities.length !== abilityCount) return null;
+  if (!psionicAbilities.every(abilityId => typeof abilityId === 'string')) return null;
 
   if (!isOnItsPsiLevels(psionicAbilities)) return null;
 
@@ -289,13 +289,13 @@ const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, Bio
     return [...geneModSections, ...psionicSections];
   },
   read: (build, sections, parts) => {
-    const geneModsReader = parts.includes('geneMods') ? sections.get(SOLDIER_BUILD_SECTION.GENE_MODS) ?? null : null;
-    const geneMods = geneModsReader ? readGeneMods(geneModsReader) : [...EMPTY_GENE_MODS];
+    const geneModsReader = sections.get(SOLDIER_BUILD_SECTION.GENE_MODS);
+    const geneMods = geneModsReader && parts.includes('geneMods') ? readGeneMods(geneModsReader) : [...EMPTY_GENE_MODS];
 
     if (!geneMods) return null;
 
-    const psionicReader = parts.includes('psionicAbilities') ? sections.get(SOLDIER_BUILD_SECTION.PSIONIC) ?? null : null;
-    const psionicAbilities = psionicReader ? readPsionicAbilities(psionicReader) : [];
+    const psionicReader = sections.get(SOLDIER_BUILD_SECTION.PSIONIC);
+    const psionicAbilities = psionicReader && parts.includes('psionicAbilities') ? readPsionicAbilities(psionicReader) : [];
 
     if (!psionicAbilities) return null;
 

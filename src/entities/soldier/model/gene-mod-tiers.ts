@@ -93,7 +93,7 @@ export const useGeneModTiers = (build: MaybeRefOrGetter<GeneModTreeBuild>) => {
   const featuredPickerItem = computed(() => {
     const { geneMods } = toValue(build);
     const bodyPartIndex = geneMods.reduce((lastIndex, geneModId, index) => (geneModId === null ? lastIndex : index), -1);
-    const selectedPickerItem = BODY_PART_PICKER_ITEMS[bodyPartIndex]?.find(item => item.id === geneMods[bodyPartIndex]) ?? null;
+    const selectedPickerItem = BODY_PART_PICKER_ITEMS[bodyPartIndex]?.find(item => item.id === geneMods[bodyPartIndex]);
 
     return selectedPickerItem ?? BODY_PART_PICKER_ITEMS[0]?.[0] ?? null;
   });

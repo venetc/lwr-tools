@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed, useTemplateRef } from 'vue';
+import { useTemplateRef } from 'vue';
 
 import { useHold } from './lib/hold';
-
-export type HoldButtonState = 'idle' | 'holding';
 
 interface Props {
   /** Time in milliseconds the button has to be held to fire. */
@@ -26,16 +24,11 @@ const emit = defineEmits<Emits>();
 
 const button = useTemplateRef<HTMLButtonElement>('button');
 
-const { isHolding, startHold, activateFromKeyboard } = useHold(button, {
+const { state, progressStyle, startHold, activateFromKeyboard } = useHold(button, {
   duration: () => props.duration,
   disabled: () => props.disabled,
   onHold: () => emit('hold'),
 });
-
-/** Hold state, exposed as `data-state` for styling. */
-const state = computed<HoldButtonState>(() => isHolding.value ? 'holding' : 'idle');
-
-const progressStyle = computed(() => ({ '--hold-duration': `${props.duration}ms` }));
 </script>
 
 <template>

@@ -32,7 +32,7 @@ export const usePanelScroll = () => {
    * @param id item id.
    */
   const scrollToPanel = (id: string) => {
-    const panel = panels.get(id) ?? null;
+    const panel = panels.get(id);
 
     if (!panel) return;
 

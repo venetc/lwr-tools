@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { Lock, LockOpen, Trash2 } from '@lucide/vue';
+import { Trash2 } from '@lucide/vue';
 import type { VNode } from 'vue';
-import { computed, useCssModule } from 'vue';
+import { useCssModule } from 'vue';
 
 import { HoldButton } from '@shared/ui/hold-button';
 import { Toggle } from '@shared/ui/toggle';
+
+import { useActionBar } from './model/action-bar';
 
 interface Props {
   /** Accessible label of the remove button. */
@@ -36,27 +38,14 @@ defineSlots<{
   default?: (props: DefaultSlotProps) => VNode[]
 }>();
 
-const style = useCssModule();
-
-const lockClass = [style.action, style.lock];
-
-const secondaryClass = [style.action, style.secondary];
-
-const removeClass = [style.action, style.remove];
-
 /** Whether editing is locked; the remove button is hidden while locked. */
 const locked = defineModel<boolean>('locked', { required: true });
 
-const lockIcon = computed(() => locked.value ? Lock : LockOpen);
-
-const isEditable = computed(() => !locked.value);
-
-const isRemovable = computed(() => props.removable && isEditable.value);
-
-/**
- * Requests removal.
- */
-const requestRemove = () => emit('remove');
+const { lockClass, secondaryClass, removeClass, lockIcon, isEditable, isRemovable } = useActionBar({
+  locked,
+  removable: () => props.removable,
+  style: useCssModule(),
+});
 </script>
 
 <template>
@@ -71,7 +60,7 @@ const requestRemove = () => emit('remove');
       v-if="isRemovable"
       :class="removeClass"
       title="Hold to remove"
-      @hold="requestRemove"
+      @hold="emit('remove')"
     >
       <Trash2 :class="$style.icon" aria-hidden="true" />
       <span :class="$style.visuallyHidden">{{ props.removeLabel }}</span>

@@ -5,9 +5,9 @@ import { createId } from '@shared/lib/id';
 import { HoldButton } from '@shared/ui/hold-button';
 
 import type { UnitCard } from '../model/unit-cards';
-import LoadoutTiles from './LoadoutTiles.vue';
 import UnitBuild from './UnitBuild.vue';
 import UnitBuildIcon from './UnitBuildIcon.vue';
+import UnitLoadout from './UnitLoadout.vue';
 
 interface Props {
   /** Unit to show. */
@@ -52,7 +52,7 @@ const headingId = createId();
 
     <UnitBuild :squad-build="props.card.squadBuild" />
 
-    <LoadoutTiles :tiles="props.card.tiles" />
+    <UnitLoadout :card="props.card" />
   </article>
 </template>
 

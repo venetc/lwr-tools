@@ -19,22 +19,33 @@ export const SHIV = 'SHIV';
 export const SNIPER_TILES = `
 - list "Loadout":
   - /children: equal
-  - 'listitem "Armor: Tactical Vest"'
-  - 'listitem "Primary: Assault Rifle"'
-  - 'listitem "Secondary: Empty"'
-  - 'listitem "Utility: Empty"'
-  - 'listitem "Utility: Empty"'
-  - 'listitem "Utility: Empty"'
+  - listitem:
+    - 'button "Armor: Tactical Vest"'
+  - listitem:
+    - 'button "Primary: Assault Rifle"'
+  - listitem:
+    - 'button "Secondary: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
 `;
 
 export const GUNNER_TILES = `
 - list "Loadout":
   - /children: equal
-  - 'listitem "Armor: Tactical Vest"'
-  - 'listitem "Primary: Assault Rifle"'
-  - 'listitem "Utility: Empty"'
-  - 'listitem "Utility: Empty"'
-  - 'listitem "Utility: Empty"'
+  - listitem:
+    - 'button "Armor: Tactical Vest"'
+  - listitem:
+    - 'button "Primary: Assault Rifle"'
+  - listitem:
+    - 'button "Utility: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
 `;
 
 export const ROCKETEER_SECONDARY = 'Secondary: Rocket Launcher';
@@ -42,20 +53,29 @@ export const ROCKETEER_SECONDARY = 'Secondary: Rocket Launcher';
 export const MEC_TILES = `
 - list "Loadout":
   - /children: equal
-  - 'listitem "MEC exoskeleton: MEC1 ''Paladin''"'
-  - 'listitem "Primary: Minigun"'
-  - 'listitem "Module: Empty"'
-  - 'listitem "Utility: Empty"'
-  - 'listitem "Utility: Empty"'
+  - listitem:
+    - 'button "MEC exoskeleton: MEC1 ''Paladin''"'
+  - listitem:
+    - 'button "Primary: Minigun"'
+  - listitem:
+    - 'button "Module: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
 `;
 
 export const SHIV_TILES = `
 - list "Loadout":
   - /children: equal
-  - 'listitem "SHIV type: SHIV"'
-  - 'listitem "Primary: Autocannon"'
-  - 'listitem "Utility: Empty"'
-  - 'listitem "Utility: Empty"'
+  - listitem:
+    - 'button "SHIV type: SHIV"'
+  - listitem:
+    - 'button "Primary: Autocannon"'
+  - listitem:
+    - 'button "Utility: Empty"'
+  - listitem:
+    - 'button "Utility: Empty"'
 `;
 
 export const EMPTY_UTILITY = 'Utility: Empty';

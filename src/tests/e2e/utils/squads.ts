@@ -199,3 +199,73 @@ export const openBuildDialog = async (page: Page, card: Locator, buildName: stri
  * @param label step and its ability, such as `Lance Corporal: Magnum` or `Lance Corporal: Empty`.
  */
 export const miniTreeStep = (card: Locator, label: string) => card.getByRole('listitem', { name: label, exact: true });
+
+/**
+ * Loadout tile of a Unit card.
+ *
+ * @param card Unit card.
+ * @param label slot and its item, such as `Armor: Tactical Vest` or `Utility: Empty`.
+ */
+export const loadoutTile = (card: Locator, label: string) => card.getByRole('button', { name: label, exact: true });
+
+/**
+ * Opens the Loadout dialog from a tile of the Unit card and returns the dialog.
+ *
+ * @param page browser page.
+ * @param card Unit card.
+ * @param label slot and its item on the tile.
+ */
+export const openLoadoutDialog = async (page: Page, card: Locator, label: string) => {
+  await loadoutTile(card, label).first().click();
+
+  const dialog = page.getByRole('dialog', { name: 'Loadout' });
+
+  await dialog.waitFor();
+
+  return dialog;
+};
+
+/**
+ * Row of a slot in INVENTORY of the Loadout dialog.
+ *
+ * @param dialog Loadout dialog.
+ * @param label slot and its item, such as `Armor: Tactical Vest`.
+ */
+export const inventoryRow = (dialog: Locator, label: string) => dialog.getByRole('button', { name: label, exact: true });
+
+/**
+ * Opens the Loadout dialog on a slot and shows its LOCKER: on a phone the INVENTORY row opens the LOCKER screen.
+ *
+ * @param page browser page.
+ * @param card Unit card.
+ * @param label slot and its item on the tile.
+ */
+export const openLocker = async (page: Page, card: Locator, label: string) => {
+  const dialog = await openLoadoutDialog(page, card, label);
+
+  await inventoryRow(dialog, label).first().click();
+
+  return dialog;
+};
+
+/**
+ * LOCKER list of the Loadout dialog.
+ *
+ * @param dialog Loadout dialog.
+ */
+export const locker = (dialog: Locator) => dialog.getByRole('list', { name: 'Locker' });
+
+/**
+ * Item of the LOCKER.
+ *
+ * @param dialog Loadout dialog.
+ * @param label item name with its mark, such as `Ghost Armor, Needs Gene mod` or `Tactical Vest, Equipped`.
+ */
+export const lockerItem = (dialog: Locator, label: string) => locker(dialog).getByRole('button', { name: label, exact: true });
+
+/**
+ * Details of the picked item under the LOCKER.
+ *
+ * @param dialog Loadout dialog.
+ */
+export const itemDetails = (dialog: Locator) => dialog.getByRole('region', { name: 'Item details' });

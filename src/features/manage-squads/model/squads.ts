@@ -127,6 +127,22 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     squadList.markItemChanged(squadId);
   };
 
+  /**
+   * Replaces the Loadout of the Unit.
+   *
+   * @param squadId Squad id.
+   * @param unitId Unit id.
+   * @param loadout new Loadout; the Unit takes it over.
+   */
+  const setUnitLoadout = (squadId: string, unitId: string, loadout: UnitLoadout) => {
+    const unit = squadList.getItem(squadId)?.units.find(item => item.id === unitId);
+
+    if (!unit) return;
+
+    unit.loadout = loadout;
+    squadList.markItemChanged(squadId);
+  };
+
   return {
     squads: squadList.items,
     openSquad,
@@ -136,5 +152,6 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     removeSquad,
     addUnit,
     removeUnit,
+    setUnitLoadout,
   };
 });

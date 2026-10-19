@@ -44,7 +44,7 @@ test.describe('Unit card', () => {
 
     await addSavedUnit(page, BIOSOLDIER_BUILDS, ROCKETEER);
 
-    await expect(unitCards(page, ROCKETEER).getByRole('listitem', { name: ROCKETEER_SECONDARY })).toBeVisible();
+    await expect(unitCards(page, ROCKETEER).getByRole('button', { name: ROCKETEER_SECONDARY })).toBeVisible();
   });
 
   test('shows the exoskeleton and Module slot of a MEC without a secondary tile', async ({ page }) => {
@@ -68,7 +68,7 @@ test.describe('Unit card', () => {
 
     await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
 
-    await expect(unitCards(page, SNIPER).getByRole('listitem', { name: EMPTY_UTILITY }).first()).toHaveCSS('border-top-style', 'dashed');
+    await expect(unitCards(page, SNIPER).getByRole('button', { name: EMPTY_UTILITY }).first()).toHaveCSS('border-top-style', 'dashed');
   });
 
   test('captions the Gear Slots', async ({ page }) => {
@@ -76,7 +76,7 @@ test.describe('Unit card', () => {
 
     await openSquads(page);
 
-    await expect(unitCards(page, SNIPER).getByRole('listitem', { name: GEAR_SLOT })).toHaveCount(2);
+    await expect(unitCards(page, SNIPER).getByRole('button', { name: GEAR_SLOT })).toHaveCount(2);
   });
 
   test('captions the Psi Slot', async ({ page }) => {
@@ -84,7 +84,7 @@ test.describe('Unit card', () => {
 
     await openSquads(page);
 
-    await expect(unitCards(page, SNIPER).getByRole('listitem', { name: PSI_SLOT })).toHaveCount(1);
+    await expect(unitCards(page, SNIPER).getByRole('button', { name: PSI_SLOT })).toHaveCount(1);
   });
 
   test('colours a Gear Slot apart from a utility slot', async ({ page }) => {
@@ -93,7 +93,7 @@ test.describe('Unit card', () => {
     const card = unitCards(page, SNIPER);
 
     const [utilityColor, gearSlotColor] = await Promise.all([EMPTY_UTILITY, GEAR_SLOT].map(name => (
-      card.getByRole('listitem', { name }).first().locator('span span').first().evaluate(element => getComputedStyle(element).color)
+      card.getByRole('button', { name }).first().locator('span span').first().evaluate(element => getComputedStyle(element).color)
     )));
 
     expect(gearSlotColor).not.toBe(utilityColor);

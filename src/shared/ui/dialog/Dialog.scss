@@ -21,13 +21,24 @@
   @include media.wider-than-phone {
     inset-block-start: 40px;
     inset-inline-start: 50%;
-    width: min(580px, calc(100vw - 32px));
     max-height: calc(100dvh - 80px);
     translate: -50% 0;
   }
 
   @include media.phone {
     inset: 0;
+  }
+}
+
+.regular {
+  @include media.wider-than-phone {
+    width: min(580px, calc(100vw - 32px));
+  }
+}
+
+.wide {
+  @include media.wider-than-phone {
+    width: min(1100px, calc(100vw - 32px));
   }
 }
 

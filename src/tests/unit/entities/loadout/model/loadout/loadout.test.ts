@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { blockReasons, canBeOfficer, defaultLoadout, loadoutSlots } from '@entities/loadout/model/loadout';
+import { blockReasons, canBeOfficer, defaultLoadout, loadoutSlots, utilitySlotSources } from '@entities/loadout/model/loadout';
 
 import { ASSAULT, createLoadoutMock, GENE_MODDED, GUNNER, MEC, OFFICER, PSIONIC, ROCKETEER, SCOUT, SHIV } from './loadout.mock';
 
@@ -139,6 +139,56 @@ describe('loadoutSlots', () => {
     const slots = loadoutSlots({ armor: 'tactical-vest', primary: 'assault-rifle' }, ASSAULT);
 
     expect(slots.isSecondaryRequired).toBe(false);
+  });
+});
+
+describe('utilitySlotSources', () => {
+  it('counts the utility slots of biosoldier armor with its Gear Slots', () => {
+    const sources = utilitySlotSources({ armor: 'aegis-armor', primary: 'assault-rifle' });
+
+    expect(sources.armor).toBe(3);
+  });
+
+  it('counts Tactical Rigging on biosoldier armor', () => {
+    const sources = utilitySlotSources({ armor: 'tactical-vest', primary: 'assault-rifle' });
+
+    expect(sources.rigging).toBe(1);
+  });
+
+  it('counts no Tactical Rigging on Phalanx', () => {
+    const sources = utilitySlotSources({ armor: 'phalanx-armor', primary: 'assault-rifle' });
+
+    expect(sources.rigging).toBe(0);
+  });
+
+  it('counts no Tactical Rigging on a MEC exoskeleton', () => {
+    const sources = utilitySlotSources({ armor: 'mec1-paladin', primary: 'minigun' });
+
+    expect(sources.rigging).toBe(0);
+  });
+
+  it('counts the slot an LMG takes away', () => {
+    const sources = utilitySlotSources({ armor: 'tactical-vest', primary: 'lmg' });
+
+    expect(sources.weapon).toBe(-1);
+  });
+
+  it('counts the utility slots of a SHIV type', () => {
+    const sources = utilitySlotSources({ armor: 'alloy-shiv', primary: 'autocannon' });
+
+    expect(sources.armor).toBe(4);
+  });
+
+  it('counts the Gear Slots of the armor', () => {
+    const sources = utilitySlotSources({ armor: 'aegis-armor', primary: 'assault-rifle' });
+
+    expect(sources.gearSlots).toBe(2);
+  });
+
+  it('counts the Psi Slots of the armor', () => {
+    const sources = utilitySlotSources({ armor: 'aurora-armor', primary: 'assault-rifle' });
+
+    expect(sources.psiSlots).toBe(1);
   });
 });
 

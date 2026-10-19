@@ -74,6 +74,22 @@ export interface LoadoutSlots {
 }
 
 /**
+ * What the utility slots of a unit are made of: the armor or SHIV type, Tactical Rigging and the primary weapon.
+ */
+export interface UtilitySlotSources {
+  /** Utility slots of the armor, MEC exoskeleton or SHIV type, Gear Slots and Psi Slots included. */
+  armor: number
+  /** Slots Tactical Rigging adds; 0 for armor it does not apply to. */
+  rigging: number
+  /** Slots the primary weapon takes away, as 0 or a negative number. */
+  weapon: number
+  /** Gear Slots of the armor. */
+  gearSlots: number
+  /** Psi Slots of the armor. */
+  psiSlots: number
+}
+
+/**
  * Whether an item limited to the given classes fits the class.
  *
  * @param classes ids of the classes that may carry the item; null if every class may.
@@ -82,28 +98,42 @@ export interface LoadoutSlots {
 const isClassAllowed = (classes: readonly string[] | null, classId: string | null) => classes === null || (classId !== null && classes.includes(classId));
 
 /**
+ * What the utility slots of a unit with the given armor and primary weapon are made of. Tactical Rigging counts on biosoldier
+ * armor that has no rigging of its own.
+ *
+ * @param loadout armor and primary weapon of the unit.
+ */
+export const utilitySlotSources = (loadout: Pick<Loadout, 'armor' | 'primary'>): UtilitySlotSources => {
+  const armor = ARMOR_BY_ID.get(loadout.armor);
+  const shivType = SHIV_TYPE_BY_ID.get(loadout.armor);
+  const hasRigging = armor?.unit === 'biosoldier' && !ARMORS_WITHOUT_TACTICAL_RIGGING.includes(armor.id);
+
+  return {
+    armor: armor?.utilitySlots ?? shivType?.utilitySlots ?? 0,
+    rigging: hasRigging ? TACTICAL_RIGGING_SLOTS : 0,
+    weapon: WEAPON_BY_ID.get(loadout.primary)?.utilitySlots ?? 0,
+    gearSlots: armor?.gearSlots ?? 0,
+    psiSlots: armor?.psiSlots ?? 0,
+  };
+};
+
+/**
  * Kinds of the utility slots of a unit with the given armor and primary weapon.
  *
- * @description Regular slots are those of the armor without its Gear Slots and Psi Slots, plus Tactical Rigging on biosoldier armor
- * that has no rigging of its own, plus the slots the primary weapon takes away (LMG, Stun Rifle); never below zero.
+ * @description Regular slots are those of the armor without its Gear Slots and Psi Slots, plus Tactical Rigging,
+ * plus the slots the primary weapon takes away (LMG, Stun Rifle); never below zero.
  * Gear Slots and Psi Slots follow them, and all slots together are capped.
  *
  * @param loadout armor and primary weapon of the unit.
  */
 const utilitySlotKinds = (loadout: Pick<Loadout, 'armor' | 'primary'>): UtilitySlotKind[] => {
-  const armor = ARMOR_BY_ID.get(loadout.armor);
-  const shivType = SHIV_TYPE_BY_ID.get(loadout.armor);
-  const primary = WEAPON_BY_ID.get(loadout.primary);
-  const gearSlots = armor?.gearSlots ?? 0;
-  const psiSlots = armor?.psiSlots ?? 0;
-  const hasRigging = armor?.unit === 'biosoldier' && !ARMORS_WITHOUT_TACTICAL_RIGGING.includes(armor.id);
-  const armorRegular = (armor?.utilitySlots ?? shivType?.utilitySlots ?? 0) - gearSlots - psiSlots;
-  const regular = Math.max(0, armorRegular + (hasRigging ? TACTICAL_RIGGING_SLOTS : 0) + (primary?.utilitySlots ?? 0));
+  const sources = utilitySlotSources(loadout);
+  const regular = Math.max(0, sources.armor - sources.gearSlots - sources.psiSlots + sources.rigging + sources.weapon);
 
   return [
-    ...Array.from<UtilitySlotKind>({ length: Math.min(regular, MAX_UTILITY_SLOTS - gearSlots - psiSlots) }).fill('regular'),
-    ...Array.from<UtilitySlotKind>({ length: gearSlots }).fill('gear-slot'),
-    ...Array.from<UtilitySlotKind>({ length: psiSlots }).fill('psi-slot'),
+    ...Array.from<UtilitySlotKind>({ length: Math.min(regular, MAX_UTILITY_SLOTS - sources.gearSlots - sources.psiSlots) }).fill('regular'),
+    ...Array.from<UtilitySlotKind>({ length: sources.gearSlots }).fill('gear-slot'),
+    ...Array.from<UtilitySlotKind>({ length: sources.psiSlots }).fill('psi-slot'),
   ];
 };
 

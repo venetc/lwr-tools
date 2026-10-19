@@ -1,0 +1,13 @@
+@use 'styles/colors';
+
+.regular {
+  color: colors.$text-tertiary;
+}
+
+.gearSlot {
+  color: colors.$success;
+}
+
+.psiSlot {
+  color: colors.$arcane;
+}

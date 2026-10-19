@@ -1,0 +1,362 @@
+@use 'styles/colors';
+@use 'styles/media';
+@use 'styles/typography';
+
+$row-image-width: 64px;
+
+@mixin -selectable {
+  border-width: 1px;
+  border-style: solid;
+  cursor: pointer;
+  text-align: start;
+}
+
+@mixin -idle-hover {
+  border-color: transparent;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      background: none;
+    }
+
+    &:hover {
+      background: colors.$surface-2;
+    }
+  }
+
+  @include media.with-touch {
+    background: none;
+  }
+}
+
+@mixin -selected {
+  border-color: colors.$accent;
+  background: colors.$surface-2;
+}
+
+.editor {
+  @include media.wider-than-phone {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    block-size: min(640px, calc(100dvh - 160px));
+    border: 1px solid colors.$border-subtle;
+  }
+}
+
+.inventory {
+  flex-direction: column;
+  gap: 4px;
+  min-block-size: 0;
+
+  @include media.wider-than-phone {
+    padding: 12px;
+    overflow-y: auto;
+    border-inline-end: 1px solid colors.$border-subtle;
+  }
+}
+
+.locker {
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+// On a phone only one pane is shown at a time; wider screens show both.
+.shownPane {
+  display: flex;
+}
+
+.hiddenPane {
+  @include media.wider-than-phone {
+    display: flex;
+  }
+
+  @include media.phone {
+    display: none;
+  }
+}
+
+.paneTitle {
+  @include typography.caps-3;
+  margin: 0;
+  color: colors.$text-tertiary;
+}
+
+.formula {
+  @include typography.caption;
+  margin: 8px 6px 2px;
+  color: colors.$text-tertiary;
+}
+
+.row {
+  @include -selectable;
+  display: grid;
+  grid-template-columns: $row-image-width minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 10px;
+  padding: 5px 6px;
+}
+
+.idleRow {
+  @include -idle-hover;
+}
+
+.selectedRow {
+  @include -selected;
+}
+
+.rowImage {
+  grid-row: span 2;
+  inline-size: $row-image-width;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+
+.rowPlaceholder {
+  grid-row: span 2;
+  inline-size: $row-image-width;
+  aspect-ratio: 2 / 1;
+  border: 1px dashed colors.$border;
+}
+
+.caption {
+  @include typography.caps-4;
+}
+
+.rowName {
+  @include typography.body-2;
+  color: colors.$text-primary;
+}
+
+.lockerHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-block: 12px 8px;
+
+  @include media.wider-than-phone {
+    padding-inline: 16px;
+  }
+}
+
+.back {
+  @include typography.caps-3;
+  padding: 6px 8px;
+  background: none;
+  border: 1px solid colors.$border;
+  color: colors.$text-accent;
+  cursor: pointer;
+
+  @include media.wider-than-phone {
+    display: none;
+  }
+
+  @include media.phone {
+    display: inline-flex;
+  }
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include media.wider-than-phone {
+    flex: 1;
+    min-block-size: 0;
+    padding: 0 12px 8px;
+    overflow-y: auto;
+  }
+}
+
+.item {
+  @include -selectable;
+  display: grid;
+  grid-template-columns: $row-image-width minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  inline-size: 100%;
+  padding: 4px 6px;
+}
+
+.idleItem {
+  @include -idle-hover;
+}
+
+.selectedItem {
+  @include -selected;
+}
+
+.fitItem {
+  opacity: 1;
+}
+
+.blockedItem {
+  opacity: 0.5;
+}
+
+.itemImage {
+  inline-size: $row-image-width;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+
+.itemText {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.itemName {
+  @include typography.body-2;
+  color: colors.$text-primary;
+}
+
+.itemSummary {
+  @include typography.caption;
+  overflow: hidden;
+  color: colors.$text-tertiary;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.equippedMark {
+  @include typography.caps-4;
+  color: colors.$text-accent;
+}
+
+.reasonMark {
+  @include typography.caps-4;
+  color: colors.$danger;
+  text-align: end;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  background: colors.$surface-base;
+  border-block-start: 1px solid colors.$border-subtle;
+
+  @include media.wider-than-phone {
+    max-block-size: 50%;
+    overflow-y: auto;
+  }
+}
+
+.detailsTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detailsImage {
+  flex: none;
+  inline-size: 112px;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+
+.detailsName {
+  @include typography.heading-4;
+  margin: 0;
+  color: colors.$text-primary;
+}
+
+.detailsType {
+  @include typography.caption;
+  margin: 0;
+  color: colors.$text-tertiary;
+}
+
+.reasons {
+  @include typography.caps-4;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0 0 0 10px;
+  list-style: none;
+  color: colors.$danger;
+  border-inline-start: 2px solid colors.$danger;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat {
+  @include typography.body-2;
+  color: colors.$text-primary;
+}
+
+.statName {
+  color: colors.$text-tertiary;
+}
+
+.carriers {
+  @include typography.body-2;
+  margin: 0;
+  color: colors.$text-primary;
+}
+
+.carriersLabel {
+  @include typography.caps-4;
+  margin-inline-end: 6px;
+  color: colors.$text-tertiary;
+}
+
+.info {
+  @include typography.body-2;
+  margin: 0;
+  color: colors.$text-secondary;
+}
+
+.grants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grant {
+  @include typography.body-2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: colors.$text-accent;
+}
+
+.grantIcon {
+  inline-size: 24px;
+  block-size: 24px;
+}
+
+.rules {
+  @include typography.body-2;
+  margin: 0;
+  padding-inline-start: 18px;
+  color: colors.$text-secondary;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detailsEmpty {
+  @include typography.body-2;
+  margin: 0;
+  color: colors.$text-disabled;
+}

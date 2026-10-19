@@ -12,3 +12,5 @@ export const ROCKETEER = 'Rocketeer';
 export const SHIV = 'SHIV';
 
 export const SHOGUN = 'Shogun';
+
+export const ARMOR_TILE = 'Armor: Tactical Vest';

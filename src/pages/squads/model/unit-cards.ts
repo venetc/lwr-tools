@@ -1,6 +1,8 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
+import type { LoadoutWearer } from '@entities/loadout';
+import type { UnitLoadout } from '@features/manage-squads';
 import { useSquadsStore } from '@features/manage-squads';
 import { useToastQueue } from '@shared/ui/toast';
 
@@ -20,6 +22,10 @@ export interface UnitCard {
   squadBuild: SquadBuild
   /** Unit type and class of the build. */
   caption: string
+  /** What the Loadout rules need to know about the Unit. */
+  wearer: LoadoutWearer
+  /** Loadout of the Unit as the Squad keeps it. */
+  loadout: UnitLoadout
   /** Loadout tiles in inventory order. */
   tiles: LoadoutTile[]
 }
@@ -42,11 +48,15 @@ export const useUnitCards = () => {
 
     if (!squadBuild) return [];
 
+    const wearer = unitWearer(squadBuild, unit.isOfficer);
+
     return [{
       id: unit.id,
       squadBuild,
       caption: squadBuildCaption(squadBuild),
-      tiles: loadoutTiles(unit.loadout, unitWearer(squadBuild, unit.isOfficer)),
+      wearer,
+      loadout: unit.loadout,
+      tiles: loadoutTiles(unit.loadout, wearer),
     }];
   }));
 

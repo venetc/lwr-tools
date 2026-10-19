@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 import { pageOverflow } from '../utils/page-layout';
-import { addSavedUnit, addSquad, openAddUnit, openBuildDialog, openSquads, unitCards } from '../utils/squads';
-import { BIOSOLDIER_BUILDS, MEC_BUILDS, ROCKETEER, SHIV, SHIV_BUILDS, SHOGUN, SQUAD_COUNT } from './phone-layout.mock';
+import { addSavedUnit, addSquad, openAddUnit, openBuildDialog, openLoadoutDialog, openSquads, unitCards } from '../utils/squads';
+import { ARMOR_TILE, BIOSOLDIER_BUILDS, MEC_BUILDS, ROCKETEER, SHIV, SHIV_BUILDS, SHOGUN, SQUAD_COUNT } from './phone-layout.mock';
 
 test.describe('Squad planner on a phone', () => {
   test.skip(({ isMobile }) => !isMobile, 'Phone layout only');
@@ -52,6 +52,15 @@ test.describe('Squad planner on a phone', () => {
     await addSavedUnit(page, BIOSOLDIER_BUILDS, ROCKETEER);
 
     const box = await (await openBuildDialog(page, unitCards(page, ROCKETEER), ROCKETEER)).boundingBox();
+
+    expect(box?.width).toBe(page.viewportSize()?.width);
+  });
+
+  test('opens the Loadout dialog full screen', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, BIOSOLDIER_BUILDS, ROCKETEER);
+
+    const box = await (await openLoadoutDialog(page, unitCards(page, ROCKETEER), ARMOR_TILE)).boundingBox();
 
     expect(box?.width).toBe(page.viewportSize()?.width);
   });

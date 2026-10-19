@@ -40,7 +40,7 @@ export interface Loadout {
   primary: WeaponId
   /** Secondary weapon; null for an empty slot or a unit without one. */
   secondary: WeaponId | null
-  /** Items of the utility slots by position, Mounts last; null for an empty slot. */
+  /** Items of the utility slots by position, Gear Slots and Psi Slots last; null for an empty slot. */
   utility: (EquipmentId | null)[]
   /** Modules of a MEC by position; null for an empty slot. */
   modules: (EquipmentId | null)[]
@@ -55,7 +55,7 @@ export type LoadoutSlotKind = 'armor' | 'primary' | 'secondary' | 'utility' | 'm
  */
 export type LoadoutSlot = { kind: 'armor' } | { kind: 'primary' } | { kind: 'secondary' } | { kind: 'utility', index: number } | { kind: 'module', index: number };
 
-export type UtilitySlotKind = 'regular' | 'gear-mount' | 'psi-mount';
+export type UtilitySlotKind = 'regular' | 'gear-slot' | 'psi-slot';
 
 export type LoadoutBlockReason = typeof LOADOUT_BLOCK_REASONS[number];
 
@@ -84,9 +84,9 @@ const isClassAllowed = (classes: readonly string[] | null, classId: string | nul
 /**
  * Kinds of the utility slots of a unit with the given armor and primary weapon.
  *
- * @description Regular slots are those of the armor without its Mounts, plus Tactical Rigging on biosoldier armor
+ * @description Regular slots are those of the armor without its Gear Slots and Psi Slots, plus Tactical Rigging on biosoldier armor
  * that has no rigging of its own, plus the slots the primary weapon takes away (LMG, Stun Rifle); never below zero.
- * Mounts follow them, and all slots together are capped.
+ * Gear Slots and Psi Slots follow them, and all slots together are capped.
  *
  * @param loadout armor and primary weapon of the unit.
  */
@@ -94,16 +94,16 @@ const utilitySlotKinds = (loadout: Pick<Loadout, 'armor' | 'primary'>): UtilityS
   const armor = ARMOR_BY_ID.get(loadout.armor);
   const shivType = SHIV_TYPE_BY_ID.get(loadout.armor);
   const primary = WEAPON_BY_ID.get(loadout.primary);
-  const gearMounts = armor?.gearMountSlots ?? 0;
-  const psiMounts = armor?.psiMountSlots ?? 0;
+  const gearSlots = armor?.gearSlots ?? 0;
+  const psiSlots = armor?.psiSlots ?? 0;
   const hasRigging = armor?.unit === 'biosoldier' && !ARMORS_WITHOUT_TACTICAL_RIGGING.includes(armor.id);
-  const armorRegular = (armor?.utilitySlots ?? shivType?.utilitySlots ?? 0) - gearMounts - psiMounts;
+  const armorRegular = (armor?.utilitySlots ?? shivType?.utilitySlots ?? 0) - gearSlots - psiSlots;
   const regular = Math.max(0, armorRegular + (hasRigging ? TACTICAL_RIGGING_SLOTS : 0) + (primary?.utilitySlots ?? 0));
 
   return [
-    ...Array.from<UtilitySlotKind>({ length: Math.min(regular, MAX_UTILITY_SLOTS - gearMounts - psiMounts) }).fill('regular'),
-    ...Array.from<UtilitySlotKind>({ length: gearMounts }).fill('gear-mount'),
-    ...Array.from<UtilitySlotKind>({ length: psiMounts }).fill('psi-mount'),
+    ...Array.from<UtilitySlotKind>({ length: Math.min(regular, MAX_UTILITY_SLOTS - gearSlots - psiSlots) }).fill('regular'),
+    ...Array.from<UtilitySlotKind>({ length: gearSlots }).fill('gear-slot'),
+    ...Array.from<UtilitySlotKind>({ length: psiSlots }).fill('psi-slot'),
   ];
 };
 
@@ -184,15 +184,15 @@ const weaponReasons = (item: LoadoutItemId, slot: 'primary' | 'secondary', weare
 };
 
 /**
- * Whether a Mount holds the item; a regular slot holds any.
+ * Whether a utility slot of the kind holds the item: a Gear Slot or Psi Slot only passive gear of its kind, a regular slot any.
  *
  * @param kind kind of the utility slot.
  * @param item equipment in the slot.
  */
-export const isMountHolding = (kind: UtilitySlotKind, item: DeepReadonly<Equipment>) => {
-  if (kind === 'gear-mount') return item.isPassive;
+export const isSlotHolding = (kind: UtilitySlotKind, item: DeepReadonly<Equipment>) => {
+  if (kind === 'gear-slot') return item.isPassive;
 
-  if (kind === 'psi-mount') return item.isPassive && item.requires === 'psionic';
+  if (kind === 'psi-slot') return item.isPassive && item.requires === 'psionic';
 
   return true;
 };
@@ -231,8 +231,8 @@ const equipmentReasons = (item: LoadoutItemId, slot: Extract<LoadoutSlot, { inde
     ['cant-stack', equipment.stackGroup !== null && others.some(id => id !== equipment.id && EQUIPMENT_BY_ID.get(id)?.stackGroup === equipment.stackGroup)],
     ['unsupported-weapon', !isTierSupported || !isTypeSupported],
     ['needs-module', equipment.requiredModule !== null && !loadout.modules.includes(equipment.requiredModule)],
-    ['gear-mount-passive-only', slotKind === 'gear-mount' && !isMountHolding(slotKind, equipment)],
-    ['psi-mount-psi-only', slotKind === 'psi-mount' && !isMountHolding(slotKind, equipment)],
+    ['gear-slot-passive-only', slotKind === 'gear-slot' && !isSlotHolding(slotKind, equipment)],
+    ['psi-slot-psi-only', slotKind === 'psi-slot' && !isSlotHolding(slotKind, equipment)],
   ]);
 };
 

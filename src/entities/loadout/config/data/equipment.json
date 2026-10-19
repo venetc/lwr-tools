@@ -32,7 +32,7 @@
         "value": "0.6"
       }
     ],
-    "info": "HE grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by all Biosoldiers. Destructive grenade.",
+    "info": "HE grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Destructive grenade.",
     "grants": [
       "concussive-blast"
     ]
@@ -70,7 +70,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Highly effective at penetrating armored or hardened targets. Targets in cover relative to center of blast radius will not take damage. Targets within the AoE become shredded. AP grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by all Biosoldiers. Destructive grenade.",
+    "info": "Highly effective at penetrating armored or hardened targets. Targets in cover relative to center of blast radius will not take damage. Targets within the AoE become shredded. AP grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Destructive grenade.",
     "grants": [
       "concussive-blast",
       "explosive-shredder"
@@ -98,7 +98,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Disorients targets and applies debuffs. Cancels enemy overwatch and suppression. Provides a means of crowd control. Leaves targets vulnerable to further attacks. Mechanical targets are immune. Equippable by all Biosoldiers. Support grenade.",
+    "info": "Disorients targets and applies debuffs. Cancels enemy overwatch and suppression. Provides a means of crowd control. Leaves targets vulnerable to further attacks. Mechanical targets are immune. Support grenade.",
     "grants": [
       "disorient"
     ]
@@ -124,7 +124,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Using a Smoke Grenade does not trigger reaction fire. Equippable by all Biosoldiers. Support grenade.",
+    "info": "Using a Smoke Grenade does not trigger reaction fire. Support grenade.",
     "grants": [
       "in-smoke"
     ]
@@ -157,7 +157,7 @@
         "value": "1"
       }
     ],
-    "info": "Using a battle scanner does not trigger reaction fire. Scanning device that extends sight range and helps with targeting of hostile forces. Deployed by throwing like a grenade. Provides +20 aim and crit on attacks against targets within a 12 tile radius. Lasts until the end of the turn. Contains 1 scanner. Equippable by Scout only. Scanning Mechanical Device."
+    "info": "Using a battle scanner does not trigger reaction fire. Scanning device that extends sight range and helps with targeting of hostile forces. Deployed by throwing like a grenade. Provides +20 aim and crit on attacks against targets within a 12 tile radius. Lasts until the end of the turn. Contains 1 scanner. Scanning Mechanical Device."
   },
   "alien-grenade": {
     "code": 6,
@@ -193,7 +193,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Alien grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by all Biosoldiers. Destructive grenade.",
+    "info": "Alien grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Destructive grenade.",
     "grants": [
       "concussive-blast"
     ]
@@ -232,7 +232,7 @@
         "value": "1.3"
       }
     ],
-    "info": "Plasma grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Cannot be equipped alongside alien grenades due to the volatile and unstable nature of their internal plasma cells causing unintended self detonation when in close proximity to each other. Equippable by all Biosoldiers. Destructive grenade."
+    "info": "Plasma grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Cannot be equipped alongside alien grenades due to the volatile and unstable nature of their internal plasma cells causing unintended self detonation when in close proximity to each other. Destructive grenade."
   },
   "acid-grenade": {
     "code": 8,
@@ -255,7 +255,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Creates an acidic cloud covering a 5 x 5 tile square (centered on targeted tile) with corner tiles not receiving acid (resembling a circle). The acidic AoE will either fully occupy or not occupy a tile. Targets caught within the AoE become corroded. Lasts until the end of turn. Equippable by all Biosoldiers. Support grenade.",
+    "info": "Creates an acidic cloud covering a 5 x 5 tile square (centered on targeted tile) with corner tiles not receiving acid (resembling a circle). The acidic AoE will either fully occupy or not occupy a tile. Targets caught within the AoE become corroded. Lasts until the end of turn. Support grenade.",
     "grants": [
       "corroded"
     ]
@@ -281,7 +281,7 @@
         "value": ""
       }
     ],
-    "info": "Cleanses holo, grants combat readiness, and temporarily shadows a friendly unit from a distance. Shadow lasts until the start of the target unit's next turn. Taking any action removes the Shadow. Attacking while Shadowed provides +30% critical hit chance. Equipable by all biosoldiers. Support Grenade.",
+    "info": "Cleanses holo, grants combat readiness, and temporarily shadows a friendly unit from a distance. Shadow lasts until the start of the target unit's next turn. Taking any action removes the Shadow. Attacking while Shadowed provides +30% critical hit chance. Support Grenade.",
     "grants": [
       "shadow"
     ]
@@ -313,7 +313,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Disorients targets and applies debuffs. Cancels enemy overwatch and suppression. Cannot be equipped with regular concussion grenades (causes psionic charges to leak). Mechanical targets are immune. Equippable by Psi only. Support grenade.",
+    "info": "Disorients targets and applies debuffs. Cancels enemy overwatch and suppression. Cannot be equipped with regular concussion grenades (causes psionic charges to leak). Mechanical targets are immune. Support grenade.",
     "grants": [
       "disorient"
     ]
@@ -343,7 +343,7 @@
         "value": ""
       }
     ],
-    "info": "Used to stabilize a critically wounded biosoldier or MEC. Used to remove corrosion or heal biosoldiers (not MECs or SHIVs). Equippable by all Biosoldiers.",
+    "info": "Used to stabilize a critically wounded biosoldier or MEC. Used to remove corrosion or heal biosoldiers (not MECs or SHIVs).",
     "grants": [
       "heal",
       "stabilize"
@@ -362,7 +362,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Requires 0 AP to use. Limited to 1 per soldier. Equippable by all Biosoldiers.",
+    "info": "Requires 0 AP to use. Limited to 1 per soldier.",
     "grants": [
       "stimmed"
     ]
@@ -395,7 +395,7 @@
         "value": ""
       }
     ],
-    "info": "Provides immunity to strangulation. Equippable by genetically modified soldiers only.",
+    "info": "Provides immunity to strangulation.",
     "grants": [
       "dense-carapace",
       "corrosion-resistance"
@@ -424,7 +424,7 @@
         "value": ""
       }
     ],
-    "info": "Increases HP. Equippable by all Biosoldiers."
+    "info": "Increases HP."
   },
   "psi-frayer": {
     "code": 15,
@@ -445,7 +445,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Resets the cooldown of Mind Fray after each use. Prevents strangulation. Equippable by Psi only."
+    "info": "Resets the cooldown of Mind Fray after each use. Prevents strangulation."
   },
   "respirator-implant": {
     "code": 16,
@@ -465,7 +465,7 @@
         "value": ""
       }
     ],
-    "info": "Prevents unit dying on first drop to 0 HP. Increases bleedout timer by 2 turns and exposes the value. Provides immunity to strangulation. Designed to fit with all armors. Limited to 1 per soldier. Equippable by all Biosoldiers."
+    "info": "Prevents unit dying on first drop to 0 HP. Increases bleedout timer by 2 turns and exposes the value. Provides immunity to strangulation. Designed to fit with all armors. Limited to 1 per soldier."
   },
   "prediction-computer": {
     "code": 17,
@@ -494,8 +494,7 @@
         "name": "Weightless",
         "value": ""
       }
-    ],
-    "info": "Equippable by all units."
+    ]
   },
   "marksman-scope": {
     "code": 18,
@@ -530,7 +529,7 @@
         "value": ""
       }
     ],
-    "info": "Allows targeting enemies beyond normal visual range. Cannot be equipped alongside other scopes. Equippable by Scouts with Strike Rifles only. Requires a Strike Rifle.",
+    "info": "Allows targeting enemies beyond normal visual range. Cannot be equipped alongside other scopes. Requires a Strike Rifle.",
     "grants": [
       "squadsight"
     ]
@@ -586,7 +585,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Deals +50% base weapon damage. Scatter is reduced by 80%. Has a 1 tile radius. Does not destroy cover. Shreds targets within the radius. Javelin Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by Rocketeer only.",
+    "info": "Deals +50% base weapon damage. Scatter is reduced by 80%. Has a 1 tile radius. Does not destroy cover. Shreds targets within the radius. Javelin Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed.",
     "grants": [
       "concussive-blast",
       "explosive-shredder"
@@ -626,7 +625,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Increases primary weapon ammo count by +1. Does not apply to arc weapons. Equippable by all Biosoldiers."
+    "info": "Increases primary weapon ammo count by +1. Does not apply to arc weapons."
   },
   "chameleon-vest": {
     "code": 22,
@@ -650,7 +649,6 @@
         "value": ""
       }
     ],
-    "info": "Equippable by all Biosoldiers.",
     "grants": [
       "shadowstep"
     ]
@@ -674,7 +672,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Offers enhanced protection with reduced mobility. Equippable by all Biosoldiers."
+    "info": "Offers enhanced protection with reduced mobility."
   },
   "drum-mags": {
     "code": 24,
@@ -701,7 +699,7 @@
         "value": "1.3"
       }
     ],
-    "info": "Increases ammo capacity for SMGs, assault rifles, carbines, and battle rifles. Affects primary weapons only. Equippable by all Biosoldiers except rookies. Cannot be equipped by PFCs."
+    "info": "Increases ammo capacity for SMGs, assault rifles, carbines, and battle rifles. Affects primary weapons only. Cannot be equipped by PFCs."
   },
   "alloy-bipod": {
     "code": 25,
@@ -723,7 +721,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Improves accuracy for stationary units. Equippable by Sniper, Scout, Gunner, Rocketeer.",
+    "info": "Improves accuracy for stationary units.",
     "grants": [
       "platform-stability"
     ]
@@ -747,7 +745,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Harder-hitting, graze-proof close-range rounds for laser and pulse tiers of weapons. Applies to primary weapons only. Cannot be combined with Reaper Ammo. Equippable by anyone with laser or pulse primary weapons. Requires a laser or pulse primary weapon.",
+    "info": "Harder-hitting, graze-proof close-range rounds for laser and pulse tiers of weapons. Applies to primary weapons only. Cannot be combined with Reaper Ammo. Requires a laser or pulse primary weapon.",
     "grants": [
       "breach"
     ]
@@ -779,7 +777,7 @@
         "value": ""
       }
     ],
-    "info": "Increases survivability through an automated self-repairing system. Heals 1 HP upon taking 3 or more damage. Equippable by all Biosoldiers.",
+    "info": "Increases survivability through an automated self-repairing system. Heals 1 HP upon taking 3 or more damage.",
     "grants": [
       "shred-resistance"
     ]
@@ -802,7 +800,7 @@
         "value": ""
       }
     ],
-    "info": "Provides active and passive detection of aliens that are hidden using various means via on-screen radar display. Integrated enemy detection system. Equippable by all Biosoldiers.",
+    "info": "Provides active and passive detection of aliens that are hidden using various means via on-screen radar display. Integrated enemy detection system.",
     "grants": [
       "tracker"
     ]
@@ -821,7 +819,7 @@
         "value": "2.0 (not applicable)"
       }
     ],
-    "info": "Exoskeletal legs that provide an alternative source of mobility. Equippable by all Biosoldiers.",
+    "info": "Exoskeletal legs that provide an alternative source of mobility.",
     "grants": [
       "unphased-mobility"
     ]
@@ -850,7 +848,7 @@
         "value": ""
       }
     ],
-    "info": "Increases accuracy and improves critical hit chances. Cannot be equipped alongside other scopes. Equippable by Psi only.",
+    "info": "Increases accuracy and improves critical hit chances. Cannot be equipped alongside other scopes.",
     "grants": [
       "psiscopic-vision"
     ]
@@ -881,7 +879,7 @@
         "value": "1.3"
       }
     ],
-    "info": "Increases damage enemies hit from primary weapon receive. Targets hit become shredded. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "info": "Increases damage enemies hit from primary weapon receive. Targets hit become shredded. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only.",
     "grants": [
       "shredder"
     ]
@@ -909,7 +907,7 @@
         "value": ""
       }
     ],
-    "info": "Offers increased protection when adjacent to cover. Equippable by Psi only."
+    "info": "Offers increased protection when adjacent to cover."
   },
   "conduit": {
     "code": 33,
@@ -930,7 +928,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Powerful psionic device that allows a user to harness and channel raw psionic energy. Equippable by Psi only.",
+    "info": "Powerful psionic device that allows a user to harness and channel raw psionic energy.",
     "grants": [
       "conduit"
     ]
@@ -966,7 +964,7 @@
         "value": "1.3"
       }
     ],
-    "info": "Offers enhanced protection through increased armor and damage reduction. Equippable by all Biosoldiers."
+    "info": "Offers enhanced protection through increased armor and damage reduction."
   },
   "neuroregulator": {
     "code": 35,
@@ -995,7 +993,7 @@
         "value": ""
       }
     ],
-    "info": "Enhances a soldiers mental fortitude. Increases psi experience gained during combat. Equippable by Psi only."
+    "info": "Enhances a soldiers mental fortitude. Increases psi experience gained during combat."
   },
   "ar-targeter": {
     "code": 36,
@@ -1017,7 +1015,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Amplifies the holo effect. Affects SMGs, assault rifles, carbines, and battle rifles. Equippable by all biosoldiers.",
+    "info": "Amplifies the holo effect. Affects SMGs, assault rifles, carbines, and battle rifles.",
     "grants": [
       "holo-sync"
     ]
@@ -1045,7 +1043,7 @@
         "value": ""
       }
     ],
-    "info": "Triples damage against Plasma Shields. Increased damage for the Kinetic Strike Modules. Equippable by MECs only."
+    "info": "Triples damage against Plasma Shields. Increased damage for the Kinetic Strike Modules."
   },
   "incinerator-amp": {
     "code": 38,
@@ -1066,7 +1064,7 @@
         "value": ""
       }
     ],
-    "info": "Enhances weapon damage for MEC flamethrower. Equippable by MECs only.",
+    "info": "Enhances weapon damage for MEC flamethrower.",
     "grants": [
       "incineration"
     ]
@@ -1085,7 +1083,7 @@
         "value": ""
       }
     ],
-    "info": "Provides greatly enhanced mobility for mechanical units. Equippable by SHIVs only.",
+    "info": "Provides greatly enhanced mobility for mechanical units.",
     "grants": [
       "sprinter"
     ]
@@ -1111,7 +1109,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Provides active and passive detection of target and ally units. Actively detected units/items are shown via on-screen radar display. Allies are colored blue, aliens/meld-enhanced humans red, civilians white, bombs/active plasma bomb power nodes green and meld canisters are yellow. Equippable by SHIVs only. Max 1 per unit."
+    "info": "Provides active and passive detection of target and ally units. Actively detected units/items are shown via on-screen radar display. Allies are colored blue, aliens/meld-enhanced humans red, civilians white, bombs/active plasma bomb power nodes green and meld canisters are yellow. Max 1 per unit."
   },
   "battle-computer": {
     "code": 41,
@@ -1140,7 +1138,7 @@
         "value": "1.3"
       }
     ],
-    "info": "Increases both offensive and defensive capabilities. Equipable by MEC and SHIV only."
+    "info": "Increases both offensive and defensive capabilities."
   },
   "heavy-mags": {
     "code": 42,
@@ -1166,7 +1164,7 @@
         "value": "1.3"
       }
     ],
-    "info": "Increases penetration and ammo capacity for MEC/SHIV units. Equippable by mechanized units only."
+    "info": "Increases penetration and ammo capacity for MEC/SHIV units."
   },
   "core-plating": {
     "code": 43,
@@ -1196,7 +1194,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Offers enhanced protection with reduced mobility. Equippable by mechanized units only.",
+    "info": "Offers enhanced protection with reduced mobility.",
     "grants": [
       "corrosion-resistance",
       "shred-resistance"
@@ -1226,7 +1224,7 @@
         "value": ""
       }
     ],
-    "info": "Improved survivability for mechanized units. Equippable by mechanized units only.",
+    "info": "Improved survivability for mechanized units.",
     "grants": [
       "corrosion-resistance"
     ]
@@ -1250,7 +1248,6 @@
         "value": ""
       }
     ],
-    "info": "Equippable by all soldiers.",
     "grants": [
       "psionic-resistance"
     ]
@@ -1278,7 +1275,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Improves defensive capabilities. Enhances mental fortitude. Increases experience gained during combat. Cannot be equipped by anyone at Private rank. Equippable by all soldiers.",
+    "info": "Improves defensive capabilities. Enhances mental fortitude. Increases experience gained during combat. Cannot be equipped by anyone at Private rank.",
     "grants": [
       "awareness",
       "cognitive-enhancement"
@@ -1309,7 +1306,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Increases accuracy for primary weapons only. Cannot be used alongside other scopes. Equippable by all units."
+    "info": "Increases accuracy for primary weapons only. Cannot be used alongside other scopes."
   },
   "reaper-ammo": {
     "code": 48,
@@ -1340,7 +1337,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Provides increased critical damage for laser and pulse tiers of weapons. Doubles the weapon range penalty for shotguns, strike and sniper rifles. Applies to primary weapons only. Cannot be combined with Breaching Ammo. Equippable by anyone with laser or pulse primary weapons. Requires a laser or pulse primary weapon."
+    "info": "Provides increased critical damage for laser and pulse tiers of weapons. Doubles the weapon range penalty for shotguns, strike and sniper rifles. Applies to primary weapons only. Cannot be combined with Breaching Ammo. Requires a laser or pulse primary weapon."
   },
   "alloy-enhanced-rounds": {
     "code": 49,
@@ -1370,7 +1367,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Provides increased damage to shots from ballistic and gauss tiers of weapons. Applies to primary weapons only. Equippable by all soldiers."
+    "info": "Provides increased damage to shots from ballistic and gauss tiers of weapons. Applies to primary weapons only."
   },
   "enhanced-beam-optics": {
     "code": 50,
@@ -1404,7 +1401,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Provides increased damage to shots from laser and pulse tiers of weapons. Applies to primary weapons only. Equippable by all soldiers."
+    "info": "Provides increased damage to shots from laser and pulse tiers of weapons. Applies to primary weapons only."
   },
   "plasma-stellerator": {
     "code": 51,
@@ -1437,7 +1434,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Requires a plasma primary weapon. Equippable by all soldiers with primary plasma weapons."
+    "info": "Requires a plasma primary weapon."
   },
   "laser-sight": {
     "code": 52,
@@ -1459,7 +1456,7 @@
         "value": ""
       }
     ],
-    "info": "Offers increased critical hit chance for primary weapons. Equippable by all units."
+    "info": "Offers increased critical hit chance for primary weapons."
   },
   "armor-piercing-ammo": {
     "code": 53,
@@ -1496,7 +1493,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Enhanced penetration for ballistic and gauss tiers of weapons. Applies to assault rifles, carbines, battle rifles, shotguns, SAWs, LMGs, and SMGs. Applies to MEC/SHIV weapons. Equippable by all soldiers.",
+    "info": "Enhanced penetration for ballistic and gauss tiers of weapons. Applies to assault rifles, carbines, battle rifles, shotguns, SAWs, LMGs, and SMGs. Applies to MEC/SHIV weapons.",
     "grants": [
       "penetrator"
     ]
@@ -1525,7 +1522,7 @@
         "value": ""
       }
     ],
-    "info": "Increased weapon accuracy. Applies to primary weapons only. Cannot be equipped alongside other scopes. Equippable by all soldiers."
+    "info": "Increased weapon accuracy. Applies to primary weapons only. Cannot be equipped alongside other scopes."
   },
   "flak-ammo": {
     "code": 55,
@@ -1548,7 +1545,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Defense mitigation against flying targets. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only. Equippable by all soldiers.",
+    "info": "Defense mitigation against flying targets. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only.",
     "grants": [
       "flak"
     ]
@@ -1578,7 +1575,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Burns the area the MEC can see and that is within the aiming template. Does not break Cloak. Bypasses all damage resistance. Flame will then spill up to 1 tile further, if unimpeded. Affected units have a 35% chance to panic (will test 60) and move. Does not affect mechanical or flame resistant units. Equippable by MEC only."
+    "info": "Burns the area the MEC can see and that is within the aiming template. Does not break Cloak. Bypasses all damage resistance. Flame will then spill up to 1 tile further, if unimpeded. Affected units have a 35% chance to panic (will test 60) and move. Does not affect mechanical or flame resistant units."
   },
   "kinetic-strike-module": {
     "code": 57,
@@ -1613,7 +1610,7 @@
         "value": "1 per turn"
       }
     ],
-    "info": "Melee attachment for MEC units. Can only be used once per turn. Offers high damage capable of destroying most cover objects. Equippable by MECs only. Erodes Distortion 2x as much."
+    "info": "Melee attachment for MEC units. Can only be used once per turn. Offers high damage capable of destroying most cover objects. Erodes Distortion 2x as much."
   },
   "gravity-mine-launcher": {
     "code": 58,
@@ -1648,7 +1645,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Deploys a timed gravity mine remotely. The mine detonates automatically at the end of XCOM's next turn. Before detonation it creates a gravity well that slows the mobility of all units that stop within its area of effect. The gravity mine does full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by MECs only. Destructive grenade.",
+    "info": "Deploys a timed gravity mine remotely. The mine detonates automatically at the end of XCOM's next turn. Before detonation it creates a gravity well that slows the mobility of all units that stop within its area of effect. The gravity mine does full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Destructive grenade.",
     "grants": [
       "gravity-well",
       "concussive-blast"
@@ -1683,7 +1680,7 @@
         "value": "3"
       }
     ],
-    "info": "EMP burst that damages all enemy units and clears their overwatch status. Bypasses all damage resistance. Does not trigger reaction fire. Equippable by MECs only."
+    "info": "EMP burst that damages all enemy units and clears their overwatch status. Bypasses all damage resistance. Does not trigger reaction fire."
   },
   "grenade-launcher": {
     "code": 60,
@@ -1719,7 +1716,7 @@
         "value": "2.0"
       }
     ],
-    "info": "Cannot be equipped with the Advanced Launcher. Provides MEC units with grenade capabilities. Grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by MECs only. Destructive grenade.",
+    "info": "Cannot be equipped with the Advanced Launcher. Provides MEC units with grenade capabilities. Grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Destructive grenade.",
     "grants": [
       "concussive-blast"
     ]
@@ -1758,7 +1755,7 @@
         "value": "3.3"
       }
     ],
-    "info": "Cannot be equipped with the Grenade Launcher. Provides MEC units with advanced grenade capabilities. Grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Equippable by MECs only. Destructive grenade.",
+    "info": "Cannot be equipped with the Grenade Launcher. Provides MEC units with advanced grenade capabilities. Grenades do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. Destructive grenade.",
     "grants": [
       "concussive-blast"
     ]
@@ -1792,7 +1789,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Heals multiple biological and mechanical units within the area of effect. Equippable by MECs only.",
+    "info": "Heals multiple biological and mechanical units within the area of effect.",
     "grants": [
       "mist"
     ]

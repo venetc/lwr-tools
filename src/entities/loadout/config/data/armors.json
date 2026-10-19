@@ -13,10 +13,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Default light armor set for soldiers and recruits. Offers enhanced protection with greatly improved mobility. Equippable by all Biosoldiers."
+    "info": "Default light armor set for soldiers and recruits. Offers enhanced protection with greatly improved mobility."
   },
   "tactical-armor": {
     "code": 2,
@@ -32,10 +32,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Default heavy armor set for soldiers and recruits. Offers enhanced protection with limited mobility. Equippable by all Biosoldiers."
+    "info": "Default heavy armor set for soldiers and recruits. Offers enhanced protection with limited mobility."
   },
   "phalanx-armor": {
     "code": 3,
@@ -51,10 +51,10 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Offers enhanced protection with improved mobility. Light armor set. Equippable by all Biosoldiers.",
+    "info": "Offers enhanced protection with improved mobility. Light armor set.",
     "grants": [
       "prototype-rigging"
     ]
@@ -73,10 +73,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Offers enhanced protection. Heavy armor set. Equippable by all Biosoldiers."
+    "info": "Offers enhanced protection. Heavy armor set."
   },
   "kestrel-armor": {
     "code": 5,
@@ -92,10 +92,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Offers enhanced protection with greatly improved mobility and defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "info": "Offers enhanced protection with greatly improved mobility and defense. Equipped with a grappling hook for tactical positioning. Light armor set.",
     "grants": [
       "grapple"
     ]
@@ -114,14 +114,14 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 2,
-    "psiMountSlots": 0,
+    "gearSlots": 2,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Provides greatly enhanced protection and mobility. Heavy armor set. Equippable by all Biosoldiers.",
+    "info": "Provides greatly enhanced protection and mobility. Heavy armor set.",
     "grants": [
       "repulsor",
       "damage-control",
-      "gear-mounts"
+      "gear-slots"
     ]
   },
   "banshee-armor": {
@@ -138,10 +138,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set.",
     "grants": [
       "grapple",
       "repulsor"
@@ -161,10 +161,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set.",
     "grants": [
       "grapple",
       "repulsor"
@@ -184,16 +184,16 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 2,
-    "psiMountSlots": 0,
+    "gearSlots": 2,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Offers greatly enhanced protection with immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
+    "info": "Offers greatly enhanced protection with immunity to strangulation. Heavy armor set.",
     "grants": [
       "repulsor",
       "damage-control",
       "sealed",
       "flame-resistant",
-      "gear-mounts"
+      "gear-slots"
     ]
   },
   "seraph-armor": {
@@ -210,15 +210,15 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 1,
-    "psiMountSlots": 0,
+    "gearSlots": 1,
+    "psiSlots": 0,
     "fuel": 8,
     "requires": "officer",
-    "info": "Offers greatly enhanced protection with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. Light armor set. Equippable by officers only.",
+    "info": "Offers greatly enhanced protection with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. Light armor set.",
     "grants": [
       "grapple",
       "repulsor",
-      "gear-mount"
+      "gear-slot"
     ]
   },
   "archangel-armor": {
@@ -235,16 +235,16 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 2,
-    "psiMountSlots": 0,
+    "gearSlots": 2,
+    "psiSlots": 0,
     "fuel": 12,
-    "info": "Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. Provides immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
+    "info": "Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. Provides immunity to strangulation. Heavy armor set.",
     "grants": [
       "repulsor",
       "damage-control",
       "sealed",
       "flame-resistant",
-      "gear-mounts"
+      "gear-slots"
     ]
   },
   "ghost-armor": {
@@ -261,16 +261,16 @@
     "fullHpAim": 10,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 1,
-    "psiMountSlots": 0,
+    "gearSlots": 1,
+    "psiSlots": 0,
     "fuel": 0,
     "requires": "gene-mod",
-    "info": "Offers enhanced protection with greatly improved defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by genetically modified soldiers only.",
+    "info": "Offers enhanced protection with greatly improved defense. Equipped with a grappling hook for tactical positioning. Light armor set.",
     "grants": [
       "ghost",
       "advanced-grapple",
       "repulsor",
-      "gear-mount"
+      "gear-slot"
     ]
   },
   "aurora-armor": {
@@ -287,13 +287,13 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 1,
+    "gearSlots": 0,
+    "psiSlots": 1,
     "fuel": 0,
     "requires": "psionic",
-    "info": "Offers enhanced protection with improved mobility. Increases wearers psionic capabilities. Light armor set. Equippable by Psi only.",
+    "info": "Offers enhanced protection with improved mobility. Increases wearers psionic capabilities. Light armor set.",
     "grants": [
-      "psi-mount",
+      "psi-slot",
       "psi-boost"
     ]
   },
@@ -311,13 +311,13 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearMountSlots": 0,
-    "psiMountSlots": 1,
+    "gearSlots": 0,
+    "psiSlots": 1,
     "fuel": 0,
     "requires": "psionic",
-    "info": "Offers enhanced protection. Gollop Chamber activation requires this armor and a soldier with the Fervor ability. Heavy armor set. Equippable by Psi only.",
+    "info": "Offers enhanced protection. Gollop Chamber activation requires this armor and a soldier with the Fervor ability. Heavy armor set.",
     "grants": [
-      "psi-mount",
+      "psi-slot",
       "advanced-psi-boost",
       "eye-of-the-storm"
     ]
@@ -336,10 +336,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 1,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Supports 1 module per loadout. MECs cannot use cover. Initial MEC suit design. Equippable by MECs only.",
+    "info": "Supports 1 module per loadout. MECs cannot use cover. Initial MEC suit design.",
     "grants": [
       "hardened"
     ]
@@ -358,10 +358,10 @@
     "fullHpAim": 0,
     "utilitySlots": 2,
     "moduleSlots": 2,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Supports 2 modules per loadout. MECs cannot use cover. Heavy MEC suit. Equippable by MECs only.",
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Heavy MEC suit.",
     "grants": [
       "hardened",
       "damage-control"
@@ -381,10 +381,10 @@
     "fullHpAim": 10,
     "utilitySlots": 2,
     "moduleSlots": 2,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Supports 2 modules per loadout. MECs cannot use cover. Light MEC suit. Equippable by MECs only.",
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Light MEC suit.",
     "grants": [
       "hardened",
       "body-shield"
@@ -404,10 +404,10 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 3,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Supports 3 modules per loadout. MECs cannot use cover. Heavy MEC suit. Equippable by MECs only.",
+    "info": "Supports 3 modules per loadout. MECs cannot use cover. Heavy MEC suit.",
     "grants": [
       "hardened",
       "damage-control"
@@ -427,10 +427,10 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 2,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Supports 2 modules per loadout. MECs cannot use cover. Ultra-Heavy MEC suit. Equippable by MECs only.",
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Ultra-Heavy MEC suit.",
     "grants": [
       "hardened",
       "damage-control"
@@ -450,10 +450,10 @@
     "fullHpAim": 25,
     "utilitySlots": 3,
     "moduleSlots": 2,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Supports 2 modules per loadout. MECs cannot use cover. Ultra-Light MEC suit. Equippable by MECs only.",
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Ultra-Light MEC suit.",
     "grants": [
       "hardened",
       "body-shield"
@@ -473,10 +473,10 @@
     "fullHpAim": 15,
     "utilitySlots": 3,
     "moduleSlots": 3,
-    "gearMountSlots": 0,
-    "psiMountSlots": 0,
+    "gearSlots": 0,
+    "psiSlots": 0,
     "fuel": 0,
-    "info": "Supports 3 modules per loadout. MECs cannot use cover. Light MEC suit. Equippable by MECs only.",
+    "info": "Supports 3 modules per loadout. MECs cannot use cover. Light MEC suit.",
     "grants": [
       "hardened",
       "body-shield"

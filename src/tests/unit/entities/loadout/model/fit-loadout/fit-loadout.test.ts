@@ -90,7 +90,7 @@ describe('fitLoadout', () => {
     expect(fit.loadout.utility).toEqual(['he-grenade', 'medikit']);
   });
 
-  it('keeps Mount items when the primary weapon takes a regular slot away', () => {
+  it('keeps Gear Slot items when the primary weapon takes a regular slot away', () => {
     const loadout = createLoadoutMock({ armor: 'aegis-armor', primary: 'stun-rifle', utility: ['medikit', 'he-grenade', 'alloy-plating', 'scope'] });
 
     const fit = fitLoadout(loadout, ASSAULT);
@@ -122,7 +122,7 @@ describe('fitLoadout', () => {
     expect(fit.changes).toEqual([{ kind: 'removed', slot: 'module', item: 'kinetic-strike-module', reason: 'slot-removed' }]);
   });
 
-  it('moves an item a Mount does not hold to a free regular slot', () => {
+  it('moves an item a Gear Slot does not hold to a free regular slot', () => {
     const loadout = createLoadoutMock({ armor: 'aegis-armor', utility: ['alloy-plating', null, 'he-grenade', null] });
 
     const fit = fitLoadout(loadout, ASSAULT);
@@ -130,7 +130,7 @@ describe('fitLoadout', () => {
     expect(fit.loadout.utility).toEqual(['alloy-plating', 'he-grenade', null, null]);
   });
 
-  it('reports the move out of a Mount', () => {
+  it('reports the move out of a Gear Slot', () => {
     const loadout = createLoadoutMock({ armor: 'aegis-armor', utility: ['alloy-plating', null, 'he-grenade', null] });
 
     const fit = fitLoadout(loadout, ASSAULT);
@@ -138,12 +138,12 @@ describe('fitLoadout', () => {
     expect(fit.changes).toEqual([{ kind: 'moved', item: 'he-grenade', from: 2, to: 1 }]);
   });
 
-  it('removes an item a Mount does not hold when no regular slot is free', () => {
+  it('removes an item a Gear Slot does not hold when no regular slot is free', () => {
     const loadout = createLoadoutMock({ armor: 'aegis-armor', utility: ['alloy-plating', 'medikit', 'he-grenade', null] });
 
     const fit = fitLoadout(loadout, ASSAULT);
 
-    expect(fit.changes).toEqual([{ kind: 'removed', slot: 'utility', item: 'he-grenade', reason: 'gear-mount-passive-only' }]);
+    expect(fit.changes).toEqual([{ kind: 'removed', slot: 'utility', item: 'he-grenade', reason: 'gear-slot-passive-only' }]);
   });
 
   it('removes equipment the primary weapon does not support', () => {

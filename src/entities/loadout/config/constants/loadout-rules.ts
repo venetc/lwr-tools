@@ -12,8 +12,8 @@ export const LOADOUT_BLOCK_REASONS = [
   'cant-stack',
   'unsupported-weapon',
   'needs-module',
-  'gear-mount-passive-only',
-  'psi-mount-psi-only',
+  'gear-slot-passive-only',
+  'psi-slot-psi-only',
 ] as const;
 
 /** Utility slots that Tactical Rigging adds to biosoldier armor; the project counts the Foundry project as always researched. */
@@ -22,7 +22,7 @@ export const TACTICAL_RIGGING_SLOTS = 1;
 /** Biosoldier armor that Tactical Rigging does not add a slot to: it already has its own prototype rigging. */
 export const ARMORS_WITHOUT_TACTICAL_RIGGING: readonly ArmorId[] = ['phalanx-armor'];
 
-/** Most utility slots a unit has, Mounts included. */
+/** Most utility slots a unit has, Gear Slots and Psi Slots included. */
 export const MAX_UTILITY_SLOTS = 4;
 
 /** Secondary weapon types that are never left empty: a class that can carry one always does, as the Rocketeer its rocket launcher. */

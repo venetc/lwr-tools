@@ -60,9 +60,9 @@ export const SHIV_TILES = `
 
 export const EMPTY_UTILITY = 'Utility: Empty';
 
-export const GEAR_MOUNT = 'Gear Mount: Empty';
+export const GEAR_SLOT = 'Gear Slot: Empty';
 
-export const PSI_MOUNT = 'Psi Mount: Empty';
+export const PSI_SLOT = 'Psi Slot: Empty';
 
 export const ARCHANGEL_SNIPER: SeededUnit = {
   id: 'archangel',

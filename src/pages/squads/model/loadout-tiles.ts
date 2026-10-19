@@ -37,7 +37,7 @@ export interface LoadoutTile {
   item: LoadoutTileItem | null
   /** Whether the tile is a large one: armor and weapon slots. */
   isLarge: boolean
-  /** Kind of the slot for its colour: a Mount, or regular for any other slot. */
+  /** Kind of the slot for its colour: a Gear Slot, a Psi Slot, or regular for any other slot. */
   tone: UtilitySlotKind
 }
 
@@ -96,7 +96,7 @@ const createTile = (id: string, slot: LoadoutSlot, caption: string, item: Loadou
 
 /**
  * Tiles of the Loadout of a Unit card in inventory order: armor (MEC exoskeleton, SHIV type), primary weapon,
- * secondary weapon if the Unit has the slot, Module slots, utility slots with their Mounts last.
+ * secondary weapon if the Unit has the slot, Module slots, utility slots with their Gear Slots and Psi Slots last.
  *
  * @param loadout Loadout of the Unit.
  * @param wearer Unit that carries the Loadout.

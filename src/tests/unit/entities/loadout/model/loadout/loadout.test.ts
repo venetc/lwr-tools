@@ -57,22 +57,22 @@ describe('loadoutSlots', () => {
     expect(slots.utility).toEqual(['regular', 'regular']);
   });
 
-  it('puts Gear Mounts last', () => {
+  it('puts Gear Slots last', () => {
     const slots = loadoutSlots({ armor: 'aegis-armor', primary: 'assault-rifle' }, ASSAULT);
 
-    expect(slots.utility).toEqual(['regular', 'regular', 'gear-mount', 'gear-mount']);
+    expect(slots.utility).toEqual(['regular', 'regular', 'gear-slot', 'gear-slot']);
   });
 
-  it('puts the Psi Mount last', () => {
+  it('puts the Psi Slot last', () => {
     const slots = loadoutSlots({ armor: 'aurora-armor', primary: 'assault-rifle' }, ASSAULT);
 
-    expect(slots.utility).toEqual(['regular', 'regular', 'regular', 'psi-mount']);
+    expect(slots.utility).toEqual(['regular', 'regular', 'regular', 'psi-slot']);
   });
 
-  it('keeps Mounts when an LMG takes the regular slots', () => {
+  it('keeps Gear Slots when an LMG takes the regular slots', () => {
     const slots = loadoutSlots({ armor: 'aegis-armor', primary: 'lmg' }, GUNNER);
 
-    expect(slots.utility).toEqual(['regular', 'gear-mount', 'gear-mount']);
+    expect(slots.utility).toEqual(['regular', 'gear-slot', 'gear-slot']);
   });
 
   it('caps utility slots at four', () => {
@@ -335,25 +335,25 @@ describe('blockReasons', () => {
     expect(reasons).toEqual([]);
   });
 
-  it('keeps active equipment off a Gear Mount', () => {
+  it('keeps active equipment off a Gear Slot', () => {
     const reasons = blockReasons('he-grenade', { kind: 'utility', index: 2 }, createLoadoutMock({ armor: 'aegis-armor', utility: [null, null, null, null] }), ASSAULT);
 
-    expect(reasons).toEqual(['gear-mount-passive-only']);
+    expect(reasons).toEqual(['gear-slot-passive-only']);
   });
 
-  it('lets passive equipment take a Gear Mount', () => {
+  it('lets passive equipment take a Gear Slot', () => {
     const reasons = blockReasons('alloy-plating', { kind: 'utility', index: 2 }, createLoadoutMock({ armor: 'aegis-armor', utility: [null, null, null, null] }), ASSAULT);
 
     expect(reasons).toEqual([]);
   });
 
-  it('keeps passive equipment that is not psionic off a Psi Mount', () => {
+  it('keeps passive equipment that is not psionic off a Psi Slot', () => {
     const reasons = blockReasons('alloy-plating', { kind: 'utility', index: 3 }, createLoadoutMock({ armor: 'aurora-armor', utility: [null, null, null, null] }), PSIONIC);
 
-    expect(reasons).toEqual(['psi-mount-psi-only']);
+    expect(reasons).toEqual(['psi-slot-psi-only']);
   });
 
-  it('lets passive psionic equipment take a Psi Mount', () => {
+  it('lets passive psionic equipment take a Psi Slot', () => {
     const reasons = blockReasons('psi-frayer', { kind: 'utility', index: 3 }, createLoadoutMock({ armor: 'aurora-armor', utility: [null, null, null, null] }), PSIONIC);
 
     expect(reasons).toEqual([]);
@@ -364,7 +364,7 @@ describe('blockReasons', () => {
 
     const reasons = blockReasons('psi-grenade', { kind: 'utility', index: 2 }, loadout, ASSAULT);
 
-    expect(reasons).toEqual(['needs-psionic', 'max-one', 'cant-stack', 'gear-mount-passive-only']);
+    expect(reasons).toEqual(['needs-psionic', 'max-one', 'cant-stack', 'gear-slot-passive-only']);
   });
 });
 

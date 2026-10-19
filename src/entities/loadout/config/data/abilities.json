@@ -111,16 +111,16 @@
     "name": "Prototype Rigging",
     "description": "+1 utility slot. Does not gain extra effects from Tactical Rigging."
   },
-  "gear-mounts": {
-    "name": "Gear Mounts",
+  "gear-slots": {
+    "name": "Gear Slots",
     "description": "The last two utility slots on this armor can only hold passive gear, such as plating, scopes, ammo, and mags."
   },
-  "gear-mount": {
-    "name": "Gear Mount",
+  "gear-slot": {
+    "name": "Gear Slot",
     "description": "The last utility slot on this armor can only hold passive gear, such as plating, scopes, ammo, and mags."
   },
-  "psi-mount": {
-    "name": "Psi Mount",
+  "psi-slot": {
+    "name": "Psi Slot",
     "description": "The last utility slot on this armor can only hold passive psi gear: the Conduit, Neural Scope, Psi Defender, Psi Frayer or Neuroregulator."
   },
   "hardened": {

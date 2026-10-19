@@ -109,17 +109,17 @@ const checkModules = (records: Record<string, EquipmentContent>, context: z.Refi
 };
 
 /**
- * Gear Mounts and Psi Mounts that each mount ability of armor stands for.
+ * Gear Slots and Psi Slots that each slot ability of armor stands for.
  */
-const mountSlotsByGrant = new Map([
-  ['gear-mount', { gear: 1, psi: 0 }],
-  ['gear-mounts', { gear: 2, psi: 0 }],
-  ['psi-mount', { gear: 0, psi: 1 }],
+const slotsByGrant = new Map([
+  ['gear-slot', { gear: 1, psi: 0 }],
+  ['gear-slots', { gear: 2, psi: 0 }],
+  ['psi-slot', { gear: 0, psi: 1 }],
 ]);
 
 /**
  * Reports armor that breaks the rules of its unit: biosoldier armor is light or heavy and has no Module slots;
- * a MEC exoskeleton has Module slots and no Mounts or requirements.
+ * a MEC exoskeleton has Module slots and no Gear Slots, Psi Slots or requirements.
  *
  * @param records armor records by id.
  * @param context refinement context that collects issues.
@@ -140,22 +140,22 @@ const checkUnitArmor = (records: Record<string, ArmorContent>, context: z.Refine
       context.addIssue({ code: 'custom', message: 'A MEC exoskeleton must have Module slots', path: [id, 'moduleSlots'] });
     }
 
-    if (record.gearMountSlots + record.psiMountSlots > 0 || record.requires) {
-      context.addIssue({ code: 'custom', message: 'A MEC exoskeleton has no Mounts or requirements', path: [id] });
+    if (record.gearSlots + record.psiSlots > 0 || record.requires) {
+      context.addIssue({ code: 'custom', message: 'A MEC exoskeleton has no Gear Slots, Psi Slots or requirements', path: [id] });
     }
   });
 };
 
 /**
- * Reports armor whose Gear Mounts and Psi Mounts do not fit in its utility slots or differ from its mount abilities.
+ * Reports armor whose Gear Slots and Psi Slots do not fit in its utility slots or differ from its slot abilities.
  *
  * @param records armor records by id.
  * @param context refinement context that collects issues.
  */
-const checkMountSlots = (records: Record<string, ArmorContent>, context: z.RefinementCtx) => {
+const checkGearAndPsiSlots = (records: Record<string, ArmorContent>, context: z.RefinementCtx) => {
   Object.entries(records).forEach(([id, record]) => {
     const granted = (record.grants ?? []).reduce((slots, abilityId) => {
-      const abilitySlots = mountSlotsByGrant.get(abilityId) ?? null;
+      const abilitySlots = slotsByGrant.get(abilityId) ?? null;
 
       if (!abilitySlots) return slots;
 
@@ -165,12 +165,12 @@ const checkMountSlots = (records: Record<string, ArmorContent>, context: z.Refin
       return slots;
     }, { gear: 0, psi: 0 });
 
-    if (record.gearMountSlots + record.psiMountSlots > record.utilitySlots) {
-      context.addIssue({ code: 'custom', message: 'Gear Mounts and Psi Mounts must fit in the utility slots', path: [id, 'gearMountSlots'] });
+    if (record.gearSlots + record.psiSlots > record.utilitySlots) {
+      context.addIssue({ code: 'custom', message: 'Gear Slots and Psi Slots must fit in the utility slots', path: [id, 'gearSlots'] });
     }
 
-    if (record.gearMountSlots !== granted.gear || record.psiMountSlots !== granted.psi) {
-      context.addIssue({ code: 'custom', message: 'Mount slots must match the mount abilities in grants', path: [id, 'grants'] });
+    if (record.gearSlots !== granted.gear || record.psiSlots !== granted.psi) {
+      context.addIssue({ code: 'custom', message: 'Gear Slots and Psi Slots must match the slot abilities in grants', path: [id, 'grants'] });
     }
   });
 };
@@ -214,8 +214,8 @@ const armorContentSchema: z.ZodType<ArmorContent> = z.strictObject({
   fullHpAim: z.int().min(0),
   utilitySlots: z.int().min(0),
   moduleSlots: z.int().min(0),
-  gearMountSlots: z.int().min(0),
-  psiMountSlots: z.int().min(0),
+  gearSlots: z.int().min(0),
+  psiSlots: z.int().min(0),
   fuel: z.int().min(0),
   requires: requirementSchema.optional(),
   info: z.string().min(1),
@@ -272,7 +272,7 @@ const equipmentContentSchema: z.ZodType<EquipmentContent> = z.strictObject({
     name: z.string().min(1),
     value: z.string(),
   })).min(1),
-  info: z.string().min(1),
+  info: z.string().min(1).optional(),
   grants: uniqueListSchema(abilityIdSchema).optional(),
 });
 
@@ -313,7 +313,7 @@ const weaponContentSchema: z.ZodType<WeaponContent> = z.strictObject({
 export const loadoutContentSchema = z.strictObject({
   units: z.record(z.string(), loadoutUnitContentSchema).superRefine(checkOrderedCodes),
   abilities: z.record(z.string(), loadoutAbilityContentSchema),
-  armors: z.record(z.string(), armorContentSchema).superRefine(checkOrderedCodes).superRefine(checkUnitArmor).superRefine(checkMountSlots),
+  armors: z.record(z.string(), armorContentSchema).superRefine(checkOrderedCodes).superRefine(checkUnitArmor).superRefine(checkGearAndPsiSlots),
   shivTypes: z.record(z.string(), shivTypeContentSchema).superRefine(checkOrderedCodes),
   weapons: z.record(z.string(), weaponContentSchema).superRefine(checkOrderedCodes).superRefine(checkClassUnits).superRefine(checkSecondaryClasses),
   equipment: z.record(z.string(), equipmentContentSchema).superRefine(checkOrderedCodes).superRefine(checkEquipmentClassUnits).superRefine(checkModules),

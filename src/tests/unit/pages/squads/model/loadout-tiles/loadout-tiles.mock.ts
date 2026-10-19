@@ -21,8 +21,8 @@ const armorMock = (content: Pick<ArmorContent, 'code' | 'unit' | 'name'> & Parti
   fullHpAim: 0,
   utilitySlots: 0,
   moduleSlots: 0,
-  gearMountSlots: 0,
-  psiMountSlots: 0,
+  gearSlots: 0,
+  psiSlots: 0,
   fuel: 0,
   info: '',
   ...content,
@@ -60,8 +60,8 @@ const equipmentMock = (content: Pick<EquipmentContent, 'code' | 'units' | 'slot'
 
 export const ARMOR_CONTENT_MOCK: Record<string, ArmorContent> = {
   'tactical-vest': armorMock({ code: 1, unit: 'biosoldier', name: 'Vest', utilitySlots: 2 }),
-  'aegis-armor': armorMock({ code: 6, unit: 'biosoldier', name: 'Aegis', utilitySlots: 3, gearMountSlots: 2 }),
-  'aurora-armor': armorMock({ code: 13, unit: 'biosoldier', name: 'Aurora', utilitySlots: 3, psiMountSlots: 1 }),
+  'aegis-armor': armorMock({ code: 6, unit: 'biosoldier', name: 'Aegis', utilitySlots: 3, gearSlots: 2 }),
+  'aurora-armor': armorMock({ code: 13, unit: 'biosoldier', name: 'Aurora', utilitySlots: 3, psiSlots: 1 }),
   'mec1-paladin': armorMock({ code: 15, unit: 'mec', name: 'Paladin', category: 'standard', utilitySlots: 2, moduleSlots: 1 }),
 };
 
@@ -122,11 +122,11 @@ export const SHIV_CAPTIONS = ['SHIV type', 'Primary', 'Utility', 'Utility'];
 
 export const AEGIS_LOADOUT = createLoadoutMock({ armor: 'aegis-armor', utility: [null, null, null, null] });
 
-export const AEGIS_TONES = ['regular', 'regular', 'regular', 'regular', 'regular', 'gear-mount', 'gear-mount'];
+export const AEGIS_TONES = ['regular', 'regular', 'regular', 'regular', 'regular', 'gear-slot', 'gear-slot'];
 
 export const AURORA_LOADOUT = createLoadoutMock({ armor: 'aurora-armor', utility: [null, null, null, null] });
 
-export const AURORA_CAPTIONS = ['Armor', 'Primary', 'Secondary', 'Utility', 'Utility', 'Utility', 'Psi Mount'];
+export const AURORA_CAPTIONS = ['Armor', 'Primary', 'Secondary', 'Utility', 'Utility', 'Utility', 'Psi Slot'];
 
 export const ROCKETEER_LOADOUT = createLoadoutMock({ secondary: 'rocket-launcher' });
 

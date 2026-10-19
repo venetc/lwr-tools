@@ -43,7 +43,7 @@ export interface EquipmentContent {
   classes?: readonly string[]
   /** What the carrier needs besides the unit and class; absent if nothing. */
   requires?: string
-  /** Whether the item is passive gear, the only kind a Gear Mount holds; absent if it is not. */
+  /** Whether the item is passive gear, the only kind a Gear Slot holds; absent if it is not. */
   isPassive?: boolean
   /** Group of items that do not stack; absent if the item stacks with any other. */
   stackGroup?: string
@@ -55,8 +55,8 @@ export interface EquipmentContent {
   requiredModule?: string
   /** Stat line of the item text. */
   stats: readonly EquipmentStat[]
-  /** Tactical info text from the game. */
-  info: string
+  /** Tactical info text from the game; absent if the game gives none. */
+  info?: string
   /** Ids of the non-perk abilities the item grants. */
   grants?: readonly string[]
 }
@@ -64,7 +64,7 @@ export interface EquipmentContent {
 /**
  * Equipment or Module with its id, image, granted abilities and checked categories and references.
  */
-export interface Equipment extends Omit<EquipmentContent, 'units' | 'slot' | 'classes' | 'requires' | 'isPassive' | 'stackGroup' | 'primaryTiers' | 'primaryTypes' | 'requiredModule' | 'grants'> {
+export interface Equipment extends Omit<EquipmentContent, 'units' | 'slot' | 'classes' | 'requires' | 'isPassive' | 'stackGroup' | 'primaryTiers' | 'primaryTypes' | 'requiredModule' | 'info' | 'grants'> {
   /** Item id, the key in `equipment.json`. */
   id: EquipmentId
   /** Ids of the unit types that may carry the item. */
@@ -75,7 +75,7 @@ export interface Equipment extends Omit<EquipmentContent, 'units' | 'slot' | 'cl
   classes: readonly string[] | null
   /** What the carrier needs besides the unit and class; null if nothing. */
   requires: LoadoutRequirement | null
-  /** Whether the item is passive gear, the only kind a Gear Mount holds. */
+  /** Whether the item is passive gear, the only kind a Gear Slot holds. */
   isPassive: boolean
   /** Group of items that do not stack; null if the item stacks with any other. */
   stackGroup: EquipmentStackGroup | null
@@ -85,6 +85,8 @@ export interface Equipment extends Omit<EquipmentContent, 'units' | 'slot' | 'cl
   primaryTypes: WeaponType[] | null
   /** Id of the Module the item needs in the same Loadout; null if none. */
   requiredModule: EquipmentId | null
+  /** Tactical info text from the game; null if the game gives none. */
+  info: string | null
   /** Item image URL. */
   icon: string
   /** Non-perk abilities the item grants. */
@@ -150,6 +152,7 @@ export const equipmentFromEntry = (entry: [EquipmentId, EquipmentContent]): Equi
     primaryTiers,
     primaryTypes,
     requiredModule,
+    info: content.info ?? null,
     icon: EQUIPMENT_ICON[id],
     grants: (content.grants ?? []).filter(isLoadoutAbilityId).map(loadoutAbilityById),
   }];

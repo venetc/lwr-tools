@@ -14,8 +14,8 @@ import type { LoadoutTile } from './loadout-tiles';
 export const useLoadoutTileViews = (tiles: MaybeRefOrGetter<readonly LoadoutTile[]>, style: Record<string, string>) => {
   const captionToneClass: Record<UtilitySlotKind, string | undefined> = {
     'regular': style.regularCaption,
-    'gear-mount': style.gearMountCaption,
-    'psi-mount': style.psiMountCaption,
+    'gear-slot': style.gearSlotCaption,
+    'psi-slot': style.psiSlotCaption,
   };
 
   return computed(() => toValue(tiles).map(tile => ({

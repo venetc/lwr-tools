@@ -23,7 +23,7 @@ export interface UnitLoadout {
   primary: WeaponId | null
   /** Secondary weapon; null for an empty slot or a unit without one. */
   secondary: WeaponId | null
-  /** Items of the utility slots by position, Mounts last; null for an empty slot. */
+  /** Items of the utility slots by position, Gear Slots and Psi Slots last; null for an empty slot. */
   utility: (EquipmentId | null)[]
   /** Modules of a MEC by position; null for an empty slot. */
   modules: (EquipmentId | null)[]

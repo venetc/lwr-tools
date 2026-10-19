@@ -43,10 +43,10 @@ export interface ArmorContent {
   utilitySlots: number
   /** Module slots of a MEC exoskeleton; 0 for biosoldier armor. */
   moduleSlots: number
-  /** Gear Mounts: the last utility slots, for passive equipment only. */
-  gearMountSlots: number
-  /** Psi Mounts: the last utility slots, for passive psionic equipment only. */
-  psiMountSlots: number
+  /** Gear Slots: the last utility slots, for passive equipment only. */
+  gearSlots: number
+  /** Psi Slots: the last utility slots, for passive psionic equipment only. */
+  psiSlots: number
   /** Flight fuel; 0 for armor without flight. */
   fuel: number
   /** What the wearer needs besides the unit; absent if nothing. */

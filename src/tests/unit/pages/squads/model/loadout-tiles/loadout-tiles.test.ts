@@ -88,13 +88,13 @@ describe('loadoutTiles', () => {
     expect(tiles.map(tile => tile.caption)).toEqual(SHIV_CAPTIONS);
   });
 
-  it('puts the Gear Mounts last', () => {
+  it('puts the Gear Slots last', () => {
     const tiles = loadoutTiles(AEGIS_LOADOUT, ASSAULT);
 
     expect(tiles.map(tile => tile.tone)).toEqual(AEGIS_TONES);
   });
 
-  it('captions a Psi Mount', () => {
+  it('captions a Psi Slot', () => {
     const tiles = loadoutTiles(AURORA_LOADOUT, ASSAULT);
 
     expect(tiles.map(tile => tile.caption)).toEqual(AURORA_CAPTIONS);

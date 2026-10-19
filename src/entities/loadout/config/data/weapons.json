@@ -15,7 +15,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Default primary weapon for rookies. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles. Default primary weapon for rookies.",
     "grants": [
       "steady-weapon"
     ]
@@ -44,7 +44,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -65,7 +65,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "aerial-precision",
       "steady-weapon"
@@ -94,7 +94,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst",
       "volume-fire"
@@ -123,7 +123,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles."
   },
   "saw": {
     "code": 6,
@@ -143,7 +143,7 @@
     "mobility": -1.3,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm"
@@ -167,7 +167,7 @@
     "mobility": -2.6,
     "range": 18,
     "utilitySlots": -1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm",
@@ -194,7 +194,7 @@
     "mobility": 0,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "info": "Range effects: -20 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -217,7 +217,7 @@
     "mobility": -1.3,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire.",
     "grants": [
       "steady-weapon"
     ]
@@ -237,7 +237,7 @@
     "mobility": 0,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -257,7 +257,7 @@
     "mobility": 0,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Default primary weapon loadout for SHIV units. Equippable by SHIVs only."
+    "info": "Range effects: +5 aim per tile within 10 tiles. Default primary weapon loadout for SHIV units."
   },
   "vulcan-cannon": {
     "code": 12,
@@ -274,7 +274,7 @@
     "mobility": -0.6,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst"
     ]
@@ -303,7 +303,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "maim"
     ]
@@ -332,7 +332,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "maim",
       "light-volume-fire"
@@ -361,7 +361,7 @@
     "range": 18,
     "utilitySlots": 0,
     "damageUpgrade": 3,
-    "info": "Range effects: +10 aim per tile within 10 tiles, -15 aim per tile past 10 tiles. Not affected by ammo capacity upgrades. Equippable by all Biosoldiers except Sniper and Gunner."
+    "info": "Range effects: +10 aim per tile within 10 tiles, -15 aim per tile past 10 tiles. Not affected by ammo capacity upgrades."
   },
   "rocket-launcher": {
     "code": 16,
@@ -383,7 +383,7 @@
     "utilitySlots": 0,
     "environmentDamage": 35,
     "radius": 5,
-    "info": "Rocket scatter is reduced by high base HP not aim. The displayed scatter value while aiming is the Maximum deviation in tiles from the target, covering ~95% of shots or two standard deviations. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown. Equippable by Rocketeer only."
+    "info": "Rocket scatter is reduced by high base HP not aim. The displayed scatter value while aiming is the Maximum deviation in tiles from the target, covering ~95% of shots or two standard deviations. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown."
   },
   "laser-rifle": {
     "code": 17,
@@ -401,7 +401,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -430,7 +430,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -451,7 +451,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "aerial-precision",
       "steady-weapon"
@@ -480,7 +480,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst",
       "volume-fire"
@@ -509,7 +509,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles."
   },
   "laser-autorifle": {
     "code": 22,
@@ -529,7 +529,7 @@
     "mobility": -1.3,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm"
@@ -553,7 +553,7 @@
     "mobility": -2.6,
     "range": 18,
     "utilitySlots": -1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. The internal beam crystals increase the radius of danger zone suppression from 2 to 2.5 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles. The internal beam crystals increase the radius of danger zone suppression from 2 to 2.5 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm",
@@ -580,7 +580,7 @@
     "mobility": 0,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "info": "Range effects: -20 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -603,7 +603,7 @@
     "mobility": -1.3,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire.",
     "grants": [
       "steady-weapon"
     ]
@@ -623,7 +623,7 @@
     "mobility": 0,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -643,7 +643,7 @@
     "mobility": 0,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by SHIVs only."
+    "info": "Range effects: +5 aim per tile within 10 tiles."
   },
   "laser-vulcan": {
     "code": 28,
@@ -660,7 +660,7 @@
     "mobility": -0.6,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst"
     ]
@@ -689,7 +689,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "maim"
     ]
@@ -724,7 +724,7 @@
       "penetration": 60,
       "aim": 15
     },
-    "info": "Range effects: -20 aim per tile within 10 tiles. Does not use regular ammo and is not affected by regular ammo increasing perks/items/abilities. Cannot critically hit. Equippable by all Biosoldiers except Gunner and Sniper.",
+    "info": "Range effects: -20 aim per tile within 10 tiles. Does not use regular ammo and is not affected by regular ammo increasing perks/items/abilities. Cannot critically hit.",
     "grants": [
       "overload"
     ]
@@ -752,7 +752,7 @@
     "range": 4,
     "utilitySlots": -1,
     "ammoUpgrade": 1,
-    "info": "Non-lethal, short-range rifle used to stun organic targets. Consumable items cannot be used when equipped as the primary weapon (switch to sidearm to use). Capacitor required to use occupies 1 utility slot. Successful stun chance is higher if the target has low HP. Advanced versions have a better chance to stun targets. Does not work on mechanical units. Does not work with Run and Gun. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer. Cannot be equipped by PFCs.",
+    "info": "Non-lethal, short-range rifle used to stun organic targets. Consumable items cannot be used when equipped as the primary weapon (switch to sidearm to use). Capacitor required to use occupies 1 utility slot. Successful stun chance is higher if the target has low HP. Advanced versions have a better chance to stun targets. Does not work on mechanical units. Does not work with Run and Gun. Cannot be equipped by PFCs.",
     "grants": [
       "stun"
     ]
@@ -787,7 +787,7 @@
       "penetration": 40,
       "aim": 0
     },
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Does not use regular ammo and is not affected by regular ammo increasing perks/items/abilities. Cannot critically hit. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Does not use regular ammo and is not affected by regular ammo increasing perks/items/abilities. Cannot critically hit.",
     "grants": [
       "overload",
       "maim"
@@ -809,7 +809,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -838,7 +838,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -860,7 +860,7 @@
     "utilitySlots": 0,
     "ammoUpgrade": 1,
     "critDamage": 25,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "aerial-precision",
       "steady-weapon"
@@ -889,7 +889,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst",
       "volume-fire"
@@ -918,7 +918,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles."
   },
   "gauss-autorifle": {
     "code": 38,
@@ -938,7 +938,7 @@
     "mobility": -2,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm"
@@ -962,7 +962,7 @@
     "mobility": -3.3,
     "range": 18,
     "utilitySlots": -1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm",
@@ -989,7 +989,7 @@
     "mobility": -0.6,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "info": "Range effects: -20 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -1012,7 +1012,7 @@
     "mobility": -2,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire.",
     "grants": [
       "steady-weapon"
     ]
@@ -1032,7 +1032,7 @@
     "mobility": -0.6,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -1052,7 +1052,7 @@
     "mobility": -0.6,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by SHIVs only."
+    "info": "Range effects: +5 aim per tile within 10 tiles."
   },
   "gauss-vulcan": {
     "code": 44,
@@ -1069,7 +1069,7 @@
     "mobility": -1.3,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst"
     ]
@@ -1098,7 +1098,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "maim",
       "light-volume-fire"
@@ -1124,7 +1124,7 @@
     "utilitySlots": 0,
     "environmentDamage": 35,
     "radius": 5,
-    "info": "Rocket scatter is reduced by high base HP not aim. The displayed scatter value while aiming is the Maximum deviation in tiles from the target, covering ~95% of shots or two standard deviations. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown. Equippable by Rocketeer only."
+    "info": "Rocket scatter is reduced by high base HP not aim. The displayed scatter value while aiming is the Maximum deviation in tiles from the target, covering ~95% of shots or two standard deviations. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown."
   },
   "pulse-rifle": {
     "code": 47,
@@ -1142,7 +1142,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -1171,7 +1171,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -1193,7 +1193,7 @@
     "utilitySlots": 0,
     "ammoUpgrade": 1,
     "critDamage": 25,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "aerial-precision",
       "steady-weapon"
@@ -1222,7 +1222,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst",
       "volume-fire"
@@ -1251,7 +1251,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer."
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles."
   },
   "pulse-autoblaster": {
     "code": 52,
@@ -1271,7 +1271,7 @@
     "mobility": -1.3,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm"
@@ -1295,7 +1295,7 @@
     "mobility": -2.6,
     "range": 18,
     "utilitySlots": -1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. The internal beam crystals increase the radius of danger zone suppression from 2 to 2.5 tiles. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles. The internal beam crystals increase the radius of danger zone suppression from 2 to 2.5 tiles.",
     "grants": [
       "hip-fire",
       "bulletstorm",
@@ -1322,7 +1322,7 @@
     "mobility": 0,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Equippable by Sniper and Scout.",
+    "info": "Range effects: -20 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -1345,7 +1345,7 @@
     "mobility": -1.3,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "info": "Range effects: -20 aim per tile within 10 tiles. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire.",
     "grants": [
       "steady-weapon"
     ]
@@ -1365,7 +1365,7 @@
     "mobility": 0,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -1385,7 +1385,7 @@
     "mobility": 0,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by SHIVs only."
+    "info": "Range effects: +5 aim per tile within 10 tiles."
   },
   "pulse-vulcan": {
     "code": 58,
@@ -1402,7 +1402,7 @@
     "mobility": -0.6,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst"
     ]
@@ -1431,7 +1431,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "maim"
     ]
@@ -1452,7 +1452,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "ether-shredder",
       "sublimator",
@@ -1483,7 +1483,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "panzer-shredder",
       "steady-weapon"
@@ -1505,7 +1505,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "aerial-precision",
       "aerial-shredder",
@@ -1536,7 +1536,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper, Gunner, and Rocketeer.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst",
       "volume-fire"
@@ -1565,7 +1565,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles. Equippable by all Biosoldiers except Sniper and Gunner.",
+    "info": "Range effects: +10 aim per tile within 10 tiles, -10 aim per tile past 10 tiles.",
     "grants": [
       "carapace-shredder",
       "sublimator"
@@ -1589,7 +1589,7 @@
     "mobility": -1.3,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Increases the hit chance of Bulletstorm by +5%. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles. Increases the hit chance of Bulletstorm by +5%.",
     "grants": [
       "hip-fire",
       "bulletstorm"
@@ -1613,7 +1613,7 @@
     "mobility": -2.6,
     "range": 18,
     "utilitySlots": -1,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Grants +2 damage to Suppressive Fire. Equippable by Gunner only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles. Grants +2 damage to Suppressive Fire.",
     "grants": [
       "hip-fire",
       "bulletstorm",
@@ -1640,7 +1640,7 @@
     "mobility": 0,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Attacks against preocuppied targets gain +2 damage and +20 penetration. Equippable by Sniper and Scout.",
+    "info": "Range effects: -20 aim per tile within 10 tiles. Attacks against preocuppied targets gain +2 damage and +20 penetration.",
     "grants": [
       "steady-weapon"
     ]
@@ -1663,7 +1663,7 @@
     "mobility": -1.3,
     "range": 130,
     "utilitySlots": 0,
-    "info": "Range effects: -20 aim per tile within 10 tiles. Steadied shots, reaction shots, or shots at targets not protected by cover gain +2 damage and +20 penetration. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire. Equippable by Sniper Only.",
+    "info": "Range effects: -20 aim per tile within 10 tiles. Steadied shots, reaction shots, or shots at targets not protected by cover gain +2 damage and +20 penetration. Squadsight aim penalty reduced to -2 aim per tile beyond 18 (from -5). Requires 2 AP to fire.",
     "grants": [
       "steady-weapon"
     ]
@@ -1688,7 +1688,7 @@
       "penetration": 0,
       "aim": 0
     },
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by MECs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles.",
     "grants": [
       "steady-weapon"
     ]
@@ -1708,7 +1708,7 @@
     "mobility": 0,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles. Equippable by SHIVs only."
+    "info": "Range effects: +5 aim per tile within 10 tiles."
   },
   "plasma-vulcan": {
     "code": 71,
@@ -1725,7 +1725,7 @@
     "mobility": 0.6,
     "range": 18,
     "utilitySlots": 0,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by SHIVs only.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "burst"
     ]
@@ -1754,7 +1754,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "maim"
     ]
@@ -1783,7 +1783,7 @@
     "range": 18,
     "utilitySlots": 0,
     "ammoUpgrade": 1,
-    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles. Equippable by all Biosoldiers.",
+    "info": "Range effects: +5 aim per tile within 10 tiles, -5 aim per tile past 10 tiles.",
     "grants": [
       "maim",
       "light-volume-fire"
@@ -1809,6 +1809,6 @@
     "utilitySlots": 0,
     "environmentDamage": 35,
     "radius": 5,
-    "info": "Requires 2 AP to fire. Shots have 100% accuracy (no rocket scatter) but have decreased range. Shots are guided and can be fired around corners. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown. Equippable by Rocketeer only."
+    "info": "Requires 2 AP to fire. Shots have 100% accuracy (no rocket scatter) but have decreased range. Shots are guided and can be fired around corners. Rockets do full damage at the point of impact and decreased damage towards the periphery (down to 50%). Friendly units within the blast radius are affected. Corpses within the blast radius are destroyed. 2 turn cooldown."
   }
 }

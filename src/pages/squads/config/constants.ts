@@ -34,11 +34,11 @@ export const MODULE_SLOT_CAPTION = 'Module';
 /** Name a tile of an empty slot gives in place of an item name. */
 export const EMPTY_SLOT_NAME = 'Empty';
 
-/** Caption of a utility slot tile by its kind: Mounts have their own. */
+/** Caption of a utility slot tile by its kind: Gear Slots and Psi Slots have their own. */
 export const UTILITY_SLOT_CAPTION = {
   'regular': 'Utility',
-  'gear-mount': 'Gear Mount',
-  'psi-mount': 'Psi Mount',
+  'gear-slot': 'Gear Slot',
+  'psi-slot': 'Psi Slot',
 } as const satisfies Record<UtilitySlotKind, string>;
 
 /** Unit type names by unit type id: the name of each Build calculator and the class shown for a SHIV build. */

@@ -6,13 +6,13 @@ import {
   AURORA_SNIPER,
   BIOSOLDIER_BUILDS,
   EMPTY_UTILITY,
-  GEAR_MOUNT,
+  GEAR_SLOT,
   GUNNER,
   GUNNER_TILES,
   JAEGER,
   MEC_BUILDS,
   MEC_TILES,
-  PSI_MOUNT,
+  PSI_SLOT,
   ROCKETEER,
   ROCKETEER_SECONDARY,
   SHIV,
@@ -71,31 +71,31 @@ test.describe('Unit card', () => {
     await expect(unitCards(page, SNIPER).getByRole('listitem', { name: EMPTY_UTILITY }).first()).toHaveCSS('border-top-style', 'dashed');
   });
 
-  test('captions the Gear Mounts', async ({ page }) => {
+  test('captions the Gear Slots', async ({ page }) => {
     await seedSquad(page, [ARCHANGEL_SNIPER]);
 
     await openSquads(page);
 
-    await expect(unitCards(page, SNIPER).getByRole('listitem', { name: GEAR_MOUNT })).toHaveCount(2);
+    await expect(unitCards(page, SNIPER).getByRole('listitem', { name: GEAR_SLOT })).toHaveCount(2);
   });
 
-  test('captions the Psi Mount', async ({ page }) => {
+  test('captions the Psi Slot', async ({ page }) => {
     await seedSquad(page, [AURORA_SNIPER]);
 
     await openSquads(page);
 
-    await expect(unitCards(page, SNIPER).getByRole('listitem', { name: PSI_MOUNT })).toHaveCount(1);
+    await expect(unitCards(page, SNIPER).getByRole('listitem', { name: PSI_SLOT })).toHaveCount(1);
   });
 
-  test('colours a Gear Mount apart from a utility slot', async ({ page }) => {
+  test('colours a Gear Slot apart from a utility slot', async ({ page }) => {
     await seedSquad(page, [ARCHANGEL_SNIPER]);
     await openSquads(page);
     const card = unitCards(page, SNIPER);
 
-    const [utilityColor, mountColor] = await Promise.all([EMPTY_UTILITY, GEAR_MOUNT].map(name => (
+    const [utilityColor, gearSlotColor] = await Promise.all([EMPTY_UTILITY, GEAR_SLOT].map(name => (
       card.getByRole('listitem', { name }).first().locator('span span').first().evaluate(element => getComputedStyle(element).color)
     )));
 
-    expect(mountColor).not.toBe(utilityColor);
+    expect(gearSlotColor).not.toBe(utilityColor);
   });
 });

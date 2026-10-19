@@ -5,6 +5,8 @@ export { LOADOUT_UNITS } from './config/constants/loadout-units';
 export { SHIV_TYPE_BY_ID, SHIV_TYPE_ID_BY_CODE, SHIV_TYPES } from './config/constants/shiv-types';
 export { WEAPON_BY_ID, WEAPON_ID_BY_CODE, WEAPONS } from './config/constants/weapons';
 export type { Armor, ArmorCategory, ArmorId } from './model/armors';
+export { itemCarriers } from './model/carriers';
+export type { CarriedItem } from './model/carriers';
 export type { Equipment, EquipmentId, EquipmentSlot, EquipmentStackGroup, EquipmentStat } from './model/equipment';
 export { fitLoadout } from './model/fit-loadout';
 export type { LoadoutAddition, LoadoutChange, LoadoutChangeReason, LoadoutFit, LoadoutMove, LoadoutRemoval, LoadoutReplacement } from './model/fit-loadout';

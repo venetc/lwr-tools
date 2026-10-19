@@ -1,12 +1,12 @@
 import { EQUIPMENT_BY_ID } from '../config/constants/equipment';
 import type { EquipmentId } from './equipment';
 import type { Loadout, LoadoutBlockReason, LoadoutItemId, LoadoutSlotKind, LoadoutWearer, UtilitySlotKind } from './loadout';
-import { blockReasons, defaultLoadout, isMountHolding, loadoutSlots } from './loadout';
+import { blockReasons, defaultLoadout, isSlotHolding, loadoutSlots } from './loadout';
 
 export type LoadoutChangeReason = LoadoutBlockReason | 'slot-removed';
 
 /**
- * Item moved out of a Mount that does not hold it to a free regular utility slot.
+ * Item moved out of a Gear Slot or Psi Slot that does not hold it to a free regular utility slot.
  */
 export interface LoadoutMove {
   /** Change kind. */
@@ -78,8 +78,8 @@ export interface LoadoutFit {
  *
  * @description Steps in order: armor and primary weapon that no longer fit become the default ones; a secondary weapon
  * that no longer fits is removed, or replaced with the default one in a slot that is never empty, which an empty one
- * also gets; utility and Module slots are counted again: the last positions stay the Mounts of the armor, and extra
- * regular and Module slots are cut from the end; an item a Mount does not hold moves to the first free regular slot;
+ * also gets; utility and Module slots are counted again: the last positions stay the Gear Slots and Psi Slots of the armor, and extra
+ * regular and Module slots are cut from the end; an item a Gear Slot or Psi Slot does not hold moves to the first free regular slot;
  * then Modules and utility items that do not fit are removed in slot order, so of two items that clash the first one stays.
  *
  * @param loadout Loadout to check; it is left untouched.
@@ -165,23 +165,23 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
   };
 
   /**
-   * Sets the utility slots to their kinds: the last positions stay Mounts, the regular slots before them are resized.
+   * Sets the utility slots to their kinds: the last positions stay Gear Slots and Psi Slots, the regular slots before them are resized.
    *
    * @param kinds kinds of the utility slots the unit has.
    */
   const resizeUtilitySlots = (kinds: UtilitySlotKind[]) => {
-    const mountCount = kinds.filter(kind => kind !== 'regular').length;
-    const mounts = fitted.utility.splice(Math.max(0, fitted.utility.length - mountCount));
+    const gearAndPsiSlotCount = kinds.filter(kind => kind !== 'regular').length;
+    const gearAndPsiSlots = fitted.utility.splice(Math.max(0, fitted.utility.length - gearAndPsiSlotCount));
 
-    resizeSlots(fitted.utility, kinds.length - mountCount, 'utility');
-    resizeSlots(mounts, mountCount, 'utility');
-    fitted.utility.push(...mounts);
+    resizeSlots(fitted.utility, kinds.length - gearAndPsiSlotCount, 'utility');
+    resizeSlots(gearAndPsiSlots, gearAndPsiSlotCount, 'utility');
+    fitted.utility.push(...gearAndPsiSlots);
   };
 
   /**
-   * Moves items the Mounts do not hold to free regular utility slots, while there are any.
+   * Moves items the Gear Slots and Psi Slots do not hold to free regular utility slots, while there are any.
    */
-  const moveOutOfMounts = () => {
+  const moveOutOfGearAndPsiSlots = () => {
     const kinds = loadoutSlots(fitted, wearer).utility;
 
     kinds.forEach((kind, from) => {
@@ -192,7 +192,7 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
       const equipment = EQUIPMENT_BY_ID.get(item);
       const to = kinds.findIndex((other, index) => other === 'regular' && fitted.utility[index] === null);
 
-      if (!equipment || isMountHolding(kind, equipment) || to === -1) return;
+      if (!equipment || isSlotHolding(kind, equipment) || to === -1) return;
 
       fitted.utility[to] = item;
       fitted.utility[from] = null;
@@ -237,7 +237,7 @@ export const fitLoadout = (loadout: Loadout, wearer: LoadoutWearer): LoadoutFit 
   fillSecondarySlot(slots.isSecondaryRequired);
   resizeUtilitySlots(slots.utility);
   resizeSlots(fitted.modules, slots.moduleCount, 'module');
-  moveOutOfMounts();
+  moveOutOfGearAndPsiSlots();
   removeMisfits();
 
   return { loadout: fitted, changes };

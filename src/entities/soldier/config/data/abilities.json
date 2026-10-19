@@ -12,7 +12,7 @@
   "aggression": {
     "code": 3,
     "name": "Aggression",
-    "description": "Shots gain +10% crit damage per enemy in sight."
+    "description": "Shots gain +5% crit damage per enemy in sight."
   },
   "blast": {
     "code": 4,
@@ -221,7 +221,7 @@
   "pistolero": {
     "code": 44,
     "name": "Pistolero",
-    "description": "Reaction shots from pistols gain +50% base weapon damage, +35 penetration, +35 aim, and the ability to crit. If idle at end of turn, draws their pistol. If wielding a pistol, fire a reaction shot at any enemy within 4 tiles that acts, and gain +20 crit resist. [Pistolero reaction shots bypass half of cover DR/def and require hit chance >30]"
+    "description": "Reaction shots from pistols gain +50% base weapon damage, +35 penetration, +35 aim, and the ability to crit. If idle at end of turn, draws their pistol. When wielding a pistol: fire a reaction shot at any enemy within 4 tiles that acts, gain +20 crit resist, and reloads cost only 1 AP. [Pistolero reaction shots bypass half of cover DR/def and require hit chance >30]"
   },
   "precision-shot": {
     "code": 45,
@@ -231,17 +231,17 @@
   "raking-fire": {
     "code": 46,
     "name": "Raking Fire",
-    "description": "Fire 2 additional reaction shots during overwatch. Reaction Fire and Bulletstorm shots that miss have a 50% chance to still deal 1 damage."
+    "description": "Fire 2 additional reaction shots during overwatch. Reaction Fire and Bulletstorm shots that miss have a 50% chance to take suppressive fire. [Suppressive Fire deals 40% standard shot damage]"
   },
   "ranger": {
     "code": 47,
     "name": "Ranger",
-    "description": "Grants +1 damage to all weapons and equipment, +0.6 mobility, and +10% throw/rocket range. Sidearms additionally gain +50% base weapon damage, +20 aim, and 1 AP reloads."
+    "description": "Grants +1 damage to all weapons and equipment, +0.6 mobility, and +10% throw/rocket range. Sidearms additionally gain +1 damage and +10 aim."
   },
   "rapid-fire": {
     "code": 48,
     "name": "Rapid Fire",
-    "description": "Fire twice with your primary weapon; accuracy gains above 40% hit chance only contribute half to final hit chance."
+    "description": "Fire twice with your primary weapon; accuracy gains above 50% hit chance only contribute half to final hit chance."
   },
   "rapid-pincers": {
     "code": 49,
@@ -386,7 +386,7 @@
   "absorption-fields": {
     "code": 74,
     "name": "Absorption Fields",
-    "description": "Gain +5% DR. Shots from beam weapons (laser/pulse/drone/cyberdisc) lose their penetration when targeting this unit."
+    "description": "Gain +10% DR. Shots from beam weapons (laser/pulse/drone/cyberdisc) lose half their penetration when targeting this unit."
   },
   "arsenal": {
     "code": 75,
@@ -467,7 +467,7 @@
   "reactive-targeting-sensors": {
     "code": 89,
     "name": "Reactive Targeting Sensors",
-    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +20% DR against that attack, returns fire with a +30 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
+    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +20% DR against that attack, returns fire with a +20 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
   },
   "repair-servos": {
     "code": 90,

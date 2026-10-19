@@ -164,7 +164,7 @@
     "gearMountSlots": 0,
     "psiMountSlots": 0,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
+    "info": "Offers enhanced protection and greatly improved mobility. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by all Biosoldiers.",
     "grants": [
       "grapple",
       "repulsor"
@@ -187,7 +187,7 @@
     "gearMountSlots": 2,
     "psiMountSlots": 0,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Offers greatly enhanced protection with immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
+    "info": "Offers greatly enhanced protection with immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
     "grants": [
       "repulsor",
       "damage-control",
@@ -203,7 +203,7 @@
     "category": "light",
     "hp": 9,
     "damageReduction": 0,
-    "defense": 20,
+    "defense": 15,
     "mobility": 2,
     "will": 0,
     "critResist": 0,
@@ -214,9 +214,9 @@
     "psiMountSlots": 0,
     "fuel": 8,
     "requires": "officer",
-    "info": "Offers greatly enhanced protection with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Light armor set. Equippable by officers only.",
+    "info": "Offers greatly enhanced protection with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. Light armor set. Equippable by officers only.",
     "grants": [
-      "tactical-mobility",
+      "grapple",
       "repulsor",
       "gear-mount"
     ]
@@ -238,7 +238,7 @@
     "gearMountSlots": 2,
     "psiMountSlots": 0,
     "fuel": 12,
-    "info": "This equipment never requires repairs. Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. Provides immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
+    "info": "Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. Provides immunity to strangulation. Heavy armor set. Equippable by all Biosoldiers.",
     "grants": [
       "repulsor",
       "damage-control",
@@ -259,13 +259,13 @@
     "will": 0,
     "critResist": 0,
     "fullHpAim": 10,
-    "utilitySlots": 2,
+    "utilitySlots": 3,
     "moduleSlots": 0,
     "gearMountSlots": 1,
     "psiMountSlots": 0,
     "fuel": 0,
     "requires": "gene-mod",
-    "info": "This equipment never requires repairs. Offers enhanced protection with greatly improved defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by genetically modified soldiers only.",
+    "info": "Offers enhanced protection with greatly improved defense. Equipped with a grappling hook for tactical positioning. Light armor set. Equippable by genetically modified soldiers only.",
     "grants": [
       "ghost",
       "advanced-grapple",
@@ -282,7 +282,7 @@
     "damageReduction": 0,
     "defense": 10,
     "mobility": 1.3,
-    "will": 0,
+    "will": 10,
     "critResist": 0,
     "fullHpAim": 0,
     "utilitySlots": 3,
@@ -306,7 +306,7 @@
     "damageReduction": 10,
     "defense": 0,
     "mobility": 1.3,
-    "will": 0,
+    "will": 20,
     "critResist": 0,
     "fullHpAim": 0,
     "utilitySlots": 3,
@@ -315,11 +315,11 @@
     "psiMountSlots": 1,
     "fuel": 0,
     "requires": "psionic",
-    "info": "This equipment never requires repairs. Offers enhanced protection. Gollop Chamber activation requires this armor and a soldier with the Fervor ability. Heavy armor set. Equippable by Psi only.",
+    "info": "Offers enhanced protection. Gollop Chamber activation requires this armor and a soldier with the Fervor ability. Heavy armor set. Equippable by Psi only.",
     "grants": [
       "psi-mount",
       "advanced-psi-boost",
-      "repulsor"
+      "eye-of-the-storm"
     ]
   },
   "mec1-paladin": {
@@ -407,7 +407,7 @@
     "gearMountSlots": 0,
     "psiMountSlots": 0,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Supports 3 modules per loadout. MECs cannot use cover. Heavy MEC suit. Equippable by MECs only.",
+    "info": "Supports 3 modules per loadout. MECs cannot use cover. Heavy MEC suit. Equippable by MECs only.",
     "grants": [
       "hardened",
       "damage-control"
@@ -430,7 +430,7 @@
     "gearMountSlots": 0,
     "psiMountSlots": 0,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Supports 2 modules per loadout. MECs cannot use cover. Ultra-Heavy MEC suit. Equippable by MECs only.",
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Ultra-Heavy MEC suit. Equippable by MECs only.",
     "grants": [
       "hardened",
       "damage-control"
@@ -453,7 +453,7 @@
     "gearMountSlots": 0,
     "psiMountSlots": 0,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Supports 2 modules per loadout. MECs cannot use cover. Ultra-Light MEC suit. Equippable by MECs only.",
+    "info": "Supports 2 modules per loadout. MECs cannot use cover. Ultra-Light MEC suit. Equippable by MECs only.",
     "grants": [
       "hardened",
       "body-shield"
@@ -476,7 +476,7 @@
     "gearMountSlots": 0,
     "psiMountSlots": 0,
     "fuel": 0,
-    "info": "This equipment never requires repairs. Supports 3 modules per loadout. MECs cannot use cover. Light MEC suit. Equippable by MECs only.",
+    "info": "Supports 3 modules per loadout. MECs cannot use cover. Light MEC suit. Equippable by MECs only.",
     "grants": [
       "hardened",
       "body-shield"

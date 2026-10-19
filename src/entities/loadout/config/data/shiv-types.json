@@ -42,7 +42,7 @@
     "aim": 55,
     "utilitySlots": 4,
     "fuel": 14,
-    "info": "Mini-tank with limited flight capability controlled remotely by the Skyranger pilot, 'Big Sky'. Only one SHIV can be controlled per turn. Does not accumulate post-battle fatigue. Features limited flight capability with 16 fuel. Flight sets mobility to 8.6 and increases defense by +30. First remaining SHIV (post combat) shares its mission and kill experience gained with squadmates. Acts as mobile partial cover (out of flight) for ally units. Weapon loadouts are upgraded based on technology researched. Foundry projects unlock additional platform capabilities. Extraction requires 2 AP remaining while in the evac point to complete. Immune to fire damage.",
+    "info": "Mini-tank with limited flight capability controlled remotely by the Skyranger pilot, 'Big Sky'. Only one SHIV can be controlled per turn. Does not accumulate post-battle fatigue. Features limited flight capability with 14 fuel. Flight sets mobility to 9.3 and increases defense by +30. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. First remaining SHIV (post combat) shares its mission and kill experience gained with squadmates. Acts as mobile partial cover (out of flight) for ally units. Weapon loadouts are upgraded based on technology researched. Foundry projects unlock additional platform capabilities. Extraction requires 2 AP remaining while in the evac point to complete. Immune to fire damage.",
     "grants": [
       "hardened"
     ]

@@ -10,7 +10,6 @@ import overloadIcon from '../icons/abilities/alien_overload/alien_overload@4x.pn
 import burstIcon from '../icons/abilities/assault_flush/assault_flush@4x.png';
 import shadowstepIcon from '../icons/abilities/assault_lightningreflexes/assault_lightningreflexes@4x.png';
 import maimIcon from '../icons/abilities/assault_rapidfire/assault_rapidfire@4x.png';
-import tacticalMobilityIcon from '../icons/abilities/assault_tacticalsense/assault_tacticalsense@4x.png';
 import trackerIcon from '../icons/abilities/bioelectric_skin_gene_mod_eu2012/bioelectric_skin_gene_mod_eu2012@4x.png';
 import incinerationIcon from '../icons/abilities/burn/burn@4x.png';
 import grappleIcon from '../icons/abilities/grapple_eu2012/grapple_eu2012@4x.png';
@@ -18,6 +17,7 @@ import dangerZoneIcon from '../icons/abilities/heavy_dangerzone/heavy_dangerzone
 import penetratorIcon from '../icons/abilities/heavy_heat_ammo/heavy_heat_ammo@4x.png';
 import shredderIcon from '../icons/abilities/heavy_shredder/heavy_shredder@4x.png';
 import aerialTrackingIcon from '../icons/abilities/itz_icon/itz_icon@4x.png';
+import bulletstormIcon from '../icons/abilities/lwr_bulletstorm/lwr_bulletstorm@4x.png';
 import awarenessIcon from '../icons/abilities/mec_automated_threat_assessment/mec_automated_threat_assessment@4x.png';
 import bodyShieldIcon from '../icons/abilities/mec_body_shield/mec_body_shield@4x.png';
 import sublimatorIcon from '../icons/abilities/mec_collateral_damage/mec_collateral_damage@4x.png';
@@ -36,7 +36,6 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'repulsor': repulsorIcon,
   'sealed': PLACEHOLDER_ICON.cyan,
   'flame-resistant': PLACEHOLDER_ICON.cyan,
-  'tactical-mobility': tacticalMobilityIcon,
   'ghost': ghostIcon,
   'psi-boost': PLACEHOLDER_ICON.cyan,
   'advanced-psi-boost': PLACEHOLDER_ICON.cyan,
@@ -45,7 +44,7 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'burst': burstIcon,
   'volume-fire': PLACEHOLDER_ICON.cyan,
   'hip-fire': PLACEHOLDER_ICON.cyan,
-  'bulletstorm': alienClusterbombIcon,
+  'bulletstorm': bulletstormIcon,
   'shredder': shredderIcon,
   'danger-zone': dangerZoneIcon,
   'maim': maimIcon,
@@ -94,4 +93,5 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'flak': alienClusterbombIcon,
   'gravity-well': PLACEHOLDER_ICON.cyan,
   'mist': PLACEHOLDER_ICON.cyan,
+  'eye-of-the-storm': PLACEHOLDER_ICON.cyan,
 };

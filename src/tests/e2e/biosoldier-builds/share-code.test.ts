@@ -17,15 +17,19 @@ import {
   IRON_SKIN,
   MAGNUM,
   NOTIFICATIONS,
+  OFFICER_TAB,
+  OFFICER_TAB_WITH_ONE,
   PAGE_PATH,
   PANEL_NAME,
   PSIONIC_TAB,
   PSIONIC_TAB_WITH_ONE,
   RENAME_LABEL,
   REPLACE_LABEL,
+  SHARPSHOOTER,
   SHIV_CODE_TITLE,
   SHIV_PAGE_PATH,
   SHIV_PANEL_NAME,
+  STRENGTH_IN_NUMBERS,
 } from './share-code.mock';
 
 /**
@@ -43,15 +47,18 @@ const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
 const classPanels = (page: Page) => page.getByRole('region', { name: PANEL_NAME });
 
 /**
- * Selects a perk, a gene mod and a psionic ability in the tested build, renames it and returns its Share code.
+ * Selects perks up to Corporal, a gene mod, a psionic ability and an officer perk in the tested build, renames it and
+ * returns its Share code.
  *
  * @param page browser page.
  */
 const exportFilledBuild = async (page: Page) => {
   const panel = await openPanel(page);
   await abilityCell(panel, MAGNUM).click();
+  await abilityCell(panel, SHARPSHOOTER).click();
   await selectAbility(panel, GENE_MODS_TAB, IRON_SKIN);
   await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
+  await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
   await panel.getByRole('textbox', { name: RENAME_LABEL }).fill(EXPORTED_NAME);
   await panel.getByRole('textbox', { name: RENAME_LABEL }).press('Enter');
 
@@ -81,6 +88,14 @@ test.describe('Build imported from its Share code', () => {
     await importCode(page, toolbarImport(page), code);
 
     await expect(classPanels(page).last().getByRole('tab', { name: PSIONIC_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('has the officer perks', async ({ page }) => {
+    const code = await exportFilledBuild(page);
+
+    await importCode(page, toolbarImport(page), code);
+
+    await expect(classPanels(page).last().getByRole('tab', { name: OFFICER_TAB_WITH_ONE })).toBeVisible();
   });
 
   test('has the name', async ({ page }) => {

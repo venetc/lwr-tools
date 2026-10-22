@@ -56,6 +56,26 @@ export const selectSoldierBuildPerk = (build: SoldierBuildData, rankIndex: numbe
 };
 
 /**
+ * Selects a perk on the rank of the biosoldier build like a soldier build, then clears officer perks from the first
+ * officer rank whose required rank the class tree no longer completes.
+ *
+ * @param build biosoldier build; its perks and officer perks are mutated in place.
+ * @param rankIndex rank index in the tree.
+ * @param perkId selected perk id, or null to clear the rank selection.
+ */
+export const selectBiosoldierBuildPerk = (build: BiosoldierBuildData, rankIndex: number, perkId: string | null): void => {
+  selectSoldierBuildPerk(build, rankIndex, perkId);
+
+  if (perkId) return;
+
+  const lostOfficerRankIndex = OFFICER_RANKS.findIndex(officerRank => !hasRequiredRank(officerRank, build.perks));
+
+  if (lostOfficerRankIndex < 0 || lostOfficerRankIndex >= build.officerPerks.length) return;
+
+  build.officerPerks.length = lostOfficerRankIndex;
+};
+
+/**
  * Selects a gene mod of the body part, replacing the other one, or clears the body part. Body parts are independent;
  * a body part outside the build, a gene mod of another body part or Neural Damping while any psionic ability is selected
  * is ignored.

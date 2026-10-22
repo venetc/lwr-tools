@@ -6,8 +6,8 @@ import {
   EMPTY_GENE_MODS,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
+  selectBiosoldierBuildPerk,
   selectBiosoldierBuildPsionicAbility,
-  selectSoldierBuildPerk,
 } from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
 import type { StoredBuild } from '@features/share-build';
@@ -73,7 +73,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
 
     if (!build) return;
 
-    selectSoldierBuildPerk(build, rankIndex, perkId);
+    selectBiosoldierBuildPerk(build, rankIndex, perkId);
     buildList.markBuildChanged(buildId);
   };
 

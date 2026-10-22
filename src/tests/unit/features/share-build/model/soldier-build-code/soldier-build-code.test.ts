@@ -10,6 +10,7 @@ import {
   BOUND_CLASS_BY_CODE,
   BROKEN_NAME_SECTION,
   DEFAULT_NAME_BUILD,
+  EXCESS_OFFICER_PERKS_BUILD,
   EXCESS_PSIONIC_ABILITIES_BUILD,
   GARBAGE_CODE,
   GENE_MODS_BUILD,
@@ -22,19 +23,26 @@ import {
   MEC_FORMAT,
   MEC_NAMED_BUILD,
   MISPLACED_GENE_MOD_BUILD,
+  MISPLACED_OFFICER_PERK_BUILD,
   MISPLACED_PSIONIC_ABILITY_BUILD,
   NAME_SECTION_ID,
   NAMED_BUILD,
   NEURAL_DAMPING_BUILD,
   NEURAL_DAMPING_PSIONIC_BUILD,
+  OFFICER_BUILD,
+  OFFICER_PERKS_ONLY_BUILD,
+  OFFICER_SECTION_ID,
+  officerSection,
   OTHER_CLASS_BUILD,
   OTHER_CLASS_CODE,
   perksSection,
   PSIONIC_BUILD,
   PSIONIC_SECTION_ID,
   psionicSection,
+  SECOND_RANK_PERKS_SECTION,
   SHIV_CODE_RESULT,
   SHIV_FORMAT,
+  UNCOMPLETED_REQUIRED_RANK_BUILD,
   UNKNOWN_FORMAT,
   UNKNOWN_PERK_BUILD,
   UNKNOWN_SECTION,
@@ -63,6 +71,12 @@ vi.mock('@entities/soldier/config/constants/psi-level-content', async () => ({
   PSI_LEVEL_CONTENT: (await import('./soldier-build-code.mock')).PSI_LEVEL_CONTENT_MOCK,
 }));
 
+vi.mock('@entities/soldier/config/constants/officer-rank-content', async () => ({
+  OFFICER_RANK_CONTENT: (await import('./soldier-build-code.mock')).OFFICER_RANK_CONTENT_MOCK,
+}));
+
+vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {} }));
+
 vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
 
 vi.mock('@entities/soldier/config/constants/mec-class-content', async () => ({
@@ -88,6 +102,32 @@ describe('encodeBiosoldierBuild', () => {
     const binaryCode = openBinaryCode(code);
 
     expect(binaryCode?.sections.has(PSIONIC_SECTION_ID)).toBe(false);
+  });
+
+  it('leaves out the officer section for a build without officer perks', () => {
+    const code = encodeBiosoldierBuild(PSIONIC_BUILD) ?? '';
+
+    const binaryCode = openBinaryCode(code);
+
+    expect(binaryCode?.sections.has(OFFICER_SECTION_ID)).toBe(false);
+  });
+
+  it('gives null for a build with an officer perk outside its officer rank', () => {
+    const code = encodeBiosoldierBuild(MISPLACED_OFFICER_PERK_BUILD);
+
+    expect(code).toBeNull();
+  });
+
+  it('gives null for a build with more officer perks than officer ranks', () => {
+    const code = encodeBiosoldierBuild(EXCESS_OFFICER_PERKS_BUILD);
+
+    expect(code).toBeNull();
+  });
+
+  it('gives null for a build with an officer rank whose required rank is not completed', () => {
+    const code = encodeBiosoldierBuild(UNCOMPLETED_REQUIRED_RANK_BUILD);
+
+    expect(code).toBeNull();
   });
 
   it('leaves out the name section for the default name', () => {
@@ -136,6 +176,86 @@ describe('decodeBiosoldierBuild', () => {
     const result = decodeBiosoldierBuild(code);
 
     expect(result).toEqual({ status: 'decoded', build: GENE_MODS_BUILD });
+  });
+
+  it('restores a build with gene mods, psionic abilities and officer perks', () => {
+    const code = encodeBiosoldierBuild(OFFICER_BUILD) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: OFFICER_BUILD });
+  });
+
+  it('restores a build with officer perks only', () => {
+    const code = encodeBiosoldierBuild(OFFICER_PERKS_ONLY_BUILD) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: OFFICER_PERKS_ONLY_BUILD });
+  });
+
+  it('gives no officer perks for a code without the officer section', () => {
+    const code = encodeBiosoldierBuild(PSIONIC_BUILD) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: PSIONIC_BUILD });
+  });
+
+  it('gives no officer perks when the officer perks part is not requested', () => {
+    const code = encodeBiosoldierBuild(OFFICER_PERKS_ONLY_BUILD) ?? '';
+
+    const result = decodeBiosoldierBuild(code, ['name', 'geneMods', 'psionicAbilities']);
+
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+  });
+
+  it('skips an officer perk outside its officer rank when officer perks are not requested', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([42])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code, ['name']);
+
+    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+  });
+
+  it('rejects an officer perk that is not offered on its officer rank', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([42])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects an officer section with an unknown ability', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([99])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects more officer perks than officer ranks', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([40, 42, 43])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects an officer rank whose required rank the class tree does not complete', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [SECOND_RANK_PERKS_SECTION, officerSection([40, 42])]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects an officer section with unread bits', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([40], 1)]) ?? '';
+
+    const result = decodeBiosoldierBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
   });
 
   it('restores a build with gene mods and psionic abilities', () => {
@@ -420,6 +540,14 @@ describe('decodeMecBuild', () => {
 
   it('skips a psionic section', () => {
     const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), psionicSection([30])]) ?? '';
+
+    const result = decodeMecBuild(code);
+
+    expect(result).toEqual({ status: 'decoded', build: MEC_DEFAULT_NAME_BUILD });
+  });
+
+  it('skips an officer section', () => {
+    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), officerSection([40])]) ?? '';
 
     const result = decodeMecBuild(code);
 

@@ -4,12 +4,14 @@ import {
   biosoldierBuildBranchSet,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
+  selectBiosoldierBuildPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from '@entities/soldier/model/build';
 
 import {
   ALL_OFFICER_PERKS,
+  ALL_PERKS,
   ALL_PSIONICS,
   ALPHA_OFFICER_PERKS,
   BASE_PERKS,
@@ -17,10 +19,10 @@ import {
   createBuildMock,
   createOfficerBuildMock,
   FEET_GENE_MODS,
-  FULL_PERKS,
   LOW_AND_MIDDLE_PSIONICS,
   NEURAL_DAMPING_GENE_MODS,
   NO_GENE_MODS,
+  PERKS_TO_THIRD,
 } from './build.mock';
 
 vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
@@ -59,7 +61,7 @@ describe('selectSoldierBuildPerk', () => {
   });
 
   it('replaces the selection on a completed rank and keeps higher ranks', () => {
-    const build = createBuildMock(FULL_PERKS);
+    const build = createBuildMock(PERKS_TO_THIRD);
 
     selectSoldierBuildPerk(build, 1, 'left');
 
@@ -67,7 +69,7 @@ describe('selectSoldierBuildPerk', () => {
   });
 
   it('clears the rank and all higher ranks on a null perk', () => {
-    const build = createBuildMock(FULL_PERKS);
+    const build = createBuildMock(PERKS_TO_THIRD);
 
     selectSoldierBuildPerk(build, 1, null);
 
@@ -75,11 +77,11 @@ describe('selectSoldierBuildPerk', () => {
   });
 
   it('leaves a rank granted with the class untouched', () => {
-    const build = createBuildMock(FULL_PERKS);
+    const build = createBuildMock(PERKS_TO_THIRD);
 
     selectSoldierBuildPerk(build, 0, null);
 
-    expect(build.perks).toEqual(FULL_PERKS);
+    expect(build.perks).toEqual(PERKS_TO_THIRD);
   });
 
   it('leaves a rank after the available one untouched', () => {
@@ -209,7 +211,7 @@ describe('selectBiosoldierBuildPsionicAbility', () => {
 
 describe('selectBiosoldierBuildOfficerPerk', () => {
   it('selects an officer perk on the open officer rank', () => {
-    const build = createOfficerBuildMock(FULL_PERKS);
+    const build = createOfficerBuildMock(PERKS_TO_THIRD);
 
     selectBiosoldierBuildOfficerPerk(build, 0, 'alpha-right');
 
@@ -217,7 +219,7 @@ describe('selectBiosoldierBuildOfficerPerk', () => {
   });
 
   it('replaces the officer perk of a completed officer rank and keeps the officer ranks above', () => {
-    const build = createOfficerBuildMock(FULL_PERKS, ALL_OFFICER_PERKS);
+    const build = createOfficerBuildMock(PERKS_TO_THIRD, ALL_OFFICER_PERKS);
 
     selectBiosoldierBuildOfficerPerk(build, 0, 'alpha-right');
 
@@ -225,7 +227,7 @@ describe('selectBiosoldierBuildOfficerPerk', () => {
   });
 
   it('clears the officer rank and all officer ranks above on a null perk', () => {
-    const build = createOfficerBuildMock(FULL_PERKS, ALL_OFFICER_PERKS);
+    const build = createOfficerBuildMock(PERKS_TO_THIRD, ALL_OFFICER_PERKS);
 
     selectBiosoldierBuildOfficerPerk(build, 1, null);
 
@@ -233,7 +235,7 @@ describe('selectBiosoldierBuildOfficerPerk', () => {
   });
 
   it('ignores an officer rank beyond the next open one', () => {
-    const build = createOfficerBuildMock(FULL_PERKS, ALPHA_OFFICER_PERKS);
+    const build = createOfficerBuildMock(PERKS_TO_THIRD, ALPHA_OFFICER_PERKS);
 
     selectBiosoldierBuildOfficerPerk(build, 2, 'gamma-left');
 
@@ -249,11 +251,53 @@ describe('selectBiosoldierBuildOfficerPerk', () => {
   });
 
   it('ignores an officer perk of another officer rank', () => {
-    const build = createOfficerBuildMock(FULL_PERKS);
+    const build = createOfficerBuildMock(PERKS_TO_THIRD);
 
     selectBiosoldierBuildOfficerPerk(build, 0, 'beta-left');
 
     expect(build.officerPerks).toEqual([]);
+  });
+});
+
+describe('selectBiosoldierBuildPerk', () => {
+  it('clears officer perks from the first officer rank whose required rank is cleared', () => {
+    const build = createOfficerBuildMock(PERKS_TO_THIRD, ALL_OFFICER_PERKS);
+
+    selectBiosoldierBuildPerk(build, 2, null);
+
+    expect(build.officerPerks).toEqual(['alpha-left']);
+  });
+
+  it('clears all officer perks when the required rank of the first officer rank is cleared', () => {
+    const build = createOfficerBuildMock(PERKS_TO_THIRD, ALL_OFFICER_PERKS);
+
+    selectBiosoldierBuildPerk(build, 1, null);
+
+    expect(build.officerPerks).toEqual([]);
+  });
+
+  it('keeps officer perks when a perk on a completed rank is replaced', () => {
+    const build = createOfficerBuildMock(PERKS_TO_THIRD, ALL_OFFICER_PERKS);
+
+    selectBiosoldierBuildPerk(build, 1, 'left');
+
+    expect(build.officerPerks).toEqual(['alpha-left', 'beta-left', 'gamma-right']);
+  });
+
+  it('keeps officer perks when a rank above every required rank is cleared', () => {
+    const build = createOfficerBuildMock(ALL_PERKS, ALL_OFFICER_PERKS);
+
+    selectBiosoldierBuildPerk(build, 3, null);
+
+    expect(build.officerPerks).toEqual(['alpha-left', 'beta-left', 'gamma-right']);
+  });
+
+  it('clears the rank and all higher ranks like a soldier build', () => {
+    const build = createOfficerBuildMock(PERKS_TO_THIRD, ALL_OFFICER_PERKS);
+
+    selectBiosoldierBuildPerk(build, 2, null);
+
+    expect(build.perks).toEqual(['granted', 'right']);
   });
 });
 

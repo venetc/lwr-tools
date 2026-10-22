@@ -11,6 +11,7 @@ export {
   biosoldierBuildBranchSet,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
+  selectBiosoldierBuildPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from './model/build';
@@ -20,6 +21,7 @@ export type { ClassTreeRankTier } from './model/class-tree-tiers';
 export type { SoldierClass } from './model/classes';
 export { useGeneModTiers } from './model/gene-mod-tiers';
 export type { BodyPartTier } from './model/gene-mod-tiers';
+export { hasRequiredRank } from './model/officer-ranks';
 export type { SelectedOfficerPerks } from './model/officer-ranks';
 export { useOfficerTiers } from './model/officer-tiers';
 export type { OfficerRankTier } from './model/officer-tiers';

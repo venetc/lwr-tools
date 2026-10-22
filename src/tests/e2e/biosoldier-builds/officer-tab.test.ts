@@ -106,6 +106,29 @@ test.describe('Officer tab', () => {
     await expect(abilityCell(panel, COVER_TACTICS)).toHaveAttribute('aria-pressed', 'true');
   });
 
+  test('clears the officer perks of the officer ranks whose required rank is cleared in the Class tree', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectPerks(panel, [MAGNUM, SHARPSHOOTER, RANGER]);
+    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+    await abilityCell(panel, COVER_TACTICS).click();
+
+    await selectAbility(panel, CLASS_TREE_TAB, RANGER);
+
+    await expect(panel.getByRole('tab', { name: OFFICER_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('keeps the officer perk of an officer rank whose required rank stays completed in the Class tree', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectPerks(panel, [MAGNUM, SHARPSHOOTER, RANGER]);
+    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+    await abilityCell(panel, COVER_TACTICS).click();
+    await selectAbility(panel, CLASS_TREE_TAB, RANGER);
+
+    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
+
+    await expect(abilityCell(panel, STRENGTH_IN_NUMBERS)).toHaveAttribute('aria-pressed', 'true');
+  });
+
   test('describes Commanding Officer under a Lieutenant perk', async ({ page }) => {
     const panel = await openPanel(page);
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();

@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import { abilityCell, openBuildPanel, selectAbility } from '../utils/build-panel';
@@ -10,11 +10,15 @@ import {
   LOCK_LABEL,
   MAGNUM,
   NEW_NAME,
+  OFFICER_TAB,
+  OFFICER_TAB_WITH_ONE,
   PAGE_PATH,
   PANEL_NAME,
   PSIONIC_TAB,
   PSIONIC_TAB_WITH_ONE,
   RENAME_LABEL,
+  SHARPSHOOTER,
+  STRENGTH_IN_NUMBERS,
 } from './persistence.mock';
 
 /**
@@ -23,6 +27,16 @@ import {
  * @param page browser page.
  */
 const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+
+/**
+ * Selects perks up to Corporal, which Lieutenant requires, on the Class tree tab open by default.
+ *
+ * @param panel build panel.
+ */
+const selectPerksToCorporal = async (panel: Locator) => {
+  await abilityCell(panel, MAGNUM).click();
+  await abilityCell(panel, SHARPSHOOTER).click();
+};
 
 test.describe('Biosoldier build after a reload', () => {
   test('keeps a selected perk', async ({ page }) => {
@@ -50,6 +64,16 @@ test.describe('Biosoldier build after a reload', () => {
     const reopened = await openPanel(page);
 
     await expect(reopened.getByRole('tab', { name: PSIONIC_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('keeps a selected officer perk', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectPerksToCorporal(panel);
+    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+
+    const reopened = await openPanel(page);
+
+    await expect(reopened.getByRole('tab', { name: OFFICER_TAB_WITH_ONE })).toBeVisible();
   });
 
   test('keeps the name', async ({ page }) => {
@@ -98,6 +122,16 @@ test.describe('Biosoldier build in two browser tabs', () => {
     await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
 
     await expect(otherPanel.getByRole('tab', { name: PSIONIC_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('shows an officer perk selected in one tab in the other', async ({ page }) => {
+    const panel = await openPanel(page);
+    const otherPanel = await openPanel(await page.context().newPage());
+    await selectPerksToCorporal(panel);
+
+    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+
+    await expect(otherPanel.getByRole('tab', { name: OFFICER_TAB_WITH_ONE })).toBeVisible();
   });
 });
 

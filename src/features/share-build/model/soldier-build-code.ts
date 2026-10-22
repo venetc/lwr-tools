@@ -1,13 +1,22 @@
-import type { BiosoldierBuildData, SelectedGeneMods, SelectedPsionicAbilities, SoldierBuildData, SoldierClass } from '@entities/soldier';
+import type {
+  BiosoldierBuildData,
+  SelectedGeneMods,
+  SelectedOfficerPerks,
+  SelectedPsionicAbilities,
+  SoldierBuildData,
+  SoldierClass,
+} from '@entities/soldier';
 import {
   ABILITY_ID_BY_CODE,
   abilityById,
   BIOSOLDIER_CLASS_BY_CODE,
   BODY_PART_INDEX_BY_GENE_MOD,
   EMPTY_GENE_MODS,
+  hasRequiredRank,
   isAbilityId,
   MEC_CLASS_BY_CODE,
   NEURAL_DAMPING_ID,
+  OFFICER_RANKS,
   PSI_LEVELS,
   SOLDIER_RANKS,
 } from '@entities/soldier';
@@ -22,6 +31,7 @@ import {
   GENE_MOD_COUNT_BITS,
   INVALID_SHARE_CODE,
   NAME_LENGTH_BITS,
+  OFFICER_PERK_COUNT_BITS,
   PERK_COUNT_BITS,
   PSIONIC_ABILITY_COUNT_BITS,
   SHARE_CODE_FORMAT,
@@ -39,7 +49,7 @@ export type SoldierBuildPart = 'name';
 /**
  * Optional part of a biosoldier build code that decoding can skip.
  */
-export type BiosoldierBuildPart = SoldierBuildPart | 'geneMods' | 'psionicAbilities';
+export type BiosoldierBuildPart = SoldierBuildPart | 'geneMods' | 'psionicAbilities' | 'officerPerks';
 
 /**
  * Parts a soldier format carries beyond the class, perks and name: their sections and how they are read.
@@ -275,18 +285,75 @@ const readPsionicAbilities = (reader: BitReader): SelectedPsionicAbilities | nul
 };
 
 /**
- * Biosoldier format: the soldier build with its gene mods in the `GENE_MODS` section and its psionic abilities in the
- * `PSIONIC` section, each written only when the build has some.
+ * Whether each officer perk is offered on its officer rank, from Lieutenant, and the class tree completes the rank that
+ * officer rank requires, with no more officer perks than officer ranks.
+ *
+ * @param officerPerks officer perks by officer rank.
+ * @param perks selected perks of the build by rank.
+ */
+const isOnOpenOfficerRanks = (officerPerks: SelectedOfficerPerks, perks: SoldierBuildData['perks']): boolean => (
+  officerPerks.length <= OFFICER_RANKS.length
+  && officerPerks.every((perkId, officerRankIndex) => (
+    OFFICER_RANKS[officerRankIndex].perks.includes(perkId) && hasRequiredRank(OFFICER_RANKS[officerRankIndex], perks)
+  ))
+);
+
+/**
+ * `OFFICER` section of the officer perks, by officer rank; an empty list without officer perks; null if an officer perk
+ * is not offered on its officer rank, officer perks outnumber the officer ranks, or the class tree does not complete
+ * the rank an officer rank requires.
+ *
+ * @param build biosoldier build.
+ */
+const writeOfficerPerks = (build: BiosoldierBuildData): BinaryCodeSection[] | null => {
+  if (build.officerPerks.length === 0) return [];
+
+  if (!isOnOpenOfficerRanks(build.officerPerks, build.perks)) return null;
+
+  return [{
+    id: SOLDIER_BUILD_SECTION.OFFICER,
+    write: (writer) => {
+      writer.writeUint(build.officerPerks.length, OFFICER_PERK_COUNT_BITS);
+      build.officerPerks.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
+    },
+  }];
+};
+
+/**
+ * Officer perks of the `OFFICER` section by officer rank; null if an officer perk is not offered on its officer rank,
+ * officer perks outnumber the officer ranks, the class tree does not complete the rank an officer rank requires, or
+ * the section is not read exactly to its end.
+ *
+ * @param reader section reader.
+ * @param perks selected perks of the decoded build by rank.
+ */
+const readOfficerPerks = (reader: BitReader, perks: SoldierBuildData['perks']): SelectedOfficerPerks | null => {
+  const perkCount = reader.readUint(OFFICER_PERK_COUNT_BITS);
+  const officerPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
+
+  if (!reader.isComplete) return null;
+
+  if (!officerPerks.every(abilityId => typeof abilityId === 'string')) return null;
+
+  if (!isOnOpenOfficerRanks(officerPerks, perks)) return null;
+
+  return officerPerks;
+};
+
+/**
+ * Biosoldier format: the soldier build with its gene mods in the `GENE_MODS` section, its psionic abilities in the
+ * `PSIONIC` section and its officer perks in the `OFFICER` section, each written only when the build has some.
  */
 const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, BiosoldierBuildPart> = {
   parts: BIOSOLDIER_BUILD_PARTS,
   write: (build) => {
     const geneModSections = writeGeneMods(build);
     const psionicSections = writePsionicAbilities(build);
+    const officerSections = writeOfficerPerks(build);
 
-    if (!geneModSections || !psionicSections) return null;
+    if (!geneModSections || !psionicSections || !officerSections) return null;
 
-    return [...geneModSections, ...psionicSections];
+    return [...geneModSections, ...psionicSections, ...officerSections];
   },
   read: (build, sections, parts) => {
     const geneModsReader = sections.get(SOLDIER_BUILD_SECTION.GENE_MODS);
@@ -301,11 +368,16 @@ const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, Bio
 
     if (geneMods.includes(NEURAL_DAMPING_ID) && psionicAbilities.length > 0) return null;
 
-    return { ...build, geneMods, psionicAbilities, officerPerks: [] };
+    const officerReader = sections.get(SOLDIER_BUILD_SECTION.OFFICER);
+    const officerPerks = officerReader && parts.includes('officerPerks') ? readOfficerPerks(officerReader, build.perks) : [];
+
+    if (!officerPerks) return null;
+
+    return { ...build, geneMods, psionicAbilities, officerPerks };
   },
 };
 
-/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1, the biosoldier classes, gene mods and psionic abilities. */
+/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1, the biosoldier classes, gene mods, psionic abilities and officer perks. */
 export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = soldierBuildCodec(
   SHARE_CODE_FORMAT.BIOSOLDIER_BUILD,
   BIOSOLDIER_CLASS_BY_CODE,

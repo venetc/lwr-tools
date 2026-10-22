@@ -31,6 +31,7 @@ export const SOLDIER_BUILD_SECTION = {
   NAME: 2,
   GENE_MODS: 3,
   PSIONIC: 4,
+  OFFICER: 5,
 } as const;
 
 /** Width of the class number; part of the `PERKS` section, a change means a new section id. */
@@ -47,6 +48,9 @@ export const GENE_MOD_COUNT_BITS = 3;
 
 /** Width of the psionic ability count; part of the `PSIONIC` section, a change means a new section id. */
 export const PSIONIC_ABILITY_COUNT_BITS = 3;
+
+/** Width of the officer perk count; part of the `OFFICER` section, a change means a new section id. */
+export const OFFICER_PERK_COUNT_BITS = 3;
 
 /** Width of the name byte length; part of the `NAME` section, a change means a new section id. */
 export const NAME_LENGTH_BITS = 5;
@@ -70,7 +74,7 @@ export const SHIV_PERK_CODE_BITS = 6;
 export const SOLDIER_BUILD_PARTS: DeepReadonly<SoldierBuildPart[]> = ['name'];
 
 /** Optional parts of a biosoldier build read from a code by default. */
-export const BIOSOLDIER_BUILD_PARTS: DeepReadonly<BiosoldierBuildPart[]> = ['name', 'geneMods', 'psionicAbilities'];
+export const BIOSOLDIER_BUILD_PARTS: DeepReadonly<BiosoldierBuildPart[]> = ['name', 'geneMods', 'psionicAbilities', 'officerPerks'];
 
 /** Optional parts of a SHIV build read from a code by default. */
 export const SHIV_BUILD_PARTS: DeepReadonly<ShivBuildPart[]> = ['name'];

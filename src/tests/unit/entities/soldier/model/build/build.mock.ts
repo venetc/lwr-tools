@@ -10,19 +10,22 @@ export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
   first: { name: 'First' },
   second: { name: 'Second' },
   third: { name: 'Third' },
+  fourth: { name: 'Fourth' },
 };
 
 export const SOLDIER_CLASS_MOCK = {
   id: 'tester',
   code: 3,
   name: 'Tester',
-  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
+  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'], fourth: ['bottom'] },
   basePerk: 'granted',
 } as unknown as SoldierClass;
 
 export const BASE_PERKS = ['granted'];
 
-export const FULL_PERKS = ['granted', 'right', 'top'];
+export const PERKS_TO_THIRD = ['granted', 'right', 'top'];
+
+export const ALL_PERKS = ['granted', 'right', 'top', 'bottom'];
 
 /**
  * Fresh build of the mock class with its own perks array.

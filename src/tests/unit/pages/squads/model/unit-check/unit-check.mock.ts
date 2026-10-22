@@ -169,6 +169,10 @@ export const SECOND_LOST_UNIT: SquadUnit = { id: 'unit-8', build: { kind: 'shiv'
 
 export const TOAST_TITLE = 'Loadouts updated';
 
+export const SNIPER_BUILD_KEY = 'biosoldier/sniper-build';
+
+export const LOST_BUILD_KEY = 'mec/deleted-build';
+
 export const SNIPER_LINE = 'Overwatch Sniper — Seraph replaced with Vest: needs officer.';
 
 export const TWO_SNIPERS_LINE = 'Overwatch Sniper (2 Units) — Seraph replaced with Vest: needs officer.';

@@ -30,13 +30,24 @@ export const IRON_SKIN = 'Iron Skin';
 
 export const TOAST_TITLE = 'Loadouts updated';
 
+export const CLOSE_NOTE_TITLE = 'On close';
+
 export const AURORA_REPLACED = 'Sniper — Aurora Armor replaced with Tactical Vest: needs Psionic ability.';
+
+export const SERAPH_REPLACED = 'Sniper — Seraph Armor replaced with Tactical Vest: needs officer.';
 
 export const SERAPH_REPLACED_TWICE = 'Sniper (2 Units) — Seraph Armor replaced with Tactical Vest: needs officer.';
 
 export const BUILD_NOT_FOUND = '1 Unit removed: Build not found';
 
 export const SERAPH_TILE = 'Armor: Seraph Armor';
+
+export const TACTICAL_VEST_TILE = 'Armor: Tactical Vest';
+
+export const REMOVE_BUILD_LABEL = 'Remove build';
+
+/** Time the remove button is held, in milliseconds: longer than the hold it needs. */
+export const REMOVE_HOLD_TIME = 700;
 
 /** Catalog code of Tactical Vest. */
 export const TACTICAL_VEST_CODE = 1;
@@ -54,6 +65,12 @@ export const SERAPH_SNIPER: SeededUnit = {
 };
 
 export const SECOND_SERAPH_SNIPER: SeededUnit = { ...SERAPH_SNIPER, id: 'second-seraph' };
+
+export const TACTICAL_VEST_SNIPER: SeededUnit = {
+  id: 'tactical-vest',
+  build: { kind: 'biosoldier', id: 'default-sniper' },
+  loadout: { armor: 1, primary: 1, secondary: null, utility: [null, null, null], modules: [] },
+};
 
 export const LOST_UNIT: SeededUnit = {
   id: 'lost',

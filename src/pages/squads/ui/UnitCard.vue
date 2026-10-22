@@ -18,6 +18,10 @@ interface Props {
 interface Emits {
   /** Requests removal of the Unit from the Squad once the trash button is held. */
   remove: []
+  /** Tells of an edit of what the Build of the Unit holds, made in the Build dialog. */
+  buildChange: []
+  /** Tells that the Build dialog of the Unit closed, so the edits made in it can be checked against the Loadouts. */
+  buildClose: []
 }
 
 const props = defineProps<Props>();
@@ -54,7 +58,12 @@ const headingId = createId();
       </HoldButton>
     </header>
 
-    <UnitBuild :squad-build="props.card.squadBuild" />
+    <UnitBuild
+      :squad-build="props.card.squadBuild"
+      :close-note="props.card.closeNote"
+      @change="emit('buildChange')"
+      @close="emit('buildClose')"
+    />
 
     <UnitLoadout :card="props.card" />
   </article>

@@ -181,13 +181,13 @@ const buildChangesLine = (buildChanges: BuildChanges) => {
 };
 
 /**
- * Toast of a Unit check: a line on each Build with changed Units, in Squad order, and the number of Units whose Build
- * is gone on the last line. Silent replacements of unknown codes are not told.
+ * Lines of the Unit check toast by Build: a line on each Build with changed Units, in Squad order. Silent replacements
+ * of unknown codes are not told.
  *
  * @param check Units of the Squad after the Unit check.
- * @returns title and text of the toast; null if the check took nothing off.
+ * @returns toast lines by `squadBuildKey`; a Build whose Units the check left as they were has no line.
  */
-export const unitCheckToast = (check: SquadCheck): ToastContent | null => {
+export const unitCheckBuildLines = (check: SquadCheck): ReadonlyMap<string, string> => {
   const changesByBuild = check.units.reduce((acc, checked) => {
     if (!checked.changes.length) return acc;
 
@@ -201,7 +201,18 @@ export const unitCheckToast = (check: SquadCheck): ToastContent | null => {
     return acc;
   }, new Map<string, BuildChanges>());
 
-  const lines = [...changesByBuild.values()].map(buildChangesLine);
+  return [...changesByBuild].reduce((acc, [key, buildChanges]) => acc.set(key, buildChangesLine(buildChanges)), new Map<string, string>());
+};
+
+/**
+ * Toast of a Unit check: a line on each Build with changed Units, in Squad order, and the number of Units whose Build
+ * is gone on the last line. Silent replacements of unknown codes are not told.
+ *
+ * @param check Units of the Squad after the Unit check.
+ * @returns title and text of the toast; null if the check took nothing off.
+ */
+export const unitCheckToast = (check: SquadCheck): ToastContent | null => {
+  const lines = [...unitCheckBuildLines(check).values()];
 
   if (check.removed.length) lines.push(`${unitCountText(check.removed.length)} ${BUILD_NOT_FOUND_TEXT}`);
 

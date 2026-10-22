@@ -7,6 +7,7 @@ import { EditableTitle } from '@shared/ui/editable-title';
 import { ListNav } from '@shared/ui/list-nav';
 import { PageToolbar } from '@shared/ui/page-toolbar';
 
+import { useBuildEditCheck } from '../model/build-edit-check';
 import { useSquadsPage } from '../model/squads-page';
 import { useUnitCards } from '../model/unit-cards';
 import AddUnitDialog from './AddUnitDialog.vue';
@@ -15,6 +16,8 @@ import UnitCard from './UnitCard.vue';
 const { openSquad, name, summary, navItems, switchSquad, addSquad, removeSquad } = useSquadsPage();
 
 const { unitCards, removeUnit } = useUnitCards();
+
+const { showCloseNote, checkClosedBuild } = useBuildEditCheck(unitCards);
 </script>
 
 <template>
@@ -37,6 +40,8 @@ const { unitCards, removeUnit } = useUnitCards();
           :key="card.id"
           :card="card"
           @remove="removeUnit(card)"
+          @build-change="showCloseNote(card.id)"
+          @build-close="checkClosedBuild"
         />
 
         <AddUnitDialog />

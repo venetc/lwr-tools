@@ -8,6 +8,7 @@ import { useBiosoldierBranchClasses } from '../model/biosoldier-branch-classes';
 import { tierLabel, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
+import { useBuildTreeHandlers } from '../model/build-tree-handlers';
 import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
 import BuildPanel from './BuildPanel.vue';
 import OfficerRankBadge from './OfficerRankBadge.vue';
@@ -22,6 +23,8 @@ interface Props {
 interface Emits {
   /** Requests removal of the build. */
   remove: [buildId: string]
+  /** Tells of an edit of what the build holds: a selection, a reset or an import. */
+  change: []
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -32,9 +35,11 @@ const emit = defineEmits<Emits>();
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
-const { rename, lock, replace, reset } = useBuildEditor(() => props.build, biosoldierBuildsStore);
+const editor = useBuildEditor(() => props.build, biosoldierBuildsStore);
 
-const { tree, groups, select } = useBiosoldierBuildGroups(() => props.build);
+const { tree, groups, select: selectItem } = useBiosoldierBuildGroups(() => props.build);
+
+const { rename, lock, replace, reset, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
 
 const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
 </script>

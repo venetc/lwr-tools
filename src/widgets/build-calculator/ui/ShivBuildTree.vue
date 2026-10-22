@@ -3,6 +3,7 @@ import { SHIV_BUILD_NAME } from '@entities/shiv';
 import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
+import { useBuildTreeHandlers } from '../model/build-tree-handlers';
 import { useShivBuildGroups } from '../model/shiv-build-groups';
 import type { ShivBuild } from '../model/shiv-builds';
 import { useShivBuildsStore } from '../model/shiv-builds';
@@ -18,6 +19,8 @@ interface Props {
 interface Emits {
   /** Requests removal of the build. */
   remove: [buildId: string]
+  /** Tells of an edit of what the build holds: a selection, a reset or an import. */
+  change: []
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,9 +31,11 @@ const emit = defineEmits<Emits>();
 
 const shivBuildsStore = useShivBuildsStore();
 
-const { rename, lock, replace, reset } = useBuildEditor(() => props.build, shivBuildsStore);
+const editor = useBuildEditor(() => props.build, shivBuildsStore);
 
-const { groups, select } = useShivBuildGroups(() => props.build);
+const { groups, select: selectItem } = useShivBuildGroups(() => props.build);
+
+const { rename, lock, replace, reset, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
 </script>
 
 <template>

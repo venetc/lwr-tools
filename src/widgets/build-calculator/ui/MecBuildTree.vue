@@ -2,6 +2,7 @@
 import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
+import { useBuildTreeHandlers } from '../model/build-tree-handlers';
 import { useMecBuildGroups } from '../model/mec-build-groups';
 import type { MecBuild } from '../model/mec-builds';
 import { useMecBuildsStore } from '../model/mec-builds';
@@ -17,6 +18,8 @@ interface Props {
 interface Emits {
   /** Requests removal of the build. */
   remove: [buildId: string]
+  /** Tells of an edit of what the build holds: a selection, a reset or an import. */
+  change: []
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -27,9 +30,11 @@ const emit = defineEmits<Emits>();
 
 const mecBuildsStore = useMecBuildsStore();
 
-const { rename, lock, replace, reset } = useBuildEditor(() => props.build, mecBuildsStore);
+const editor = useBuildEditor(() => props.build, mecBuildsStore);
 
-const { tree, groups, select } = useMecBuildGroups(() => props.build);
+const { tree, groups, select: selectItem } = useMecBuildGroups(() => props.build);
+
+const { rename, lock, replace, reset, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
 </script>
 
 <template>

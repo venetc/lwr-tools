@@ -1,12 +1,13 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { checkSquad, checkUnit, unitCheckToast } from '@pages/squads/model/unit-check';
+import { checkSquad, checkUnit, unitCheckBuildLines, unitCheckToast } from '@pages/squads/model/unit-check';
 
 import {
   createBiosoldierBuildMock,
   FIT_UNIT,
   GENE_MODS,
   GRENADE_UNIT,
+  LOST_BUILD_KEY,
   LOST_UNIT,
   MEC_BUILD,
   MEC_DEFAULT_LOADOUT,
@@ -23,6 +24,7 @@ import {
   SHIV_BUILD,
   SHIV_DEFAULT_LOADOUT,
   SHIV_WEARER,
+  SNIPER_BUILD_KEY,
   SNIPER_DEFAULT_LOADOUT,
   SNIPER_LINE,
   SNIPER_UNIT,
@@ -238,5 +240,25 @@ describe('unitCheckToast', () => {
     const toast = unitCheckToast(checkSquad([LOST_UNIT, SECOND_LOST_UNIT], SQUAD_BUILDS));
 
     expect(toast).toEqual({ title: TOAST_TITLE, description: TWO_REMOVED_LINE });
+  });
+});
+
+describe('unitCheckBuildLines', () => {
+  it('gives a Build with changed Units its toast line', () => {
+    const lines = unitCheckBuildLines(checkSquad([MEC_UNIT, SNIPER_UNIT], SQUAD_BUILDS));
+
+    expect(lines.get(SNIPER_BUILD_KEY)).toBe(SNIPER_LINE);
+  });
+
+  it('gives no line to a Build whose Units fit', () => {
+    const lines = unitCheckBuildLines(checkSquad([FIT_UNIT, MEC_UNIT], SQUAD_BUILDS));
+
+    expect(lines.has(SNIPER_BUILD_KEY)).toBe(false);
+  });
+
+  it('gives no line to Units whose Build is gone', () => {
+    const lines = unitCheckBuildLines(checkSquad([LOST_UNIT, SNIPER_UNIT], SQUAD_BUILDS));
+
+    expect(lines.has(LOST_BUILD_KEY)).toBe(false);
   });
 });

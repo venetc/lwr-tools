@@ -110,6 +110,9 @@ export const CHANGE_WORD = {
 /** Title of the toast of a Unit check that changed something. */
 export const UNIT_CHECK_TOAST_TITLE = 'Loadouts updated';
 
+/** Title of the notification of what closing the Build dialog takes off. */
+export const CLOSE_NOTE_TOAST_TITLE = 'On close';
+
 /** Separator of a Build and its changes on a line of the Unit check toast: `Assault Ace (2 Units) — Reaper Ammo removed: unsupported weapon.` */
 export const UNIT_CHECK_BUILD_SEPARATOR = ' — ';
 

@@ -8,9 +8,9 @@ import { useToastQueue } from '@shared/ui/toast';
 import type { LoadoutTile } from './loadout-tiles';
 import { loadoutTiles } from './loadout-tiles';
 import type { SquadBuild } from './squad-build';
-import { buildListName, squadBuildCaption } from './squad-build';
+import { buildListName, squadBuildCaption, squadBuildKey } from './squad-build';
 import { useSquadBuilds } from './squad-builds';
-import { checkSquad } from './unit-check';
+import { checkSquad, unitCheckBuildLines } from './unit-check';
 
 /**
  * Unit of the open Squad as its card shows it.
@@ -28,11 +28,14 @@ export interface UnitCard {
   loadout: Loadout
   /** Loadout tiles in inventory order. */
   tiles: LoadoutTile[]
+  /** What closing the Build dialog takes off the Units of the Build: its line of the Unit check toast; null if nothing. */
+  closeNote: string | null
 }
 
 /**
  * Cards of the Units of the open Squad, in Squad order, and their removal. Units are read through the Unit check, so
- * every card shows a Loadout that fits its Build; a Unit whose build is no longer saved has no card.
+ * every card shows a Loadout that fits its Build, and tells what saving the check would take off the Units of its Build;
+ * a Unit whose build is no longer saved has no card.
  */
 export const useUnitCards = () => {
   const squadsStore = useSquadsStore();
@@ -43,16 +46,20 @@ export const useUnitCards = () => {
 
   const { showToast } = useToastQueue();
 
-  const unitCards = computed(() => checkSquad(openSquad.value?.units ?? [], squadBuildsByKey.value)
-    .units
-    .map((checked): UnitCard => ({
+  const unitCards = computed(() => {
+    const check = checkSquad(openSquad.value?.units ?? [], squadBuildsByKey.value);
+    const buildLines = unitCheckBuildLines(check);
+
+    return check.units.map((checked): UnitCard => ({
       id: checked.unit.id,
       squadBuild: checked.squadBuild,
       caption: squadBuildCaption(checked.squadBuild),
       wearer: checked.wearer,
       loadout: checked.loadout,
       tiles: loadoutTiles(checked.loadout, checked.wearer),
-    })));
+      closeNote: buildLines.get(squadBuildKey(checked.unit.build)) ?? null,
+    }));
+  });
 
   /**
    * Removes the Unit of the card from the open Squad and tells that its build stays in its Build calculator.

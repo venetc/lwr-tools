@@ -2,19 +2,20 @@
 import { X } from '@lucide/vue';
 import { ToastClose, ToastDescription, ToastProvider, ToastRoot, ToastTitle, ToastViewport } from 'reka-ui';
 
-import { TOAST_DURATION } from './config/constants';
 import { useToastHost } from './model/toast-host';
 
-const { messages, onAnimationEnd } = useToastHost();
+const { messages, onOpenChange, onAnimationEnd } = useToastHost();
 </script>
 
 <template>
-  <ToastProvider :duration="TOAST_DURATION" swipe-direction="right">
+  <ToastProvider swipe-direction="right">
     <ToastRoot
       v-for="message in messages"
       :key="message.id"
       :class="$style.toast"
-      :default-open="true"
+      :open="message.isOpen"
+      :duration="message.duration"
+      @update:open="onOpenChange(message.id, $event)"
       @animationend="onAnimationEnd(message.id, $event)"
     >
       <ToastTitle :class="$style.title">

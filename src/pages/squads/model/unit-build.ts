@@ -1,6 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, ref, toValue } from 'vue';
 
+import { CLOSE_NOTE_TOAST_TITLE } from '../config/constants';
 import type { SquadBuild } from './squad-build';
 
 /**
@@ -31,14 +32,36 @@ export const useKindBuilds = (squadBuild: MaybeRefOrGetter<SquadBuild>) => {
 };
 
 /**
- * Build of a Unit card: the build of its kind for the mini-tree and the Build dialog, and whether the dialog is open.
+ * Build of a Unit card: the build of its kind for the mini-tree and the Build dialog, whether the dialog is open, and
+ * what closing it takes off as screen readers announce it.
  *
  * @param squadBuild build of the Unit.
+ * @param closeNote what closing the Build dialog takes off the Units of the Build; null if nothing.
+ * @param onClose tells that the Build dialog closed.
  */
-export const useUnitBuild = (squadBuild: MaybeRefOrGetter<SquadBuild>) => {
+export const useUnitBuild = (squadBuild: MaybeRefOrGetter<SquadBuild>, closeNote: MaybeRefOrGetter<string | null>, onClose: () => void) => {
   const { biosoldierBuild, mecBuild, shivBuild } = useKindBuilds(squadBuild);
 
-  const isOpen = ref(false);
+  const isDialogOpen = ref(false);
+
+  const isOpen = computed({
+    get: () => isDialogOpen.value,
+    set: (value: boolean) => {
+      const wasOpen = isDialogOpen.value;
+
+      isDialogOpen.value = value;
+
+      if (value || !wasOpen) return;
+
+      onClose();
+    },
+  });
+
+  const closeNoteAnnouncement = computed(() => {
+    const note = toValue(closeNote);
+
+    return note ? `${CLOSE_NOTE_TOAST_TITLE}: ${note}` : '';
+  });
 
   /**
    * Opens the Build dialog.
@@ -47,5 +70,5 @@ export const useUnitBuild = (squadBuild: MaybeRefOrGetter<SquadBuild>) => {
     isOpen.value = true;
   };
 
-  return { biosoldierBuild, mecBuild, shivBuild, isOpen, openBuild };
+  return { biosoldierBuild, mecBuild, shivBuild, isOpen, openBuild, closeNoteAnnouncement };
 };

@@ -1,27 +1,13 @@
-import type { ShivBuildData } from '@entities/shiv/model/build';
-import type { ShivPerkContent } from '@entities/shiv/model/perks';
-import type { TechnologyLevelContent } from '@entities/shiv/model/technology-levels';
+import type { ShivBuildCodes, ShivBuildData } from '@entities/shiv';
 import type { BinaryCodeSection } from '@shared/lib/binary-code';
 
-export const SHIV_PERK_CONTENT_MOCK: Record<string, ShivPerkContent> = {
-  left: { code: 1, name: 'Left', description: 'Left description' },
-  right: { code: 2, name: 'Right', description: 'Right description' },
-  up: { code: 3, name: 'Up', description: 'Up description' },
-  down: { code: 4, name: 'Down', description: 'Down description' },
-  top: { code: 5, name: 'Top', description: 'Top description' },
-};
+export const BUILD_STUB: ShivBuildData = { perks: ['right', null, 'top'], name: 'SHIV' };
 
-export const TECHNOLOGY_LEVEL_CONTENT_MOCK: Record<string, TechnologyLevelContent> = {
-  first: { name: 'First', perks: ['left', 'right'] },
-  second: { name: 'Second', perks: ['up', 'down'] },
-  third: { name: 'Third', perks: ['top'] },
-};
+export const DEFAULT_NAME_CODES: ShivBuildCodes = { perks: [2, 5], name: null };
 
-export const DEFAULT_NAME_BUILD: ShivBuildData = { perks: ['right', null, 'top'], name: 'SHIV' };
+export const BUILD_NAME = 'Tank';
 
-export const NAMED_BUILD: ShivBuildData = { perks: ['left', 'down', null], name: 'Tank' };
-
-export const UNKNOWN_PERK_BUILD: ShivBuildData = { perks: ['missing', null, null], name: 'SHIV' };
+export const NAMED_CODES: ShivBuildCodes = { perks: [1, 4], name: BUILD_NAME };
 
 export const SHIV_FORMAT = 2;
 
@@ -33,15 +19,17 @@ export const PERKS_SECTION_ID = 1;
 
 export const NAME_SECTION_ID = 2;
 
+export const UNKNOWN_SECTION_ID = 20;
+
 export const INVALID_RESULT = { status: 'invalid' };
+
+export const DECODED_RESULT = { status: 'decoded', build: BUILD_STUB };
 
 export const BIOSOLDIER_CODE_RESULT = { status: 'other-unit', unit: 'Biosoldier' };
 
 export const MEC_CODE_RESULT = { status: 'other-unit', unit: 'MEC' };
 
 export const GARBAGE_CODE = 'not a code';
-
-export const REVERSED_PERKS_BUILD: ShivBuildData = { perks: ['left', 'up', 'top'], name: 'SHIV' };
 
 /**
  * SHIV `PERKS` section with raw numbers: perk count 3 bits, perk numbers 6 bits each.
@@ -54,6 +42,20 @@ export const perksSection = (perkCodes: number[], extraBits = 0): BinaryCodeSect
   write: (writer) => {
     writer.writeUint(perkCodes.length, 3);
     perkCodes.forEach(perkCode => writer.writeUint(perkCode, 6));
-    if (extraBits > 0) writer.writeUint(0, extraBits);
+    writer.writeUint(0, extraBits);
   },
 });
+
+/**
+ * `NAME` section: UTF-8 byte length 5 bits, then the bytes.
+ *
+ * @param name build name.
+ */
+export const nameSection = (name: string): BinaryCodeSection => ({
+  id: NAME_SECTION_ID,
+  write: writer => writer.writeString(name, 5),
+});
+
+export const BROKEN_NAME_SECTION: BinaryCodeSection = { id: NAME_SECTION_ID, write: writer => writer.writeUint(31, 5) };
+
+export const UNKNOWN_SECTION: BinaryCodeSection = { id: UNKNOWN_SECTION_ID, write: writer => writer.writeUint(0b11, 2) };

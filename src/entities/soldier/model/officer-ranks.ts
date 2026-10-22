@@ -1,11 +1,8 @@
-import type { DeepReadonly } from '@shared/lib/object';
-
 import { OFFICER_RANK_MEDAL } from '../config/constants/officer-rank-medals';
 import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
 import type officerRanksJson from '../config/data/officer-ranks.json';
 import type { AbilityId } from './abilities';
 import { isAbilityId } from './abilities';
-import type { SelectedPerks } from './class-tree';
 import type { RankState } from './ranks';
 import { rankState } from './ranks';
 
@@ -48,33 +45,21 @@ export interface OfficerRank {
 export type SelectedOfficerPerks = AbilityId[];
 
 /**
- * Whether the class tree completes the rank the officer rank requires: a rank is completed once it has a perk.
+ * Officer rank state in a build: officer ranks are trained in order like ranks, an officer rank a Build rule blocks
+ * is locked, and a readonly build locks every officer rank.
  *
- * @param officerRank officer rank.
- * @param perks selected perks of the build by rank.
- */
-export const hasRequiredRank = (officerRank: DeepReadonly<OfficerRank>, perks: Readonly<SelectedPerks>): boolean => (
-  typeof officerRank.requiredRankIndex === 'number' && officerRank.requiredRankIndex < perks.length
-);
-
-/**
- * Officer rank state in a build: officer ranks are trained in order like ranks, and each one also needs its required rank
- * completed in the class tree; a readonly build locks every officer rank.
- *
- * @param officerRank officer rank.
- * @param officerRankIndex officer rank index.
- * @param perks selected perks of the build by rank.
  * @param officerPerks officer perks of the build by officer rank.
+ * @param officerRankIndex officer rank index.
  * @param isReadonly whether the build is readonly.
+ * @param isBlocked whether a Build rule blocks the officer rank, such as its required rank.
  */
 export const officerRankState = (
-  officerRank: DeepReadonly<OfficerRank>,
-  officerRankIndex: number,
-  perks: Readonly<SelectedPerks>,
   officerPerks: Readonly<SelectedOfficerPerks>,
+  officerRankIndex: number,
   isReadonly: boolean,
+  isBlocked: boolean,
 ): RankState => {
-  if (isReadonly || !hasRequiredRank(officerRank, perks)) return 'locked';
+  if (isReadonly || isBlocked) return 'locked';
   return rankState(officerPerks, officerRankIndex, false);
 };
 

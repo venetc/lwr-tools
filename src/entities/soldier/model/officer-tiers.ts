@@ -7,8 +7,10 @@ import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, Tier
 import { OFFICER_RANK_PICKER_ITEMS } from '../config/constants/officer-rank-picker-items';
 import { OFFICER_RANKS } from '../config/constants/officer-ranks';
 import type { BiosoldierBuildData } from './build';
+import type { BuildBlockReason } from './build-rules';
+import { officerPerkBlockReason } from './build-rules';
 import type { OfficerRank } from './officer-ranks';
-import { hasRequiredRank, officerRankState } from './officer-ranks';
+import { officerRankState } from './officer-ranks';
 import type { RankState } from './ranks';
 
 /**
@@ -27,25 +29,25 @@ export interface OfficerRankTier extends TieredPickerTier {
 }
 
 /**
- * Why the officer rank is locked: first its required rank missing in the class tree, then the empty officer rank below;
- * null for an open officer rank or a readonly build.
+ * Why the officer rank is locked, in words: first its required rank missing in the class tree, then the empty officer
+ * rank below; null for an open officer rank or a readonly build.
  *
- * @param build biosoldier build with its lock.
  * @param officerRank officer rank.
  * @param lowerOfficerRank officer rank below, or null for the first one.
- * @param state state of the officer rank.
+ * @param blockReason why a Build rule blocks the officer rank, or null.
+ * @param isReadonly whether the build is readonly.
  */
 const lockReason = (
-  build: OfficerTreeBuild,
   officerRank: DeepReadonly<OfficerRank>,
   lowerOfficerRank: DeepReadonly<OfficerRank> | null,
-  state: RankState,
+  blockReason: BuildBlockReason | null,
+  isReadonly: boolean,
 ): string | null => {
-  if (build.readonly || state !== 'locked') return null;
+  if (isReadonly) return null;
 
-  if (!hasRequiredRank(officerRank, build.perks)) return `Requires ${officerRank.requiredRankName}`;
+  if (blockReason === 'required-rank') return `Requires ${officerRank.requiredRankName}`;
 
-  if (lowerOfficerRank) return `Requires ${lowerOfficerRank.name}`;
+  if (blockReason === 'skipped-step' && lowerOfficerRank) return `Requires ${lowerOfficerRank.name}`;
 
   return null;
 };
@@ -100,12 +102,13 @@ const officerPerkOption = (
 export const useOfficerTiers = (build: MaybeRefOrGetter<OfficerTreeBuild>) => {
   const tiers = computed(() => {
     const officerTreeBuild = toValue(build);
-    const { perks, officerPerks, readonly } = officerTreeBuild;
+    const { officerPerks, readonly } = officerTreeBuild;
 
     return OFFICER_RANKS.map((officerRank, officerRankIndex): OfficerRankTier => {
-      const state = officerRankState(officerRank, officerRankIndex, perks, officerPerks, readonly);
+      const blockReason = officerPerkBlockReason(officerTreeBuild, officerRankIndex, null);
+      const state = officerRankState(officerPerks, officerRankIndex, readonly, blockReason !== null);
       const selectedId = officerPerks[officerRankIndex] ?? null;
-      const reason = lockReason(officerTreeBuild, officerRank, OFFICER_RANKS[officerRankIndex - 1] ?? null, state);
+      const reason = lockReason(officerRank, OFFICER_RANKS[officerRankIndex - 1] ?? null, blockReason, readonly);
 
       return {
         id: officerRank.id,

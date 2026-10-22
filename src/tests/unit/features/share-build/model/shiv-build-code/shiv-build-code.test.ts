@@ -1,95 +1,93 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { shivBuildCodes, shivBuildFromCodes } from '@entities/shiv';
 import { decodeShivBuild, encodeShivBuild } from '@features/share-build/model/shiv-build-code';
-import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
+import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import {
   BIOSOLDIER_CODE_RESULT,
   BIOSOLDIER_FORMAT,
-  DEFAULT_NAME_BUILD,
+  BROKEN_NAME_SECTION,
+  BUILD_NAME,
+  BUILD_STUB,
+  DECODED_RESULT,
+  DEFAULT_NAME_CODES,
   GARBAGE_CODE,
   INVALID_RESULT,
   MEC_CODE_RESULT,
   MEC_FORMAT,
-  NAME_SECTION_ID,
-  NAMED_BUILD,
+  NAMED_CODES,
+  nameSection,
   perksSection,
-  REVERSED_PERKS_BUILD,
   SHIV_FORMAT,
-  UNKNOWN_PERK_BUILD,
+  UNKNOWN_SECTION,
 } from './shiv-build-code.mock';
 
-vi.mock('@entities/shiv/config/constants/perk-content', async () => ({
-  SHIV_PERK_CONTENT: (await import('./shiv-build-code.mock')).SHIV_PERK_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/shiv/config/constants/technology-level-content', async () => ({
-  TECHNOLOGY_LEVEL_CONTENT: (await import('./shiv-build-code.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/shiv/config/constants/perk-icons', () => ({ SHIV_PERK_ICON: {} }));
-
-vi.mock('@entities/shiv/config/constants/technology-level-icons', () => ({ TECHNOLOGY_LEVEL_ICON: {} }));
+vi.mock('@entities/shiv', () => ({ shivBuildCodes: vi.fn(), shivBuildFromCodes: vi.fn() }));
 
 describe('encodeShivBuild', () => {
-  it('leaves out the name section for the default name', () => {
-    const code = encodeShivBuild(DEFAULT_NAME_BUILD) ?? '';
+  it('writes the perks section without the name section for the default name', () => {
+    vi.mocked(shivBuildCodes).mockReturnValue(DEFAULT_NAME_CODES);
 
-    const binaryCode = openBinaryCode(code);
+    const code = encodeShivBuild(BUILD_STUB);
 
-    expect(binaryCode?.sections.has(NAME_SECTION_ID)).toBe(false);
+    expect(code).toBe(encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]));
   });
 
-  it('gives null for a build with an unknown perk', () => {
-    const code = encodeShivBuild(UNKNOWN_PERK_BUILD);
+  it('writes the name section for its own name', () => {
+    vi.mocked(shivBuildCodes).mockReturnValue(NAMED_CODES);
+
+    const code = encodeShivBuild(BUILD_STUB);
+
+    expect(code).toBe(encodeBinaryCode(SHIV_FORMAT, [perksSection(NAMED_CODES.perks), nameSection(BUILD_NAME)]));
+  });
+
+  it('gives null for a build without codes', () => {
+    vi.mocked(shivBuildCodes).mockReturnValue(null);
+
+    const code = encodeShivBuild(BUILD_STUB);
 
     expect(code).toBeNull();
   });
 });
 
 describe('decodeShivBuild', () => {
-  it('restores a build with the default name', () => {
-    const code = encodeShivBuild(DEFAULT_NAME_BUILD) ?? '';
+  it('gives the build of the codes', () => {
+    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
+    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]) ?? '';
 
     const result = decodeShivBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+    expect(result).toEqual(DECODED_RESULT);
   });
 
-  it('restores a build with its own name', () => {
-    const code = encodeShivBuild(NAMED_BUILD) ?? '';
+  it('reads the perk codes and no name without the name section', () => {
+    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]) ?? '';
 
-    const result = decodeShivBuild(code);
+    decodeShivBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: NAMED_BUILD });
+    expect(shivBuildFromCodes).toHaveBeenLastCalledWith(DEFAULT_NAME_CODES);
   });
 
-  it('places each perk on its level whatever the order in the code', () => {
-    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([5, 3, 1])]) ?? '';
+  it('reads the name of the name section', () => {
+    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(NAMED_CODES.perks), nameSection(BUILD_NAME)]) ?? '';
 
-    const result = decodeShivBuild(code);
+    decodeShivBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: REVERSED_PERKS_BUILD });
+    expect(shivBuildFromCodes).toHaveBeenLastCalledWith(NAMED_CODES);
   });
 
-  it('rejects an unknown perk', () => {
-    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1, 40])]) ?? '';
+  it('skips unknown sections', () => {
+    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks), UNKNOWN_SECTION]) ?? '';
 
-    const result = decodeShivBuild(code);
+    decodeShivBuild(code);
 
-    expect(result).toEqual(INVALID_RESULT);
+    expect(shivBuildFromCodes).toHaveBeenLastCalledWith(DEFAULT_NAME_CODES);
   });
 
-  it('rejects two perks of one level', () => {
-    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1, 2])]) ?? '';
-
-    const result = decodeShivBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects more perks than levels', () => {
-    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1, 3, 5, 4])]) ?? '';
+  it('rejects codes that make no build', () => {
+    vi.mocked(shivBuildFromCodes).mockReturnValue(null);
+    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]) ?? '';
 
     const result = decodeShivBuild(code);
 
@@ -97,7 +95,26 @@ describe('decodeShivBuild', () => {
   });
 
   it('rejects a perks section with unread bits', () => {
+    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1], 1)]) ?? '';
+
+    const result = decodeShivBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a broken name section', () => {
+    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
+    const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1]), BROKEN_NAME_SECTION]) ?? '';
+
+    const result = decodeShivBuild(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('rejects a code without the perks section', () => {
+    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
+    const code = encodeBinaryCode(SHIV_FORMAT, [UNKNOWN_SECTION]) ?? '';
 
     const result = decodeShivBuild(code);
 

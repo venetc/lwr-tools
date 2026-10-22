@@ -18,18 +18,23 @@ section = id (5) | length (9) | fields
 - Sections go by ascending id, each at most once; `0` ends the list.
 - Unknown sections are skipped by their length.
 - A section that is read must end exactly at its length, otherwise the code is invalid; skipped sections aren't checked.
-- `decodeBiosoldierBuild(code, parts)` (parts `'name' | 'geneMods' | 'psionicAbilities' | 'officerPerks'`) and `decodeMecBuild(code, parts)` (part `'name'`) read only the requested parts; the rest get defaults.
 
 ## Decoding result
 
 A decoder returns `{ status: 'decoded', build }`, or why it failed:
 
 - `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
-- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, a class of another format, a perk not offered on its rank of the class tree; in `GENE_MODS` an ability that is not a Gene mod, two Gene mods of one Body part, or Body parts out of order; in `PSIONIC` an ability not offered on its Psi level or more abilities than Psi levels; Neural Damping together with a non-empty `PSIONIC`; in `OFFICER` an Officer perk not offered on its Officer rank, more Officer perks than Officer ranks, or an Officer rank whose required Rank the class tree in `PERKS` does not complete. Neural Damping is checked against psionics only when both `geneMods` and `psionicAbilities` are requested; the required Rank of Officer ranks is checked whenever `officerPerks` is requested. The import shows "Invalid code" under the field.
+- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, an unknown code, a class of another format, or a Build that breaks a Build rule. The rules: each perk on its own rank of the class tree, ranks, Psi levels and Officer ranks in order without gaps, each Gene mod in its own Body part (in `GENE_MODS` Body parts go Brain to Legs, each once), Neural Damping against Psionic abilities, each Officer rank only once the class tree completes its required Rank. The import shows "Invalid code" under the field.
+
+A code opens only with a Build the Build calculator can assemble, and every Build it assembles encodes.
 
 A stored build whose code does not decode is skipped on loading.
 
-Code: `shared/lib/binary-code` (header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`) and the `features/share-build` feature: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (fields and build parts; `soldierBuildCodec` builds the encoder and decoder of a soldier format from its classes by code and its extension, the parts beyond `PERKS` and `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` are its format 1 pair with the Gene mods, Psionic abilities and Officer perks extension, `encodeMecBuild` / `decodeMecBuild` its format 3 pair without one), `model/stored-build.ts` (stored build records over a share code). Lookups by `code` (abilities, the classes of each soldier format, SHIV perks) come from `entities/soldier` and `entities/shiv`. The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+Code:
+
+- `entities/soldier` — Build ↔ codes: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. The entity turns a Build into stable codes and back and gives null for an unknown code, a class of another kind or a Build that breaks a Build rule. From codes it assembles the Build from the Default build step by step with the mutators of the Build calculator; a Build is encoded only if the same pass assembles it.
+- `shared/lib/binary-code` — header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`.
+- `features/share-build` — bits only: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format, the `NAME` section), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList` and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildCodec` builds the encoder and decoder of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` are its format 1 pair with the Gene mods, Psionic abilities and Officer perks extension, `encodeMecBuild` / `decodeMecBuild` its format 3 pair without one), `model/stored-build.ts` (stored build records over a share code). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
@@ -90,29 +95,29 @@ Add abilities to trees; reorder abilities within a rank; edit names, description
 Section fields change only in a new section:
 
 1. Add the next id to `SOLDIER_BUILD_SECTION` with a version suffix.
-2. Add the version suffix to the current section reader's name; delete its writer.
-3. Write the new writer and reader; `decode` of `soldierBuildCodec` reads whichever of the two sections the code has.
+2. Write the new section instead of the current one; keep reading the current one.
+3. `decode` of `soldierBuildCodec` reads whichever of the two sections the code has, each with `readWholeSection`.
 
 Readers of old sections stay forever. The section layout itself changes only with a new number in `SHARE_CODE_FORMAT`.
 
 Example: `PERKS` gets a new field, max section id is 5.
 
 1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 6`.
-2. `soldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` deleted.
-3. New `writePerks` / `readPerks`; `encode` of `soldierBuildCodec` writes `PERKS_V2`.
-4. `decode` of `soldierBuildCodec`: `PERKS` → `readPerksV1` with the new field defaulted, `PERKS_V2` → `readPerks`.
+2. The new field goes into `SoldierBuildCodes` of `entities/soldier`.
+3. `encode` of `soldierBuildCodec` writes `PERKS_V2` instead of `PERKS`.
+4. `decode` of `soldierBuildCodec`: `PERKS` with the new field defaulted, `PERKS_V2` with the new field.
 
 ## New part
 
-1. Add the next id to `SOLDIER_BUILD_SECTION`.
-2. Write the writer and reader in `soldier-build-code.ts`. A part of every soldier goes into `encode` / `decode` of `soldierBuildCodec`; a part of one format goes into its extension (`BIOSOLDIER_BUILD_EXTENSION` for Biosoldiers): `write` gives the section only when the build has the part, `read` reads it.
-3. Add the part to `SoldierBuildPart` or `BiosoldierBuildPart` and to the default parts; the section is read only if the part is requested, otherwise the part gets its default.
+1. Add the part to the build codes of `entities/soldier`: `SoldierBuildCodes` for every soldier, `BiosoldierBuildCodes` for Biosoldiers. Build → codes writes its codes; codes → Build takes them step by step with the mutators, so the Build rules check them.
+2. Add the next id to `SOLDIER_BUILD_SECTION`.
+3. Write the section in `soldier-build-code.ts`. A part of every soldier goes into `encode` / `decode` of `soldierBuildCodec`; a part of one format goes into its extension (`BIOSOLDIER_BUILD_EXTENSION` for Biosoldiers): `write` gives the section only when the codes have the part, `read` reads it with `readWholeSection`; a list of codes is written and read with `writeCodeList` / `readCodeList`. Without the section the part is empty.
 
 Example: Officer perks (Biosoldier only), max section id was 4.
 
-1. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
-2. `writeOfficerPerks` / `readOfficerPerks`; `BIOSOLDIER_BUILD_EXTENSION` writes the section only for a build with Officer perks and reads it.
-3. `BiosoldierBuildPart`: `'officerPerks'`, also in `BIOSOLDIER_BUILD_PARTS`; without the section or the part the build has an empty Officer tree.
+1. `BiosoldierBuildCodes`: `officerPerks`, the codes by Officer rank; codes → Build takes them after Psionic abilities.
+2. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
+3. `BIOSOLDIER_BUILD_EXTENSION`: `write` gives `OFFICER` (`count` 3 · `ability` 8 × count) only for codes with Officer perks; `read` gives its codes, an empty list without the section.
 
 ## Checks
 

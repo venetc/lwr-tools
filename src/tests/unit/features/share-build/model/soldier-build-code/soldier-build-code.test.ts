@@ -1,433 +1,184 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { decodeBiosoldierBuild, decodeMecBuild, encodeBiosoldierBuild, encodeMecBuild, SOLDIER_BUILD_EXTENSION, soldierBuildCodec } from '@features/share-build/model/soldier-build-code';
-import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
+import { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from '@entities/soldier';
+import { decodeBiosoldierBuild, decodeMecBuild, encodeBiosoldierBuild, encodeMecBuild } from '@features/share-build/model/soldier-build-code';
+import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import {
-  BIOSOLDIER_CLASS_CODE,
+  BIOSOLDIER_BUILD_STUB,
   BIOSOLDIER_CODE_RESULT,
+  BIOSOLDIER_DECODED_RESULT,
   BIOSOLDIER_FORMAT,
-  BOUND_CLASS_BY_CODE,
   BROKEN_NAME_SECTION,
-  DEFAULT_NAME_BUILD,
-  EXCESS_OFFICER_PERKS_BUILD,
-  EXCESS_PSIONIC_ABILITIES_BUILD,
+  BUILD_NAME,
+  FULL_CODES,
   GARBAGE_CODE,
-  GENE_MODS_BUILD,
-  GENE_MODS_SECTION_ID,
   geneModsSection,
   INVALID_RESULT,
-  MEC_CLASS_CODE,
+  MEC_BUILD_STUB,
   MEC_CODE_RESULT,
-  MEC_DEFAULT_NAME_BUILD,
+  MEC_CODES,
+  MEC_DECODED_RESULT,
   MEC_FORMAT,
-  MEC_NAMED_BUILD,
-  MISPLACED_GENE_MOD_BUILD,
-  MISPLACED_OFFICER_PERK_BUILD,
-  MISPLACED_PSIONIC_ABILITY_BUILD,
-  NAME_SECTION_ID,
-  NAMED_BUILD,
-  NEURAL_DAMPING_BUILD,
-  NEURAL_DAMPING_PSIONIC_BUILD,
-  OFFICER_BUILD,
-  OFFICER_PERKS_ONLY_BUILD,
-  OFFICER_SECTION_ID,
+  MEC_PERKS_SECTION,
+  NAMED_CODES,
+  NAMED_MEC_CODES,
+  nameSection,
+  NO_GENE_MODS_CODES,
+  NO_OFFICER_CODES,
+  NO_PSIONIC_CODES,
   officerSection,
-  OTHER_CLASS_BUILD,
-  OTHER_CLASS_CODE,
   perksSection,
-  PSIONIC_BUILD,
-  PSIONIC_SECTION_ID,
+  PLAIN_CODES,
+  PLAIN_PERKS_SECTION,
   psionicSection,
-  SECOND_RANK_PERKS_SECTION,
   SHIV_CODE_RESULT,
   SHIV_FORMAT,
-  UNCOMPLETED_REQUIRED_RANK_BUILD,
   UNKNOWN_FORMAT,
-  UNKNOWN_PERK_BUILD,
   UNKNOWN_SECTION,
-  VALID_PERKS_SECTION,
 } from './soldier-build-code.mock';
 
-vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
-  ABILITY_CONTENT: (await import('./soldier-build-code.mock')).ABILITY_CONTENT_MOCK,
+vi.mock('@entities/soldier', () => ({
+  biosoldierBuildCodes: vi.fn(),
+  biosoldierBuildFromCodes: vi.fn(),
+  mecBuildCodes: vi.fn(),
+  mecBuildFromCodes: vi.fn(),
 }));
 
-vi.mock('@entities/soldier/config/constants/biosoldier-class-content', async () => ({
-  BIOSOLDIER_CLASS_CONTENT: (await import('./soldier-build-code.mock')).BIOSOLDIER_CLASS_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => ({
-  SOLDIER_RANK_CONTENT: (await import('./soldier-build-code.mock')).SOLDIER_RANK_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
-
-vi.mock('@entities/soldier/config/constants/body-part-content', async () => ({
-  BODY_PART_CONTENT: (await import('./soldier-build-code.mock')).BODY_PART_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/soldier/config/constants/psi-level-content', async () => ({
-  PSI_LEVEL_CONTENT: (await import('./soldier-build-code.mock')).PSI_LEVEL_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/soldier/config/constants/officer-rank-content', async () => ({
-  OFFICER_RANK_CONTENT: (await import('./soldier-build-code.mock')).OFFICER_RANK_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {} }));
-
-vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BIOSOLDIER_CLASS_ICON: {} }));
-
-vi.mock('@entities/soldier/config/constants/mec-class-content', async () => ({
-  MEC_CLASS_CONTENT: (await import('./soldier-build-code.mock')).MEC_CLASS_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/soldier/config/constants/mec-class-icons', () => ({ MEC_CLASS_ICON: {} }));
-
-vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
+const FULL_SECTIONS = [
+  PLAIN_PERKS_SECTION,
+  geneModsSection(FULL_CODES.geneMods),
+  psionicSection(FULL_CODES.psionicAbilities),
+  officerSection(FULL_CODES.officerPerks),
+];
 
 describe('encodeBiosoldierBuild', () => {
-  it('leaves out the gene mods section for a build without gene mods', () => {
-    const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
+  it('writes only the perks section for a build without parts and with the default name', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(PLAIN_CODES);
 
-    const binaryCode = openBinaryCode(code);
+    const code = encodeBiosoldierBuild(BIOSOLDIER_BUILD_STUB);
 
-    expect(binaryCode?.sections.has(GENE_MODS_SECTION_ID)).toBe(false);
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION]));
   });
 
-  it('leaves out the psionic section for a build without psionic abilities', () => {
-    const code = encodeBiosoldierBuild(GENE_MODS_BUILD) ?? '';
+  it('writes the sections of every part', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(FULL_CODES);
 
-    const binaryCode = openBinaryCode(code);
+    const code = encodeBiosoldierBuild(BIOSOLDIER_BUILD_STUB);
 
-    expect(binaryCode?.sections.has(PSIONIC_SECTION_ID)).toBe(false);
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, FULL_SECTIONS));
   });
 
-  it('leaves out the officer section for a build without officer perks', () => {
-    const code = encodeBiosoldierBuild(PSIONIC_BUILD) ?? '';
+  it('writes the name section for its own name', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(NAMED_CODES);
 
-    const binaryCode = openBinaryCode(code);
+    const code = encodeBiosoldierBuild(BIOSOLDIER_BUILD_STUB);
 
-    expect(binaryCode?.sections.has(OFFICER_SECTION_ID)).toBe(false);
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION, nameSection(BUILD_NAME)]));
   });
 
-  it('gives null for a build with an officer perk outside its officer rank', () => {
-    const code = encodeBiosoldierBuild(MISPLACED_OFFICER_PERK_BUILD);
+  it('leaves out the gene mods section without gene mods', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(NO_GENE_MODS_CODES);
 
-    expect(code).toBeNull();
+    const code = encodeBiosoldierBuild(BIOSOLDIER_BUILD_STUB);
+
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [FULL_SECTIONS[0], FULL_SECTIONS[2], FULL_SECTIONS[3]]));
   });
 
-  it('gives null for a build with more officer perks than officer ranks', () => {
-    const code = encodeBiosoldierBuild(EXCESS_OFFICER_PERKS_BUILD);
+  it('leaves out the psionic section without psionic abilities', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(NO_PSIONIC_CODES);
 
-    expect(code).toBeNull();
+    const code = encodeBiosoldierBuild(BIOSOLDIER_BUILD_STUB);
+
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [FULL_SECTIONS[0], FULL_SECTIONS[1], FULL_SECTIONS[3]]));
   });
 
-  it('gives null for a build with an officer rank whose required rank is not completed', () => {
-    const code = encodeBiosoldierBuild(UNCOMPLETED_REQUIRED_RANK_BUILD);
+  it('leaves out the officer section without officer perks', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(NO_OFFICER_CODES);
 
-    expect(code).toBeNull();
+    const code = encodeBiosoldierBuild(BIOSOLDIER_BUILD_STUB);
+
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [FULL_SECTIONS[0], FULL_SECTIONS[1], FULL_SECTIONS[2]]));
   });
 
-  it('leaves out the name section for the default name', () => {
-    const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
+  it('gives null for a build without codes', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(null);
 
-    const binaryCode = openBinaryCode(code);
-
-    expect(binaryCode?.sections.has(NAME_SECTION_ID)).toBe(false);
-  });
-
-  it('gives null for a build with a gene mod outside its body part', () => {
-    const code = encodeBiosoldierBuild(MISPLACED_GENE_MOD_BUILD);
-
-    expect(code).toBeNull();
-  });
-
-  it('gives null for a build with a psionic ability outside its psi level', () => {
-    const code = encodeBiosoldierBuild(MISPLACED_PSIONIC_ABILITY_BUILD);
-
-    expect(code).toBeNull();
-  });
-
-  it('gives null for a build with more psionic abilities than psi levels', () => {
-    const code = encodeBiosoldierBuild(EXCESS_PSIONIC_ABILITIES_BUILD);
-
-    expect(code).toBeNull();
-  });
-
-  it('gives null for a build with Neural Damping and psionic abilities', () => {
-    const code = encodeBiosoldierBuild(NEURAL_DAMPING_PSIONIC_BUILD);
-
-    expect(code).toBeNull();
-  });
-
-  it('gives null for a build with an unknown perk', () => {
-    const code = encodeBiosoldierBuild(UNKNOWN_PERK_BUILD);
+    const code = encodeBiosoldierBuild(BIOSOLDIER_BUILD_STUB);
 
     expect(code).toBeNull();
   });
 });
 
 describe('decodeBiosoldierBuild', () => {
-  it('restores a build with gene mods', () => {
-    const code = encodeBiosoldierBuild(GENE_MODS_BUILD) ?? '';
+  it('gives the build of the codes', () => {
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, FULL_SECTIONS) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: GENE_MODS_BUILD });
+    expect(result).toEqual(BIOSOLDIER_DECODED_RESULT);
   });
 
-  it('restores a build with gene mods, psionic abilities and officer perks', () => {
-    const code = encodeBiosoldierBuild(OFFICER_BUILD) ?? '';
+  it('reads the codes of every part', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, FULL_SECTIONS) ?? '';
 
-    const result = decodeBiosoldierBuild(code);
+    decodeBiosoldierBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: OFFICER_BUILD });
+    expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(FULL_CODES);
   });
 
-  it('restores a build with officer perks only', () => {
-    const code = encodeBiosoldierBuild(OFFICER_PERKS_ONLY_BUILD) ?? '';
+  it('reads empty parts and no name without their sections', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION]) ?? '';
 
-    const result = decodeBiosoldierBuild(code);
+    decodeBiosoldierBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: OFFICER_PERKS_ONLY_BUILD });
+    expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(PLAIN_CODES);
   });
 
-  it('gives no officer perks for a code without the officer section', () => {
-    const code = encodeBiosoldierBuild(PSIONIC_BUILD) ?? '';
+  it('reads the name of the name section', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION, nameSection(BUILD_NAME)]) ?? '';
 
-    const result = decodeBiosoldierBuild(code);
+    decodeBiosoldierBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: PSIONIC_BUILD });
-  });
-
-  it('gives no officer perks when the officer perks part is not requested', () => {
-    const code = encodeBiosoldierBuild(OFFICER_PERKS_ONLY_BUILD) ?? '';
-
-    const result = decodeBiosoldierBuild(code, ['name', 'geneMods', 'psionicAbilities']);
-
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
-  });
-
-  it('skips an officer perk outside its officer rank when officer perks are not requested', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([42])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code, ['name']);
-
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
-  });
-
-  it('rejects an officer perk that is not offered on its officer rank', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([42])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects an officer section with an unknown ability', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([99])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects more officer perks than officer ranks', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([40, 42, 43])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects an officer rank whose required rank the class tree does not complete', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [SECOND_RANK_PERKS_SECTION, officerSection([40, 42])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects an officer section with unread bits', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, officerSection([40], 1)]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('restores a build with gene mods and psionic abilities', () => {
-    const code = encodeBiosoldierBuild(PSIONIC_BUILD) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: PSIONIC_BUILD });
-  });
-
-  it('gives no gene mods when the gene mods part is not requested', () => {
-    const code = encodeBiosoldierBuild(GENE_MODS_BUILD) ?? '';
-
-    const result = decodeBiosoldierBuild(code, ['name']);
-
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
-  });
-
-  it('gives no gene mods for a code without the gene mods section', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
-  });
-
-  it('skips a broken gene mods section when gene mods are not requested', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20], 1)]) ?? '';
-
-    const result = decodeBiosoldierBuild(code, ['name']);
-
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
-  });
-
-  it('rejects a gene mods section with an ability that is not a gene mod', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([12])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects a gene mods section with an unknown ability', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([99])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects two gene mods of one body part', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20, 21])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects gene mods out of body part order', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([22, 20])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects a gene mods section with unread bits', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20], 1)]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('gives no psionic abilities for a code without the psionic section', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([21, 22])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: GENE_MODS_BUILD });
-  });
-
-  it('rejects a psionic ability that is not offered on its psi level', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([32])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects a psionic section with an unknown ability', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([99])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects more psionic abilities than psi levels', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([30, 32, 32])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects a psionic section with unread bits', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, psionicSection([30], 1)]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects Neural Damping with psionic abilities', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20]), psionicSection([30])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('keeps Neural Damping with psionic abilities when psionic abilities are not requested', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, geneModsSection([20]), psionicSection([30])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code, ['name', 'geneMods']);
-
-    expect(result).toEqual({ status: 'decoded', build: NEURAL_DAMPING_BUILD });
-  });
-
-  it('restores a build with the default name', () => {
-    const code = encodeBiosoldierBuild(DEFAULT_NAME_BUILD) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
-  });
-
-  it('restores a build with its own name', () => {
-    const code = encodeBiosoldierBuild(NAMED_BUILD) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: NAMED_BUILD });
-  });
-
-  it('gives the default name when the name part is not requested', () => {
-    const code = encodeBiosoldierBuild(NAMED_BUILD) ?? '';
-
-    const result = decodeBiosoldierBuild(code, []);
-
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+    expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(NAMED_CODES);
   });
 
   it('skips unknown sections', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, UNKNOWN_SECTION]) ?? '';
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION, UNKNOWN_SECTION]) ?? '';
+
+    decodeBiosoldierBuild(code);
+
+    expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(PLAIN_CODES);
+  });
+
+  it('rejects codes that make no build', () => {
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(null);
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, FULL_SECTIONS) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: DEFAULT_NAME_BUILD });
+    expect(result).toEqual(INVALID_RESULT);
   });
 
-  it('recognises a code of another unit', () => {
-    const code = encodeBinaryCode(SHIV_FORMAT, [VALID_PERKS_SECTION]) ?? '';
+  it.each([
+    ['perks', [perksSection(PLAIN_CODES.classCode, PLAIN_CODES.perks, 1)]],
+    ['name', [PLAIN_PERKS_SECTION, BROKEN_NAME_SECTION]],
+    ['gene mods', [PLAIN_PERKS_SECTION, geneModsSection([21], 1)]],
+    ['psionic', [PLAIN_PERKS_SECTION, psionicSection([31], 1)]],
+    ['officer', [PLAIN_PERKS_SECTION, officerSection([41], 1)]],
+  ])('rejects a broken %s section', (_, sections) => {
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, sections) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 
-    expect(result).toEqual(SHIV_CODE_RESULT);
+    expect(result).toEqual(INVALID_RESULT);
   });
 
-  it('rejects a code of an unknown format', () => {
-    const code = encodeBinaryCode(UNKNOWN_FORMAT, [VALID_PERKS_SECTION]) ?? '';
+  it('rejects a code without the perks section', () => {
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [UNKNOWN_SECTION]) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 
@@ -440,138 +191,70 @@ describe('decodeBiosoldierBuild', () => {
     expect(result).toEqual(INVALID_RESULT);
   });
 
-  it('rejects a code without the perks section', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [UNKNOWN_SECTION]) ?? '';
+  it('rejects a code of an unknown format', () => {
+    const code = encodeBinaryCode(UNKNOWN_FORMAT, [PLAIN_PERKS_SECTION]) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
 
-  it('rejects an unknown class', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(30, [12])]) ?? '';
+  it('recognises a SHIV build code', () => {
+    const code = encodeBinaryCode(SHIV_FORMAT, [PLAIN_PERKS_SECTION]) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 
-    expect(result).toEqual(INVALID_RESULT);
+    expect(result).toEqual(SHIV_CODE_RESULT);
   });
 
-  it('rejects an unknown ability', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(BIOSOLDIER_CLASS_CODE, [99])]) ?? '';
+  it('recognises a MEC build code', () => {
+    const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION]) ?? '';
 
     const result = decodeBiosoldierBuild(code);
 
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects a known ability outside the class rank', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(BIOSOLDIER_CLASS_CODE, [13])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects more perks than ranks', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(BIOSOLDIER_CLASS_CODE, [11, 12, 13])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects a perks section with unread bits', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(BIOSOLDIER_CLASS_CODE, [12], 1)]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('rejects a broken name section when the name is requested', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [VALID_PERKS_SECTION, BROKEN_NAME_SECTION]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-});
-
-describe('soldierBuildCodec', () => {
-  it('rejects a code with a class outside its class list', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(OTHER_CLASS_CODE, [12])]) ?? '';
-
-    const result = soldierBuildCodec(BIOSOLDIER_FORMAT, BOUND_CLASS_BY_CODE, SOLDIER_BUILD_EXTENSION).decode(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('gives null for a build with a class outside its class list', () => {
-    const code = soldierBuildCodec(BIOSOLDIER_FORMAT, BOUND_CLASS_BY_CODE, SOLDIER_BUILD_EXTENSION).encode(OTHER_CLASS_BUILD);
-
-    expect(code).toBeNull();
+    expect(result).toEqual(MEC_CODE_RESULT);
   });
 });
 
 describe('encodeMecBuild', () => {
-  it('leaves out the name section for the default name', () => {
-    const code = encodeMecBuild(MEC_DEFAULT_NAME_BUILD) ?? '';
+  it('writes the perks section and the name section for its own name', () => {
+    vi.mocked(mecBuildCodes).mockReturnValue(NAMED_MEC_CODES);
 
-    const binaryCode = openBinaryCode(code);
+    const code = encodeMecBuild(MEC_BUILD_STUB);
 
-    expect(binaryCode?.sections.has(NAME_SECTION_ID)).toBe(false);
+    expect(code).toBe(encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION, nameSection(BUILD_NAME)]));
   });
 
-  it('gives null for a biosoldier build', () => {
-    const code = encodeMecBuild(DEFAULT_NAME_BUILD);
+  it('gives null for a build without codes', () => {
+    vi.mocked(mecBuildCodes).mockReturnValue(null);
+
+    const code = encodeMecBuild(MEC_BUILD_STUB);
 
     expect(code).toBeNull();
   });
 });
 
 describe('decodeMecBuild', () => {
-  it('skips a gene mods section', () => {
-    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), geneModsSection([20])]) ?? '';
+  it('gives the build of the codes', () => {
+    vi.mocked(mecBuildFromCodes).mockReturnValue(MEC_BUILD_STUB);
+    const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION]) ?? '';
 
     const result = decodeMecBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: MEC_DEFAULT_NAME_BUILD });
+    expect(result).toEqual(MEC_DECODED_RESULT);
   });
 
-  it('skips a psionic section', () => {
-    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), psionicSection([30])]) ?? '';
+  it('skips the sections of biosoldier parts', () => {
+    const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION, geneModsSection([20]), psionicSection([30]), officerSection([40])]) ?? '';
 
-    const result = decodeMecBuild(code);
+    decodeMecBuild(code);
 
-    expect(result).toEqual({ status: 'decoded', build: MEC_DEFAULT_NAME_BUILD });
+    expect(mecBuildFromCodes).toHaveBeenLastCalledWith(MEC_CODES);
   });
 
-  it('skips an officer section', () => {
-    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12, 13]), officerSection([40])]) ?? '';
-
-    const result = decodeMecBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: MEC_DEFAULT_NAME_BUILD });
-  });
-
-  it('restores a build with the default name', () => {
-    const code = encodeMecBuild(MEC_DEFAULT_NAME_BUILD) ?? '';
-
-    const result = decodeMecBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: MEC_DEFAULT_NAME_BUILD });
-  });
-
-  it('restores a build with its own name', () => {
-    const code = encodeMecBuild(MEC_NAMED_BUILD) ?? '';
-
-    const result = decodeMecBuild(code);
-
-    expect(result).toEqual({ status: 'decoded', build: MEC_NAMED_BUILD });
-  });
-
-  it('rejects a biosoldier class', () => {
-    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(BIOSOLDIER_CLASS_CODE, [12])]) ?? '';
+  it('rejects codes that make no build', () => {
+    vi.mocked(mecBuildFromCodes).mockReturnValue(null);
+    const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION]) ?? '';
 
     const result = decodeMecBuild(code);
 
@@ -579,28 +262,10 @@ describe('decodeMecBuild', () => {
   });
 
   it('recognises a biosoldier build code', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(BIOSOLDIER_CLASS_CODE, [12])]) ?? '';
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION]) ?? '';
 
     const result = decodeMecBuild(code);
 
     expect(result).toEqual(BIOSOLDIER_CODE_RESULT);
-  });
-});
-
-describe('decodeBiosoldierBuild with MEC codes', () => {
-  it('rejects a MEC class', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection(MEC_CLASS_CODE, [12])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('recognises a MEC build code', () => {
-    const code = encodeBinaryCode(MEC_FORMAT, [perksSection(MEC_CLASS_CODE, [12])]) ?? '';
-
-    const result = decodeBiosoldierBuild(code);
-
-    expect(result).toEqual(MEC_CODE_RESULT);
   });
 });

@@ -1,167 +1,99 @@
-import type {
-  BiosoldierBuildData,
-  SelectedGeneMods,
-  SelectedOfficerPerks,
-  SelectedPsionicAbilities,
-  SoldierBuildData,
-  SoldierClass,
-} from '@entities/soldier';
-import {
-  ABILITY_ID_BY_CODE,
-  abilityById,
-  BIOSOLDIER_CLASS_BY_CODE,
-  BODY_PART_INDEX_BY_GENE_MOD,
-  EMPTY_GENE_MODS,
-  hasRequiredRank,
-  isAbilityId,
-  MEC_CLASS_BY_CODE,
-  NEURAL_DAMPING_ID,
-  OFFICER_RANKS,
-  PSI_LEVELS,
-  SOLDIER_RANKS,
-} from '@entities/soldier';
+import type { BiosoldierBuildCodes, BiosoldierBuildData, SoldierBuildCodes, SoldierBuildData } from '@entities/soldier';
+import { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
-import type { DeepReadonly } from '@shared/lib/object';
 
 import {
   ABILITY_CODE_BITS,
-  BIOSOLDIER_BUILD_PARTS,
   CLASS_CODE_BITS,
   GENE_MOD_COUNT_BITS,
   INVALID_SHARE_CODE,
-  NAME_LENGTH_BITS,
   OFFICER_PERK_COUNT_BITS,
   PERK_COUNT_BITS,
   PSIONIC_ABILITY_COUNT_BITS,
   SHARE_CODE_FORMAT,
-  SOLDIER_BUILD_PARTS,
   SOLDIER_BUILD_SECTION,
 } from '../config/constants';
+import { readCodeList, readWholeSection, writeCodeList } from './section-fields';
 import type { ShareCodeDecodeResult } from './share-code';
-import { decodeName, openShareCode } from './share-code';
-
-/**
- * Optional part of a soldier build code that decoding can skip; the class and perks are always read.
- */
-export type SoldierBuildPart = 'name';
-
-/**
- * Optional part of a biosoldier build code that decoding can skip.
- */
-export type BiosoldierBuildPart = SoldierBuildPart | 'geneMods' | 'psionicAbilities' | 'officerPerks';
+import { nameSection, openShareCode, readNameSection } from './share-code';
 
 /**
  * Parts a soldier format carries beyond the class, perks and name: their sections and how they are read.
  */
-export interface SoldierBuildExtension<Build extends SoldierBuildData, Part extends string> {
-  /** Optional parts read from a code by default; `'name'` among them reads the name. */
-  parts: readonly Part[]
-  /** Sections of the extra parts the build has, by ascending id; null if they cannot be encoded. */
-  write: (build: Build) => BinaryCodeSection[] | null
-  /** Build of the decoded soldier build and the code sections; null if a section of a requested part is invalid. */
-  read: (build: SoldierBuildData, sections: ReadonlyMap<number, BitReader>, parts: readonly Part[]) => Build | null
+interface SoldierBuildExtension<Codes extends SoldierBuildCodes> {
+  /** Sections of the extra parts the codes have, by ascending id. */
+  write: (codes: Codes) => BinaryCodeSection[]
+  /** Codes of the soldier build with the extra parts read from the code sections; null if a section is broken. */
+  read: (codes: SoldierBuildCodes, sections: ReadonlyMap<number, BitReader>) => Codes | null
 }
 
 /**
- * Share code encoder and decoder of soldier builds of one format, bound to the classes of that format: the `PERKS` and
- * `NAME` sections of every soldier, plus the parts of the format extension.
+ * Share code encoder and decoder of soldier builds of one format: the `PERKS` and `NAME` sections of every soldier,
+ * plus the parts of the format extension, over the build codes of the entity.
  *
  * @param format share code format number.
- * @param classByCode classes the format carries by their code; a build or code with any other class is rejected.
+ * @param buildCodes build codes of a build; null if it cannot be encoded.
+ * @param buildFromCodes build of the codes; null if they make no build.
  * @param extension parts of the format beyond the soldier ones.
  */
-export const soldierBuildCodec = <Build extends SoldierBuildData, Part extends string>(
+const soldierBuildCodec = <Build, Codes extends SoldierBuildCodes>(
   format: number,
-  classByCode: ReadonlyMap<number, DeepReadonly<SoldierClass>>,
-  extension: SoldierBuildExtension<Build, Part>,
+  buildCodes: (build: Build) => Codes | null,
+  buildFromCodes: (codes: Codes) => Build | null,
+  extension: SoldierBuildExtension<Codes>,
 ) => {
   /**
-   * Class and perks of the `PERKS` section, the base perk included; null if a class is not of the format, an ability
-   * number is unknown or not offered on its rank of the class tree, perks outnumber the ranks, or the section is not read
-   * exactly to its end.
-   *
-   * @param reader section reader.
-   */
-  const readPerks = (reader: BitReader): Omit<SoldierBuildData, 'name'> | null => {
-    const soldierClass = classByCode.get(reader.readUint(CLASS_CODE_BITS));
-    const perkCount = reader.readUint(PERK_COUNT_BITS);
-    const selectedPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
-
-    if (!soldierClass || !reader.isComplete) return null;
-
-    if (!selectedPerks.every(perkId => typeof perkId === 'string')) return null;
-
-    if (selectedPerks.length >= SOLDIER_RANKS.length) return null;
-
-    const isInClassTree = selectedPerks.every((perkId, index) => soldierClass.perks[SOLDIER_RANKS[index + 1].id].includes(perkId));
-
-    if (!isInClassTree) return null;
-
-    return { soldierClass, perks: [soldierClass.basePerk, ...selectedPerks] };
-  };
-
-  /**
-   * Share code of the build: the `PERKS` section, the `NAME` section if the name differs from the class name, then
-   * the extension sections; null if the build class is not of the format, the build has an unknown perk, the extension
-   * cannot be encoded or a section outgrows its length limit.
+   * Share code of the build: the `PERKS` section with the class and perks, the `NAME` section if the build has its own
+   * name, then the extension sections.
    *
    * @param build soldier build of the format.
+   * @returns the code; null if the build has no codes or a section outgrows its length limit.
    */
   const encode = (build: Build) => {
-    if (!classByCode.has(build.soldierClass.code)) return null;
+    const codes = buildCodes(build);
 
-    const selectedPerks = build.perks.slice(1);
-
-    if (!selectedPerks.every(isAbilityId)) return null;
-
-    const extensionSections = extension.write(build);
-
-    if (!extensionSections) return null;
+    if (!codes) return null;
 
     const sections: BinaryCodeSection[] = [{
       id: SOLDIER_BUILD_SECTION.PERKS,
       write: (writer) => {
-        writer.writeUint(build.soldierClass.code, CLASS_CODE_BITS);
-        writer.writeUint(selectedPerks.length, PERK_COUNT_BITS);
-        selectedPerks.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
+        writer.writeUint(codes.classCode, CLASS_CODE_BITS);
+        writeCodeList(writer, codes.perks, PERK_COUNT_BITS, ABILITY_CODE_BITS);
       },
     }];
 
-    if (build.name !== build.soldierClass.name) {
-      sections.push({ id: SOLDIER_BUILD_SECTION.NAME, write: writer => writer.writeString(build.name, NAME_LENGTH_BITS) });
-    }
+    if (codes.name !== null) sections.push(nameSection(SOLDIER_BUILD_SECTION.NAME, codes.name));
 
-    sections.push(...extensionSections);
+    sections.push(...extension.write(codes));
 
     return encodeBinaryCode(format, sections);
   };
 
   /**
-   * Build of the share code; `other-unit` for a build code of another unit; `invalid` if the code is broken,
-   * has no valid `PERKS` section or has an invalid section of a requested part. Parts that are not requested or absent
-   * get their defaults; unknown sections are skipped.
+   * Build of the share code; `other-unit` for a build code of another unit. Absent sections of the extra parts give
+   * empty parts; unknown sections are skipped.
    *
    * @param code share code.
-   * @param parts optional parts to read; those of the extension by default.
+   * @returns the build; `invalid` if the code is broken, has no `PERKS` section, has a broken section, or its codes make
+   * no build.
    */
-  const decode = (code: string, parts = extension.parts): ShareCodeDecodeResult<Build> => {
+  const decode = (code: string): ShareCodeDecodeResult<Build> => {
     const shareCode = openShareCode(code, format);
 
     if (shareCode.status !== 'opened') return shareCode;
 
-    const perksReader = shareCode.sections.get(SOLDIER_BUILD_SECTION.PERKS);
-    const perks = perksReader && readPerks(perksReader);
+    const perksReader = shareCode.sections.get(SOLDIER_BUILD_SECTION.PERKS) ?? null;
+    const perks = perksReader && readWholeSection(perksReader, reader => ({
+      classCode: reader.readUint(CLASS_CODE_BITS),
+      perks: readCodeList(reader, PERK_COUNT_BITS, ABILITY_CODE_BITS),
+    }));
+    const nameField = readNameSection(shareCode.sections.get(SOLDIER_BUILD_SECTION.NAME) ?? null);
 
-    if (!perks) return INVALID_SHARE_CODE;
+    if (!perks || !nameField) return INVALID_SHARE_CODE;
 
-    const requestedParts: readonly string[] = parts;
-    const isNameRequested = requestedParts.includes('name');
-    const name = decodeName(shareCode.sections.get(SOLDIER_BUILD_SECTION.NAME) ?? null, perks.soldierClass.name, isNameRequested);
-
-    if (name === null) return INVALID_SHARE_CODE;
-
-    const build = extension.read({ ...perks, name }, shareCode.sections, parts);
+    const codes = extension.read({ ...perks, name: nameField.name }, shareCode.sections);
+    const build = codes && buildFromCodes(codes);
 
     if (!build) return INVALID_SHARE_CODE;
 
@@ -171,222 +103,74 @@ export const soldierBuildCodec = <Build extends SoldierBuildData, Part extends s
   return { encode, decode };
 };
 
-/** Soldier format without extra parts: the build is the soldier build. */
-export const SOLDIER_BUILD_EXTENSION: SoldierBuildExtension<SoldierBuildData, SoldierBuildPart> = {
-  parts: SOLDIER_BUILD_PARTS,
+/**
+ * Section of an ability code list; none for an empty list.
+ *
+ * @param id section id.
+ * @param codes ability codes in list order.
+ * @param countBits width of the count.
+ */
+const abilityListSections = (id: number, codes: readonly number[], countBits: number): BinaryCodeSection[] => {
+  if (codes.length === 0) return [];
+
+  return [{ id, write: writer => writeCodeList(writer, codes, countBits, ABILITY_CODE_BITS) }];
+};
+
+/**
+ * Ability codes of a list section read in whole.
+ *
+ * @param sections code sections by id.
+ * @param id section id.
+ * @param countBits width of the count.
+ * @returns the codes; an empty list without the section; null if the section is broken.
+ */
+const readAbilityListSection = (sections: ReadonlyMap<number, BitReader>, id: number, countBits: number) => {
+  const reader = sections.get(id) ?? null;
+
+  if (!reader) return [];
+
+  return readWholeSection(reader, sectionReader => readCodeList(sectionReader, countBits, ABILITY_CODE_BITS));
+};
+
+/** Soldier format without extra parts: the codes are the soldier codes. */
+const SOLDIER_BUILD_EXTENSION: SoldierBuildExtension<SoldierBuildCodes> = {
   write: () => [],
-  read: build => build,
+  read: codes => codes,
 };
 
 /**
- * `GENE_MODS` section of the gene mods, by body part; an empty list without gene mods; null if a gene mod is not of its
- * body part.
- *
- * @param build biosoldier build.
+ * Biosoldier format: the soldier codes with the gene mods in the `GENE_MODS` section, the psionic abilities in the
+ * `PSIONIC` section and the officer perks in the `OFFICER` section, each written only when the build has some.
  */
-const writeGeneMods = (build: BiosoldierBuildData): BinaryCodeSection[] | null => {
-  const isEachInItsBodyPart = build.geneMods.every((geneModId, bodyPartIndex) => (
-    geneModId === null || BODY_PART_INDEX_BY_GENE_MOD.get(geneModId) === bodyPartIndex
-  ));
+const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildCodes> = {
+  write: codes => [
+    ...abilityListSections(SOLDIER_BUILD_SECTION.GENE_MODS, codes.geneMods, GENE_MOD_COUNT_BITS),
+    ...abilityListSections(SOLDIER_BUILD_SECTION.PSIONIC, codes.psionicAbilities, PSIONIC_ABILITY_COUNT_BITS),
+    ...abilityListSections(SOLDIER_BUILD_SECTION.OFFICER, codes.officerPerks, OFFICER_PERK_COUNT_BITS),
+  ],
+  read: (codes, sections) => {
+    const geneMods = readAbilityListSection(sections, SOLDIER_BUILD_SECTION.GENE_MODS, GENE_MOD_COUNT_BITS);
+    const psionicAbilities = readAbilityListSection(sections, SOLDIER_BUILD_SECTION.PSIONIC, PSIONIC_ABILITY_COUNT_BITS);
+    const officerPerks = readAbilityListSection(sections, SOLDIER_BUILD_SECTION.OFFICER, OFFICER_PERK_COUNT_BITS);
 
-  if (!isEachInItsBodyPart) return null;
+    if (!geneMods || !psionicAbilities || !officerPerks) return null;
 
-  const geneModIds = build.geneMods.filter(geneModId => geneModId !== null);
-
-  if (geneModIds.length === 0) return [];
-
-  return [{
-    id: SOLDIER_BUILD_SECTION.GENE_MODS,
-    write: (writer) => {
-      writer.writeUint(geneModIds.length, GENE_MOD_COUNT_BITS);
-      geneModIds.forEach(geneModId => writer.writeUint(abilityById(geneModId).code, ABILITY_CODE_BITS));
-    },
-  }];
-};
-
-/**
- * Gene mods of the `GENE_MODS` section by body part; null if a number is not a gene mod, body parts repeat or go out
- * of order, or the section is not read exactly to its end.
- *
- * @param reader section reader.
- */
-const readGeneMods = (reader: BitReader): SelectedGeneMods | null => {
-  const geneModCount = reader.readUint(GENE_MOD_COUNT_BITS);
-  const geneModIds = Array.from({ length: geneModCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
-
-  if (!reader.isComplete) return null;
-
-  if (!geneModIds.every(geneModId => typeof geneModId === 'string')) return null;
-
-  const geneMods: SelectedGeneMods = [...EMPTY_GENE_MODS];
-  let lastBodyPartIndex = -1;
-
-  for (const geneModId of geneModIds) {
-    const bodyPartIndex = BODY_PART_INDEX_BY_GENE_MOD.get(geneModId);
-
-    if (typeof bodyPartIndex !== 'number' || bodyPartIndex <= lastBodyPartIndex) return null;
-
-    geneMods[bodyPartIndex] = geneModId;
-    lastBodyPartIndex = bodyPartIndex;
-  }
-
-  return geneMods;
-};
-
-/**
- * Whether each psionic ability is offered on its psi level, from Awakened, with no more abilities than psi levels.
- *
- * @param psionicAbilities psionic abilities by psi level.
- */
-const isOnItsPsiLevels = (psionicAbilities: SelectedPsionicAbilities): boolean => (
-  psionicAbilities.length <= PSI_LEVELS.length
-  && psionicAbilities.every((abilityId, levelIndex) => PSI_LEVELS[levelIndex].abilities.includes(abilityId))
-);
-
-/**
- * `PSIONIC` section of the psionic abilities, by psi level; an empty list without psionic abilities; null if an ability
- * is not offered on its psi level, abilities outnumber the psi levels, or the build also has Neural Damping.
- *
- * @param build biosoldier build.
- */
-const writePsionicAbilities = (build: BiosoldierBuildData): BinaryCodeSection[] | null => {
-  if (build.psionicAbilities.length === 0) return [];
-
-  if (!isOnItsPsiLevels(build.psionicAbilities)) return null;
-
-  if (build.geneMods.includes(NEURAL_DAMPING_ID)) return null;
-
-  return [{
-    id: SOLDIER_BUILD_SECTION.PSIONIC,
-    write: (writer) => {
-      writer.writeUint(build.psionicAbilities.length, PSIONIC_ABILITY_COUNT_BITS);
-      build.psionicAbilities.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
-    },
-  }];
-};
-
-/**
- * Psionic abilities of the `PSIONIC` section by psi level; null if an ability is not offered on its psi level,
- * abilities outnumber the psi levels, or the section is not read exactly to its end.
- *
- * @param reader section reader.
- */
-const readPsionicAbilities = (reader: BitReader): SelectedPsionicAbilities | null => {
-  const abilityCount = reader.readUint(PSIONIC_ABILITY_COUNT_BITS);
-  const psionicAbilities = Array.from({ length: abilityCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
-
-  if (!reader.isComplete) return null;
-
-  if (!psionicAbilities.every(abilityId => typeof abilityId === 'string')) return null;
-
-  if (!isOnItsPsiLevels(psionicAbilities)) return null;
-
-  return psionicAbilities;
-};
-
-/**
- * Whether each officer perk is offered on its officer rank, from Lieutenant, and the class tree completes the rank that
- * officer rank requires, with no more officer perks than officer ranks.
- *
- * @param officerPerks officer perks by officer rank.
- * @param perks selected perks of the build by rank.
- */
-const isOnOpenOfficerRanks = (officerPerks: SelectedOfficerPerks, perks: SoldierBuildData['perks']): boolean => (
-  officerPerks.length <= OFFICER_RANKS.length
-  && officerPerks.every((perkId, officerRankIndex) => (
-    OFFICER_RANKS[officerRankIndex].perks.includes(perkId) && hasRequiredRank(OFFICER_RANKS[officerRankIndex], perks)
-  ))
-);
-
-/**
- * `OFFICER` section of the officer perks, by officer rank; an empty list without officer perks; null if an officer perk
- * is not offered on its officer rank, officer perks outnumber the officer ranks, or the class tree does not complete
- * the rank an officer rank requires.
- *
- * @param build biosoldier build.
- */
-const writeOfficerPerks = (build: BiosoldierBuildData): BinaryCodeSection[] | null => {
-  if (build.officerPerks.length === 0) return [];
-
-  if (!isOnOpenOfficerRanks(build.officerPerks, build.perks)) return null;
-
-  return [{
-    id: SOLDIER_BUILD_SECTION.OFFICER,
-    write: (writer) => {
-      writer.writeUint(build.officerPerks.length, OFFICER_PERK_COUNT_BITS);
-      build.officerPerks.forEach(abilityId => writer.writeUint(abilityById(abilityId).code, ABILITY_CODE_BITS));
-    },
-  }];
-};
-
-/**
- * Officer perks of the `OFFICER` section by officer rank; null if an officer perk is not offered on its officer rank,
- * officer perks outnumber the officer ranks, the class tree does not complete the rank an officer rank requires, or
- * the section is not read exactly to its end.
- *
- * @param reader section reader.
- * @param perks selected perks of the decoded build by rank.
- */
-const readOfficerPerks = (reader: BitReader, perks: SoldierBuildData['perks']): SelectedOfficerPerks | null => {
-  const perkCount = reader.readUint(OFFICER_PERK_COUNT_BITS);
-  const officerPerks = Array.from({ length: perkCount }, () => ABILITY_ID_BY_CODE.get(reader.readUint(ABILITY_CODE_BITS)));
-
-  if (!reader.isComplete) return null;
-
-  if (!officerPerks.every(abilityId => typeof abilityId === 'string')) return null;
-
-  if (!isOnOpenOfficerRanks(officerPerks, perks)) return null;
-
-  return officerPerks;
-};
-
-/**
- * Biosoldier format: the soldier build with its gene mods in the `GENE_MODS` section, its psionic abilities in the
- * `PSIONIC` section and its officer perks in the `OFFICER` section, each written only when the build has some.
- */
-const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, BiosoldierBuildPart> = {
-  parts: BIOSOLDIER_BUILD_PARTS,
-  write: (build) => {
-    const geneModSections = writeGeneMods(build);
-    const psionicSections = writePsionicAbilities(build);
-    const officerSections = writeOfficerPerks(build);
-
-    if (!geneModSections || !psionicSections || !officerSections) return null;
-
-    return [...geneModSections, ...psionicSections, ...officerSections];
-  },
-  read: (build, sections, parts) => {
-    const geneModsReader = sections.get(SOLDIER_BUILD_SECTION.GENE_MODS);
-    const geneMods = geneModsReader && parts.includes('geneMods') ? readGeneMods(geneModsReader) : [...EMPTY_GENE_MODS];
-
-    if (!geneMods) return null;
-
-    const psionicReader = sections.get(SOLDIER_BUILD_SECTION.PSIONIC);
-    const psionicAbilities = psionicReader && parts.includes('psionicAbilities') ? readPsionicAbilities(psionicReader) : [];
-
-    if (!psionicAbilities) return null;
-
-    if (geneMods.includes(NEURAL_DAMPING_ID) && psionicAbilities.length > 0) return null;
-
-    const officerReader = sections.get(SOLDIER_BUILD_SECTION.OFFICER);
-    const officerPerks = officerReader && parts.includes('officerPerks') ? readOfficerPerks(officerReader, build.perks) : [];
-
-    if (!officerPerks) return null;
-
-    return { ...build, geneMods, psionicAbilities, officerPerks };
+    return { ...codes, geneMods, psionicAbilities, officerPerks };
   },
 };
 
-/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1, the biosoldier classes, gene mods, psionic abilities and officer perks. */
-export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = soldierBuildCodec(
+/** Share code encoder and decoder of biosoldier builds: `soldierBuildCodec` bound to format 1 and the biosoldier codes with gene mods, psionic abilities and officer perks. */
+export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = soldierBuildCodec<BiosoldierBuildData, BiosoldierBuildCodes>(
   SHARE_CODE_FORMAT.BIOSOLDIER_BUILD,
-  BIOSOLDIER_CLASS_BY_CODE,
+  biosoldierBuildCodes,
+  biosoldierBuildFromCodes,
   BIOSOLDIER_BUILD_EXTENSION,
 );
 
-/** Share code encoder and decoder of MEC builds: `soldierBuildCodec` bound to format 3 and the MEC classes. */
-export const { encode: encodeMecBuild, decode: decodeMecBuild } = soldierBuildCodec(
+/** Share code encoder and decoder of MEC builds: `soldierBuildCodec` bound to format 3 and the MEC codes. */
+export const { encode: encodeMecBuild, decode: decodeMecBuild } = soldierBuildCodec<SoldierBuildData, SoldierBuildCodes>(
   SHARE_CODE_FORMAT.MEC_BUILD,
-  MEC_CLASS_BY_CODE,
+  mecBuildCodes,
+  mecBuildFromCodes,
   SOLDIER_BUILD_EXTENSION,
 );

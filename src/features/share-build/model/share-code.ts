@@ -1,7 +1,8 @@
-import type { BitReader } from '@shared/lib/binary-code';
+import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 import { openBinaryCode } from '@shared/lib/binary-code';
 
 import { INVALID_SHARE_CODE, NAME_LENGTH_BITS, SHARE_CODE_FORMAT_UNIT } from '../config/constants';
+import { readWholeSection } from './section-fields';
 
 /**
  * Why a share code could not be decoded: it is broken, or it carries a build of another unit.
@@ -40,21 +41,24 @@ export const openShareCode = (code: string, format: number): OpenedShareCode => 
 };
 
 /**
- * Build name from a `NAME` section; the fallback if the section is absent, not requested or blank,
- * null if the section is invalid.
+ * Section with the build name.
  *
- * @param reader reader of the `NAME` section, or null if the code has none.
- * @param fallback default name of the build.
- * @param isRequested whether the name part is read.
+ * @param id id of the `NAME` section of the format.
+ * @param name build name.
  */
-export const decodeName = (reader: BitReader | null, fallback: string, isRequested: boolean) => {
-  if (!reader || !isRequested) return fallback;
+export const nameSection = (id: number, name: string): BinaryCodeSection => ({
+  id,
+  write: writer => writer.writeString(name, NAME_LENGTH_BITS),
+});
 
-  const name = reader.readString(NAME_LENGTH_BITS);
+/**
+ * Build name of a `NAME` section read in whole.
+ *
+ * @param reader reader of the `NAME` section; null if the code has none.
+ * @returns `{ name }` with the name, or with null without the section; null if the section is broken.
+ */
+export const readNameSection = (reader: BitReader | null): { name: string | null } | null => {
+  if (!reader) return { name: null };
 
-  if (!reader.isComplete) return null;
-
-  if (name.trim() === '') return fallback;
-
-  return name;
+  return readWholeSection(reader, sectionReader => ({ name: sectionReader.readString(NAME_LENGTH_BITS) }));
 };

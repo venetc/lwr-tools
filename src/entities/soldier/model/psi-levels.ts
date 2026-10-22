@@ -31,20 +31,20 @@ export interface PsiLevel {
 export type SelectedPsionicAbilities = AbilityId[];
 
 /**
- * Psi level state in a build: levels are trained in order like ranks, and Neural Damping locks every level.
+ * Psi level state in a build: levels are trained in order like ranks, and a level a Build rule blocks is locked.
  *
  * @param psionicAbilities psionic abilities of the build by psi level.
  * @param levelIndex psi level index.
  * @param isReadonly whether the build is readonly.
- * @param hasNeuralDamping whether the build has Neural Damping.
+ * @param isBlocked whether a Build rule blocks the level, such as Neural Damping.
  */
 export const psiLevelState = (
   psionicAbilities: SelectedPsionicAbilities,
   levelIndex: number,
   isReadonly: boolean,
-  hasNeuralDamping: boolean,
+  isBlocked: boolean,
 ): RankState => {
-  if (hasNeuralDamping) return 'locked';
+  if (isBlocked) return 'locked';
   return rankState(psionicAbilities, levelIndex, isReadonly);
 };
 

@@ -5,10 +5,12 @@ import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
 import { BODY_PART_PICKER_ITEMS } from '../config/constants/body-part-picker-items';
-import { BODY_PARTS, NEURAL_DAMPING_ID, PSIONIC_BLOCK_NOTE } from '../config/constants/body-parts';
+import { BODY_PARTS, PSIONIC_BLOCK_NOTE } from '../config/constants/body-parts';
 import type { BodyPart } from './body-parts';
 import { bodyPartState } from './body-parts';
 import type { BiosoldierBuildData } from './build';
+import type { BuildBlockReason } from './build-rules';
+import { geneModBlockReason } from './build-rules';
 
 /**
  * Biosoldier build shown in the gene mods: its gene mods and psionic abilities with its lock.
@@ -44,15 +46,15 @@ const geneModAppearance = (geneModId: string, selectedId: string | null, isReado
  * @param item picker item of the gene mod.
  * @param selectedId id of the gene mod of the body part, or null.
  * @param isReadonly whether the build is readonly.
- * @param hasPsionicAbilities whether the build has any psionic ability.
+ * @param blockReason why a Build rule blocks the gene mod, or null.
  */
 const geneModOption = (
   item: TieredPickerItem,
   selectedId: string | null,
   isReadonly: boolean,
-  hasPsionicAbilities: boolean,
+  blockReason: BuildBlockReason | null,
 ): TieredPickerOption => {
-  if (item.id === NEURAL_DAMPING_ID && hasPsionicAbilities) {
+  if (blockReason === 'psionic-ability') {
     return { item, appearance: 'disabled', isDisabled: true, note: PSIONIC_BLOCK_NOTE };
   }
 
@@ -72,8 +74,8 @@ const geneModOption = (
  */
 export const useGeneModTiers = (build: MaybeRefOrGetter<GeneModTreeBuild>) => {
   const tiers = computed(() => {
-    const { geneMods, psionicAbilities, readonly } = toValue(build);
-    const hasPsionicAbilities = psionicAbilities.length > 0;
+    const geneModTreeBuild = toValue(build);
+    const { geneMods, readonly } = geneModTreeBuild;
 
     return BODY_PARTS.map((bodyPart, bodyPartIndex): BodyPartTier => {
       const selectedId = geneMods[bodyPartIndex] ?? null;
@@ -85,7 +87,9 @@ export const useGeneModTiers = (build: MaybeRefOrGetter<GeneModTreeBuild>) => {
         state: bodyPartState(selectedId, readonly),
         isDisabled: readonly,
         selectedId,
-        options: (BODY_PART_PICKER_ITEMS[bodyPartIndex] ?? []).map(item => geneModOption(item, selectedId, readonly, hasPsionicAbilities)),
+        options: (BODY_PART_PICKER_ITEMS[bodyPartIndex] ?? []).map(item => (
+          geneModOption(item, selectedId, readonly, geneModBlockReason(geneModTreeBuild, bodyPartIndex, item.id))
+        )),
       };
     });
   });

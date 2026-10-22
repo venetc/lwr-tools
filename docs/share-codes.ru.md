@@ -18,18 +18,23 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - Секции идут по возрастанию id, каждая не больше одного раза; `0` завершает список.
 - Неизвестные секции пропускаются по длине.
 - Прочитанная секция должна закончиться ровно на своей длине, иначе код невалиден; пропущенные секции не проверяются.
-- `decodeBiosoldierBuild(code, parts)` (части `'name' | 'geneMods' | 'psionicAbilities' | 'officerPerks'`) и `decodeMecBuild(code, parts)` (часть `'name'`) читают только запрошенные части, остальные получают значения по умолчанию.
 
 ## Результат декодирования
 
 Декодер возвращает `{ status: 'decoded', build }` или причину неудачи:
 
 - `{ status: 'other-unit', unit }` — CRC и заголовок валидны, но `format` принадлежит билдам другого юнита (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). Импорт показывает toast «This is a <unit> build code» и оставляет форму открытой с кодом.
-- `{ status: 'invalid' }` — всё остальное: битый код, неизвестный формат, отсутствующая или битая секция, класс другого формата, перк не из своего ранга дерева класса; в `GENE_MODS` — абилка, которая не Gene mod, два Gene mod одной Body part или Body part не по порядку; в `PSIONIC` — абилка не со своего Psi level или абилок больше, чем Psi level; Neural Damping вместе с непустой `PSIONIC`; в `OFFICER` — Officer perk не со своего Officer rank, Officer perks больше, чем Officer ranks, или Officer rank, чей нужный Rank дерево класса в `PERKS` не завершает. Neural Damping против пси проверяется, только если запрошены и `geneMods`, и `psionicAbilities`; нужный Rank у Officer ranks проверяется всегда, когда запрошена `officerPerks`. Импорт показывает «Invalid code» под полем.
+- `{ status: 'invalid' }` — всё остальное: битый код, неизвестный формат, отсутствующая или битая секция, неизвестный код, класс другого формата или Build, нарушающий Build rule. Правила: каждый перк на своём ранге дерева класса, ранги, Psi levels и Officer ranks по порядку без пропусков, каждый Gene mod в своей Body part (в `GENE_MODS` Body parts идут от Brain к Legs, каждая один раз), Neural Damping против Psionic abilities, Officer rank — только когда дерево класса завершает его нужный Rank. Импорт показывает «Invalid code» под полем.
+
+Код открывается, только если такой Build можно собрать в калькуляторе, и любой собранный в калькуляторе Build кодируется.
 
 Сохранённый билд, чей код не декодируется, при загрузке пропускается.
 
-Код: `shared/lib/binary-code` (заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`) и фича `features/share-build`: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (поля и части билда; `soldierBuildCodec` собирает кодер и декодер формата солдат по его классам по коду и расширению — частям сверх `PERKS` и `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` — его пара для формата 1 с расширением Gene mods, Psionic abilities и Officer perks, `encodeMecBuild` / `decodeMecBuild` — пара для формата 3 без расширения), `model/stored-build.ts` (записи хранилища поверх share-кода). Поиск по `code` (абилки, классы каждого формата солдат, перки SHIV) дают `entities/soldier` и `entities/shiv`. Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
+Код:
+
+- `entities/soldier` — Build ↔ коды: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. Entity переводит Build в стабильные коды и обратно и отдаёт null на неизвестный код, класс другого вида или Build, нарушающий Build rule. Из кодов она собирает Build от Default build по шагам мутаторами калькулятора; Build кодируется, только если его собирает тот же проход.
+- `shared/lib/binary-code` — заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`.
+- `features/share-build` — только биты: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата, секция `NAME`), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildCodec` собирает кодер и декодер формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` — его пара для формата 1 с расширением Gene mods, Psionic abilities и Officer perks, `encodeMecBuild` / `decodeMecBuild` — пара для формата 3 без расширения), `model/stored-build.ts` (записи хранилища поверх share-кода). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 
@@ -90,29 +95,29 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 Поля секции меняются только новой секцией:
 
 1. Добавить в `SOLDIER_BUILD_SECTION` следующий id с суффиксом версии.
-2. К имени текущего чтения секции добавить суффикс версии; её запись удалить.
-3. Написать новые запись и чтение; `decode` из `soldierBuildCodec` читает ту из двух секций, что есть в коде.
+2. Писать новую секцию вместо текущей; чтение текущей оставить.
+3. `decode` из `soldierBuildCodec` читает ту из двух секций, что есть в коде, обе через `readWholeSection`.
 
 Чтение старых секций остаётся навсегда. Сама разметка секций меняется только новым номером в `SHARE_CODE_FORMAT`.
 
 Пример: в `PERKS` добавляется поле, максимальный id секции — 5.
 
 1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 6`.
-2. `soldier-build-code.ts`: `readPerks` → `readPerksV1`, `writePerks` удалить.
-3. Новые `writePerks` / `readPerks`; `encode` из `soldierBuildCodec` пишет `PERKS_V2`.
-4. `decode` из `soldierBuildCodec`: `PERKS` → `readPerksV1` с новым полем по умолчанию, `PERKS_V2` → `readPerks`.
+2. Новое поле — в `SoldierBuildCodes` из `entities/soldier`.
+3. `encode` из `soldierBuildCodec` пишет `PERKS_V2` вместо `PERKS`.
+4. `decode` из `soldierBuildCodec`: `PERKS` — с новым полем по умолчанию, `PERKS_V2` — с новым полем.
 
 ## Новая часть
 
-1. Добавить в `SOLDIER_BUILD_SECTION` следующий id.
-2. Написать запись и чтение в `soldier-build-code.ts`. Часть любого солдата идёт в `encode` / `decode` из `soldierBuildCodec`, часть одного формата — в его расширение (`BIOSOLDIER_BUILD_EXTENSION` у биосолдат): `write` отдаёт секцию, только если у билда есть эта часть, `read` её читает.
-3. Добавить часть в `SoldierBuildPart` или `BiosoldierBuildPart` и в части по умолчанию; секция читается, только если часть запрошена, иначе часть получает значение по умолчанию.
+1. Добавить часть в коды билда в `entities/soldier`: `SoldierBuildCodes` для любого солдата, `BiosoldierBuildCodes` для биосолдат. Build → коды пишет её коды; коды → Build берёт их по шагам мутаторами, поэтому их проверяют Build rules.
+2. Добавить в `SOLDIER_BUILD_SECTION` следующий id.
+3. Написать секцию в `soldier-build-code.ts`. Часть любого солдата идёт в `encode` / `decode` из `soldierBuildCodec`, часть одного формата — в его расширение (`BIOSOLDIER_BUILD_EXTENSION` у биосолдат): `write` отдаёт секцию, только если в кодах есть эта часть, `read` читает её через `readWholeSection`; список кодов пишется и читается через `writeCodeList` / `readCodeList`. Без секции часть пустая.
 
 Пример: Officer perks (только биосолдаты), максимальный id секции был 4.
 
-1. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
-2. `writeOfficerPerks` / `readOfficerPerks`; `BIOSOLDIER_BUILD_EXTENSION` пишет секцию только у билда с Officer perks и читает её.
-3. `BiosoldierBuildPart`: `'officerPerks'`, она же в `BIOSOLDIER_BUILD_PARTS`; без секции или без части у билда пустое Officer tree.
+1. `BiosoldierBuildCodes`: `officerPerks` — коды по Officer ranks; коды → Build берёт их после Psionic abilities.
+2. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
+3. `BIOSOLDIER_BUILD_EXTENSION`: `write` отдаёт `OFFICER` (`count` 3 · `ability` 8 × count) только для кодов с Officer perks; `read` отдаёт её коды, без секции — пустой список.
 
 ## Проверки
 

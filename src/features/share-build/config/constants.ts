@@ -3,8 +3,6 @@ import { z } from 'zod';
 import type { DeepReadonly } from '@shared/lib/object';
 
 import type { ShareCodeFailure } from '../model/share-code';
-import type { ShivBuildPart } from '../model/shiv-build-code';
-import type { BiosoldierBuildPart, SoldierBuildPart } from '../model/soldier-build-code';
 
 /**
  * Formats of all share codes of the app; a new format gets the next number; numbers are never changed or reused.
@@ -69,15 +67,6 @@ export const SHIV_PERK_COUNT_BITS = 3;
 
 /** Width of the SHIV perk number; part of the SHIV `PERKS` section, a change means a new section id. */
 export const SHIV_PERK_CODE_BITS = 6;
-
-/** Optional parts of a soldier build read from a code by default. */
-export const SOLDIER_BUILD_PARTS: DeepReadonly<SoldierBuildPart[]> = ['name'];
-
-/** Optional parts of a biosoldier build read from a code by default. */
-export const BIOSOLDIER_BUILD_PARTS: DeepReadonly<BiosoldierBuildPart[]> = ['name', 'geneMods', 'psionicAbilities', 'officerPerks'];
-
-/** Optional parts of a SHIV build read from a code by default. */
-export const SHIV_BUILD_PARTS: DeepReadonly<ShivBuildPart[]> = ['name'];
 
 /** Result of a broken share code. */
 export const INVALID_SHARE_CODE: DeepReadonly<ShareCodeFailure> = { status: 'invalid' };

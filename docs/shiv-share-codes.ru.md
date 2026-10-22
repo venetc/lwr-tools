@@ -15,9 +15,9 @@
 | `PERKS` | 1 | `count` 3 · `perk` 6 × count | всегда |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | если имя отличается от «SHIV» |
 
-`PERKS` хранит выбранные перки набором, без строк дерева. При импорте каждый перк встаёт в свою строку текущего дерева SHIV. Код невалиден, если перк неизвестен, два перка из одной строки или перков больше, чем строк.
+`PERKS` хранит выбранные перки набором, без строк дерева. При импорте каждый перк встаёт в свою строку текущего дерева SHIV. Код невалиден, если перк неизвестен или не из дерева либо два перка из одной строки.
 
-Код: `features/share-build`: `config/constants.ts` (`SHIV_BUILD_SECTION`, ширины полей), `model/shiv-build-code.ts` (`encodeShivBuild`, `decodeShivBuild`, `ShivBuildPart`); перки и строки — из `entities/shiv`.
+Код: `entities/shiv` — Build ↔ коды `shivBuildCodes` / `shivBuildFromCodes`: коды перков по порядку строк, перк в своей строке по Build rule из `selectShivBuildPerk`, раскладка перков по Technology levels. `features/share-build` — только биты: `config/constants.ts` (`SHIV_BUILD_SECTION`, ширины полей), `model/shiv-build-code.ts` (`encodeShivBuild`, `decodeShivBuild`) поверх счётного списка кодов и `readWholeSection` из `model/section-fields.ts`.
 
 ## Нумерация
 

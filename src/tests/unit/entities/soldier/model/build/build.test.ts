@@ -92,6 +92,30 @@ describe('selectSoldierBuildPerk', () => {
 
     expect(build.perks).toEqual(BASE_PERKS);
   });
+
+  it('ignores a perk of another rank of the class tree', () => {
+    const build = createBuildMock(BASE_PERKS);
+
+    selectSoldierBuildPerk(build, 1, 'top');
+
+    expect(build.perks).toEqual(BASE_PERKS);
+  });
+
+  it('ignores a perk outside the class tree', () => {
+    const build = createBuildMock(PERKS_TO_THIRD);
+
+    selectSoldierBuildPerk(build, 1, 'missing');
+
+    expect(build.perks).toEqual(PERKS_TO_THIRD);
+  });
+
+  it('ignores a rank above the class tree', () => {
+    const build = createBuildMock(ALL_PERKS);
+
+    selectSoldierBuildPerk(build, 4, 'bottom');
+
+    expect(build.perks).toEqual(ALL_PERKS);
+  });
 });
 
 describe('selectBiosoldierBuildGeneMod', () => {

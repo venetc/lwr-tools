@@ -1,161 +1,51 @@
-import type { AbilityContent } from '@entities/soldier/model/abilities';
-import type { BodyPartContent } from '@entities/soldier/model/body-parts';
-import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier/model/build';
-import type { SoldierClass, SoldierClassContent } from '@entities/soldier/model/classes';
-import type { OfficerRankContent } from '@entities/soldier/model/officer-ranks';
-import type { PsiLevelContent } from '@entities/soldier/model/psi-levels';
-import type { SoldierRankContent } from '@entities/soldier/model/ranks';
+import type { BiosoldierBuildCodes, BiosoldierBuildData, SoldierBuildCodes, SoldierBuildData } from '@entities/soldier';
 import type { BinaryCodeSection, BitWriter } from '@shared/lib/binary-code';
 
-export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
-  'granted': { code: 10, name: 'Granted', description: 'Granted by the class.' },
-  'left': { code: 11, name: 'Left', description: 'Left choice.' },
-  'right': { code: 12, name: 'Right', description: 'Right choice.' },
-  'top': { code: 13, name: 'Top', description: 'Top choice.' },
-  'neural-damping': { code: 20, name: 'Neural Damping', description: 'First head option that excludes psionics.' },
-  'head-second': { code: 21, name: 'Head Second', description: 'Second head option.' },
-  'feet-first': { code: 22, name: 'Feet First', description: 'First feet option.' },
-  'feet-second': { code: 23, name: 'Feet Second', description: 'Second feet option.' },
-  'low-left': { code: 30, name: 'Low Left', description: 'Left low psionic ability.' },
-  'low-right': { code: 31, name: 'Low Right', description: 'Right low psionic ability.' },
-  'high': { code: 32, name: 'High', description: 'High psionic ability.' },
-  'alpha-left': { code: 40, name: 'Alpha Left', description: 'Left officer perk of Alpha.' },
-  'alpha-right': { code: 41, name: 'Alpha Right', description: 'Right officer perk of Alpha.' },
-  'beta-left': { code: 42, name: 'Beta Left', description: 'Left officer perk of Beta.' },
-  'beta-right': { code: 43, name: 'Beta Right', description: 'Right officer perk of Beta.' },
+export const BIOSOLDIER_BUILD_STUB = { name: 'Tester' } as BiosoldierBuildData;
+
+export const MEC_BUILD_STUB = { name: 'Walker' } as SoldierBuildData;
+
+export const BIOSOLDIER_CLASS_CODE = 3;
+
+export const MEC_CLASS_CODE = 5;
+
+export const BUILD_NAME = 'Overwatch';
+
+export const PLAIN_CODES: BiosoldierBuildCodes = {
+  classCode: BIOSOLDIER_CLASS_CODE,
+  perks: [12, 13],
+  name: null,
+  geneMods: [],
+  psionicAbilities: [],
+  officerPerks: [],
 };
 
-export const BODY_PART_CONTENT_MOCK: Record<string, BodyPartContent> = {
-  head: { name: 'Head', geneMods: ['neural-damping', 'head-second'] },
-  feet: { name: 'Feet', geneMods: ['feet-first', 'feet-second'] },
+export const FULL_CODES: BiosoldierBuildCodes = {
+  ...PLAIN_CODES,
+  geneMods: [21, 22],
+  psionicAbilities: [31, 32],
+  officerPerks: [41, 42],
 };
 
-export const PSI_LEVEL_CONTENT_MOCK: Record<string, PsiLevelContent> = {
-  low: { name: 'Low', abilities: ['low-left', 'low-right'] },
-  high: { name: 'High', abilities: ['high'] },
-};
+export const NAMED_CODES: BiosoldierBuildCodes = { ...PLAIN_CODES, name: BUILD_NAME };
 
-export const OFFICER_RANK_CONTENT_MOCK: Record<string, OfficerRankContent> = {
-  alpha: { name: 'Alpha', abbreviation: 'A', requiredRank: 'second', perks: ['alpha-left', 'alpha-right'] },
-  beta: { name: 'Beta', abbreviation: 'B', requiredRank: 'third', perks: ['beta-left', 'beta-right'] },
-};
+export const NO_GENE_MODS_CODES: BiosoldierBuildCodes = { ...FULL_CODES, geneMods: [] };
 
-export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
-  first: { name: 'First' },
-  second: { name: 'Second' },
-  third: { name: 'Third' },
-};
+export const NO_PSIONIC_CODES: BiosoldierBuildCodes = { ...FULL_CODES, psionicAbilities: [] };
 
-export const BIOSOLDIER_CLASS_CONTENT_MOCK: Record<string, SoldierClassContent> = {
-  tester: {
-    code: 3,
-    name: 'Tester',
-    perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as SoldierClassContent['perks'],
-  },
-};
+export const NO_OFFICER_CODES: BiosoldierBuildCodes = { ...FULL_CODES, officerPerks: [] };
 
-export const MEC_CLASS_CONTENT_MOCK: Record<string, SoldierClassContent> = {
-  walker: {
-    code: 5,
-    name: 'Walker',
-    perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] } as unknown as SoldierClassContent['perks'],
-  },
-};
+export const MEC_CODES: SoldierBuildCodes = { classCode: MEC_CLASS_CODE, perks: [11], name: null };
 
-export const BIOSOLDIER_CLASS_MOCK = {
-  id: 'tester',
-  code: 3,
-  name: 'Tester',
-  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
-  basePerk: 'granted',
-} as unknown as SoldierClass;
-
-const SOLDIER_BUILD = {
-  soldierClass: BIOSOLDIER_CLASS_MOCK,
-  perks: ['granted', 'right', 'top'],
-  name: 'Tester',
-} as SoldierBuildData;
-
-export const DEFAULT_NAME_BUILD: BiosoldierBuildData = { ...SOLDIER_BUILD, geneMods: [null, null], psionicAbilities: [], officerPerks: [] };
-
-export const OTHER_CLASS_MOCK = {
-  id: 'other',
-  code: 4,
-  name: 'Other',
-  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
-  basePerk: 'granted',
-} as unknown as SoldierClass;
-
-export const BOUND_CLASS_BY_CODE = new Map([[3, BIOSOLDIER_CLASS_MOCK]]);
-
-export const OTHER_CLASS_CODE = 4;
-
-export const OTHER_CLASS_BUILD = { ...DEFAULT_NAME_BUILD, soldierClass: OTHER_CLASS_MOCK, name: 'Other' };
-
-export const MEC_CLASS_MOCK = {
-  id: 'walker',
-  code: 5,
-  name: 'Walker',
-  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
-  basePerk: 'granted',
-} as unknown as SoldierClass;
-
-export const MEC_DEFAULT_NAME_BUILD = { ...SOLDIER_BUILD, soldierClass: MEC_CLASS_MOCK, name: 'Walker' };
-
-export const MEC_NAMED_BUILD = { ...MEC_DEFAULT_NAME_BUILD, name: 'Juggernaut' };
-
-export const MEC_CLASS_CODE = MEC_CLASS_MOCK.code;
-
-export const BIOSOLDIER_CLASS_CODE = BIOSOLDIER_CLASS_MOCK.code;
-
-export const NAMED_BUILD = { ...DEFAULT_NAME_BUILD, name: 'Overwatch' };
-
-export const MISPLACED_GENE_MOD_BUILD = { ...DEFAULT_NAME_BUILD, geneMods: ['feet-first', null] } as unknown as BiosoldierBuildData;
-
-export const GENE_MODS_BUILD = { ...DEFAULT_NAME_BUILD, geneMods: ['head-second', 'feet-first'] } as unknown as BiosoldierBuildData;
-
-export const PSIONIC_BUILD = {
-  ...DEFAULT_NAME_BUILD,
-  geneMods: ['head-second', 'feet-first'],
-  psionicAbilities: ['low-right', 'high'],
-} as unknown as BiosoldierBuildData;
-
-export const MISPLACED_PSIONIC_ABILITY_BUILD = { ...DEFAULT_NAME_BUILD, psionicAbilities: ['high'] } as unknown as BiosoldierBuildData;
-
-export const EXCESS_PSIONIC_ABILITIES_BUILD = {
-  ...DEFAULT_NAME_BUILD,
-  psionicAbilities: ['low-left', 'high', 'high'],
-} as unknown as BiosoldierBuildData;
-
-export const NEURAL_DAMPING_BUILD = { ...DEFAULT_NAME_BUILD, geneMods: ['neural-damping', null] } as unknown as BiosoldierBuildData;
-
-export const NEURAL_DAMPING_PSIONIC_BUILD = { ...NEURAL_DAMPING_BUILD, psionicAbilities: ['low-left'] } as unknown as BiosoldierBuildData;
-
-export const OFFICER_BUILD = {
-  ...DEFAULT_NAME_BUILD,
-  geneMods: ['head-second', null],
-  psionicAbilities: ['low-left'],
-  officerPerks: ['alpha-right', 'beta-left'],
-} as unknown as BiosoldierBuildData;
-
-export const OFFICER_PERKS_ONLY_BUILD = { ...DEFAULT_NAME_BUILD, officerPerks: ['alpha-left'] } as unknown as BiosoldierBuildData;
-
-export const MISPLACED_OFFICER_PERK_BUILD = { ...DEFAULT_NAME_BUILD, officerPerks: ['beta-left'] } as unknown as BiosoldierBuildData;
-
-export const EXCESS_OFFICER_PERKS_BUILD = {
-  ...DEFAULT_NAME_BUILD,
-  officerPerks: ['alpha-left', 'beta-left', 'beta-right'],
-} as unknown as BiosoldierBuildData;
-
-export const UNCOMPLETED_REQUIRED_RANK_BUILD = {
-  ...DEFAULT_NAME_BUILD,
-  perks: ['granted', 'right'],
-  officerPerks: ['alpha-left', 'beta-left'],
-} as unknown as BiosoldierBuildData;
-
-export const UNKNOWN_PERK_BUILD = { ...DEFAULT_NAME_BUILD, perks: ['granted', 'missing'] };
+export const NAMED_MEC_CODES: SoldierBuildCodes = { ...MEC_CODES, name: BUILD_NAME };
 
 export const BIOSOLDIER_FORMAT = 1;
+
+export const SHIV_FORMAT = 2;
+
+export const MEC_FORMAT = 3;
+
+export const UNKNOWN_FORMAT = 5;
 
 export const PERKS_SECTION_ID = 1;
 
@@ -169,13 +59,11 @@ export const OFFICER_SECTION_ID = 5;
 
 export const UNKNOWN_SECTION_ID = 20;
 
-export const UNKNOWN_FORMAT = 5;
-
-export const SHIV_FORMAT = 2;
-
-export const MEC_FORMAT = 3;
-
 export const INVALID_RESULT = { status: 'invalid' };
+
+export const BIOSOLDIER_DECODED_RESULT = { status: 'decoded', build: BIOSOLDIER_BUILD_STUB };
+
+export const MEC_DECODED_RESULT = { status: 'decoded', build: MEC_BUILD_STUB };
 
 export const SHIV_CODE_RESULT = { status: 'other-unit', unit: 'SHIV' };
 
@@ -202,55 +90,57 @@ export const perksSection = (classCode: number, abilityCodes: number[], extraBit
   },
 });
 
-export const VALID_PERKS_SECTION = perksSection(BIOSOLDIER_CLASS_CODE, [12, 13]);
-
-export const SECOND_RANK_PERKS_SECTION = perksSection(BIOSOLDIER_CLASS_CODE, [12]);
-
-export const UNKNOWN_SECTION: BinaryCodeSection = { id: UNKNOWN_SECTION_ID, write: writer => writer.writeUint(0b11, 2) };
-
-export const BROKEN_NAME_SECTION: BinaryCodeSection = { id: NAME_SECTION_ID, write: writer => writer.writeUint(31, 5) };
+/**
+ * Section of an ability list with raw numbers: count 3 bits, ability numbers 8 bits each.
+ *
+ * @param id section id.
+ * @param abilityCodes ability numbers in section order.
+ * @param extraBits number of zero bits written after the fields.
+ */
+const abilityListSection = (id: number, abilityCodes: number[], extraBits: number): BinaryCodeSection => ({
+  id,
+  write: (writer: BitWriter) => {
+    writer.writeUint(abilityCodes.length, 3);
+    abilityCodes.forEach(abilityCode => writer.writeUint(abilityCode, 8));
+    writer.writeUint(0, extraBits);
+  },
+});
 
 /**
- * `GENE_MODS` section with raw numbers: gene mod count 3 bits, ability numbers 8 bits each.
+ * `GENE_MODS` section with raw numbers.
  *
  * @param abilityCodes gene mod numbers in section order.
  * @param extraBits number of zero bits written after the fields.
  */
-export const geneModsSection = (abilityCodes: number[], extraBits = 0): BinaryCodeSection => ({
-  id: GENE_MODS_SECTION_ID,
-  write: (writer: BitWriter) => {
-    writer.writeUint(abilityCodes.length, 3);
-    abilityCodes.forEach(abilityCode => writer.writeUint(abilityCode, 8));
-    writer.writeUint(0, extraBits);
-  },
-});
+export const geneModsSection = (abilityCodes: number[], extraBits = 0) => abilityListSection(GENE_MODS_SECTION_ID, abilityCodes, extraBits);
 
 /**
- * `PSIONIC` section with raw numbers: psionic ability count 3 bits, ability numbers 8 bits each.
+ * `PSIONIC` section with raw numbers.
  *
  * @param abilityCodes psionic ability numbers in section order.
  * @param extraBits number of zero bits written after the fields.
  */
-export const psionicSection = (abilityCodes: number[], extraBits = 0): BinaryCodeSection => ({
-  id: PSIONIC_SECTION_ID,
-  write: (writer: BitWriter) => {
-    writer.writeUint(abilityCodes.length, 3);
-    abilityCodes.forEach(abilityCode => writer.writeUint(abilityCode, 8));
-    writer.writeUint(0, extraBits);
-  },
-});
+export const psionicSection = (abilityCodes: number[], extraBits = 0) => abilityListSection(PSIONIC_SECTION_ID, abilityCodes, extraBits);
 
 /**
- * `OFFICER` section with raw numbers: officer perk count 3 bits, ability numbers 8 bits each.
+ * `OFFICER` section with raw numbers.
  *
  * @param abilityCodes officer perk numbers in section order.
  * @param extraBits number of zero bits written after the fields.
  */
-export const officerSection = (abilityCodes: number[], extraBits = 0): BinaryCodeSection => ({
-  id: OFFICER_SECTION_ID,
-  write: (writer: BitWriter) => {
-    writer.writeUint(abilityCodes.length, 3);
-    abilityCodes.forEach(abilityCode => writer.writeUint(abilityCode, 8));
-    writer.writeUint(0, extraBits);
-  },
-});
+export const officerSection = (abilityCodes: number[], extraBits = 0) => abilityListSection(OFFICER_SECTION_ID, abilityCodes, extraBits);
+
+/**
+ * `NAME` section: UTF-8 byte length 5 bits, then the bytes.
+ *
+ * @param name build name.
+ */
+export const nameSection = (name: string): BinaryCodeSection => ({ id: NAME_SECTION_ID, write: writer => writer.writeString(name, 5) });
+
+export const PLAIN_PERKS_SECTION = perksSection(BIOSOLDIER_CLASS_CODE, PLAIN_CODES.perks);
+
+export const MEC_PERKS_SECTION = perksSection(MEC_CLASS_CODE, MEC_CODES.perks);
+
+export const UNKNOWN_SECTION: BinaryCodeSection = { id: UNKNOWN_SECTION_ID, write: writer => writer.writeUint(0b11, 2) };
+
+export const BROKEN_NAME_SECTION: BinaryCodeSection = { id: NAME_SECTION_ID, write: writer => writer.writeUint(31, 5) };

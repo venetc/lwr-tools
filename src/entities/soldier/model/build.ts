@@ -1,11 +1,13 @@
-import { BODY_PARTS, NEURAL_DAMPING_ID } from '../config/constants/body-parts';
+import type { DeepReadonly } from '@shared/lib/object';
+
+import { EMPTY_GENE_MODS } from '../config/constants/body-parts';
 import { OFFICER_RANKS } from '../config/constants/officer-ranks';
-import { PSI_LEVELS } from '../config/constants/psi-levels';
+import type { AbilityId } from './abilities';
 import type { SelectedGeneMods } from './body-parts';
+import { geneModBlockReason, officerPerkBlockReason, perkBlockReason, psionicAbilityBlockReason } from './build-rules';
 import type { SelectedPerks } from './class-tree';
 import type { SoldierClass } from './classes';
 import type { SelectedOfficerPerks } from './officer-ranks';
-import { hasRequiredRank } from './officer-ranks';
 import type { SelectedPsionicAbilities } from './psi-levels';
 
 /**
@@ -38,20 +40,45 @@ export interface BiosoldierBuildData extends SoldierBuildData {
 export type BiosoldierBranchSet = 'plain' | 'gene-mods' | 'psionic' | 'both';
 
 /**
+ * Default build of the class: only the base perk selected, named after the class.
+ *
+ * @param soldierClass biosoldier class or MEC class.
+ */
+export const defaultSoldierBuild = (soldierClass: DeepReadonly<SoldierClass>): SoldierBuildData => ({
+  soldierClass,
+  perks: [soldierClass.basePerk],
+  name: soldierClass.name,
+});
+
+/**
+ * Default build of the biosoldier class: the default soldier build without gene mods, psionic abilities or officer perks.
+ *
+ * @param soldierClass biosoldier class.
+ */
+export const defaultBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>): BiosoldierBuildData => ({
+  ...defaultSoldierBuild(soldierClass),
+  geneMods: [...EMPTY_GENE_MODS],
+  psionicAbilities: [],
+  officerPerks: [],
+});
+
+/**
  * Selects a perk on the rank of the build, keeping higher ranks; clearing a rank clears all higher ranks too.
- * Leaves ranks after the available one and the first rank, which holds the base perk, untouched.
+ * A choice that breaks a Build rule is ignored: the first rank, which holds the base perk, a rank after the available
+ * one, or a perk not offered on the rank of the class tree.
  *
  * @param build soldier build; its perks are mutated in place.
  * @param rankIndex rank index in the tree.
  * @param perkId selected perk id, or null to clear the rank selection.
  */
 export const selectSoldierBuildPerk = (build: SoldierBuildData, rankIndex: number, perkId: string | null): void => {
-  if (rankIndex < 1) return;
-  if (rankIndex > build.perks.length) return;
+  if (perkBlockReason(build, rankIndex, perkId)) return;
+
   if (perkId === null) {
     build.perks.length = rankIndex;
     return;
   }
+
   build.perks[rankIndex] = perkId;
 };
 
@@ -68,7 +95,9 @@ export const selectBiosoldierBuildPerk = (build: BiosoldierBuildData, rankIndex:
 
   if (perkId) return;
 
-  const lostOfficerRankIndex = OFFICER_RANKS.findIndex(officerRank => !hasRequiredRank(officerRank, build.perks));
+  const lostOfficerRankIndex = OFFICER_RANKS.findIndex((_, officerRankIndex) => (
+    officerPerkBlockReason(build, officerRankIndex, null) === 'required-rank'
+  ));
 
   if (lostOfficerRankIndex < 0 || lostOfficerRankIndex >= build.officerPerks.length) return;
 
@@ -77,90 +106,57 @@ export const selectBiosoldierBuildPerk = (build: BiosoldierBuildData, rankIndex:
 
 /**
  * Selects a gene mod of the body part, replacing the other one, or clears the body part. Body parts are independent;
- * a body part outside the build, a gene mod of another body part or Neural Damping while any psionic ability is selected
- * is ignored.
+ * a choice that breaks a Build rule is ignored: a body part outside the build, a gene mod of another body part, or
+ * Neural Damping while any psionic ability is selected.
  *
  * @param build biosoldier build; its gene mods are mutated in place.
  * @param bodyPartIndex body part index.
  * @param geneModId selected gene mod id, or null to clear the body part.
  */
 export const selectBiosoldierBuildGeneMod = (build: BiosoldierBuildData, bodyPartIndex: number, geneModId: string | null): void => {
-  const bodyPart = BODY_PARTS[bodyPartIndex];
+  if (geneModBlockReason(build, bodyPartIndex, geneModId)) return;
 
-  if (!bodyPart) return;
-
-  if (geneModId === null) {
-    build.geneMods[bodyPartIndex] = null;
-    return;
-  }
-
-  const geneMod = bodyPart.geneMods.find(id => id === geneModId);
-
-  if (!geneMod) return;
-
-  if (geneMod === NEURAL_DAMPING_ID && build.psionicAbilities.length > 0) return;
-
-  build.geneMods[bodyPartIndex] = geneMod;
+  build.geneMods[bodyPartIndex] = geneModId as AbilityId | null;
 };
 
 /**
  * Selects a psionic ability on the psi level, keeping higher levels; clearing a level clears all higher levels too.
- * A level after the next open one, an ability of another level or any selection while Neural Damping is selected
- * is ignored.
+ * A choice that breaks a Build rule is ignored: any selection while Neural Damping is selected, a level after the next
+ * open one, or an ability of another level.
  *
  * @param build biosoldier build; its psionic abilities are mutated in place.
  * @param levelIndex psi level index.
  * @param abilityId selected psionic ability id, or null to clear the level.
  */
 export const selectBiosoldierBuildPsionicAbility = (build: BiosoldierBuildData, levelIndex: number, abilityId: string | null): void => {
-  if (build.geneMods.includes(NEURAL_DAMPING_ID)) return;
-
-  if (levelIndex > build.psionicAbilities.length) return;
-
-  const psiLevel = PSI_LEVELS[levelIndex];
-
-  if (!psiLevel) return;
+  if (psionicAbilityBlockReason(build, levelIndex, abilityId)) return;
 
   if (abilityId === null) {
     build.psionicAbilities.length = levelIndex;
     return;
   }
 
-  const ability = psiLevel.abilities.find(id => id === abilityId);
-
-  if (!ability) return;
-
-  build.psionicAbilities[levelIndex] = ability;
+  build.psionicAbilities[levelIndex] = abilityId as AbilityId;
 };
 
 /**
  * Selects an officer perk on the officer rank, keeping higher officer ranks; clearing an officer rank clears all higher
- * ones too. An officer rank after the next open one, an officer rank whose required rank the class tree has not
- * completed, or an officer perk of another officer rank is ignored.
+ * ones too. A choice that breaks a Build rule is ignored: an officer rank whose required rank the class tree has not
+ * completed, an officer rank after the next open one, or an officer perk of another officer rank.
  *
  * @param build biosoldier build; its officer perks are mutated in place.
  * @param officerRankIndex officer rank index.
  * @param perkId selected officer perk id, or null to clear the officer rank.
  */
 export const selectBiosoldierBuildOfficerPerk = (build: BiosoldierBuildData, officerRankIndex: number, perkId: string | null): void => {
-  if (officerRankIndex > build.officerPerks.length) return;
-
-  const officerRank = OFFICER_RANKS[officerRankIndex];
-
-  if (!officerRank) return;
-
-  if (!hasRequiredRank(officerRank, build.perks)) return;
+  if (officerPerkBlockReason(build, officerRankIndex, perkId)) return;
 
   if (perkId === null) {
     build.officerPerks.length = officerRankIndex;
     return;
   }
 
-  const perk = officerRank.perks.find(id => id === perkId);
-
-  if (!perk) return;
-
-  build.officerPerks[officerRankIndex] = perk;
+  build.officerPerks[officerRankIndex] = perkId as AbilityId;
 };
 
 /**

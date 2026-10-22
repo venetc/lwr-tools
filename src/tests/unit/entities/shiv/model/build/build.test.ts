@@ -1,8 +1,20 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { selectShivBuildPerk } from '@entities/shiv/model/build';
 
 import { createBuildMock, EMPTY_PERKS, FILLED_PERKS } from './build.mock';
+
+vi.mock('@entities/shiv/config/constants/perk-content', async () => ({
+  SHIV_PERK_CONTENT: (await import('./build.mock')).SHIV_PERK_CONTENT_MOCK,
+}));
+
+vi.mock('@entities/shiv/config/constants/technology-level-content', async () => ({
+  TECHNOLOGY_LEVEL_CONTENT: (await import('./build.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
+}));
+
+vi.mock('@entities/shiv/config/constants/perk-icons', () => ({ SHIV_PERK_ICON: {} }));
+
+vi.mock('@entities/shiv/config/constants/technology-level-icons', () => ({ TECHNOLOGY_LEVEL_ICON: {} }));
 
 describe('selectShivBuildPerk', () => {
   it('selects a perk on an empty level', () => {
@@ -35,5 +47,21 @@ describe('selectShivBuildPerk', () => {
     selectShivBuildPerk(build, 3, 'left');
 
     expect(build.perks).toEqual(EMPTY_PERKS);
+  });
+
+  it('ignores a perk of another level', () => {
+    const build = createBuildMock(EMPTY_PERKS);
+
+    selectShivBuildPerk(build, 0, 'middle');
+
+    expect(build.perks).toEqual(EMPTY_PERKS);
+  });
+
+  it('ignores a perk outside the SHIV tree', () => {
+    const build = createBuildMock(FILLED_PERKS);
+
+    selectShivBuildPerk(build, 1, 'missing');
+
+    expect(build.perks).toEqual(FILLED_PERKS);
   });
 });

@@ -15,9 +15,9 @@ A SHIV build in a share code. The layout (header, sections, CRC, base64url), the
 | `PERKS` | 1 | `count` 3 · `perk` 6 × count | always |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | if the name differs from "SHIV" |
 
-`PERKS` holds the selected perks as a set, without technology levels. On import each perk goes to its level in the current SHIV tree. The code is invalid if a perk is unknown, two perks share a level, or there are more perks than levels.
+`PERKS` holds the selected perks as a set, without technology levels. On import each perk goes to its level in the current SHIV tree. The code is invalid if a perk is unknown or outside the tree, or two perks share a level.
 
-Code: `features/share-build`: `config/constants.ts` (`SHIV_BUILD_SECTION`, field widths), `model/shiv-build-code.ts` (`encodeShivBuild`, `decodeShivBuild`, `ShivBuildPart`); perks and levels come from `entities/shiv`.
+Code: `entities/shiv` — Build ↔ codes `shivBuildCodes` / `shivBuildFromCodes`: perk codes in level order, a perk on its level by the Build rule of `selectShivBuildPerk`, the placement of perks on technology levels. `features/share-build` — bits only: `config/constants.ts` (`SHIV_BUILD_SECTION`, field widths), `model/shiv-build-code.ts` (`encodeShivBuild`, `decodeShivBuild`) over the counted code list and `readWholeSection` of `model/section-fields.ts`.
 
 ## Numbering
 

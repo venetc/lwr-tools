@@ -4,10 +4,11 @@ import { computed, toValue } from 'vue';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
-import { NEURAL_DAMPING_ID } from '../config/constants/body-parts';
 import { PSI_LEVEL_PICKER_ITEMS } from '../config/constants/psi-level-picker-items';
 import { NEURAL_DAMPING_BLOCK_NOTE, PSI_LEVELS } from '../config/constants/psi-levels';
 import type { BiosoldierBuildData } from './build';
+import type { BuildBlockReason } from './build-rules';
+import { psionicAbilityBlockReason } from './build-rules';
 import type { PsiLevel } from './psi-levels';
 import { psiLevelState } from './psi-levels';
 import type { RankState } from './ranks';
@@ -52,16 +53,16 @@ const psionicAppearance = (
  * @param selectedId id of the psionic ability of the level, or null.
  * @param levelState state of the psi level.
  * @param isReadonly whether the build is readonly.
- * @param hasNeuralDamping whether the build has Neural Damping.
+ * @param blockReason why a Build rule blocks the psi level, or null.
  */
 const psionicOption = (
   item: TieredPickerItem,
   selectedId: string | null,
   levelState: RankState,
   isReadonly: boolean,
-  hasNeuralDamping: boolean,
+  blockReason: BuildBlockReason | null,
 ): TieredPickerOption => {
-  if (hasNeuralDamping) return { item, appearance: 'disabled', isDisabled: true, note: NEURAL_DAMPING_BLOCK_NOTE };
+  if (blockReason === 'neural-damping') return { item, appearance: 'disabled', isDisabled: true, note: NEURAL_DAMPING_BLOCK_NOTE };
 
   return { item, appearance: psionicAppearance(item.id, selectedId, levelState, isReadonly), isDisabled: false, note: null };
 };
@@ -78,11 +79,12 @@ const psionicOption = (
  */
 export const usePsionicTiers = (build: MaybeRefOrGetter<PsionicTreeBuild>) => {
   const tiers = computed(() => {
-    const { geneMods, psionicAbilities, readonly } = toValue(build);
-    const hasNeuralDamping = geneMods.includes(NEURAL_DAMPING_ID);
+    const psionicTreeBuild = toValue(build);
+    const { psionicAbilities, readonly } = psionicTreeBuild;
 
     return PSI_LEVELS.map((psiLevel, levelIndex): PsiLevelTier => {
-      const state = psiLevelState(psionicAbilities, levelIndex, readonly, hasNeuralDamping);
+      const blockReason = psionicAbilityBlockReason(psionicTreeBuild, levelIndex, null);
+      const state = psiLevelState(psionicAbilities, levelIndex, readonly, blockReason !== null);
       const selectedId = psionicAbilities[levelIndex] ?? null;
 
       return {
@@ -92,7 +94,7 @@ export const usePsionicTiers = (build: MaybeRefOrGetter<PsionicTreeBuild>) => {
         state,
         isDisabled: readonly || state === 'locked',
         selectedId,
-        options: (PSI_LEVEL_PICKER_ITEMS[levelIndex] ?? []).map(item => psionicOption(item, selectedId, state, readonly, hasNeuralDamping)),
+        options: (PSI_LEVEL_PICKER_ITEMS[levelIndex] ?? []).map(item => psionicOption(item, selectedId, state, readonly, blockReason)),
       };
     });
   });

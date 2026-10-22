@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 
+import type { DecodedLoadout } from '@entities/loadout';
 import { createId } from '@shared/lib/id';
 import { readLocalStorage, writeLocalStorage } from '@shared/lib/local-storage';
 import { useStoredList } from '@shared/lib/stored-list';
 
 import { OPEN_SQUAD_KEY, SQUAD_KEY_PREFIX, SQUAD_ORDER_KEY } from '../config/constants';
-import type { SquadUnit, SquadUnitBuild, UnitLoadout } from './squad';
+import type { SquadUnit, SquadUnitBuild } from './squad';
 import { createSquad, defaultSquads, nextSquadName } from './squad';
 import { parseSquad, serializeSquad } from './squad-record';
 
@@ -102,7 +103,7 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
    * @param build build the Unit refers to.
    * @param loadout Loadout of the new Unit; the Unit takes it over.
    */
-  const addUnit = (squadId: string, build: SquadUnitBuild, loadout: UnitLoadout) => {
+  const addUnit = (squadId: string, build: SquadUnitBuild, loadout: DecodedLoadout) => {
     const squad = squadList.getItem(squadId);
 
     if (!squad) return;
@@ -134,7 +135,7 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
    * @param unitId Unit id.
    * @param loadout new Loadout; the Unit takes it over.
    */
-  const setUnitLoadout = (squadId: string, unitId: string, loadout: UnitLoadout) => {
+  const setUnitLoadout = (squadId: string, unitId: string, loadout: DecodedLoadout) => {
     const unit = squadList.getItem(squadId)?.units.find(item => item.id === unitId);
 
     if (!unit) return;

@@ -1,4 +1,5 @@
-import type { Squad, SquadUnit, UnitLoadout } from '@features/manage-squads';
+import type { DecodedLoadout } from '@entities/loadout';
+import type { Squad, SquadUnit } from '@features/manage-squads';
 
 export const SQUAD_ID = 'squad-1';
 
@@ -43,4 +44,4 @@ export const UNKNOWN_CODES_RECORD = {
   loadout: { armor: UNKNOWN_CODE, primary: UNKNOWN_CODE, secondary: UNKNOWN_CODE, utility: [UNKNOWN_CODE, 1], modules: [] },
 };
 
-export const UNKNOWN_CODES_LOADOUT: UnitLoadout = { armor: null, primary: null, secondary: null, utility: [null, 'he-grenade'], modules: [] };
+export const UNKNOWN_CODES_LOADOUT: DecodedLoadout = { armor: null, primary: null, secondary: null, utility: [null, 'he-grenade'], modules: [] };

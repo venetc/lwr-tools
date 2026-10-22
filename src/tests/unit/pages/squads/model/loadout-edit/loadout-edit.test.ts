@@ -1,180 +1,150 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { equipLoadoutItem, isSlotRemovable, removeLoadoutItem, utilitySlotFormula } from '@pages/squads/model/loadout-edit';
+import { fitLoadout, utilitySlotSources } from '@entities/loadout';
+import { equipLoadoutItem, removeLoadoutItem, utilitySlotFormula } from '@pages/squads/model/loadout-edit';
 
 import {
   AEGIS_FORMULA,
+  AEGIS_SOURCES,
   ASSAULT,
   AURORA_FORMULA,
-  CERAMIC_IN_LAST_SLOT,
+  AURORA_SOURCES,
   createLoadoutMock,
-  GRENADE_IN_LAST_SLOT,
+  GRENADE_MOVED_FIT,
   GRENADE_MOVED_NOTES,
+  LASER_REPLACED_FIT,
+  LASER_REPLACED_NOTES,
+  LAUNCHER_ADDED_FIT,
+  LAUNCHER_ADDED_NOTES,
   LMG_FORMULA,
-  MEC,
-  REAPER_ON_LASER,
+  LMG_SOURCES,
+  ONE_SLOT_FORMULA,
+  ONE_SLOT_SOURCES,
+  REAPER_REMOVED_FIT,
   REAPER_REMOVED_NOTES,
-  ROCKETEER,
+  SHRUNK_FIT,
   SHRUNK_NOTES,
-  THUMPER_MEC,
+  THUMPER_REMOVED_FIT,
   THUMPER_REMOVED_NOTES,
   TITAN_FORMULA,
+  TITAN_SOURCES,
+  UNCHANGED_FIT,
 } from './loadout-edit.mock';
 
-vi.mock('@entities/loadout/config/constants/armor-content', async () => ({
-  ARMOR_CONTENT: (await import('./loadout-edit.mock')).ARMOR_CONTENT_MOCK,
+vi.mock('@entities/loadout', async () => ({
+  LOADOUT_UNITS: [],
+  findLoadoutItem: (await import('./loadout-edit.mock')).findLoadoutItemStub,
+  fitLoadout: vi.fn(),
+  setSlotItem: vi.fn(),
+  utilitySlotSources: vi.fn(),
 }));
-
-vi.mock('@entities/loadout/config/constants/weapon-content', async () => ({
-  WEAPON_CONTENT: (await import('./loadout-edit.mock')).WEAPON_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/loadout/config/constants/equipment-content', async () => ({
-  EQUIPMENT_CONTENT: (await import('./loadout-edit.mock')).EQUIPMENT_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/loadout/config/constants/shiv-type-content', async () => ({
-  SHIV_TYPE_CONTENT: (await import('./loadout-edit.mock')).SHIV_TYPE_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/loadout/config/constants/armor-icons', () => ({ ARMOR_ICON: {} }));
-
-vi.mock('@entities/loadout/config/constants/weapon-icons', () => ({ WEAPON_ICON: {} }));
-
-vi.mock('@entities/loadout/config/constants/equipment-icons', () => ({ EQUIPMENT_ICON: {} }));
-
-vi.mock('@entities/loadout/config/constants/shiv-type-icons', () => ({ SHIV_TYPE_ICON: {} }));
-
-vi.mock('@entities/loadout/config/constants/loadout-ability-content', () => ({ LOADOUT_ABILITY_CONTENT: {} }));
-
-vi.mock('@entities/loadout/config/constants/loadout-ability-icons', () => ({ LOADOUT_ABILITY_ICON: {} }));
 
 describe('utilitySlotFormula', () => {
   it('names the armor, Tactical Rigging and the Gear Slots', () => {
-    const formula = utilitySlotFormula(createLoadoutMock({ armor: 'aegis-armor' }), ASSAULT);
+    vi.mocked(utilitySlotSources).mockReturnValue(AEGIS_SOURCES);
+
+    const formula = utilitySlotFormula(createLoadoutMock({ armor: 'aegis-armor' }));
 
     expect(formula).toBe(AEGIS_FORMULA);
   });
 
   it('names the Psi Slot', () => {
-    const formula = utilitySlotFormula(createLoadoutMock({ armor: 'aurora-armor' }), ASSAULT);
+    vi.mocked(utilitySlotSources).mockReturnValue(AURORA_SOURCES);
+
+    const formula = utilitySlotFormula(createLoadoutMock({ armor: 'aurora-armor' }));
 
     expect(formula).toBe(AURORA_FORMULA);
   });
 
-  it('subtracts the slot an LMG takes away', () => {
-    const formula = utilitySlotFormula(createLoadoutMock({ primary: 'lmg' }), ASSAULT);
+  it('subtracts the slot the primary weapon takes away', () => {
+    vi.mocked(utilitySlotSources).mockReturnValue(LMG_SOURCES);
+
+    const formula = utilitySlotFormula(createLoadoutMock({ primary: 'lmg' }));
 
     expect(formula).toBe(LMG_FORMULA);
   });
 
-  it('names the maximum a sum above it reaches', () => {
-    const formula = utilitySlotFormula(createLoadoutMock({ armor: 'titan-armor' }), ASSAULT);
+  it('names a single slot', () => {
+    vi.mocked(utilitySlotSources).mockReturnValue(ONE_SLOT_SOURCES);
+
+    const formula = utilitySlotFormula(createLoadoutMock({ primary: 'lmg' }));
+
+    expect(formula).toBe(ONE_SLOT_FORMULA);
+  });
+
+  it('names the maximum of a capped count', () => {
+    vi.mocked(utilitySlotSources).mockReturnValue(TITAN_SOURCES);
+
+    const formula = utilitySlotFormula(createLoadoutMock({ armor: 'titan-armor' }));
 
     expect(formula).toBe(TITAN_FORMULA);
   });
 });
 
 describe('equipLoadoutItem', () => {
-  it('puts equipment in its utility slot', () => {
-    const result = equipLoadoutItem(createLoadoutMock(), { kind: 'utility', index: 1 }, 'he-grenade', ASSAULT);
+  it('adds no notes when the rules change nothing else', () => {
+    vi.mocked(fitLoadout).mockReturnValue(UNCHANGED_FIT);
 
-    expect(result.loadout.utility).toEqual([null, 'he-grenade', null]);
-  });
-
-  it('adds no notes for equipment', () => {
     const result = equipLoadoutItem(createLoadoutMock(), { kind: 'utility', index: 1 }, 'he-grenade', ASSAULT);
 
     expect(result.notes).toEqual([]);
   });
 
-  it('leaves the Loadout it got untouched', () => {
-    const loadout = createLoadoutMock();
-
-    equipLoadoutItem(loadout, { kind: 'utility', index: 1 }, 'he-grenade', ASSAULT);
-
-    expect(loadout.utility).toEqual([null, null, null]);
-  });
-
   it('tells about the new slot count and an item moved out of a Gear Slot', () => {
-    const result = equipLoadoutItem(GRENADE_IN_LAST_SLOT, { kind: 'armor' }, 'aegis-armor', ASSAULT);
+    vi.mocked(fitLoadout).mockReturnValue(GRENADE_MOVED_FIT);
+
+    const result = equipLoadoutItem(createLoadoutMock({ utility: [null, null, 'he-grenade'] }), { kind: 'armor' }, 'aegis-armor', ASSAULT);
 
     expect(result.notes).toEqual(GRENADE_MOVED_NOTES);
   });
 
-  it('tells about an item of a slot an LMG takes away', () => {
-    const result = equipLoadoutItem(CERAMIC_IN_LAST_SLOT, { kind: 'primary' }, 'lmg', ASSAULT);
+  it('tells about an item of a removed slot', () => {
+    vi.mocked(fitLoadout).mockReturnValue(SHRUNK_FIT);
+
+    const result = equipLoadoutItem(createLoadoutMock({ utility: [null, 'he-grenade', 'ceramic-plating'] }), { kind: 'primary' }, 'lmg', ASSAULT);
 
     expect(result.notes).toEqual(SHRUNK_NOTES);
   });
 
-  it('cuts the slot an LMG takes away', () => {
-    const result = equipLoadoutItem(CERAMIC_IN_LAST_SLOT, { kind: 'primary' }, 'lmg', ASSAULT);
+  it('tells about an item removed with its reason', () => {
+    vi.mocked(fitLoadout).mockReturnValue(REAPER_REMOVED_FIT);
 
-    expect(result.loadout.utility).toEqual([null, 'he-grenade']);
-  });
-
-  it('tells about ammo removed with the weapon tier it needs', () => {
-    const result = equipLoadoutItem(REAPER_ON_LASER, { kind: 'primary' }, 'assault-rifle', ASSAULT);
+    const result = equipLoadoutItem(createLoadoutMock({ primary: 'laser-rifle', utility: ['reaper-ammo', null, null] }), { kind: 'primary' }, 'assault-rifle', ASSAULT);
 
     expect(result.notes).toEqual(REAPER_REMOVED_NOTES);
+  });
+
+  it('tells about a replaced item with its replacement', () => {
+    vi.mocked(fitLoadout).mockReturnValue(LASER_REPLACED_FIT);
+
+    const result = equipLoadoutItem(createLoadoutMock({ primary: 'laser-rifle' }), { kind: 'armor' }, 'tactical-vest', ASSAULT);
+
+    expect(result.notes).toEqual(LASER_REPLACED_NOTES);
+  });
+
+  it('tells about an added item', () => {
+    vi.mocked(fitLoadout).mockReturnValue(LAUNCHER_ADDED_FIT);
+
+    const result = equipLoadoutItem(createLoadoutMock(), { kind: 'armor' }, 'tactical-vest', ASSAULT);
+
+    expect(result.notes).toEqual(LAUNCHER_ADDED_NOTES);
   });
 });
 
 describe('removeLoadoutItem', () => {
-  it('empties a utility slot', () => {
-    const result = removeLoadoutItem(createLoadoutMock({ utility: ['he-grenade', null, null] }), { kind: 'utility', index: 0 }, ASSAULT);
+  it('tells about an item that needed the removed Module', () => {
+    vi.mocked(fitLoadout).mockReturnValue(THUMPER_REMOVED_FIT);
 
-    expect(result.loadout.utility).toEqual([null, null, null]);
-  });
-
-  it('empties the secondary slot', () => {
-    const result = removeLoadoutItem(createLoadoutMock({ secondary: 'pistol' }), { kind: 'secondary' }, ASSAULT);
-
-    expect(result.loadout.secondary).toBeNull();
-  });
-
-  it('takes off an item that needs the removed Module', () => {
-    const result = removeLoadoutItem(THUMPER_MEC, { kind: 'module', index: 0 }, MEC);
+    const result = removeLoadoutItem(createLoadoutMock({ utility: ['the-thumper', null, null] }), { kind: 'module', index: 0 }, ASSAULT);
 
     expect(result.notes).toEqual(THUMPER_REMOVED_NOTES);
   });
 
-  it('keeps the armor', () => {
-    const result = removeLoadoutItem(createLoadoutMock(), { kind: 'armor' }, ASSAULT);
+  it('adds no notes when the rules change nothing else', () => {
+    vi.mocked(fitLoadout).mockReturnValue(UNCHANGED_FIT);
 
-    expect(result.loadout.armor).toBe('tactical-vest');
-  });
-});
+    const result = removeLoadoutItem(createLoadoutMock({ utility: [null, 'he-grenade', 'he-grenade'] }), { kind: 'utility', index: 2 }, ASSAULT);
 
-describe('isSlotRemovable', () => {
-  it('keeps armor on', () => {
-    const isRemovable = isSlotRemovable({ kind: 'armor' }, createLoadoutMock(), ASSAULT);
-
-    expect(isRemovable).toBe(false);
-  });
-
-  it('keeps the primary weapon on', () => {
-    const isRemovable = isSlotRemovable({ kind: 'primary' }, createLoadoutMock(), ASSAULT);
-
-    expect(isRemovable).toBe(false);
-  });
-
-  it('takes a pistol off', () => {
-    const isRemovable = isSlotRemovable({ kind: 'secondary' }, createLoadoutMock({ secondary: 'pistol' }), ASSAULT);
-
-    expect(isRemovable).toBe(true);
-  });
-
-  it('keeps the rocket launcher of a Rocketeer on', () => {
-    const isRemovable = isSlotRemovable({ kind: 'secondary' }, createLoadoutMock({ secondary: 'rocket-launcher' }), ROCKETEER);
-
-    expect(isRemovable).toBe(false);
-  });
-
-  it('takes utility equipment off', () => {
-    const isRemovable = isSlotRemovable({ kind: 'utility', index: 0 }, createLoadoutMock({ utility: ['he-grenade', null, null] }), ASSAULT);
-
-    expect(isRemovable).toBe(true);
+    expect(result.notes).toEqual([]);
   });
 });

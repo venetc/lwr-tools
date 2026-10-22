@@ -82,6 +82,7 @@ export const ARMOR_CONTENT_MOCK: Record<string, ArmorContent> = {
   'ghost-armor': armorMock({ code: 12, unit: 'biosoldier', name: 'Ghost', utilitySlots: 2, gearSlots: 1, requires: 'gene-mod' }),
   'aurora-armor': armorMock({ code: 13, unit: 'biosoldier', name: 'Aurora', utilitySlots: 3, psiSlots: 1, requires: 'psionic' }),
   'mec1-paladin': armorMock({ code: 15, unit: 'mec', name: 'Paladin', category: 'standard', utilitySlots: 2, moduleSlots: 1 }),
+  'hmec2-defender': armorMock({ code: 16, unit: 'mec', name: 'Defender', moduleSlots: 1 }),
   'lmec3-vindicator': armorMock({ code: 21, unit: 'mec', name: 'Vindicator', utilitySlots: 3, moduleSlots: 3 }),
 };
 
@@ -110,6 +111,7 @@ export const EQUIPMENT_CONTENT_MOCK: Record<string, EquipmentContent> = {
   'drum-mags': equipmentMock({ code: 24, units: ['biosoldier'], slot: 'utility', name: 'Drum', isPassive: true, stackGroup: 'ammo-capacity', primaryTypes: ['assault-rifle'] }),
   'the-thumper': equipmentMock({ code: 37, units: ['mec'], slot: 'utility', name: 'Thumper', isPassive: true, requiredModule: 'kinetic-strike-module' }),
   'motion-tracker': equipmentMock({ code: 40, units: ['shiv'], slot: 'utility', name: 'Tracker' }),
+  'heavy-mags': equipmentMock({ code: 42, units: ['mec', 'shiv'], slot: 'utility', name: 'Heavy', isPassive: true, stackGroup: 'ammo-capacity' }),
   'scope': equipmentMock({ code: 47, units: ['biosoldier', 'mec', 'shiv'], slot: 'utility', name: 'Scope', isPassive: true, stackGroup: 'scope' }),
   'reaper-ammo': equipmentMock({ code: 48, units: ['biosoldier', 'mec', 'shiv'], slot: 'utility', name: 'Reaper', isPassive: true, stackGroup: 'ammo-type', primaryTiers: ['laser'] }),
   'flamethrower': equipmentMock({ code: 56, units: ['mec'], slot: 'module', name: 'Flamethrower' }),

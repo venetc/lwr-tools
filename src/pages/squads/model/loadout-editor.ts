@@ -3,11 +3,12 @@ import type { MaybeRefOrGetter, Ref } from 'vue';
 import { computed, nextTick, ref, shallowRef, toValue } from 'vue';
 
 import type { Loadout, LoadoutItemId } from '@entities/loadout';
+import { isSlotRemovable } from '@entities/loadout';
 import { useSquadsStore } from '@features/manage-squads';
 import { useToastQueue } from '@shared/ui/toast';
 
 import { EMPTY_SLOT_NAME } from '../config/constants';
-import { equipLoadoutItem, isSlotRemovable, removeLoadoutItem, utilitySlotFormula } from './loadout-edit';
+import { equipLoadoutItem, removeLoadoutItem, utilitySlotFormula } from './loadout-edit';
 import type { LockerItem } from './loadout-locker';
 import { itemDetails, lockerItems } from './loadout-locker';
 import type { LoadoutTile } from './loadout-tiles';
@@ -51,7 +52,7 @@ export const useLoadoutEditor = (
 
   const selectedTile = computed(() => tiles.value.find(tile => tile.id === slotId.value) ?? tiles.value[0] ?? null);
 
-  const slotFormula = computed(() => utilitySlotFormula(loadout.value, wearer.value));
+  const slotFormula = computed(() => utilitySlotFormula(loadout.value));
 
   const items = computed(() => {
     if (!selectedTile.value) return [];

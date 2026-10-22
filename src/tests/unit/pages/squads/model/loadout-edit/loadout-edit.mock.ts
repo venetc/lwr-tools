@@ -1,15 +1,13 @@
-import type { ArmorContent } from '@entities/loadout/model/armors';
-import type { EquipmentContent } from '@entities/loadout/model/equipment';
-import type { Loadout, LoadoutWearer } from '@entities/loadout/model/loadout';
-import type { ShivTypeContent } from '@entities/loadout/model/shiv-types';
-import type { WeaponContent } from '@entities/loadout/model/weapons';
+import type { Armor, Equipment, Loadout, LoadoutCatalogItem, LoadoutFit, LoadoutItemId, LoadoutWearer, UtilitySlotSources, Weapon } from '@entities/loadout';
 
 /**
- * Armor record with zero stats and no slots besides the given fields.
+ * Biosoldier armor with zero stats besides the given fields.
  *
- * @param content fields that differ from the empty record.
+ * @param armor fields that differ from the empty armor.
  */
-const armorMock = (content: Pick<ArmorContent, 'code' | 'unit' | 'name'> & Partial<ArmorContent>): ArmorContent => ({
+const armorMock = (armor: Pick<Armor, 'id' | 'name'> & Partial<Armor>): Armor => ({
+  code: 1,
+  unit: 'biosoldier',
   category: 'light',
   hp: 0,
   damageReduction: 0,
@@ -23,16 +21,23 @@ const armorMock = (content: Pick<ArmorContent, 'code' | 'unit' | 'name'> & Parti
   gearSlots: 0,
   psiSlots: 0,
   fuel: 0,
+  requires: null,
   info: '',
-  ...content,
+  icon: '',
+  grants: [],
+  ...armor,
 });
 
 /**
- * Weapon record with zero stats besides the given fields.
+ * Biosoldier weapon with zero stats besides the given fields.
  *
- * @param content fields that differ from the empty record.
+ * @param weapon fields that differ from the empty weapon.
  */
-const weaponMock = (content: Pick<WeaponContent, 'code' | 'unit' | 'name' | 'tier' | 'type' | 'slot'> & Partial<WeaponContent>): WeaponContent => ({
+const weaponMock = (weapon: Pick<Weapon, 'id' | 'name' | 'type' | 'slot'> & Partial<Weapon>): Weapon => ({
+  code: 1,
+  unit: 'biosoldier',
+  tier: 'ballistic',
+  classes: null,
   damage: 0,
   penetration: 0,
   crit: 0,
@@ -41,53 +46,65 @@ const weaponMock = (content: Pick<WeaponContent, 'code' | 'unit' | 'name' | 'tie
   mobility: 0,
   range: 0,
   utilitySlots: 0,
+  ammoUpgrade: 0,
+  damageUpgrade: 0,
+  critDamage: 0,
+  environmentDamage: 0,
+  radius: 0,
+  canCrit: true,
+  vsMechanical: null,
   info: '',
-  ...content,
+  icon: '',
+  grants: [],
+  ...weapon,
 });
 
 /**
- * Equipment record without stats besides the given fields.
+ * Biosoldier utility equipment without stats besides the given fields.
  *
- * @param content fields that differ from the empty record.
+ * @param equipment fields that differ from the empty item.
  */
-const equipmentMock = (content: Pick<EquipmentContent, 'code' | 'units' | 'slot' | 'name'> & Partial<EquipmentContent>): EquipmentContent => ({
+const equipmentMock = (equipment: Pick<Equipment, 'id' | 'name'> & Partial<Equipment>): Equipment => ({
+  code: 1,
+  units: ['biosoldier'],
+  slot: 'utility',
+  classes: null,
+  requires: null,
+  isPassive: false,
+  stackGroup: null,
+  primaryTiers: null,
+  primaryTypes: null,
+  requiredModule: null,
   stats: [],
-  ...content,
+  info: null,
+  icon: '',
+  grants: [],
+  ...equipment,
 });
 
-export const ARMOR_CONTENT_MOCK: Record<string, ArmorContent> = {
-  'tactical-vest': armorMock({ code: 1, unit: 'biosoldier', name: 'Vest', utilitySlots: 2 }),
-  'aegis-armor': armorMock({ code: 6, unit: 'biosoldier', name: 'Aegis', utilitySlots: 3, gearSlots: 2 }),
-  'titan-armor': armorMock({ code: 9, unit: 'biosoldier', name: 'Titan', utilitySlots: 4 }),
-  'ghost-armor': armorMock({ code: 12, unit: 'biosoldier', name: 'Ghost', utilitySlots: 2, gearSlots: 1 }),
-  'aurora-armor': armorMock({ code: 13, unit: 'biosoldier', name: 'Aurora', utilitySlots: 3, psiSlots: 1 }),
-  'mec1-paladin': armorMock({ code: 15, unit: 'mec', name: 'Paladin', category: 'standard', utilitySlots: 2, moduleSlots: 1 }),
-};
+const LOADOUT_ITEMS_MOCK: ReadonlyMap<LoadoutItemId, LoadoutCatalogItem> = new Map<LoadoutItemId, LoadoutCatalogItem>([
+  ['tactical-vest', { kind: 'armor', item: armorMock({ id: 'tactical-vest', name: 'Vest' }) }],
+  ['aegis-armor', { kind: 'armor', item: armorMock({ id: 'aegis-armor', name: 'Aegis' }) }],
+  ['aurora-armor', { kind: 'armor', item: armorMock({ id: 'aurora-armor', name: 'Aurora' }) }],
+  ['titan-armor', { kind: 'armor', item: armorMock({ id: 'titan-armor', name: 'Titan' }) }],
+  ['assault-rifle', { kind: 'weapon', item: weaponMock({ id: 'assault-rifle', name: 'Rifle', type: 'assault-rifle', slot: 'primary' }) }],
+  ['laser-rifle', { kind: 'weapon', item: weaponMock({ id: 'laser-rifle', name: 'Laser', type: 'assault-rifle', slot: 'primary' }) }],
+  ['lmg', { kind: 'weapon', item: weaponMock({ id: 'lmg', name: 'LMG', type: 'lmg', slot: 'primary' }) }],
+  ['rocket-launcher', { kind: 'weapon', item: weaponMock({ id: 'rocket-launcher', name: 'Launcher', type: 'rocket-launcher', slot: 'secondary' }) }],
+  ['he-grenade', { kind: 'equipment', item: equipmentMock({ id: 'he-grenade', name: 'Grenade' }) }],
+  ['ceramic-plating', { kind: 'equipment', item: equipmentMock({ id: 'ceramic-plating', name: 'Ceramic' }) }],
+  ['reaper-ammo', { kind: 'equipment', item: equipmentMock({ id: 'reaper-ammo', name: 'Reaper' }) }],
+  ['the-thumper', { kind: 'equipment', item: equipmentMock({ id: 'the-thumper', name: 'Thumper' }) }],
+]);
 
-export const WEAPON_CONTENT_MOCK: Record<string, WeaponContent> = {
-  'assault-rifle': weaponMock({ code: 1, unit: 'biosoldier', name: 'Rifle', tier: 'ballistic', type: 'assault-rifle', slot: 'primary' }),
-  'lmg': weaponMock({ code: 7, unit: 'biosoldier', name: 'LMG', tier: 'ballistic', type: 'lmg', slot: 'primary', utilitySlots: -1 }),
-  'pistol': weaponMock({ code: 13, unit: 'biosoldier', name: 'Pistol', tier: 'ballistic', type: 'pistol', slot: 'secondary', classes: ['assault'] }),
-  'rocket-launcher': weaponMock({ code: 16, unit: 'biosoldier', name: 'Launcher', tier: 'ballistic', type: 'rocket-launcher', slot: 'secondary', classes: ['rocketeer'] }),
-  'laser-rifle': weaponMock({ code: 17, unit: 'biosoldier', name: 'Laser', tier: 'laser', type: 'assault-rifle', slot: 'primary' }),
-  'minigun': weaponMock({ code: 10, unit: 'mec', name: 'Minigun', tier: 'ballistic', type: 'mec-weapon', slot: 'primary' }),
-};
-
-export const EQUIPMENT_CONTENT_MOCK: Record<string, EquipmentContent> = {
-  'he-grenade': equipmentMock({ code: 1, units: ['biosoldier'], slot: 'utility', name: 'Grenade' }),
-  'ceramic-plating': equipmentMock({ code: 23, units: ['biosoldier'], slot: 'utility', name: 'Ceramic', isPassive: true, stackGroup: 'plating' }),
-  'reaper-ammo': equipmentMock({ code: 48, units: ['biosoldier'], slot: 'utility', name: 'Reaper', isPassive: true, stackGroup: 'ammo-type', primaryTiers: ['laser'] }),
-  'the-thumper': equipmentMock({ code: 37, units: ['mec'], slot: 'utility', name: 'Thumper', isPassive: true, requiredModule: 'kinetic-strike-module' }),
-  'kinetic-strike-module': equipmentMock({ code: 57, units: ['mec'], slot: 'module', name: 'Kinetic' }),
-};
-
-export const SHIV_TYPE_CONTENT_MOCK: Record<string, ShivTypeContent> = {};
+/**
+ * Stub of `findLoadoutItem` over the items of the mock.
+ *
+ * @param id item id.
+ */
+export const findLoadoutItemStub = (id: LoadoutItemId) => LOADOUT_ITEMS_MOCK.get(id) ?? null;
 
 export const ASSAULT: LoadoutWearer = { unit: 'biosoldier', classId: 'assault', hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
-
-export const ROCKETEER: LoadoutWearer = { ...ASSAULT, classId: 'rocketeer' };
-
-export const MEC: LoadoutWearer = { unit: 'mec', classId: 'marauder', hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
 
 /**
  * Fresh biosoldier Loadout with its own slot arrays.
@@ -103,26 +120,66 @@ export const createLoadoutMock = (loadout: Partial<Loadout> = {}): Loadout => ({
   ...loadout,
 });
 
+export const AEGIS_SOURCES: UtilitySlotSources = { armor: 3, rigging: 1, weapon: 0, gearSlots: 2, psiSlots: 0, count: 4, isCapped: false };
+
 export const AEGIS_FORMULA = 'Aegis 3 + Tactical Rigging 1 = 4 Utility slots, last two are Gear Slots.';
+
+export const AURORA_SOURCES: UtilitySlotSources = { armor: 3, rigging: 1, weapon: 0, gearSlots: 0, psiSlots: 1, count: 4, isCapped: false };
 
 export const AURORA_FORMULA = 'Aurora 3 + Tactical Rigging 1 = 4 Utility slots, last one is a Psi Slot.';
 
+export const LMG_SOURCES: UtilitySlotSources = { armor: 2, rigging: 1, weapon: -1, gearSlots: 0, psiSlots: 0, count: 2, isCapped: false };
+
 export const LMG_FORMULA = 'Vest 2 + Tactical Rigging 1 − LMG 1 = 2 Utility slots.';
+
+export const ONE_SLOT_SOURCES: UtilitySlotSources = { armor: 2, rigging: 0, weapon: -1, gearSlots: 0, psiSlots: 0, count: 1, isCapped: false };
+
+export const ONE_SLOT_FORMULA = 'Vest 2 − LMG 1 = 1 Utility slot.';
+
+export const TITAN_SOURCES: UtilitySlotSources = { armor: 4, rigging: 1, weapon: 0, gearSlots: 0, psiSlots: 0, count: 4, isCapped: true };
 
 export const TITAN_FORMULA = 'Titan 4 + Tactical Rigging 1 = 4 Utility slots (max 4).';
 
-export const CERAMIC_IN_LAST_SLOT = createLoadoutMock({ utility: [null, 'he-grenade', 'ceramic-plating'] });
+export const UNCHANGED_FIT: LoadoutFit = { loadout: createLoadoutMock({ utility: [null, 'he-grenade', null] }), changes: [] };
 
-export const GRENADE_IN_LAST_SLOT = createLoadoutMock({ utility: [null, null, 'he-grenade'] });
+export const GRENADE_MOVED_FIT: LoadoutFit = {
+  loadout: createLoadoutMock({ armor: 'aegis-armor', utility: ['he-grenade', null, null, null] }),
+  changes: [{ kind: 'moved', item: 'he-grenade', from: 2, to: 0 }],
+};
 
 export const GRENADE_MOVED_NOTES = ['Utility slots: 3 → 4.', 'Grenade moved to Utility.'];
 
+export const SHRUNK_FIT: LoadoutFit = {
+  loadout: createLoadoutMock({ primary: 'lmg', utility: [null, 'he-grenade'] }),
+  changes: [{ kind: 'removed', slot: 'utility', item: 'ceramic-plating', reason: 'slot-removed' }],
+};
+
 export const SHRUNK_NOTES = ['Utility slots: 3 → 2.', 'Ceramic removed: slot removed.'];
 
-export const REAPER_ON_LASER = createLoadoutMock({ primary: 'laser-rifle', utility: ['reaper-ammo', null, null] });
+export const REAPER_REMOVED_FIT: LoadoutFit = {
+  loadout: createLoadoutMock(),
+  changes: [{ kind: 'removed', slot: 'utility', item: 'reaper-ammo', reason: 'unsupported-weapon' }],
+};
 
 export const REAPER_REMOVED_NOTES = ['Reaper removed: unsupported weapon.'];
 
-export const THUMPER_MEC = createLoadoutMock({ armor: 'mec1-paladin', primary: 'minigun', utility: ['the-thumper', null], modules: ['kinetic-strike-module'] });
+export const LASER_REPLACED_FIT: LoadoutFit = {
+  loadout: createLoadoutMock(),
+  changes: [{ kind: 'replaced', slot: 'primary', item: 'laser-rifle', by: 'assault-rifle', reason: 'class-limited' }],
+};
+
+export const LASER_REPLACED_NOTES = ['Laser replaced with Rifle: class-limited item.'];
+
+export const LAUNCHER_ADDED_FIT: LoadoutFit = {
+  loadout: createLoadoutMock({ secondary: 'rocket-launcher' }),
+  changes: [{ kind: 'added', slot: 'secondary', item: 'rocket-launcher' }],
+};
+
+export const LAUNCHER_ADDED_NOTES = ['Launcher added to Secondary.'];
+
+export const THUMPER_REMOVED_FIT: LoadoutFit = {
+  loadout: createLoadoutMock(),
+  changes: [{ kind: 'removed', slot: 'utility', item: 'the-thumper', reason: 'needs-module' }],
+};
 
 export const THUMPER_REMOVED_NOTES = ['Thumper removed: needs Module.'];

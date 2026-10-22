@@ -1,4 +1,4 @@
-import type { ArmorId, EquipmentId, LoadoutUnitId, ShivTypeId, WeaponId } from '@entities/loadout';
+import type { DecodedLoadout, LoadoutUnitId } from '@entities/loadout';
 
 import { DEFAULT_SQUAD_ID, SQUAD_NAME } from '../config/constants';
 
@@ -13,23 +13,6 @@ export interface SquadUnitBuild {
 }
 
 /**
- * Loadout of a Unit as the Squad keeps it: an item of an unknown code leaves its slot empty, and the check of the Unit
- * fills the armor and primary weapon slots again.
- */
-export interface UnitLoadout {
-  /** Armor, MEC exoskeleton or, for a SHIV, its SHIV type; null until the check if its code is unknown. */
-  armor: ArmorId | ShivTypeId | null
-  /** Primary weapon; null until the check if its code is unknown. */
-  primary: WeaponId | null
-  /** Secondary weapon; null for an empty slot or a unit without one. */
-  secondary: WeaponId | null
-  /** Items of the utility slots by position, Gear Slots and Psi Slots last; null for an empty slot. */
-  utility: (EquipmentId | null)[]
-  /** Modules of a MEC by position; null for an empty slot. */
-  modules: (EquipmentId | null)[]
-}
-
-/**
  * Unit of a Squad: a saved build with its own Loadout.
  */
 export interface SquadUnit {
@@ -37,8 +20,8 @@ export interface SquadUnit {
   id: string
   /** Build the Unit refers to. */
   build: SquadUnitBuild
-  /** Items the Unit carries. */
-  loadout: UnitLoadout
+  /** Items the Unit carries; armor and the primary weapon of unknown codes stay empty until the Unit check. */
+  loadout: DecodedLoadout
 }
 
 /**

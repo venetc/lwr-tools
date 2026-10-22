@@ -190,6 +190,60 @@ describe('utilitySlotSources', () => {
 
     expect(sources.psiSlots).toBe(1);
   });
+
+  it('counts the slots of biosoldier armor with Tactical Rigging', () => {
+    const sources = utilitySlotSources({ armor: 'tactical-vest', primary: 'assault-rifle' });
+
+    expect(sources).toMatchObject({ count: 3, isCapped: false });
+  });
+
+  it('counts the slots of Phalanx without Tactical Rigging', () => {
+    const sources = utilitySlotSources({ armor: 'phalanx-armor', primary: 'assault-rifle' });
+
+    expect(sources).toMatchObject({ count: 3, isCapped: false });
+  });
+
+  it('counts Gear Slots in the slots', () => {
+    const sources = utilitySlotSources({ armor: 'aegis-armor', primary: 'assault-rifle' });
+
+    expect(sources).toMatchObject({ count: 4, isCapped: false });
+  });
+
+  it('counts Psi Slots in the slots', () => {
+    const sources = utilitySlotSources({ armor: 'aurora-armor', primary: 'assault-rifle' });
+
+    expect(sources).toMatchObject({ count: 4, isCapped: false });
+  });
+
+  it('counts the slots without the one an LMG takes away', () => {
+    const sources = utilitySlotSources({ armor: 'tactical-vest', primary: 'lmg' });
+
+    expect(sources).toMatchObject({ count: 2, isCapped: false });
+  });
+
+  it('caps the slots of a sum above the maximum', () => {
+    const sources = utilitySlotSources({ armor: 'titan-armor', primary: 'assault-rifle' });
+
+    expect(sources).toMatchObject({ count: 4, isCapped: true });
+  });
+
+  it('counts no slots for a sum below zero', () => {
+    const sources = utilitySlotSources({ armor: 'hmec2-defender', primary: 'lmg' });
+
+    expect(sources).toMatchObject({ count: 0, isCapped: false });
+  });
+
+  it('counts the slots of a SHIV type', () => {
+    const sources = utilitySlotSources({ armor: 'alloy-shiv', primary: 'autocannon' });
+
+    expect(sources).toMatchObject({ count: 4, isCapped: false });
+  });
+
+  it('counts the slots of a MEC exoskeleton', () => {
+    const sources = utilitySlotSources({ armor: 'mec1-paladin', primary: 'minigun' });
+
+    expect(sources).toMatchObject({ count: 2, isCapped: false });
+  });
 });
 
 describe('blockReasons', () => {

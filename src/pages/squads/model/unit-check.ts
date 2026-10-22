@@ -1,7 +1,7 @@
-import type { Loadout, LoadoutChange, LoadoutWearer } from '@entities/loadout';
+import type { DecodedLoadout, Loadout, LoadoutChange, LoadoutWearer } from '@entities/loadout';
 import { defaultLoadout, fitLoadout } from '@entities/loadout';
 import { biosoldierBuildBranchSet, isOfficerBuild } from '@entities/soldier';
-import type { SquadUnit, UnitLoadout } from '@features/manage-squads';
+import type { SquadUnit } from '@features/manage-squads';
 import type { ToastContent } from '@shared/ui/toast';
 
 import {
@@ -95,7 +95,7 @@ const unitWearer = (squadBuild: SquadBuild): LoadoutWearer => {
  * @param squadBuild build of the Unit.
  * @returns the checked Unit; null if no armor or primary weapon fits the Unit.
  */
-export const checkUnit = (loadout: Readonly<UnitLoadout> | null, squadBuild: SquadBuild): CheckedUnit | null => {
+export const checkUnit = (loadout: Readonly<DecodedLoadout> | null, squadBuild: SquadBuild): CheckedUnit | null => {
   const wearer = unitWearer(squadBuild);
   const defaults = defaultLoadout(wearer);
 
@@ -124,7 +124,7 @@ const isSameItems = <Item>(kept: readonly Item[], checked: readonly Item[]) => {
  * @param kept Loadout as the Squad keeps it.
  * @param checked Loadout after the check.
  */
-const isSameLoadout = (kept: Readonly<UnitLoadout>, checked: Loadout) => {
+const isSameLoadout = (kept: Readonly<DecodedLoadout>, checked: Loadout) => {
   return kept.armor === checked.armor
     && kept.primary === checked.primary
     && kept.secondary === checked.secondary

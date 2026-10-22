@@ -1,5 +1,5 @@
 import type { Loadout, LoadoutItemId, LoadoutSlot, LoadoutWearer, UtilitySlotKind } from '@entities/loadout';
-import { ARMOR_BY_ID, EQUIPMENT_BY_ID, loadoutSlots, SHIV_TYPE_BY_ID, WEAPON_BY_ID } from '@entities/loadout';
+import { findLoadoutItem, loadoutSlots } from '@entities/loadout';
 
 import {
   ARMOR_SLOT_CAPTION,
@@ -41,17 +41,16 @@ export interface LoadoutTile {
 }
 
 /**
- * Item of a slot as a tile shows it; null for an empty slot or an item missing from the catalog of the slot.
+ * Item of a slot as a tile shows it; null for an empty slot or an item missing from every catalog.
  *
- * @param catalog items of the catalog of the slot by id.
  * @param id item id, or null for an empty slot.
  */
-const tileItem = (catalog: ReadonlyMap<LoadoutItemId, LoadoutTileItem>, id: LoadoutItemId | null): LoadoutTileItem | null => {
-  const item = id ? catalog.get(id) : null;
+const tileItem = (id: LoadoutItemId | null): LoadoutTileItem | null => {
+  const found = id ? findLoadoutItem(id) : null;
 
-  if (!item) return null;
+  if (!found) return null;
 
-  return { name: item.name, icon: item.icon };
+  return { name: found.item.name, icon: found.item.icon };
 };
 
 /**
@@ -84,23 +83,22 @@ const createTile = (id: string, slot: LoadoutSlot, caption: string, item: Loadou
  */
 export const loadoutTiles = (loadout: Readonly<Loadout>, wearer: LoadoutWearer): LoadoutTile[] => {
   const slots = loadoutSlots(loadout, wearer);
-  const armorCatalog = wearer.unit === 'shiv' ? SHIV_TYPE_BY_ID : ARMOR_BY_ID;
 
   const tiles = [
-    createTile('armor', { kind: 'armor' }, ARMOR_SLOT_CAPTION[wearer.unit], tileItem(armorCatalog, loadout.armor)),
-    createTile('primary', { kind: 'primary' }, PRIMARY_SLOT_CAPTION, tileItem(WEAPON_BY_ID, loadout.primary)),
+    createTile('armor', { kind: 'armor' }, ARMOR_SLOT_CAPTION[wearer.unit], tileItem(loadout.armor)),
+    createTile('primary', { kind: 'primary' }, PRIMARY_SLOT_CAPTION, tileItem(loadout.primary)),
   ];
 
   if (slots.hasSecondary) {
-    tiles.push(createTile('secondary', { kind: 'secondary' }, SECONDARY_SLOT_CAPTION, tileItem(WEAPON_BY_ID, loadout.secondary)));
+    tiles.push(createTile('secondary', { kind: 'secondary' }, SECONDARY_SLOT_CAPTION, tileItem(loadout.secondary)));
   }
 
   for (let index = 0; index < slots.moduleCount; index++) {
-    tiles.push(createTile(`module-${index}`, { kind: 'module', index }, MODULE_SLOT_CAPTION, tileItem(EQUIPMENT_BY_ID, loadout.modules[index] ?? null)));
+    tiles.push(createTile(`module-${index}`, { kind: 'module', index }, MODULE_SLOT_CAPTION, tileItem(loadout.modules[index] ?? null)));
   }
 
   slots.utility.forEach((kind, index) => {
-    const item = tileItem(EQUIPMENT_BY_ID, loadout.utility[index] ?? null);
+    const item = tileItem(loadout.utility[index] ?? null);
 
     tiles.push(createTile(`utility-${index}`, { kind: 'utility', index }, UTILITY_SLOT_CAPTION[kind], item, kind));
   });

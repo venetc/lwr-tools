@@ -16,6 +16,9 @@ export const LOADOUT_BLOCK_REASONS = [
   'psi-slot-psi-only',
 ] as const;
 
+/** Kinds of utility slots: regular ones, Gear Slots for passive gear only, Psi Slots for passive psionic gear only. */
+export const UTILITY_SLOT_KINDS = ['regular', 'gear-slot', 'psi-slot'] as const;
+
 /** Utility slots that Tactical Rigging adds to biosoldier armor; the project counts the Foundry project as always researched. */
 export const TACTICAL_RIGGING_SLOTS = 1;
 

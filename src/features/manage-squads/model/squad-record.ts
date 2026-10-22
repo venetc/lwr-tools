@@ -1,76 +1,11 @@
 import type { z } from 'zod';
 
-import type { LoadoutItemId, LoadoutUnitId } from '@entities/loadout';
-import {
-  ARMOR_BY_ID,
-  ARMOR_ID_BY_CODE,
-  EQUIPMENT_BY_ID,
-  EQUIPMENT_ID_BY_CODE,
-  isLoadoutUnitId,
-  SHIV_TYPE_BY_ID,
-  SHIV_TYPE_ID_BY_CODE,
-  WEAPON_BY_ID,
-  WEAPON_ID_BY_CODE,
-} from '@entities/loadout';
+import { isLoadoutUnitId, loadoutCodes, loadoutFromCodes } from '@entities/loadout';
 
 import { STORED_SQUAD_SCHEMA, STORED_UNIT_SCHEMA } from '../config/constants';
-import type { Squad, SquadUnit, UnitLoadout } from './squad';
+import type { Squad, SquadUnit } from './squad';
 
 type StoredUnit = z.infer<typeof STORED_UNIT_SCHEMA>;
-
-type StoredLoadout = StoredUnit['loadout'];
-
-/**
- * Stored code of an item: its `code` in the catalog; null for an empty slot or an item missing from the catalog.
- *
- * @param catalog items of the catalog by id.
- * @param id item id, or null for an empty slot.
- */
-const itemCode = (catalog: ReadonlyMap<LoadoutItemId, { readonly code: number }>, id: LoadoutItemId | null) => {
-  if (id === null) return null;
-
-  return catalog.get(id)?.code ?? null;
-};
-
-/**
- * Item of a stored code; null for an empty slot or a code missing from the catalog.
- *
- * @param idByCode item ids of the catalog by code.
- * @param code stored code, or null for an empty slot.
- */
-const itemId = <Id extends LoadoutItemId>(idByCode: ReadonlyMap<number, Id>, code: number | null) => {
-  if (code === null) return null;
-
-  return idByCode.get(code) ?? null;
-};
-
-/**
- * Stored Loadout: items as their catalog codes; a SHIV keeps its SHIV type in the armor slot.
- *
- * @param kind kind of the build of the Unit.
- * @param loadout Loadout of the Unit.
- */
-const serializeLoadout = (kind: LoadoutUnitId, loadout: Readonly<UnitLoadout>): StoredLoadout => ({
-  armor: itemCode(kind === 'shiv' ? SHIV_TYPE_BY_ID : ARMOR_BY_ID, loadout.armor),
-  primary: itemCode(WEAPON_BY_ID, loadout.primary),
-  secondary: itemCode(WEAPON_BY_ID, loadout.secondary),
-  utility: loadout.utility.map(item => itemCode(EQUIPMENT_BY_ID, item)),
-  modules: loadout.modules.map(item => itemCode(EQUIPMENT_BY_ID, item)),
-});
-
-/**
- * Loadout of the stored codes; an unknown code leaves its slot empty.
- *
- * @param kind kind of the build of the Unit.
- * @param loadout stored Loadout.
- */
-const parseLoadout = (kind: LoadoutUnitId, loadout: StoredLoadout): UnitLoadout => ({
-  armor: kind === 'shiv' ? itemId(SHIV_TYPE_ID_BY_CODE, loadout.armor) : itemId(ARMOR_ID_BY_CODE, loadout.armor),
-  primary: itemId(WEAPON_ID_BY_CODE, loadout.primary),
-  secondary: itemId(WEAPON_ID_BY_CODE, loadout.secondary),
-  utility: loadout.utility.map(code => itemId(EQUIPMENT_ID_BY_CODE, code)),
-  modules: loadout.modules.map(code => itemId(EQUIPMENT_ID_BY_CODE, code)),
-});
 
 /**
  * Stored record of the Unit.
@@ -80,7 +15,7 @@ const parseLoadout = (kind: LoadoutUnitId, loadout: StoredLoadout): UnitLoadout 
 const serializeUnit = (unit: Readonly<SquadUnit>): StoredUnit => ({
   id: unit.id,
   build: { kind: unit.build.kind, id: unit.build.id },
-  loadout: serializeLoadout(unit.build.kind, unit.loadout),
+  loadout: loadoutCodes(unit.loadout, unit.build.kind),
 });
 
 /**
@@ -100,7 +35,7 @@ const parseUnit = (record: unknown): SquadUnit | null => {
   return {
     id,
     build: { kind: build.kind, id: build.id },
-    loadout: parseLoadout(build.kind, loadout),
+    loadout: loadoutFromCodes(loadout, build.kind),
   };
 };
 

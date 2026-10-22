@@ -1,6 +1,7 @@
-import type { SquadUnit, UnitLoadout } from '@features/manage-squads';
+import type { DecodedLoadout } from '@entities/loadout';
+import type { SquadUnit } from '@features/manage-squads';
 
-const LOADOUT: UnitLoadout = { armor: 'tactical-vest', primary: 'assault-rifle', secondary: null, utility: [null, null], modules: [] };
+const LOADOUT: DecodedLoadout = { armor: 'tactical-vest', primary: 'assault-rifle', secondary: null, utility: [null, null], modules: [] };
 
 export const BUILD = { kind: 'biosoldier', id: 'build-1' } as const;
 

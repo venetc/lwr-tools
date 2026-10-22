@@ -1,5 +1,5 @@
 import type { Loadout, LoadoutChange, LoadoutItemId, LoadoutSlot, LoadoutWearer } from '@entities/loadout';
-import { fitLoadout, loadoutSlots, utilitySlotSources } from '@entities/loadout';
+import { findLoadoutItem, fitLoadout, setSlotItem, utilitySlotSources } from '@entities/loadout';
 
 import {
   CHANGE_REASON_TEXT,
@@ -11,7 +11,6 @@ import {
   UTILITY_SLOT_NAME,
   UTILITY_SLOTS_NAME,
 } from '../config/constants';
-import { findLoadoutItem } from './loadout-items';
 import { lastSlotsPhrase } from './loadout-locker';
 
 /**
@@ -50,27 +49,6 @@ export const changeNote = (change: LoadoutChange) => {
 };
 
 /**
- * Puts the item in the slot of the Loadout in place; an item of another catalog than the slot's is ignored.
- *
- * @param loadout Loadout to change.
- * @param slot slot of the Loadout.
- * @param id item id.
- */
-const placeItem = (loadout: Loadout, slot: LoadoutSlot, id: LoadoutItemId) => {
-  const found = findLoadoutItem(id);
-
-  if (!found) return;
-
-  if (slot.kind === 'armor' && (found.kind === 'armor' || found.kind === 'shiv-type')) loadout.armor = found.item.id;
-
-  if (found.kind === 'weapon' && (slot.kind === 'primary' || slot.kind === 'secondary')) loadout[slot.kind] = found.item.id;
-
-  if (slot.kind === 'utility' && found.kind === 'equipment') loadout.utility[slot.index] = found.item.id;
-
-  if (slot.kind === 'module' && found.kind === 'equipment') loadout.modules[slot.index] = found.item.id;
-};
-
-/**
  * Brings a changed Loadout to the rules with `fitLoadout`: a new armor, SHIV type or primary weapon counts the slots
  * again, and a removed Module takes off the items that need it.
  *
@@ -100,25 +78,9 @@ const fitEdit = (before: Loadout, changed: Loadout, wearer: LoadoutWearer): Load
 export const equipLoadoutItem = (loadout: Loadout, slot: LoadoutSlot, id: LoadoutItemId, wearer: LoadoutWearer): LoadoutEdit => {
   const placed: Loadout = { ...loadout, utility: [...loadout.utility], modules: [...loadout.modules] };
 
-  placeItem(placed, slot, id);
+  setSlotItem(placed, slot, id);
 
   return fitEdit(loadout, placed, wearer);
-};
-
-/**
- * Whether the item of the slot can be taken off: never armor and the primary weapon, nor the secondary weapon of a slot
- * that is never empty (the rocket launcher of a Rocketeer).
- *
- * @param slot slot of the Loadout.
- * @param loadout Loadout of the unit.
- * @param wearer unit that carries the Loadout.
- */
-export const isSlotRemovable = (slot: LoadoutSlot, loadout: Loadout, wearer: LoadoutWearer) => {
-  if (slot.kind === 'armor' || slot.kind === 'primary') return false;
-
-  if (slot.kind === 'secondary') return !loadoutSlots(loadout, wearer).isSecondaryRequired;
-
-  return true;
 };
 
 /**
@@ -132,11 +94,7 @@ export const isSlotRemovable = (slot: LoadoutSlot, loadout: Loadout, wearer: Loa
 export const removeLoadoutItem = (loadout: Loadout, slot: LoadoutSlot, wearer: LoadoutWearer): LoadoutEdit => {
   const removed: Loadout = { ...loadout, utility: [...loadout.utility], modules: [...loadout.modules] };
 
-  if (slot.kind === 'secondary') removed.secondary = null;
-
-  if (slot.kind === 'utility') removed.utility[slot.index] = null;
-
-  if (slot.kind === 'module') removed.modules[slot.index] = null;
+  setSlotItem(removed, slot, null);
 
   return fitEdit(loadout, removed, wearer);
 };
@@ -146,19 +104,17 @@ export const removeLoadoutItem = (loadout: Loadout, slot: LoadoutSlot, wearer: L
  * An LMG or a Stun Rifle subtracts its slot, and a sum above the maximum names it: `= 4 Utility slots (max 4)`.
  *
  * @param loadout Loadout of the unit.
- * @param wearer unit that carries the Loadout.
  */
-export const utilitySlotFormula = (loadout: Loadout, wearer: LoadoutWearer) => {
+export const utilitySlotFormula = (loadout: Loadout) => {
   const sources = utilitySlotSources(loadout);
-  const count = loadoutSlots(loadout, wearer).utility.length;
   const terms = [`${loadoutItemName(loadout.armor)} ${sources.armor}`];
 
   if (sources.rigging) terms.push(`+ ${TACTICAL_RIGGING_NAME} ${sources.rigging}`);
 
   if (sources.weapon) terms.push(`− ${loadoutItemName(loadout.primary)} ${-sources.weapon}`);
 
-  const total = `${count} ${count === 1 ? UTILITY_SLOT_NAME : UTILITY_SLOTS_NAME}`;
-  const max = sources.armor + sources.rigging + sources.weapon > count ? ` (${MAX_WORD} ${count})` : '';
+  const total = `${sources.count} ${sources.count === 1 ? UTILITY_SLOT_NAME : UTILITY_SLOTS_NAME}`;
+  const max = sources.isCapped ? ` (${MAX_WORD} ${sources.count})` : '';
   const lastSlots = [lastSlotsPhrase(sources.gearSlots, 'gear-slot'), lastSlotsPhrase(sources.psiSlots, 'psi-slot')]
     .filter(phrase => phrase !== null)
     .map(phrase => `, ${phrase}`)

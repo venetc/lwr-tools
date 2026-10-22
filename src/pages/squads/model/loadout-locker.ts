@@ -1,18 +1,22 @@
 import type {
   Armor,
+  ArmorRules,
   Equipment,
+  EquipmentRules,
   EquipmentStat,
   Loadout,
   LoadoutAbility,
   LoadoutBlockReason,
+  LoadoutCatalogItem,
   LoadoutItemId,
   LoadoutSlot,
+  LoadoutUnitId,
   LoadoutWearer,
   ShivType,
   UtilitySlotKind,
   Weapon,
 } from '@entities/loadout';
-import { ARMORS, blockReasons, EQUIPMENT, EQUIPMENT_BY_ID, itemCarriers, SHIV_TYPES, utilitySlotSources, WEAPONS } from '@entities/loadout';
+import { blockReasons, findLoadoutItem, itemCarriers, itemRules, slotItemId, slotItems } from '@entities/loadout';
 import type { DeepReadonly } from '@shared/lib/object';
 
 import {
@@ -36,8 +40,6 @@ import {
   WEAPON_TIER_NAME,
   WEAPON_TYPE_NAME,
 } from '../config/constants';
-import type { LoadoutCatalogItem } from './loadout-items';
-import { findLoadoutItem } from './loadout-items';
 
 /**
  * Item of the Locker of a slot.
@@ -151,19 +153,17 @@ export const lastSlotsPhrase = (count: number, kind: Exclude<UtilitySlotKind, 'r
 };
 
 /**
- * Rules of armor: its Gear Slots and Psi Slots, and whether Tactical Rigging adds a slot to it.
+ * Texts of the rules of armor: its Gear Slots and Psi Slots, and that Tactical Rigging adds no slot to it.
  *
- * @param armor armor.
- * @param loadout Loadout of the unit, for the slots its primary weapon takes away.
+ * @param rules rules of the armor.
  */
-const armorRules = (armor: DeepReadonly<Armor>, loadout: Loadout) => {
-  const sources = utilitySlotSources({ armor: armor.id, primary: loadout.primary });
-  const lastSlots = [lastSlotsPhrase(armor.gearSlots, 'gear-slot'), lastSlotsPhrase(armor.psiSlots, 'psi-slot')].filter(phrase => phrase !== null);
-  const rules = lastSlots.map(phrase => `${UTILITY_SLOTS_NAME}: ${phrase}.`);
+const armorRuleTexts = (rules: ArmorRules) => {
+  const lastSlots = [lastSlotsPhrase(rules.gearSlots, 'gear-slot'), lastSlotsPhrase(rules.psiSlots, 'psi-slot')].filter(phrase => phrase !== null);
+  const texts = lastSlots.map(phrase => `${UTILITY_SLOTS_NAME}: ${phrase}.`);
 
-  if (armor.unit === 'biosoldier' && !sources.rigging) rules.push(ITEM_RULE_TEXT.noRigging);
+  if (rules.isRiggingIgnored) texts.push(ITEM_RULE_TEXT.noRigging);
 
-  return rules;
+  return texts;
 };
 
 /**
@@ -245,37 +245,44 @@ const describeWeapon = (weapon: DeepReadonly<Weapon>): ItemDescription => ({
 });
 
 /**
- * Rules of equipment: items it does not stack with, the primary weapons it works with, the Module it needs and the utility
- * slots that take it.
+ * Text of the utility slots that take equipment: Gear Slots and Psi Slots, Gear Slots only, or neither.
  *
- * @param equipment equipment or Module.
- * @param wearer unit that carries the Loadout; only items of its unit type are named.
+ * @param kinds kinds of the utility slots that take the item.
+ * @returns the text; null for a Module, which no utility slot takes.
  */
-const equipmentRules = (equipment: DeepReadonly<Equipment>, wearer: LoadoutWearer) => {
-  const rules: string[] = [];
-  const stackingItems = EQUIPMENT.filter(item => item.stackGroup !== null && item.stackGroup === equipment.stackGroup && item.id !== equipment.id && item.units.includes(wearer.unit));
+const slotKindsText = (kinds: readonly UtilitySlotKind[]) => {
+  if (!kinds.length) return null;
+
+  if (kinds.includes('psi-slot')) return ITEM_RULE_TEXT.fitsGearOrPsiSlot;
+
+  if (kinds.includes('gear-slot')) return ITEM_RULE_TEXT.fitsGearSlot;
+
+  return ITEM_RULE_TEXT.notForGearSlots;
+};
+
+/**
+ * Texts of the rules of equipment: items it does not stack with, the primary weapons it works with, the Module it needs
+ * and the utility slots that take it.
+ *
+ * @param rules rules of the equipment or Module.
+ */
+const equipmentRuleTexts = (rules: EquipmentRules) => {
+  const texts: string[] = [];
   const weaponParts = [
-    equipment.primaryTiers?.map(tier => WEAPON_TIER_NAME[tier]).join(ALTERNATIVE_SEPARATOR),
-    equipment.primaryTypes?.map(type => WEAPON_TYPE_NAME[type]).join(ALTERNATIVE_SEPARATOR),
+    rules.primaryTiers?.map(tier => WEAPON_TIER_NAME[tier]).join(ALTERNATIVE_SEPARATOR),
+    rules.primaryTypes?.map(type => WEAPON_TYPE_NAME[type]).join(ALTERNATIVE_SEPARATOR),
   ].filter(part => part !== undefined);
-  const requiredModule = equipment.requiredModule ? EQUIPMENT_BY_ID.get(equipment.requiredModule) : null;
+  const slotText = slotKindsText(rules.slotKinds);
 
-  if (stackingItems.length) rules.push(`${ITEM_RULE_TEXT.cantStack} ${stackingItems.map(item => item.name).join(LIST_SEPARATOR)}.`);
+  if (rules.cantStackWith.length) texts.push(`${ITEM_RULE_TEXT.cantStack} ${rules.cantStackWith.map(item => item.name).join(LIST_SEPARATOR)}.`);
 
-  if (weaponParts.length) rules.push(`${ITEM_RULE_TEXT.primaryWeapon} ${weaponParts.join(DETAIL_SEPARATOR)}.`);
+  if (weaponParts.length) texts.push(`${ITEM_RULE_TEXT.primaryWeapon} ${weaponParts.join(DETAIL_SEPARATOR)}.`);
 
-  if (requiredModule) rules.push(`${NEEDS_WORD} ${requiredModule.name}.`);
+  if (rules.requiredModule) texts.push(`${NEEDS_WORD} ${rules.requiredModule.name}.`);
 
-  if (equipment.slot !== 'utility') return rules;
+  if (slotText) texts.push(slotText);
 
-  if (!equipment.isPassive) {
-    rules.push(ITEM_RULE_TEXT.notForGearSlots);
-    return rules;
-  }
-
-  rules.push(equipment.requires === 'psionic' ? ITEM_RULE_TEXT.fitsGearOrPsiSlot : ITEM_RULE_TEXT.fitsGearSlot);
-
-  return rules;
+  return texts;
 };
 
 /**
@@ -320,18 +327,19 @@ const describeItem = (found: LoadoutCatalogItem): ItemDescription => {
 };
 
 /**
- * Rules of an item of any catalog, as its details list them.
+ * Texts of the rules of an item of any catalog, as its details list them.
  *
- * @param found item with its catalog.
- * @param loadout Loadout of the unit.
- * @param wearer unit that carries the Loadout.
+ * @param id item id.
+ * @param unit unit type that carries the item.
  */
-const itemRules = (found: LoadoutCatalogItem, loadout: Loadout, wearer: LoadoutWearer): string[] => {
-  if (found.kind === 'armor') return armorRules(found.item, loadout);
+const itemRuleTexts = (id: LoadoutItemId, unit: LoadoutUnitId): string[] => {
+  const rules = itemRules(id, unit);
 
-  if (found.kind === 'weapon') return found.item.utilitySlots < 0 ? [ITEM_RULE_TEXT.takesUtilitySlot] : [];
+  if (rules?.kind === 'armor') return armorRuleTexts(rules);
 
-  if (found.kind === 'equipment') return equipmentRules(found.item, wearer);
+  if (rules?.kind === 'weapon') return rules.takenUtilitySlots ? [ITEM_RULE_TEXT.takesUtilitySlot] : [];
+
+  if (rules?.kind === 'equipment') return equipmentRuleTexts(rules);
 
   return [];
 };
@@ -341,43 +349,14 @@ const itemRules = (found: LoadoutCatalogItem, loadout: Loadout, wearer: LoadoutW
  *
  * @param reason reason code.
  * @param id item id.
+ * @param unit unit type that carries the item.
  */
-const blockReasonLabel = (reason: LoadoutBlockReason, id: LoadoutItemId) => {
-  const requiredModule = reason === 'needs-module' ? EQUIPMENT_BY_ID.get(id)?.requiredModule : null;
-  const moduleName = requiredModule ? EQUIPMENT_BY_ID.get(requiredModule)?.name : null;
+const blockReasonLabel = (reason: LoadoutBlockReason, id: LoadoutItemId, unit: LoadoutUnitId) => {
+  const rules = reason === 'needs-module' ? itemRules(id, unit) : null;
 
-  if (moduleName) return `${NEEDS_WORD} ${moduleName}`;
+  if (rules?.kind === 'equipment' && rules.requiredModule) return `${NEEDS_WORD} ${rules.requiredModule.name}`;
 
   return BLOCK_REASON_LABEL[reason];
-};
-
-/**
- * Id of the item in a slot of the Loadout.
- *
- * @param loadout Loadout of the unit.
- * @param slot slot of the Loadout.
- * @returns the item id; null for an empty slot.
- */
-export const slotItemId = (loadout: Readonly<Loadout>, slot: LoadoutSlot): LoadoutItemId | null => {
-  if (slot.kind === 'utility') return loadout.utility[slot.index] ?? null;
-
-  if (slot.kind === 'module') return loadout.modules[slot.index] ?? null;
-
-  return loadout[slot.kind];
-};
-
-/**
- * Items of the catalog the slot takes from: armor or SHIV types, weapons, or equipment and Modules.
- *
- * @param slot slot of the Loadout.
- * @param wearer unit that carries the Loadout.
- */
-const slotCatalog = (slot: LoadoutSlot, wearer: LoadoutWearer): DeepReadonly<{ id: LoadoutItemId }[]> => {
-  if (slot.kind === 'armor') return wearer.unit === 'shiv' ? SHIV_TYPES : ARMORS;
-
-  if (slot.kind === 'primary' || slot.kind === 'secondary') return WEAPONS;
-
-  return EQUIPMENT;
 };
 
 /**
@@ -391,20 +370,20 @@ const slotCatalog = (slot: LoadoutSlot, wearer: LoadoutWearer): DeepReadonly<{ i
 export const lockerItems = (slot: LoadoutSlot, loadout: Loadout, wearer: LoadoutWearer): LockerItem[] => {
   const equippedId = slotItemId(loadout, slot);
 
-  const items = slotCatalog(slot, wearer).flatMap((item): LockerItem[] => {
-    const reasons = blockReasons(item.id, slot, loadout, wearer);
-    const found = reasons.includes('wrong-unit') ? null : findLoadoutItem(item.id);
+  const items = slotItems(slot, wearer.unit).flatMap((found): LockerItem[] => {
+    const id = found.item.id;
+    const reasons = blockReasons(id, slot, loadout, wearer);
 
-    if (!found) return [];
+    if (reasons.includes('wrong-unit')) return [];
 
     const description = describeItem(found);
     const [firstReason] = reasons;
-    const reasonLabel = firstReason ? blockReasonLabel(firstReason, item.id) : null;
-    const isEquipped = item.id === equippedId;
+    const reasonLabel = firstReason ? blockReasonLabel(firstReason, id, wearer.unit) : null;
+    const isEquipped = id === equippedId;
     const mark = isEquipped ? EQUIPPED_LABEL : reasonLabel;
 
     return [{
-      id: item.id,
+      id,
       name: description.name,
       icon: description.icon,
       summary: description.stats.map(stat => (stat.value ? `${stat.name} ${stat.value}` : stat.name)).join(DETAIL_SEPARATOR),
@@ -436,7 +415,7 @@ export const itemDetails = (id: LoadoutItemId, slot: LoadoutSlot, loadout: Loado
   return {
     ...describeItem(found),
     id,
-    rules: itemRules(found, loadout, wearer),
-    reasons: blockReasons(id, slot, loadout, wearer).map(reason => blockReasonLabel(reason, id)),
+    rules: itemRuleTexts(id, wearer.unit),
+    reasons: blockReasons(id, slot, loadout, wearer).map(reason => blockReasonLabel(reason, id, wearer.unit)),
   };
 };

@@ -1,17 +1,17 @@
 import type { DeepReadonly } from '@shared/lib/object';
 
-import { ARMOR_BY_ID, ARMORS } from '../config/constants/armors';
+import { ARMOR_BY_ID } from '../config/constants/armors';
 import { EQUIPMENT_BY_ID } from '../config/constants/equipment';
-import type { LOADOUT_BLOCK_REASONS } from '../config/constants/loadout-rules';
+import type { LOADOUT_BLOCK_REASONS, UTILITY_SLOT_KINDS } from '../config/constants/loadout-rules';
 import { ARMORS_WITHOUT_TACTICAL_RIGGING, MAX_UTILITY_SLOTS, REQUIRED_SECONDARY_WEAPON_TYPES, TACTICAL_RIGGING_SLOTS } from '../config/constants/loadout-rules';
-import { SHIV_TYPE_BY_ID, SHIV_TYPES } from '../config/constants/shiv-types';
+import { SHIV_TYPE_BY_ID } from '../config/constants/shiv-types';
 import { WEAPON_BY_ID, WEAPONS } from '../config/constants/weapons';
-import type { ArmorId } from './armors';
+import type { Armor, ArmorId } from './armors';
 import type { Equipment, EquipmentId } from './equipment';
+import { findLoadoutItem, slotCatalogKind, slotItems } from './loadout-items';
 import type { LoadoutRequirement } from './loadout-requirements';
 import type { LoadoutUnitId } from './loadout-units';
 import type { ShivTypeId } from './shiv-types';
-import { isShivTypeId } from './shiv-types';
 import type { WeaponId } from './weapons';
 
 /**
@@ -55,7 +55,7 @@ export type LoadoutSlotKind = 'armor' | 'primary' | 'secondary' | 'utility' | 'm
  */
 export type LoadoutSlot = { kind: 'armor' } | { kind: 'primary' } | { kind: 'secondary' } | { kind: 'utility', index: number } | { kind: 'module', index: number };
 
-export type UtilitySlotKind = 'regular' | 'gear-slot' | 'psi-slot';
+export type UtilitySlotKind = typeof UTILITY_SLOT_KINDS[number];
 
 export type LoadoutBlockReason = typeof LOADOUT_BLOCK_REASONS[number];
 
@@ -74,7 +74,8 @@ export interface LoadoutSlots {
 }
 
 /**
- * What the utility slots of a unit are made of: the armor or SHIV type, Tactical Rigging and the primary weapon.
+ * What the utility slots of a unit are made of: the armor or SHIV type, Tactical Rigging and the primary weapon, with
+ * the number of slots they give.
  */
 export interface UtilitySlotSources {
   /** Utility slots of the armor, MEC exoskeleton or SHIV type, Gear Slots and Psi Slots included. */
@@ -87,6 +88,10 @@ export interface UtilitySlotSources {
   gearSlots: number
   /** Psi Slots of the armor. */
   psiSlots: number
+  /** Utility slots the unit has, Gear Slots and Psi Slots included: never fewer than those, nor more than the maximum. */
+  count: number
+  /** Whether the sum of the sources goes above the maximum, which then gives the count. */
+  isCapped: boolean
 }
 
 /**
@@ -98,40 +103,55 @@ export interface UtilitySlotSources {
 const isClassAllowed = (classes: readonly string[] | null, classId: string | null) => classes === null || (classId !== null && classes.includes(classId));
 
 /**
- * What the utility slots of a unit with the given armor and primary weapon are made of. Tactical Rigging counts on biosoldier
- * armor that has no rigging of its own.
+ * Whether Tactical Rigging adds its slots to the armor: biosoldier armor without a rigging of its own.
+ *
+ * @param armor armor or MEC exoskeleton.
+ */
+export const isRiggingAdded = (armor: DeepReadonly<Armor>) => armor.unit === 'biosoldier' && !ARMORS_WITHOUT_TACTICAL_RIGGING.includes(armor.id);
+
+/**
+ * What the utility slots of a unit with the given armor and primary weapon are made of, and how many they give.
+ *
+ * @description Tactical Rigging counts on biosoldier armor that has no rigging of its own. Regular slots are those of
+ * the armor without its Gear Slots and Psi Slots, plus Tactical Rigging, plus the slots the primary weapon takes away
+ * (LMG, Stun Rifle); never below zero. Gear Slots and Psi Slots are added to them, and all slots together are capped.
  *
  * @param loadout armor and primary weapon of the unit.
  */
 export const utilitySlotSources = (loadout: Pick<Loadout, 'armor' | 'primary'>): UtilitySlotSources => {
   const armor = ARMOR_BY_ID.get(loadout.armor);
   const shivType = SHIV_TYPE_BY_ID.get(loadout.armor);
-  const hasRigging = armor?.unit === 'biosoldier' && !ARMORS_WITHOUT_TACTICAL_RIGGING.includes(armor.id);
+  const hasRigging = armor ? isRiggingAdded(armor) : false;
+  const armorSlots = armor?.utilitySlots ?? shivType?.utilitySlots ?? 0;
+  const rigging = hasRigging ? TACTICAL_RIGGING_SLOTS : 0;
+  const weapon = WEAPON_BY_ID.get(loadout.primary)?.utilitySlots ?? 0;
+  const gearSlots = armor?.gearSlots ?? 0;
+  const psiSlots = armor?.psiSlots ?? 0;
+  const regular = Math.max(0, armorSlots - gearSlots - psiSlots + rigging + weapon);
+  const maxRegular = MAX_UTILITY_SLOTS - gearSlots - psiSlots;
 
   return {
-    armor: armor?.utilitySlots ?? shivType?.utilitySlots ?? 0,
-    rigging: hasRigging ? TACTICAL_RIGGING_SLOTS : 0,
-    weapon: WEAPON_BY_ID.get(loadout.primary)?.utilitySlots ?? 0,
-    gearSlots: armor?.gearSlots ?? 0,
-    psiSlots: armor?.psiSlots ?? 0,
+    armor: armorSlots,
+    rigging,
+    weapon,
+    gearSlots,
+    psiSlots,
+    count: Math.min(regular, maxRegular) + gearSlots + psiSlots,
+    isCapped: regular > maxRegular,
   };
 };
 
 /**
- * Kinds of the utility slots of a unit with the given armor and primary weapon.
- *
- * @description Regular slots are those of the armor without its Gear Slots and Psi Slots, plus Tactical Rigging,
- * plus the slots the primary weapon takes away (LMG, Stun Rifle); never below zero.
- * Gear Slots and Psi Slots follow them, and all slots together are capped.
+ * Kinds of the utility slots of a unit with the given armor and primary weapon: the regular slots of the count, then
+ * the Gear Slots and Psi Slots.
  *
  * @param loadout armor and primary weapon of the unit.
  */
 const utilitySlotKinds = (loadout: Pick<Loadout, 'armor' | 'primary'>): UtilitySlotKind[] => {
   const sources = utilitySlotSources(loadout);
-  const regular = Math.max(0, sources.armor - sources.gearSlots - sources.psiSlots + sources.rigging + sources.weapon);
 
   return [
-    ...Array.from<UtilitySlotKind>({ length: Math.min(regular, MAX_UTILITY_SLOTS - sources.gearSlots - sources.psiSlots) }).fill('regular'),
+    ...Array.from<UtilitySlotKind>({ length: sources.count - sources.gearSlots - sources.psiSlots }).fill('regular'),
     ...Array.from<UtilitySlotKind>({ length: sources.gearSlots }).fill('gear-slot'),
     ...Array.from<UtilitySlotKind>({ length: sources.psiSlots }).fill('psi-slot'),
   ];
@@ -182,13 +202,15 @@ const heldReasons = (checks: [LoadoutBlockReason, boolean][]) => checks.filter((
  * @param wearer unit that carries the Loadout.
  */
 const armorReasons = (item: LoadoutItemId, wearer: LoadoutWearer): LoadoutBlockReason[] => {
-  if (wearer.unit === 'shiv') return isShivTypeId(item) ? [] : ['wrong-unit'];
+  const found = findLoadoutItem(item);
 
-  const armor = ARMOR_BY_ID.get(item);
+  if (found?.kind !== slotCatalogKind({ kind: 'armor' }, wearer.unit)) return ['wrong-unit'];
 
-  if (armor?.unit !== wearer.unit) return ['wrong-unit'];
+  if (found.kind !== 'armor') return [];
 
-  return heldReasons(requirementReasons(armor.requires, wearer));
+  if (found.item.unit !== wearer.unit) return ['wrong-unit'];
+
+  return heldReasons(requirementReasons(found.item.requires, wearer));
 };
 
 /**
@@ -284,9 +306,8 @@ export const blockReasons = (item: LoadoutItemId, slot: LoadoutSlot, loadout: Lo
  * @returns the Loadout, or null if no armor or primary weapon fits the unit.
  */
 export const defaultLoadout = (wearer: LoadoutWearer): Loadout | null => {
-  const armor = ARMORS.find(item => armorReasons(item.id, wearer).length === 0)?.id
-    ?? SHIV_TYPES.find(item => armorReasons(item.id, wearer).length === 0)?.id
-    ?? null;
+  const armorItem = slotItems({ kind: 'armor' }, wearer.unit).find(found => armorReasons(found.item.id, wearer).length === 0);
+  const armor = armorItem?.kind === 'armor' || armorItem?.kind === 'shiv-type' ? armorItem.item.id : null;
   const primary = WEAPONS.find(weapon => weaponReasons(weapon.id, 'primary', wearer).length === 0)?.id ?? null;
 
   if (armor === null || primary === null) return null;

@@ -1,9 +1,10 @@
+import type { DecodedLoadout } from '@entities/loadout';
 import type { ArmorContent } from '@entities/loadout/model/armors';
 import type { EquipmentContent } from '@entities/loadout/model/equipment';
 import type { ShivTypeContent } from '@entities/loadout/model/shiv-types';
 import type { WeaponContent } from '@entities/loadout/model/weapons';
 import type { SelectedGeneMods, SelectedOfficerPerks, SelectedPsionicAbilities, SoldierClass } from '@entities/soldier';
-import type { SquadUnit, UnitLoadout } from '@features/manage-squads';
+import type { SquadUnit } from '@features/manage-squads';
 import type { SquadBuild } from '@pages/squads/model/squad-build';
 
 /**
@@ -128,9 +129,9 @@ export const MEC_DEFAULT_LOADOUT = { armor: 'mec1-paladin', primary: 'minigun', 
 
 export const SHIV_DEFAULT_LOADOUT = { armor: 'shiv', primary: 'autocannon', secondary: null, utility: [null, null], modules: [] };
 
-export const UNKNOWN_CODES_LOADOUT: UnitLoadout = { armor: null, primary: null, secondary: null, utility: [null, null, null], modules: [] };
+export const UNKNOWN_CODES_LOADOUT: DecodedLoadout = { armor: null, primary: null, secondary: null, utility: [null, null, null], modules: [] };
 
-export const SERAPH_LOADOUT: UnitLoadout = { armor: 'seraph-armor', primary: 'assault-rifle', secondary: null, utility: [null, null, null], modules: [] };
+export const SERAPH_LOADOUT: DecodedLoadout = { armor: 'seraph-armor', primary: 'assault-rifle', secondary: null, utility: [null, null, null], modules: [] };
 
 export const SERAPH_REPLACED = [{ kind: 'replaced', slot: 'armor', item: 'seraph-armor', by: 'tactical-vest', reason: 'needs-officer' }];
 

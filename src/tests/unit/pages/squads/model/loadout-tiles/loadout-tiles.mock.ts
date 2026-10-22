@@ -1,15 +1,13 @@
-import type { ArmorContent } from '@entities/loadout/model/armors';
-import type { EquipmentContent } from '@entities/loadout/model/equipment';
-import type { Loadout, LoadoutWearer } from '@entities/loadout/model/loadout';
-import type { ShivTypeContent } from '@entities/loadout/model/shiv-types';
-import type { WeaponContent } from '@entities/loadout/model/weapons';
+import type { Armor, Equipment, Loadout, LoadoutCatalogItem, LoadoutItemId, LoadoutSlots, LoadoutWearer, Weapon } from '@entities/loadout';
 
 /**
- * Armor record with zero stats and no slots besides the given fields.
+ * Biosoldier armor with zero stats besides the given fields.
  *
- * @param content fields that differ from the empty record.
+ * @param armor fields that differ from the empty armor.
  */
-const armorMock = (content: Pick<ArmorContent, 'code' | 'unit' | 'name'> & Partial<ArmorContent>): ArmorContent => ({
+const armorMock = (armor: Pick<Armor, 'id' | 'name'> & Partial<Armor>): Armor => ({
+  code: 1,
+  unit: 'biosoldier',
   category: 'light',
   hp: 0,
   damageReduction: 0,
@@ -23,17 +21,23 @@ const armorMock = (content: Pick<ArmorContent, 'code' | 'unit' | 'name'> & Parti
   gearSlots: 0,
   psiSlots: 0,
   fuel: 0,
+  requires: null,
   info: '',
-  ...content,
+  icon: '',
+  grants: [],
+  ...armor,
 });
 
 /**
- * Weapon record with zero stats besides the given fields.
+ * Biosoldier weapon with zero stats besides the given fields.
  *
- * @param content fields that differ from the empty record.
+ * @param weapon fields that differ from the empty weapon.
  */
-const weaponMock = (content: Pick<WeaponContent, 'code' | 'unit' | 'name' | 'type' | 'slot'> & Partial<WeaponContent>): WeaponContent => ({
+const weaponMock = (weapon: Pick<Weapon, 'id' | 'name' | 'type' | 'slot'> & Partial<Weapon>): Weapon => ({
+  code: 1,
+  unit: 'biosoldier',
   tier: 'ballistic',
+  classes: null,
   damage: 0,
   penetration: 0,
   crit: 0,
@@ -42,52 +46,56 @@ const weaponMock = (content: Pick<WeaponContent, 'code' | 'unit' | 'name' | 'typ
   mobility: 0,
   range: 0,
   utilitySlots: 0,
+  ammoUpgrade: 0,
+  damageUpgrade: 0,
+  critDamage: 0,
+  environmentDamage: 0,
+  radius: 0,
+  canCrit: true,
+  vsMechanical: null,
   info: '',
-  ...content,
+  icon: '',
+  grants: [],
+  ...weapon,
 });
 
 /**
- * Equipment record without stats besides the given fields.
+ * Biosoldier utility equipment without stats besides the given fields.
  *
- * @param content fields that differ from the empty record.
+ * @param equipment fields that differ from the empty item.
  */
-const equipmentMock = (content: Pick<EquipmentContent, 'code' | 'units' | 'slot' | 'name'> & Partial<EquipmentContent>): EquipmentContent => ({
+const equipmentMock = (equipment: Pick<Equipment, 'id' | 'name'> & Partial<Equipment>): Equipment => ({
+  code: 1,
+  units: ['biosoldier'],
+  slot: 'utility',
+  classes: null,
+  requires: null,
+  isPassive: false,
+  stackGroup: null,
+  primaryTiers: null,
+  primaryTypes: null,
+  requiredModule: null,
   stats: [],
-  info: '',
-  ...content,
+  info: null,
+  icon: '',
+  grants: [],
+  ...equipment,
 });
 
-export const ARMOR_CONTENT_MOCK: Record<string, ArmorContent> = {
-  'tactical-vest': armorMock({ code: 1, unit: 'biosoldier', name: 'Vest', utilitySlots: 2 }),
-  'aegis-armor': armorMock({ code: 6, unit: 'biosoldier', name: 'Aegis', utilitySlots: 3, gearSlots: 2 }),
-  'aurora-armor': armorMock({ code: 13, unit: 'biosoldier', name: 'Aurora', utilitySlots: 3, psiSlots: 1 }),
-  'mec1-paladin': armorMock({ code: 15, unit: 'mec', name: 'Paladin', category: 'standard', utilitySlots: 2, moduleSlots: 1 }),
-};
+const LOADOUT_ITEMS_MOCK: ReadonlyMap<LoadoutItemId, LoadoutCatalogItem> = new Map<LoadoutItemId, LoadoutCatalogItem>([
+  ['tactical-vest', { kind: 'armor', item: armorMock({ id: 'tactical-vest', name: 'Vest', icon: 'vest.png' }) }],
+  ['rocket-launcher', { kind: 'weapon', item: weaponMock({ id: 'rocket-launcher', name: 'Launcher', type: 'rocket-launcher', slot: 'secondary' }) }],
+  ['medikit', { kind: 'equipment', item: equipmentMock({ id: 'medikit', name: 'Medikit' }) }],
+]);
 
-export const WEAPON_CONTENT_MOCK: Record<string, WeaponContent> = {
-  'assault-rifle': weaponMock({ code: 1, unit: 'biosoldier', name: 'Rifle', type: 'assault-rifle', slot: 'primary' }),
-  'minigun': weaponMock({ code: 10, unit: 'mec', name: 'Minigun', type: 'mec-weapon', slot: 'primary' }),
-  'autocannon': weaponMock({ code: 11, unit: 'shiv', name: 'Autocannon', type: 'autocannon', slot: 'primary' }),
-  'pistol': weaponMock({ code: 13, unit: 'biosoldier', name: 'Pistol', type: 'pistol', slot: 'secondary', classes: ['assault'] }),
-  'rocket-launcher': weaponMock({ code: 16, unit: 'biosoldier', name: 'Launcher', type: 'rocket-launcher', slot: 'secondary', classes: ['rocketeer'] }),
-};
-
-export const EQUIPMENT_CONTENT_MOCK: Record<string, EquipmentContent> = {
-  medikit: equipmentMock({ code: 11, units: ['biosoldier'], slot: 'utility', name: 'Medikit' }),
-  flamethrower: equipmentMock({ code: 56, units: ['mec'], slot: 'module', name: 'Flamethrower' }),
-};
-
-export const SHIV_TYPE_CONTENT_MOCK: Record<string, ShivTypeContent> = {
-  shiv: { code: 1, name: 'SHIV', hp: 0, damageReduction: 0, critResist: 0, defense: 0, mobility: 0, aim: 0, utilitySlots: 2, fuel: 0, info: '' },
-};
-
-export const ARMOR_ICON_MOCK = { 'tactical-vest': 'vest.png' };
+/**
+ * Stub of `findLoadoutItem` over the items of the mock.
+ *
+ * @param id item id.
+ */
+export const findLoadoutItemStub = (id: LoadoutItemId) => LOADOUT_ITEMS_MOCK.get(id) ?? null;
 
 export const ASSAULT: LoadoutWearer = { unit: 'biosoldier', classId: 'assault', hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
-
-export const GUNNER: LoadoutWearer = { ...ASSAULT, classId: 'gunner' };
-
-export const ROCKETEER: LoadoutWearer = { ...ASSAULT, classId: 'rocketeer' };
 
 export const MEC: LoadoutWearer = { unit: 'mec', classId: 'goliath', hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
 
@@ -107,23 +115,33 @@ export const createLoadoutMock = (loadout: Partial<Loadout> = {}): Loadout => ({
   ...loadout,
 });
 
+export const BIOSOLDIER_SLOTS: LoadoutSlots = { hasSecondary: true, isSecondaryRequired: false, utility: ['regular', 'regular', 'regular'], moduleCount: 0 };
+
 export const BIOSOLDIER_CAPTIONS = ['Armor', 'Primary', 'Secondary', 'Utility', 'Utility', 'Utility'];
 
-export const GUNNER_CAPTIONS = ['Armor', 'Primary', 'Utility', 'Utility', 'Utility'];
+export const NO_SECONDARY_SLOTS: LoadoutSlots = { ...BIOSOLDIER_SLOTS, hasSecondary: false };
+
+export const NO_SECONDARY_CAPTIONS = ['Armor', 'Primary', 'Utility', 'Utility', 'Utility'];
 
 export const MEC_LOADOUT = createLoadoutMock({ armor: 'mec1-paladin', primary: 'minigun', utility: [null, null], modules: ['flamethrower'] });
 
+export const MEC_SLOTS: LoadoutSlots = { hasSecondary: false, isSecondaryRequired: false, utility: ['regular', 'regular'], moduleCount: 1 };
+
 export const MEC_CAPTIONS = ['MEC exoskeleton', 'Primary', 'Module', 'Utility', 'Utility'];
+
+export const MEC_TILE_SIZES = [true, true, false, false, false];
 
 export const SHIV_LOADOUT = createLoadoutMock({ armor: 'shiv', primary: 'autocannon', utility: [null, null] });
 
+export const SHIV_SLOTS: LoadoutSlots = { hasSecondary: false, isSecondaryRequired: false, utility: ['regular', 'regular'], moduleCount: 0 };
+
 export const SHIV_CAPTIONS = ['SHIV type', 'Primary', 'Utility', 'Utility'];
 
-export const AEGIS_LOADOUT = createLoadoutMock({ armor: 'aegis-armor', utility: [null, null, null, null] });
+export const AEGIS_SLOTS: LoadoutSlots = { ...BIOSOLDIER_SLOTS, utility: ['regular', 'regular', 'gear-slot', 'gear-slot'] };
 
 export const AEGIS_TONES = ['regular', 'regular', 'regular', 'regular', 'regular', 'gear-slot', 'gear-slot'];
 
-export const AURORA_LOADOUT = createLoadoutMock({ armor: 'aurora-armor', utility: [null, null, null, null] });
+export const AURORA_SLOTS: LoadoutSlots = { ...BIOSOLDIER_SLOTS, utility: ['regular', 'regular', 'regular', 'psi-slot'] };
 
 export const AURORA_CAPTIONS = ['Armor', 'Primary', 'Secondary', 'Utility', 'Utility', 'Utility', 'Psi Slot'];
 
@@ -132,5 +150,3 @@ export const ROCKETEER_LOADOUT = createLoadoutMock({ secondary: 'rocket-launcher
 export const MEDIKIT_LOADOUT = createLoadoutMock({ utility: ['medikit', null, null] });
 
 export const VEST_TILE_ITEM = { name: 'Vest', icon: 'vest.png' };
-
-export const MEC_TILE_SIZES = [true, true, false, false, false];

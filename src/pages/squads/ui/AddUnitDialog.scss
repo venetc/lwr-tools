@@ -156,8 +156,15 @@ $add-cell-border: 1px dashed colors.$accent;
   height: 20px;
 }
 
-.rowName {
+.rowTitle {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-inline-size: 0;
+}
+
+.rowName {
   min-inline-size: 0;
   overflow: hidden;
   text-overflow: ellipsis;

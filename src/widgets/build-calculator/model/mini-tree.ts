@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed } from 'vue';
 
-import { useClassTreeTiers, useGeneModTiers, usePsionicTiers } from '@entities/soldier';
+import { useClassTreeTiers, useGeneModTiers, useOfficerTiers, usePsionicTiers } from '@entities/soldier';
 import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 
 import {
@@ -77,7 +77,8 @@ export const miniTreeStep = (tier: TieredPickerTier, caption: string): MiniTreeS
 };
 
 /**
- * Mini-tree of a biosoldier build: the class tree, the gene mods and the psionic abilities, each a row even when empty.
+ * Mini-tree of a biosoldier build: the class tree, the gene mods, the psionic abilities and the officer tree, each a row
+ * even when empty.
  *
  * @param build biosoldier build.
  */
@@ -87,6 +88,8 @@ export const useBiosoldierMiniTree = (build: MaybeRefOrGetter<Readonly<Biosoldie
   const geneMods = useGeneModTiers(build);
 
   const psionic = usePsionicTiers(build);
+
+  const officer = useOfficerTiers(build);
 
   return computed((): MiniTreeRow[] => [
     {
@@ -106,6 +109,12 @@ export const useBiosoldierMiniTree = (build: MaybeRefOrGetter<Readonly<Biosoldie
       title: BIOSOLDIER_BRANCH_TITLE.psionic,
       tone: 'psionic',
       steps: psionic.tiers.value.map(tier => miniTreeStep(tier, tier.name)),
+    },
+    {
+      id: 'officer',
+      title: BIOSOLDIER_BRANCH_TITLE.officer,
+      tone: 'officer',
+      steps: officer.tiers.value.map(tier => miniTreeStep(tier, tier.officerRank.abbreviation)),
     },
   ]);
 };

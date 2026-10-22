@@ -9,6 +9,7 @@ import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 import { ADD_UNIT_TABS, NEW_BUILD_GROUPS } from '../config/constants';
 import { useAddUnit } from '../model/add-unit';
 import UnitBuildIcon from './UnitBuildIcon.vue';
+import UnitOfficerRankBadge from './UnitOfficerRankBadge.vue';
 
 const {
   isOpen,
@@ -92,7 +93,10 @@ const {
                   @click="addSavedBuild(row)"
                 >
                   <UnitBuildIcon :class="$style.rowIcon" :squad-build="row.squadBuild" />
-                  <span :class="$style.rowName">{{ row.squadBuild.build.name }}</span>
+                  <span :class="$style.rowTitle">
+                    <span :class="$style.rowName">{{ row.squadBuild.build.name }}</span>
+                    <UnitOfficerRankBadge :squad-build="row.squadBuild" />
+                  </span>
                   <span v-if="row.inSquadCount" :class="$style.badge">In Squad ×{{ row.inSquadCount }}</span>
                   <span :class="$style.rowClass">{{ row.className }}</span>
                 </button>

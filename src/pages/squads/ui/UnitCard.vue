@@ -8,6 +8,7 @@ import type { UnitCard } from '../model/unit-cards';
 import UnitBuild from './UnitBuild.vue';
 import UnitBuildIcon from './UnitBuildIcon.vue';
 import UnitLoadout from './UnitLoadout.vue';
+import UnitOfficerRankBadge from './UnitOfficerRankBadge.vue';
 
 interface Props {
   /** Unit to show. */
@@ -32,9 +33,12 @@ const headingId = createId();
       <UnitBuildIcon :class="$style.icon" :squad-build="props.card.squadBuild" />
 
       <div :class="$style.heading">
-        <h2 :id="headingId" :class="$style.name">
-          {{ props.card.squadBuild.build.name }}
-        </h2>
+        <div :class="$style.title">
+          <h2 :id="headingId" :class="$style.name">
+            {{ props.card.squadBuild.build.name }}
+          </h2>
+          <UnitOfficerRankBadge :squad-build="props.card.squadBuild" />
+        </div>
         <p :class="$style.caption">
           {{ props.card.caption }}
         </p>

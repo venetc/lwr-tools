@@ -30,6 +30,13 @@
   min-inline-size: 0;
 }
 
+.title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-inline-size: 0;
+}
+
 .name {
   @include typography.heading-4;
   margin: 0;

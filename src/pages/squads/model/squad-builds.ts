@@ -5,9 +5,10 @@ import { useBiosoldierBuildsStore, useMecBuildsStore, useShivBuildsStore } from 
 
 import type { NewBuildOption } from './new-build';
 import type { SquadBuild } from './squad-build';
+import { squadBuildKey } from './squad-build';
 
 /**
- * Saved builds of all three Build calculators, as Units refer to them.
+ * Saved builds of all three Build calculators, as Units refer to them: as a list and by `squadBuildKey`.
  */
 export const useSquadBuilds = () => {
   const biosoldierBuildsStore = useBiosoldierBuildsStore();
@@ -20,14 +21,19 @@ export const useSquadBuilds = () => {
     ...shivBuildsStore.builds.map((build): SquadBuild => ({ kind: 'shiv', build })),
   ]);
 
+  const squadBuildsByKey = computed<ReadonlyMap<string, SquadBuild>>(() => new Map(
+    squadBuilds.value.map(squadBuild => [
+      squadBuildKey({ kind: squadBuild.kind, id: squadBuild.build.id }),
+      squadBuild,
+    ]),
+  ));
+
   /**
    * Saved build a Unit refers to; null if it is no longer saved.
    *
    * @param build kind and id of the build.
    */
-  const findSquadBuild = (build: Readonly<SquadUnitBuild>) => (
-    squadBuilds.value.find(squadBuild => squadBuild.kind === build.kind && squadBuild.build.id === build.id) ?? null
-  );
+  const findSquadBuild = (build: Readonly<SquadUnitBuild>) => squadBuildsByKey.value.get(squadBuildKey(build)) ?? null;
 
   /**
    * Adds a Default build of the option to its Build calculator.
@@ -43,5 +49,5 @@ export const useSquadBuilds = () => {
     return { kind: 'biosoldier', id: biosoldierBuildsStore.addBuild(option.soldierClass) };
   };
 
-  return { squadBuilds, findSquadBuild, addDefaultBuild };
+  return { squadBuilds, squadBuildsByKey, findSquadBuild, addDefaultBuild };
 };

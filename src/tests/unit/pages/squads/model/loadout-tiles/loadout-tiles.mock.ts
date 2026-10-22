@@ -1,9 +1,8 @@
 import type { ArmorContent } from '@entities/loadout/model/armors';
 import type { EquipmentContent } from '@entities/loadout/model/equipment';
-import type { LoadoutWearer } from '@entities/loadout/model/loadout';
+import type { Loadout, LoadoutWearer } from '@entities/loadout/model/loadout';
 import type { ShivTypeContent } from '@entities/loadout/model/shiv-types';
 import type { WeaponContent } from '@entities/loadout/model/weapons';
-import type { UnitLoadout } from '@features/manage-squads/model/squad';
 
 /**
  * Armor record with zero stats and no slots besides the given fields.
@@ -99,7 +98,7 @@ export const SHIV: LoadoutWearer = { unit: 'shiv', classId: null, hasGeneMod: fa
  *
  * @param loadout fields that differ from a Vest, a rifle and three empty utility slots.
  */
-export const createLoadoutMock = (loadout: Partial<UnitLoadout> = {}): UnitLoadout => ({
+export const createLoadoutMock = (loadout: Partial<Loadout> = {}): Loadout => ({
   armor: 'tactical-vest',
   primary: 'assault-rifle',
   secondary: null,
@@ -135,7 +134,3 @@ export const MEDIKIT_LOADOUT = createLoadoutMock({ utility: ['medikit', null, nu
 export const VEST_TILE_ITEM = { name: 'Vest', icon: 'vest.png' };
 
 export const MEC_TILE_SIZES = [true, true, false, false, false];
-
-export const UNKNOWN_ARMOR_LOADOUT = createLoadoutMock({ armor: null, utility: [null, null] });
-
-export const UNKNOWN_ARMOR_CAPTIONS = ['Armor', 'Primary', 'Utility', 'Utility'];

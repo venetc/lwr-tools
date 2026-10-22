@@ -1,6 +1,5 @@
 import type { Loadout, LoadoutChange, LoadoutItemId, LoadoutSlot, LoadoutWearer } from '@entities/loadout';
-import { defaultLoadout, fitLoadout, loadoutSlots, utilitySlotSources } from '@entities/loadout';
-import type { UnitLoadout } from '@features/manage-squads';
+import { fitLoadout, loadoutSlots, utilitySlotSources } from '@entities/loadout';
 
 import {
   CHANGE_REASON_TEXT,
@@ -34,29 +33,11 @@ export interface LoadoutEdit {
 const loadoutItemName = (id: LoadoutItemId) => findLoadoutItem(id)?.item.name ?? '';
 
 /**
- * Loadout of a Unit with every slot that is never empty filled: armor or a primary weapon of an unknown code is
- * replaced with the default one, and the Loadout is brought to the rules for it, until the check of the Unit.
- *
- * @param loadout Loadout of the Unit as the Squad keeps it.
- * @param wearer Unit that carries the Loadout.
- * @returns the Loadout; null if no armor or primary weapon fits the Unit.
- */
-export const completeLoadout = (loadout: Readonly<UnitLoadout>, wearer: LoadoutWearer): Loadout | null => {
-  if (loadout.armor && loadout.primary) return { ...loadout, armor: loadout.armor, primary: loadout.primary };
-
-  const defaults = defaultLoadout(wearer);
-
-  if (!defaults) return null;
-
-  return fitLoadout({ ...loadout, armor: loadout.armor ?? defaults.armor, primary: loadout.primary ?? defaults.primary }, wearer).loadout;
-};
-
-/**
  * Sentence about one change of `fitLoadout`: `Ceramic Plating moved to Utility.`, `Reaper Ammo removed: unsupported weapon.`
  *
  * @param change moved, removed, replaced or added item.
  */
-const changeNote = (change: LoadoutChange) => {
+export const changeNote = (change: LoadoutChange) => {
   const name = loadoutItemName(change.item);
 
   if (change.kind === 'moved') return `${name} ${CHANGE_WORD.moved} ${UTILITY_SLOT_CAPTION.regular}.`;

@@ -2,7 +2,6 @@ import { storeToRefs } from 'pinia';
 import type { AcceptableValue } from 'reka-ui';
 import { computed, ref } from 'vue';
 
-import { defaultLoadout } from '@entities/loadout';
 import { useSquadsStore } from '@features/manage-squads';
 import type { TabsItem } from '@shared/ui/tabs';
 import { useToastQueue } from '@shared/ui/toast';
@@ -12,8 +11,9 @@ import type { NewBuildOption } from './new-build';
 import type { SavedBuildKind, SavedBuildRow } from './saved-builds';
 import { matchingBuilds, savedBuildFilters, savedBuildGroups } from './saved-builds';
 import type { SquadBuild } from './squad-build';
-import { buildListName, unitWearer } from './squad-build';
+import { buildListName } from './squad-build';
 import { useSquadBuilds } from './squad-builds';
+import { checkUnit } from './unit-check';
 
 /**
  * Add Unit dialog of the open Squad: its tabs, the search and filter of saved builds, and adding a Unit of a saved build
@@ -89,11 +89,11 @@ export const useAddUnit = () => {
    */
   const addUnit = (squadBuild: SquadBuild) => {
     const squad = openSquad.value;
-    const loadout = defaultLoadout(unitWearer(squadBuild));
+    const checked = checkUnit(null, squadBuild);
 
-    if (!squad || !loadout) return null;
+    if (!squad || !checked) return null;
 
-    squadsStore.addUnit(squad.id, { kind: squadBuild.kind, id: squadBuild.build.id }, loadout);
+    squadsStore.addUnit(squad.id, { kind: squadBuild.kind, id: squadBuild.build.id }, checked.loadout);
     setOpen(false);
 
     return squad.name;

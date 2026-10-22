@@ -107,6 +107,18 @@ export const CHANGE_WORD = {
   added: 'added to',
 } as const satisfies Record<LoadoutChange['kind'], string>;
 
+/** Title of the toast of a Unit check that changed something. */
+export const UNIT_CHECK_TOAST_TITLE = 'Loadouts updated';
+
+/** Separator of a Build and its changes on a line of the Unit check toast: `Assault Ace (2 Units) — Reaper Ammo removed: unsupported weapon.` */
+export const UNIT_CHECK_BUILD_SEPARATOR = ' — ';
+
+/** Line break between the lines of the Unit check toast. */
+export const UNIT_CHECK_LINE_BREAK = '\n';
+
+/** Words after the number of Units whose Build is gone, on the last line of the Unit check toast: `2 Units removed: Build not found`. */
+export const BUILD_NOT_FOUND_TEXT = 'removed: Build not found';
+
 /** Name of the utility slots in the slot count line and the toast. */
 export const UTILITY_SLOTS_NAME = 'Utility slots';
 

@@ -22,8 +22,6 @@ import {
   SHIV,
   SHIV_CAPTIONS,
   SHIV_LOADOUT,
-  UNKNOWN_ARMOR_CAPTIONS,
-  UNKNOWN_ARMOR_LOADOUT,
   VEST_TILE_ITEM,
 } from './loadout-tiles.mock';
 
@@ -116,11 +114,5 @@ describe('loadoutTiles', () => {
     const tiles = loadoutTiles(MEC_LOADOUT, MEC);
 
     expect(tiles.map(tile => tile.isLarge)).toEqual(MEC_TILE_SIZES);
-  });
-
-  it('keeps the stored slots while the armor is unknown', () => {
-    const tiles = loadoutTiles(UNKNOWN_ARMOR_LOADOUT, ASSAULT);
-
-    expect(tiles.map(tile => tile.caption)).toEqual(UNKNOWN_ARMOR_CAPTIONS);
   });
 });

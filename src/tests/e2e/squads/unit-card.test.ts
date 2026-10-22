@@ -1,10 +1,13 @@
 import { expect, test } from '@playwright/test';
 
+import { openBuildPanel, selectAbility } from '../utils/build-panel';
 import { addSavedUnit, openSquads, seedSquad, unitCards } from '../utils/squads';
 import {
   ARCHANGEL_SNIPER,
   AURORA_SNIPER,
   BIOSOLDIER_BUILDS,
+  BIOSOLDIER_PATH,
+  COUNTERCHARGE,
   EMPTY_UTILITY,
   GEAR_SLOT,
   GUNNER,
@@ -13,6 +16,7 @@ import {
   MEC_BUILDS,
   MEC_TILES,
   PSI_SLOT,
+  PSIONIC_TAB,
   ROCKETEER,
   ROCKETEER_SECONDARY,
   SHIV,
@@ -81,6 +85,8 @@ test.describe('Unit card', () => {
 
   test('captions the Psi Slot', async ({ page }) => {
     await seedSquad(page, [AURORA_SNIPER]);
+    const panel = await openBuildPanel(page, BIOSOLDIER_PATH, SNIPER);
+    await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
 
     await openSquads(page);
 

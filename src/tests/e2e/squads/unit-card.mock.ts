@@ -6,6 +6,13 @@ export const MEC_BUILDS = 'MEC builds';
 
 export const SHIV_BUILDS = 'SHIV builds';
 
+export const BIOSOLDIER_PATH = '/builds/biosoldier';
+
+export const PSIONIC_TAB = /^Psionic, /;
+
+/** Psionic ability of Awakened, which Aurora Armor needs. */
+export const COUNTERCHARGE = 'Countercharge';
+
 export const SNIPER = 'Sniper';
 
 export const GUNNER = 'Gunner';

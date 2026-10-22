@@ -7,11 +7,10 @@ import { useSquadsStore } from '@features/manage-squads';
 import { useToastQueue } from '@shared/ui/toast';
 
 import { EMPTY_SLOT_NAME } from '../config/constants';
-import { completeLoadout, equipLoadoutItem, isSlotRemovable, removeLoadoutItem, utilitySlotFormula } from './loadout-edit';
+import { equipLoadoutItem, isSlotRemovable, removeLoadoutItem, utilitySlotFormula } from './loadout-edit';
 import type { LockerItem } from './loadout-locker';
 import { itemDetails, lockerItems } from './loadout-locker';
 import type { LoadoutTile } from './loadout-tiles';
-import { loadoutTiles } from './loadout-tiles';
 import type { UnitCard } from './unit-cards';
 
 /**
@@ -46,16 +45,16 @@ export const useLoadoutEditor = (
 
   const rowElements = new Map<string, HTMLElement>();
 
-  const loadout = computed(() => completeLoadout(toValue(card).loadout, wearer.value));
+  const loadout = computed(() => toValue(card).loadout);
 
-  const tiles = computed(() => (loadout.value ? loadoutTiles(loadout.value, wearer.value) : toValue(card).tiles));
+  const tiles = computed(() => toValue(card).tiles);
 
   const selectedTile = computed(() => tiles.value.find(tile => tile.id === slotId.value) ?? tiles.value[0] ?? null);
 
-  const slotFormula = computed(() => (loadout.value ? utilitySlotFormula(loadout.value, wearer.value) : ''));
+  const slotFormula = computed(() => utilitySlotFormula(loadout.value, wearer.value));
 
   const items = computed(() => {
-    if (!loadout.value || !selectedTile.value) return [];
+    if (!selectedTile.value) return [];
 
     return lockerItems(selectedTile.value.slot, loadout.value, wearer.value);
   });
@@ -63,7 +62,7 @@ export const useLoadoutEditor = (
   const pickedItem = computed(() => items.value.find(item => item.id === pickedId.value) ?? items.value.find(item => item.isEquipped) ?? null);
 
   const details = computed(() => {
-    if (!pickedItem.value || !selectedTile.value || !loadout.value) return null;
+    if (!pickedItem.value || !selectedTile.value) return null;
 
     return itemDetails(pickedItem.value.id, selectedTile.value.slot, loadout.value, wearer.value);
   });
@@ -73,7 +72,7 @@ export const useLoadoutEditor = (
   const isEquipDisabled = computed(() => Boolean(pickedItem.value?.reasons.length));
 
   const isRemoveShown = computed(() => {
-    if (!pickedItem.value?.isEquipped || !selectedTile.value || !loadout.value) return false;
+    if (!pickedItem.value?.isEquipped || !selectedTile.value) return false;
 
     return isSlotRemovable(selectedTile.value.slot, loadout.value, wearer.value);
   });
@@ -177,7 +176,7 @@ export const useLoadoutEditor = (
   const equipItem = (item: LockerItem) => {
     const tile = selectedTile.value;
 
-    if (!loadout.value || !tile || item.isEquipped || item.reasons.length) return;
+    if (!tile || item.isEquipped || item.reasons.length) return;
 
     const result = equipLoadoutItem(loadout.value, tile.slot, item.id, wearer.value);
 
@@ -204,7 +203,7 @@ export const useLoadoutEditor = (
   const removePicked = () => {
     const tile = selectedTile.value;
 
-    if (!loadout.value || !tile || !isRemoveShown.value) return;
+    if (!tile || !isRemoveShown.value) return;
 
     const result = removeLoadoutItem(loadout.value, tile.slot, wearer.value);
 

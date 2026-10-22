@@ -6,7 +6,7 @@ import { readLocalStorage, writeLocalStorage } from '@shared/lib/local-storage';
 import { useStoredList } from '@shared/lib/stored-list';
 
 import { OPEN_SQUAD_KEY, SQUAD_KEY_PREFIX, SQUAD_ORDER_KEY } from '../config/constants';
-import type { SquadUnitBuild, UnitLoadout } from './squad';
+import type { SquadUnit, SquadUnitBuild, UnitLoadout } from './squad';
 import { createSquad, defaultSquads, nextSquadName } from './squad';
 import { parseSquad, serializeSquad } from './squad-record';
 
@@ -143,6 +143,21 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     squadList.markItemChanged(squadId);
   };
 
+  /**
+   * Replaces the Units of the Squad at once, as after a check of the Units against their builds.
+   *
+   * @param squadId Squad id.
+   * @param units new Units in Squad order; the Squad takes them over.
+   */
+  const setUnits = (squadId: string, units: SquadUnit[]) => {
+    const squad = squadList.getItem(squadId);
+
+    if (!squad) return;
+
+    squad.units = units;
+    squadList.markItemChanged(squadId);
+  };
+
   return {
     squads: squadList.items,
     openSquad,
@@ -153,5 +168,6 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     addUnit,
     removeUnit,
     setUnitLoadout,
+    setUnits,
   };
 });

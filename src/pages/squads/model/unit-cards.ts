@@ -1,16 +1,16 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
-import type { LoadoutWearer } from '@entities/loadout';
-import type { UnitLoadout } from '@features/manage-squads';
+import type { Loadout, LoadoutWearer } from '@entities/loadout';
 import { useSquadsStore } from '@features/manage-squads';
 import { useToastQueue } from '@shared/ui/toast';
 
 import type { LoadoutTile } from './loadout-tiles';
 import { loadoutTiles } from './loadout-tiles';
 import type { SquadBuild } from './squad-build';
-import { buildListName, squadBuildCaption, unitWearer } from './squad-build';
+import { buildListName, squadBuildCaption } from './squad-build';
 import { useSquadBuilds } from './squad-builds';
+import { checkSquad } from './unit-check';
 
 /**
  * Unit of the open Squad as its card shows it.
@@ -24,41 +24,35 @@ export interface UnitCard {
   caption: string
   /** What the Loadout rules need to know about the Unit. */
   wearer: LoadoutWearer
-  /** Loadout of the Unit as the Squad keeps it. */
-  loadout: UnitLoadout
+  /** Loadout of the Unit brought to the rules of its Build. */
+  loadout: Loadout
   /** Loadout tiles in inventory order. */
   tiles: LoadoutTile[]
 }
 
 /**
- * Cards of the Units of the open Squad, in Squad order, and their removal. A Unit whose build is no longer saved has no
- * card until the check of the Squad removes it.
+ * Cards of the Units of the open Squad, in Squad order, and their removal. Units are read through the Unit check, so
+ * every card shows a Loadout that fits its Build; a Unit whose build is no longer saved has no card.
  */
 export const useUnitCards = () => {
   const squadsStore = useSquadsStore();
 
   const { openSquad } = storeToRefs(squadsStore);
 
-  const { findSquadBuild } = useSquadBuilds();
+  const { squadBuildsByKey } = useSquadBuilds();
 
   const { showToast } = useToastQueue();
 
-  const unitCards = computed(() => (openSquad.value?.units ?? []).flatMap((unit): UnitCard[] => {
-    const squadBuild = findSquadBuild(unit.build);
-
-    if (!squadBuild) return [];
-
-    const wearer = unitWearer(squadBuild);
-
-    return [{
-      id: unit.id,
-      squadBuild,
-      caption: squadBuildCaption(squadBuild),
-      wearer,
-      loadout: unit.loadout,
-      tiles: loadoutTiles(unit.loadout, wearer),
-    }];
-  }));
+  const unitCards = computed(() => checkSquad(openSquad.value?.units ?? [], squadBuildsByKey.value)
+    .units
+    .map((checked): UnitCard => ({
+      id: checked.unit.id,
+      squadBuild: checked.squadBuild,
+      caption: squadBuildCaption(checked.squadBuild),
+      wearer: checked.wearer,
+      loadout: checked.loadout,
+      tiles: loadoutTiles(checked.loadout, checked.wearer),
+    })));
 
   /**
    * Removes the Unit of the card from the open Squad and tells that its build stays in its Build calculator.

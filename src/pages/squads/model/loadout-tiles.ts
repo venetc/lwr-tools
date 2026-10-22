@@ -1,6 +1,5 @@
-import type { LoadoutItemId, LoadoutSlot, LoadoutSlots, LoadoutWearer, UtilitySlotKind } from '@entities/loadout';
+import type { Loadout, LoadoutItemId, LoadoutSlot, LoadoutWearer, UtilitySlotKind } from '@entities/loadout';
 import { ARMOR_BY_ID, EQUIPMENT_BY_ID, loadoutSlots, SHIV_TYPE_BY_ID, WEAPON_BY_ID } from '@entities/loadout';
-import type { UnitLoadout } from '@features/manage-squads';
 
 import {
   ARMOR_SLOT_CAPTION,
@@ -56,24 +55,6 @@ const tileItem = (catalog: ReadonlyMap<LoadoutItemId, LoadoutTileItem>, id: Load
 };
 
 /**
- * Slots of the Loadout: by the rules for its armor and primary weapon, or as stored while either is unknown,
- * until the check of the Unit fills them again.
- *
- * @param loadout Loadout of the Unit.
- * @param wearer Unit that carries the Loadout.
- */
-const tileSlots = (loadout: Readonly<UnitLoadout>, wearer: LoadoutWearer): LoadoutSlots => {
-  if (loadout.armor && loadout.primary) return loadoutSlots({ armor: loadout.armor, primary: loadout.primary }, wearer);
-
-  return {
-    hasSecondary: Boolean(loadout.secondary),
-    isSecondaryRequired: false,
-    utility: loadout.utility.map((): UtilitySlotKind => 'regular'),
-    moduleCount: loadout.modules.length,
-  };
-};
-
-/**
  * Tile of the slot with the item in it.
  *
  * @param id tile id.
@@ -101,8 +82,8 @@ const createTile = (id: string, slot: LoadoutSlot, caption: string, item: Loadou
  * @param loadout Loadout of the Unit.
  * @param wearer Unit that carries the Loadout.
  */
-export const loadoutTiles = (loadout: Readonly<UnitLoadout>, wearer: LoadoutWearer): LoadoutTile[] => {
-  const slots = tileSlots(loadout, wearer);
+export const loadoutTiles = (loadout: Readonly<Loadout>, wearer: LoadoutWearer): LoadoutTile[] => {
+  const slots = loadoutSlots(loadout, wearer);
   const armorCatalog = wearer.unit === 'shiv' ? SHIV_TYPE_BY_ID : ARMOR_BY_ID;
 
   const tiles = [

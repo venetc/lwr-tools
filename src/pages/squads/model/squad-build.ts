@@ -1,5 +1,4 @@
-import type { LoadoutUnitId, LoadoutWearer } from '@entities/loadout';
-import { biosoldierBuildBranchSet, isOfficerBuild } from '@entities/soldier';
+import type { LoadoutUnitId } from '@entities/loadout';
 import type { SquadUnitBuild } from '@features/manage-squads';
 import type { BiosoldierBuild, MecBuild, ShivBuild } from '@widgets/build-calculator';
 
@@ -9,30 +8,6 @@ import { BUILD_LIST_WORD, CAPTION_SEPARATOR, UNIT_NAME_BY_KIND } from '../config
  * Saved build a Unit refers to, with the kind of its Build calculator.
  */
 export type SquadBuild = { kind: 'biosoldier', build: BiosoldierBuild } | { kind: 'mec', build: MecBuild } | { kind: 'shiv', build: ShivBuild };
-
-/**
- * What the Loadout rules need to know about a Unit of the build: the class of a biosoldier with its gene mods,
- * psionic abilities and whether it is an Officer; the MEC class of a MEC; nothing of a SHIV.
- *
- * @param squadBuild build of the Unit.
- */
-export const unitWearer = (squadBuild: SquadBuild): LoadoutWearer => {
-  if (squadBuild.kind === 'biosoldier') {
-    const branchSet = biosoldierBuildBranchSet(squadBuild.build);
-
-    return {
-      unit: 'biosoldier',
-      classId: squadBuild.build.soldierClass.id,
-      hasGeneMod: branchSet === 'gene-mods' || branchSet === 'both',
-      hasPsionicAbility: branchSet === 'psionic' || branchSet === 'both',
-      isOfficer: isOfficerBuild(squadBuild.build),
-    };
-  }
-
-  const classId = squadBuild.kind === 'mec' ? squadBuild.build.soldierClass.id : null;
-
-  return { unit: squadBuild.kind, classId, hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
-};
 
 /**
  * Class name of the build: the class of a biosoldier or the MEC class of a MEC; a SHIV shows its unit type name.

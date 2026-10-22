@@ -3,7 +3,6 @@ import type { EquipmentContent } from '@entities/loadout/model/equipment';
 import type { Loadout, LoadoutWearer } from '@entities/loadout/model/loadout';
 import type { ShivTypeContent } from '@entities/loadout/model/shiv-types';
 import type { WeaponContent } from '@entities/loadout/model/weapons';
-import type { UnitLoadout } from '@features/manage-squads/model/squad';
 
 /**
  * Armor record with zero stats and no slots besides the given fields.
@@ -111,8 +110,6 @@ export const AURORA_FORMULA = 'Aurora 3 + Tactical Rigging 1 = 4 Utility slots, 
 export const LMG_FORMULA = 'Vest 2 + Tactical Rigging 1 − LMG 1 = 2 Utility slots.';
 
 export const TITAN_FORMULA = 'Titan 4 + Tactical Rigging 1 = 4 Utility slots (max 4).';
-
-export const UNKNOWN_ARMOR_LOADOUT: UnitLoadout = { armor: null, primary: 'laser-rifle', secondary: null, utility: [null, null, null], modules: [] };
 
 export const CERAMIC_IN_LAST_SLOT = createLoadoutMock({ utility: [null, 'he-grenade', 'ceramic-plating'] });
 

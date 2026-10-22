@@ -60,6 +60,7 @@
   @include typography.body-2;
   grid-column: 1;
   color: colors.$text-secondary;
+  white-space: pre-line;
 }
 
 .close {

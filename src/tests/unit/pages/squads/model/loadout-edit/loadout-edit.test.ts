@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { completeLoadout, equipLoadoutItem, isSlotRemovable, removeLoadoutItem, utilitySlotFormula } from '@pages/squads/model/loadout-edit';
+import { equipLoadoutItem, isSlotRemovable, removeLoadoutItem, utilitySlotFormula } from '@pages/squads/model/loadout-edit';
 
 import {
   AEGIS_FORMULA,
@@ -19,7 +19,6 @@ import {
   THUMPER_MEC,
   THUMPER_REMOVED_NOTES,
   TITAN_FORMULA,
-  UNKNOWN_ARMOR_LOADOUT,
 } from './loadout-edit.mock';
 
 vi.mock('@entities/loadout/config/constants/armor-content', async () => ({
@@ -177,19 +176,5 @@ describe('isSlotRemovable', () => {
     const isRemovable = isSlotRemovable({ kind: 'utility', index: 0 }, createLoadoutMock({ utility: ['he-grenade', null, null] }), ASSAULT);
 
     expect(isRemovable).toBe(true);
-  });
-});
-
-describe('completeLoadout', () => {
-  it('puts the default armor in place of an unknown one', () => {
-    const loadout = completeLoadout(UNKNOWN_ARMOR_LOADOUT, ASSAULT);
-
-    expect(loadout?.armor).toBe('tactical-vest');
-  });
-
-  it('keeps a known primary weapon', () => {
-    const loadout = completeLoadout(UNKNOWN_ARMOR_LOADOUT, ASSAULT);
-
-    expect(loadout?.primary).toBe('laser-rifle');
   });
 });

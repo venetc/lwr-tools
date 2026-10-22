@@ -1,3 +1,5 @@
+import { expect } from 'vitest';
+
 import type { DecodedLoadout } from '@entities/loadout';
 import type { SquadUnit } from '@features/manage-squads';
 
@@ -12,7 +14,15 @@ export const CHECKED_UNITS: SquadUnit[] = [
 
 export const UNIT_LOADOUT = LOADOUT;
 
-/**
- * Page object the stored list listens to for saving and syncing tabs: it takes listeners and never fires.
- */
-export const createPageTargetMock = () => new EventTarget();
+/** Key prefix of a stored Squad, followed by the Squad id. */
+export const SQUAD_KEY_PREFIX = 'lwr-tools.squads.v1.squad.';
+
+/** Storage where the open Squad is one that is no longer stored. */
+export const GONE_OPEN_SQUAD_STORAGE = {
+  'lwr-tools.squads.v1.order': '["squad-1","squad-2"]',
+  'lwr-tools.squads.v1.squad.squad-1': '{"name":"Alpha","units":[]}',
+  'lwr-tools.squads.v1.squad.squad-2': '{"name":"Bravo","units":[]}',
+  'lwr-tools.squads.v1.open': 'squad-gone',
+};
+
+export const EMPTY_SQUAD_1 = { id: expect.any(String), name: 'Squad 1', units: [] };

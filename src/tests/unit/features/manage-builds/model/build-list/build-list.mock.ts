@@ -1,5 +1,3 @@
-import { computed, shallowRef, triggerRef } from 'vue';
-
 import type { ListedBuild } from '@features/manage-builds/model/build-list';
 import type { StoredListOptions } from '@shared/lib/stored-list';
 
@@ -11,29 +9,6 @@ export interface BuildDataMock {
 }
 
 export type BuildMock = ListedBuild<BuildDataMock>;
-
-/**
- * In-memory stand-in of the stored list: keeps the default items in order, without storage or sync.
- *
- * @param options stored list options; only the default items are used.
- */
-export const useStoredListMock = <Item extends { id: string }>(options: StoredListOptions<Item>) => {
-  const itemsById = shallowRef(new Map(options.defaultItems().map(item => [item.id, item])));
-
-  return {
-    items: computed(() => [...itemsById.value.values()]),
-    getItem: (id: string) => itemsById.value.get(id) ?? null,
-    addItem: (item: Item) => {
-      itemsById.value.set(item.id, item);
-      triggerRef(itemsById);
-    },
-    removeItem: (id: string) => {
-      itemsById.value.delete(id);
-      triggerRef(itemsById);
-    },
-    markItemChanged: () => {},
-  };
-};
 
 export const EDITABLE_ID = 'editable';
 
@@ -48,7 +23,7 @@ export const createBuildsMock = (): BuildMock[] => [
 ];
 
 /**
- * Stored list options with fresh default builds; storage callbacks are never called by the stand-in.
+ * Stored list options with fresh default builds; the builds are never stored, so each list starts from them.
  */
 export const createOptionsMock = (): StoredListOptions<BuildMock> => ({
   orderKey: 'app.builds.v1.order',

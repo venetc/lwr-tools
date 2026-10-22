@@ -1,7 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useBuildList } from '@features/manage-builds/model/build-list';
 
+import { stubPage } from '../../../../shared/lib/stored-list/stored-list/stored-list.mock';
 import {
   createOptionsMock,
   EDITABLE_ID,
@@ -13,9 +14,15 @@ import {
   REPLACED_EDITABLE_BUILD,
 } from './build-list.mock';
 
-vi.mock('@shared/lib/stored-list', async () => ({
-  useStoredList: (await import('./build-list.mock')).useStoredListMock,
-}));
+beforeEach(() => {
+  vi.useFakeTimers();
+  stubPage();
+});
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.unstubAllGlobals();
+});
 
 describe('useBuildList', () => {
   it('imports data as a new editable build with its own id', () => {

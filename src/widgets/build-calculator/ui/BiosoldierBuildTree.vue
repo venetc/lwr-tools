@@ -5,7 +5,7 @@ import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
 import { useBiosoldierBranchClasses } from '../model/biosoldier-branch-classes';
-import { tierIcon, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
+import { tierLabel, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
 import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
@@ -66,11 +66,7 @@ const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
     </template>
 
     <template #tier="{ tier, highlighted }">
-      <TieredPickerTierLabel
-        :icon="tierIcon(tier)"
-        :name="tier.name"
-        :highlighted="highlighted"
-      />
+      <TieredPickerTierLabel v-bind="tierLabel(tier)" :highlighted="highlighted" />
     </template>
 
     <template #item-name="{ item, group }">

@@ -7,6 +7,7 @@ export const TABS_SNAPSHOT = `
   - tab "Class tree, 1 of 7"
   - tab "Gene mods, 0 of 5"
   - tab "Psionic, 0 of 5"
+  - tab "Officer, 0 of 5"
 `;
 
 export const GENE_MODS_TAB = /^Gene mods, /;

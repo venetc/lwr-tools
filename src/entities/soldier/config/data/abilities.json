@@ -411,7 +411,7 @@
   "combined-arms": {
     "code": 79,
     "name": "Combined Arms",
-    "description": "All weapons and equipment deal +1 damage."
+    "description": "All weapons and equipment deal +1 damage. Officers provide this to the squad. Officer gains +1 Command and +1.3 base mobility."
   },
   "dampening-shield": {
     "code": 80,
@@ -578,5 +578,69 @@
     "code": 111,
     "name": "Psi Mastery",
     "description": "All psionic abilities cost only 1 AP. If above half HP, fatal non-psionic damage reduces this unit to 1 HP instead. Psychic Storm still activates at half damage when interrupted."
+  },
+  "strength-in-numbers": {
+    "code": 112,
+    "name": "Strength in Numbers",
+    "description": "Squad receives +2 will per squad member. Officer gains Commanding Officer and +20 base will.",
+    "grants": [
+      "commanding-officer"
+    ]
+  },
+  "stay-frosty": {
+    "code": 113,
+    "name": "Stay Frosty",
+    "description": "Squad fatigue reduced by 10%. Officer gains Commanding Officer and +1.3 base mobility.",
+    "grants": [
+      "commanding-officer"
+    ]
+  },
+  "commanding-officer": {
+    "code": 114,
+    "name": "Commanding Officer",
+    "description": "Highest-ranking officer only: gains Command (1 charge) and +10 crit resist per officer rank, and its officer perks affect the whole squad. Squadmates they can see have a 2% chance per enemy the officer can see (3% with height advantage vs that squadmate) for end-in-idle actions to cost 0 AP.",
+    "grants": [
+      "command"
+    ]
+  },
+  "command": {
+    "code": 115,
+    "name": "Command",
+    "description": "Give 1 AP to an idle unit in sight that has 0 AP and disable their AP discounting perks. Not usable on Covert Ops, SHIVs or units already Commanded. Can trigger Tactical Brilliance [Will/2% chance (max 50%) to cost 0 charges]. Does not trigger reaction fire."
+  },
+  "cover-tactics": {
+    "code": 116,
+    "name": "Cover Tactics",
+    "description": "XCOM units protected by cover gain +3 defense per enemy the officer can see. Officer gains +10 base aim and def."
+  },
+  "cover-tenacity": {
+    "code": 117,
+    "name": "Cover Tenacity",
+    "description": "XCOM units protected by cover gain +2% DR per enemy the officer can see. Officer gains +5 base DR and +2 base HP."
+  },
+  "show-em-the-ropes": {
+    "code": 118,
+    "name": "Show 'Em the Ropes",
+    "description": "All soldiers SGT or lower gain +70% mission xp. Officer gains +1 Command and +1 reaction shot on Overwatch."
+  },
+  "tricks-of-the-trade": {
+    "code": 119,
+    "name": "Tricks of the Trade",
+    "description": "All soldiers gain +15% mission xp. Officer gains +1 Command and +1 use on equipped grenades."
+  },
+  "clutch-leadership": {
+    "code": 120,
+    "name": "Clutch Leadership",
+    "description": "Squad receives +1 aim per enemy the officer can see. Officer gains +5 base aim."
+  },
+  "natural-leadership": {
+    "code": 121,
+    "name": "Natural Leadership",
+    "description": "Squad receives +4 will per enemy the officer can see. Officer gains +20 base will."
+  },
+  "camaraderie": {
+    "code": 122,
+    "name": "Camaraderie",
+    "description": "Increases the chance Commanding Officer will trigger by 50%. Officer gains +1 Command and +5 base HP."
   }
 }

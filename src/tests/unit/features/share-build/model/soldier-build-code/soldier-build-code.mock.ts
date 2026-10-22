@@ -66,7 +66,7 @@ const SOLDIER_BUILD = {
   name: 'Tester',
 } as SoldierBuildData;
 
-export const DEFAULT_NAME_BUILD: BiosoldierBuildData = { ...SOLDIER_BUILD, geneMods: [null, null], psionicAbilities: [] };
+export const DEFAULT_NAME_BUILD: BiosoldierBuildData = { ...SOLDIER_BUILD, geneMods: [null, null], psionicAbilities: [], officerPerks: [] };
 
 export const OTHER_CLASS_MOCK = {
   id: 'other',

@@ -1,8 +1,11 @@
 import { BODY_PARTS, NEURAL_DAMPING_ID } from '../config/constants/body-parts';
+import { OFFICER_RANKS } from '../config/constants/officer-ranks';
 import { PSI_LEVELS } from '../config/constants/psi-levels';
 import type { SelectedGeneMods } from './body-parts';
 import type { SelectedPerks } from './class-tree';
 import type { SoldierClass } from './classes';
+import type { SelectedOfficerPerks } from './officer-ranks';
+import { hasRequiredRank } from './officer-ranks';
 import type { SelectedPsionicAbilities } from './psi-levels';
 
 /**
@@ -18,13 +21,15 @@ export interface SoldierBuildData {
 }
 
 /**
- * Biosoldier build: a soldier build with gene mods and psionic abilities.
+ * Biosoldier build: a soldier build with gene mods, psionic abilities and officer perks.
  */
 export interface BiosoldierBuildData extends SoldierBuildData {
   /** Gene mods by body part; null for a body part without one. */
   geneMods: SelectedGeneMods
   /** Psionic abilities by psi level, from Awakened, without gaps. */
   psionicAbilities: SelectedPsionicAbilities
+  /** Officer perks by officer rank, from Lieutenant, without gaps. */
+  officerPerks: SelectedOfficerPerks
 }
 
 /**
@@ -106,6 +111,36 @@ export const selectBiosoldierBuildPsionicAbility = (build: BiosoldierBuildData, 
   if (!ability) return;
 
   build.psionicAbilities[levelIndex] = ability;
+};
+
+/**
+ * Selects an officer perk on the officer rank, keeping higher officer ranks; clearing an officer rank clears all higher
+ * ones too. An officer rank after the next open one, an officer rank whose required rank the class tree has not
+ * completed, or an officer perk of another officer rank is ignored.
+ *
+ * @param build biosoldier build; its officer perks are mutated in place.
+ * @param officerRankIndex officer rank index.
+ * @param perkId selected officer perk id, or null to clear the officer rank.
+ */
+export const selectBiosoldierBuildOfficerPerk = (build: BiosoldierBuildData, officerRankIndex: number, perkId: string | null): void => {
+  if (officerRankIndex > build.officerPerks.length) return;
+
+  const officerRank = OFFICER_RANKS[officerRankIndex];
+
+  if (!officerRank) return;
+
+  if (!hasRequiredRank(officerRank, build.perks)) return;
+
+  if (perkId === null) {
+    build.officerPerks.length = officerRankIndex;
+    return;
+  }
+
+  const perk = officerRank.perks.find(id => id === perkId);
+
+  if (!perk) return;
+
+  build.officerPerks[officerRankIndex] = perk;
 };
 
 /**

@@ -1,0 +1,32 @@
+{
+  "lieutenant": {
+    "name": "Lieutenant",
+    "abbreviation": "LT",
+    "requiredRank": "corporal",
+    "perks": ["strength-in-numbers", "stay-frosty"]
+  },
+  "captain": {
+    "name": "Captain",
+    "abbreviation": "CAPT",
+    "requiredRank": "sergeant",
+    "perks": ["cover-tactics", "cover-tenacity"]
+  },
+  "major": {
+    "name": "Major",
+    "abbreviation": "MAJ",
+    "requiredRank": "tech-sergeant",
+    "perks": ["show-em-the-ropes", "tricks-of-the-trade"]
+  },
+  "colonel": {
+    "name": "Colonel",
+    "abbreviation": "COL",
+    "requiredRank": "gunnery-sergeant",
+    "perks": ["clutch-leadership", "natural-leadership"]
+  },
+  "field-commander": {
+    "name": "Field Commander",
+    "abbreviation": "CMDR",
+    "requiredRank": "master-sergeant",
+    "perks": ["camaraderie", "combined-arms"]
+  }
+}

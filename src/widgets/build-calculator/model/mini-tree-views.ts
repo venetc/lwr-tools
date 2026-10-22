@@ -15,6 +15,7 @@ export const useMiniTreeViews = (rows: MaybeRefOrGetter<readonly MiniTreeRow[]>,
     'class-tree': style.classTreeTitle,
     'gene-mods': style.geneModsTitle,
     'psionic': style.psionicTitle,
+    'officer': style.classTreeTitle,
   };
 
   const cellStateClass: Record<MiniTreeStepState, string | undefined> = {

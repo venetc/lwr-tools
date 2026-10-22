@@ -4,6 +4,7 @@ import { ABILITY_CONTENT } from '@entities/soldier/config/constants/ability-cont
 import { BIOSOLDIER_CLASS_CONTENT } from '@entities/soldier/config/constants/biosoldier-class-content';
 import { BODY_PART_CONTENT } from '@entities/soldier/config/constants/body-part-content';
 import { MEC_CLASS_CONTENT } from '@entities/soldier/config/constants/mec-class-content';
+import { OFFICER_RANK_CONTENT } from '@entities/soldier/config/constants/officer-rank-content';
 import { PSI_LEVEL_CONTENT } from '@entities/soldier/config/constants/psi-level-content';
 import { SOLDIER_RANK_CONTENT } from '@entities/soldier/config/constants/soldier-rank-content';
 
@@ -18,6 +19,7 @@ describe('soldier content data', () => {
       ranks: SOLDIER_RANK_CONTENT,
       bodyParts: BODY_PART_CONTENT,
       psiLevels: PSI_LEVEL_CONTENT,
+      officerRanks: OFFICER_RANK_CONTENT,
     };
 
     const result = soldierContentSchema.safeParse(content);

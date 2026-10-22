@@ -6,6 +6,7 @@ import type { AbilityContent } from '@entities/soldier/model/abilities';
 import { isAbilityId } from '@entities/soldier/model/abilities';
 import type { BodyPartContent } from '@entities/soldier/model/body-parts';
 import type { SoldierClassContent } from '@entities/soldier/model/classes';
+import type { OfficerRankContent } from '@entities/soldier/model/officer-ranks';
 import type { PsiLevelContent } from '@entities/soldier/model/psi-levels';
 import type { SoldierRankContent } from '@entities/soldier/model/ranks';
 import { ABILITY_CODE_BITS, CLASS_CODE_BITS } from '@features/share-build/config/constants';
@@ -20,26 +21,28 @@ const codeSchema = (codeBits: number) => z.int().min(1).max(2 ** codeBits - 1);
 
 const abilityIdSchema = z.string().refine(isAbilityId, { error: 'Unknown ability id' });
 
-const rankIdSchema = z.enum(typedEntries(SOLDIER_RANK_CONTENT).map(([id]) => id));
+const rankIds = typedEntries(SOLDIER_RANK_CONTENT).map(([id]) => id);
+
+const rankIdSchema = z.enum(rankIds);
+
+/** Officer rank ids in officer training order. */
+const OFFICER_RANK_IDS = ['lieutenant', 'captain', 'major', 'colonel', 'field-commander'];
 
 /**
- * Reports records whose `code` repeats the code of an earlier record.
+ * Reports records whose `code` is not greater than the code of the record before: abilities are sorted by code,
+ * so codes are unique.
  *
  * @param records records by id.
  * @param context refinement context that collects issues.
  */
-const checkUniqueCodes = (records: Record<string, { code: number }>, context: z.RefinementCtx) => {
-  const idByCode = new Map<number, string>();
-
-  Object.entries(records).forEach(([id, record]) => {
-    const sameCodeId = idByCode.get(record.code) ?? null;
-
-    if (sameCodeId) {
-      context.addIssue({ code: 'custom', message: `Code ${record.code} is already used by "${sameCodeId}"`, path: [id, 'code'] });
+const checkOrderedCodes = (records: Record<string, { code: number }>, context: z.RefinementCtx) => {
+  Object.entries(records).reduce((previousCode, [id, record]) => {
+    if (record.code <= previousCode) {
+      context.addIssue({ code: 'custom', message: `Code ${record.code} must be greater than the previous code ${previousCode}`, path: [id, 'code'] });
     }
 
-    idByCode.set(record.code, id);
-  });
+    return record.code;
+  }, 0);
 };
 
 /**
@@ -228,6 +231,53 @@ const checkUniquePsionicAbilities = (psiLevels: Record<string, PsiLevelContent>,
 };
 
 /**
+ * Reports officer ranks out of officer training order, and required ranks that do not rise strictly from one officer
+ * rank to the next.
+ *
+ * @param officerRanks officer rank records by id.
+ * @param context refinement context that collects issues.
+ */
+const checkOfficerRankOrder = (officerRanks: Record<string, OfficerRankContent>, context: z.RefinementCtx) => {
+  const ids = Object.keys(officerRanks);
+
+  if (ids.join() !== OFFICER_RANK_IDS.join()) {
+    context.addIssue({ code: 'custom', message: `Expected officer ranks ${OFFICER_RANK_IDS.join(', ')}, got ${ids.join(', ')}` });
+  }
+
+  Object.entries(officerRanks).reduce((previousRankIndex, [id, officerRank]) => {
+    const rankIndex = rankIds.findIndex(rankId => rankId === officerRank.requiredRank);
+
+    if (rankIndex <= previousRankIndex) {
+      context.addIssue({ code: 'custom', message: `Required rank "${officerRank.requiredRank}" must be higher than the previous one`, path: [id, 'requiredRank'] });
+    }
+
+    return rankIndex;
+  }, -1);
+};
+
+/**
+ * Reports an officer perk offered twice in the officer tree, on one officer rank or on two.
+ *
+ * @param officerRanks officer rank records by id.
+ * @param context refinement context that collects issues.
+ */
+const checkUniqueOfficerPerks = (officerRanks: Record<string, OfficerRankContent>, context: z.RefinementCtx) => {
+  const officerRankByPerk = new Map<string, string>();
+
+  Object.entries(officerRanks).forEach(([id, officerRank]) => {
+    officerRank.perks.forEach((perkId) => {
+      const samePerkRank = officerRankByPerk.get(perkId) ?? null;
+
+      if (samePerkRank) {
+        context.addIssue({ code: 'custom', message: `Officer perk "${perkId}" is already offered on "${samePerkRank}"`, path: [id, 'perks'] });
+      }
+
+      officerRankByPerk.set(perkId, id);
+    });
+  });
+};
+
+/**
  * Reports a Neural Damping id that is not a Brain gene mod: the rule against psionic abilities relies on it.
  *
  * @param bodyParts body part records by id.
@@ -266,14 +316,23 @@ const psiLevelContentSchema: z.ZodType<PsiLevelContent> = z.strictObject({
   abilities: z.array(abilityIdSchema).min(1).max(3),
 });
 
+const officerRankContentSchema: z.ZodType<OfficerRankContent> = z.strictObject({
+  name: z.string().min(1),
+  abbreviation: z.string().min(1),
+  requiredRank: rankIdSchema,
+  perks: z.tuple([abilityIdSchema, abilityIdSchema]),
+});
+
 /**
- * Schema of all soldier content JSON: record shapes, code ranges, ability codes and class codes unique across both class lists,
+ * Schema of all soldier content JSON: record shapes, code ranges, ability codes in ascending order, class codes unique across both class lists,
  * ability references and grant cycles; five body parts with two gene mods each, every gene mod in one body part,
  * and Neural Damping in Brain; five psi levels with one to three psionic abilities each, every ability on one level;
+ * five officer ranks in officer training order with strictly rising required ranks and two officer perks each, every
+ * officer perk on one officer rank;
  * no ability, granted ones included, in two kinds of branches.
  */
 export const soldierContentSchema = z.strictObject({
-  abilities: z.record(z.string(), abilityContentSchema).superRefine(checkUniqueCodes).superRefine(checkGrantCycles),
+  abilities: z.record(z.string(), abilityContentSchema).superRefine(checkOrderedCodes).superRefine(checkGrantCycles),
   biosoldierClasses: z.record(z.string(), soldierClassContentSchema),
   mecClasses: z.record(z.string(), soldierClassContentSchema),
   ranks: z.record(z.string(), soldierRankContentSchema),
@@ -284,4 +343,7 @@ export const soldierContentSchema = z.strictObject({
   psiLevels: z.record(z.string(), psiLevelContentSchema)
     .refine(psiLevels => Object.keys(psiLevels).length === 5, { error: 'Expected five psi levels' })
     .superRefine(checkUniquePsionicAbilities),
+  officerRanks: z.record(z.string(), officerRankContentSchema)
+    .superRefine(checkOfficerRankOrder)
+    .superRefine(checkUniqueOfficerPerks),
 }).superRefine(checkSoldierClassLists).superRefine(checkBranchKinds);

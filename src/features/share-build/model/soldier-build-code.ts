@@ -301,7 +301,7 @@ const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildData, Bio
 
     if (geneMods.includes(NEURAL_DAMPING_ID) && psionicAbilities.length > 0) return null;
 
-    return { ...build, geneMods, psionicAbilities };
+    return { ...build, geneMods, psionicAbilities, officerPerks: [] };
   },
 };
 

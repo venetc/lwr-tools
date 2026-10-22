@@ -59,6 +59,7 @@ export const BIOSOLDIER_BRANCH_TITLE = {
   'class-tree': 'Class tree',
   'gene-mods': 'Gene mods',
   'psionic': 'Psionic',
+  'officer': 'Officer',
 } as const;
 
 /** Id of the only tier group of a MEC build panel: the class tree. */

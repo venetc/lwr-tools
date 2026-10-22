@@ -8,9 +8,11 @@ import {
   GENE_MODS_TAB,
   MAGNUM,
   NEURAL_DAMPING,
+  OFFICER_TAB,
   PAGE_PATH,
   PANEL_NAME,
   PSIONIC_TAB,
+  STRENGTH_IN_NUMBERS,
 } from './tabs.mock';
 
 /**
@@ -50,14 +52,14 @@ test.describe('Build panel tabs from the keyboard', () => {
 
     await panel.getByRole('tab', { name: CLASS_TREE_TAB }).press('End');
 
-    await expect(panel.getByRole('tab', { name: PSIONIC_TAB })).toHaveAttribute('aria-selected', 'true');
+    await expect(panel.getByRole('tab', { name: OFFICER_TAB })).toHaveAttribute('aria-selected', 'true');
   });
 
   test('move to the first tab with Home', async ({ page }) => {
     const panel = await openPanel(page);
-    await panel.getByRole('tab', { name: PSIONIC_TAB }).click();
+    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 
-    await panel.getByRole('tab', { name: PSIONIC_TAB }).press('Home');
+    await panel.getByRole('tab', { name: OFFICER_TAB }).press('Home');
 
     await expect(panel.getByRole('tab', { name: CLASS_TREE_TAB })).toHaveAttribute('aria-selected', 'true');
   });
@@ -82,6 +84,15 @@ test.describe('Switching build panel tabs', () => {
     await expect(description(panel).getByText(COUNTERCHARGE, { exact: true })).toBeVisible();
   });
 
+  test('describes the default officer perk of the Officer tab', async ({ page }) => {
+    const panel = await openPanel(page);
+    await abilityCell(panel, MAGNUM).focus();
+
+    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
+
+    await expect(description(panel).getByText(STRENGTH_IN_NUMBERS, { exact: true })).toBeVisible();
+  });
+
   test('keeps the panel height on the Gene mods tab', async ({ page }) => {
     const panel = await openPanel(page);
     const classTreeHeight = await panelHeight(panel);
@@ -96,6 +107,15 @@ test.describe('Switching build panel tabs', () => {
     const classTreeHeight = await panelHeight(panel);
 
     await panel.getByRole('tab', { name: PSIONIC_TAB }).click();
+
+    await expect.poll(() => panelHeight(panel)).toBe(classTreeHeight);
+  });
+
+  test('keeps the panel height on the Officer tab', async ({ page }) => {
+    const panel = await openPanel(page);
+    const classTreeHeight = await panelHeight(panel);
+
+    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 
     await expect.poll(() => panelHeight(panel)).toBe(classTreeHeight);
   });

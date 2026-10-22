@@ -18,8 +18,22 @@ $compact-max-width: 390px;
   }
 }
 
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
 .name {
   text-box: trim-both cap alphabetic;
+}
+
+.caption {
+  @include typography.caption;
+
+  color: colors.$text-tertiary;
+  text-transform: none;
 }
 
 .icon {
@@ -34,4 +48,20 @@ $compact-max-width: 390px;
 
 .iconHighlighted {
   color: currentColor;
+}
+
+.image {
+  flex: none;
+  width: 34px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.imageRegular {
+  opacity: 1;
+}
+
+.imageFaded {
+  opacity: 0.35;
+  filter: grayscale(1);
 }

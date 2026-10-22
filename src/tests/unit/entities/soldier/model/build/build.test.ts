@@ -1,12 +1,21 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { biosoldierBuildBranchSet, selectBiosoldierBuildGeneMod, selectBiosoldierBuildPsionicAbility, selectSoldierBuildPerk } from '@entities/soldier/model/build';
+import {
+  biosoldierBuildBranchSet,
+  selectBiosoldierBuildGeneMod,
+  selectBiosoldierBuildOfficerPerk,
+  selectBiosoldierBuildPsionicAbility,
+  selectSoldierBuildPerk,
+} from '@entities/soldier/model/build';
 
 import {
+  ALL_OFFICER_PERKS,
   ALL_PSIONICS,
+  ALPHA_OFFICER_PERKS,
   BASE_PERKS,
   createBiosoldierBuildMock,
   createBuildMock,
+  createOfficerBuildMock,
   FEET_GENE_MODS,
   FULL_PERKS,
   LOW_AND_MIDDLE_PSIONICS,
@@ -31,6 +40,12 @@ vi.mock('@entities/soldier/config/constants/psi-level-content', async () => ({
 vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => ({
   SOLDIER_RANK_CONTENT: (await import('./build.mock')).SOLDIER_RANK_CONTENT_MOCK,
 }));
+
+vi.mock('@entities/soldier/config/constants/officer-rank-content', async () => ({
+  OFFICER_RANK_CONTENT: (await import('./build.mock')).OFFICER_RANK_CONTENT_MOCK,
+}));
+
+vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {} }));
 
 vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 
@@ -189,6 +204,56 @@ describe('selectBiosoldierBuildPsionicAbility', () => {
     selectBiosoldierBuildPsionicAbility(build, 0, 'low-left');
 
     expect(build.psionicAbilities).toEqual([]);
+  });
+});
+
+describe('selectBiosoldierBuildOfficerPerk', () => {
+  it('selects an officer perk on the open officer rank', () => {
+    const build = createOfficerBuildMock(FULL_PERKS);
+
+    selectBiosoldierBuildOfficerPerk(build, 0, 'alpha-right');
+
+    expect(build.officerPerks).toEqual(['alpha-right']);
+  });
+
+  it('replaces the officer perk of a completed officer rank and keeps the officer ranks above', () => {
+    const build = createOfficerBuildMock(FULL_PERKS, ALL_OFFICER_PERKS);
+
+    selectBiosoldierBuildOfficerPerk(build, 0, 'alpha-right');
+
+    expect(build.officerPerks).toEqual(['alpha-right', 'beta-left', 'gamma-right']);
+  });
+
+  it('clears the officer rank and all officer ranks above on a null perk', () => {
+    const build = createOfficerBuildMock(FULL_PERKS, ALL_OFFICER_PERKS);
+
+    selectBiosoldierBuildOfficerPerk(build, 1, null);
+
+    expect(build.officerPerks).toEqual(['alpha-left']);
+  });
+
+  it('ignores an officer rank beyond the next open one', () => {
+    const build = createOfficerBuildMock(FULL_PERKS, ALPHA_OFFICER_PERKS);
+
+    selectBiosoldierBuildOfficerPerk(build, 2, 'gamma-left');
+
+    expect(build.officerPerks).toEqual(['alpha-left']);
+  });
+
+  it('ignores an officer rank whose required rank is not completed', () => {
+    const build = createOfficerBuildMock(BASE_PERKS);
+
+    selectBiosoldierBuildOfficerPerk(build, 0, 'alpha-left');
+
+    expect(build.officerPerks).toEqual([]);
+  });
+
+  it('ignores an officer perk of another officer rank', () => {
+    const build = createOfficerBuildMock(FULL_PERKS);
+
+    selectBiosoldierBuildOfficerPerk(build, 0, 'beta-left');
+
+    expect(build.officerPerks).toEqual([]);
   });
 });
 

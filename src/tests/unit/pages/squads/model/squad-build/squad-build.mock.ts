@@ -26,6 +26,7 @@ export const createBiosoldierBuildMock = (build: { geneMods?: SelectedGeneMods, 
     perks: [],
     geneMods: build.geneMods ?? [null, null, null, null, null],
     psionicAbilities: build.psionicAbilities ?? [],
+    officerPerks: [],
   },
 });
 

@@ -5,6 +5,7 @@ import {
   BIOSOLDIER_CLASSES,
   EMPTY_GENE_MODS,
   selectBiosoldierBuildGeneMod,
+  selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from '@entities/soldier';
@@ -24,7 +25,7 @@ export type BiosoldierBuildId = string;
 export type BiosoldierBuild = StoredBuild<BiosoldierBuildData>;
 
 /**
- * New editable build of the class with only the base perk selected, no gene mods and no psionic abilities.
+ * New editable build of the class with only the base perk selected, no gene mods, psionic abilities or officer perks.
  *
  * @param soldierClass biosoldier class.
  * @param id build id; random by default.
@@ -36,6 +37,7 @@ const createBiosoldierBuild = (soldierClass: SoldierClass, id: BiosoldierBuildId
     perks: [soldierClass.basePerk],
     geneMods: [...EMPTY_GENE_MODS],
     psionicAbilities: [],
+    officerPerks: [],
     name: soldierClass.name,
     readonly: false,
   };
@@ -108,6 +110,23 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
   };
 
   /**
+   * Selects an officer perk on the officer rank of an editable build, or clears the officer rank and all officer ranks
+   * above.
+   *
+   * @param buildId build id.
+   * @param officerRankIndex officer rank index.
+   * @param perkId selected officer perk id, or null to clear the officer rank.
+   */
+  const selectBuildOfficerPerk = (buildId: BiosoldierBuildId, officerRankIndex: number, perkId: string | null) => {
+    const build = buildList.findEditableBuild(buildId);
+
+    if (!build) return;
+
+    selectBiosoldierBuildOfficerPerk(build, officerRankIndex, perkId);
+    buildList.markBuildChanged(buildId);
+  };
+
+  /**
    * Adds a new build of the class with only the base perk selected.
    *
    * @param soldierClass biosoldier class of the new build.
@@ -123,7 +142,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
   };
 
   /**
-   * Resets an editable build to a new build of its class: only the base perk, no gene mods and no psionic abilities; the name stays.
+   * Resets an editable build to a new build of its class: only the base perk, no gene mods, psionic abilities or officer perks; the name stays.
    *
    * @param buildId build id.
    */
@@ -140,6 +159,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
     selectBuildPerk,
     selectBuildGeneMod,
     selectBuildPsionicAbility,
+    selectBuildOfficerPerk,
     setName: buildList.setName,
     setReadonly: buildList.setReadonly,
     addBuild,

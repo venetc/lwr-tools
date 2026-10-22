@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 import { abilityCell, description, openBuildPanel } from '../utils/build-panel';
 import { pageOverflow } from '../utils/page-layout';
 import { toolbarImport } from '../utils/share-code';
-import { MAGNUM, NAVIGATION, PAGE_PATH, PANEL_NAME } from './phone-layout.mock';
+import { FIELD_COMMANDER, MAGNUM, NAVIGATION, OFFICER_TAB, PAGE_PATH, PANEL_NAME } from './phone-layout.mock';
 
 /**
  * Opens the Biosoldier Build calculator and returns the panel of the tested build.
@@ -22,6 +22,24 @@ test.describe('Biosoldier calculator on a phone', () => {
     const tabTops = await panel.getByRole('tab').evaluateAll(tabs => tabs.map(tab => Math.round(tab.getBoundingClientRect().top)));
 
     expect(new Set(tabTops).size).toBe(1);
+  });
+
+  test('shows the officer ranks on the Officer tab', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
+
+    await expect(panel.getByRole('group', { name: FIELD_COMMANDER, exact: true })).toBeVisible();
+  });
+
+  test('has no horizontal scroll on the Officer tab', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
+
+    const overflow = await pageOverflow(page);
+
+    expect(overflow).toBeLessThanOrEqual(0);
   });
 
   test('has no horizontal scroll', async ({ page }) => {

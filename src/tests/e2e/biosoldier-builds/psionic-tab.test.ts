@@ -29,7 +29,7 @@ import {
 const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
 
 test.describe('Psionic tab', () => {
-  test('shows the Class tree, Gene mods and Psionic tabs with counters', async ({ page }) => {
+  test('shows the Class tree, Gene mods, Psionic and Officer tabs with counters', async ({ page }) => {
     const panel = await openPanel(page);
 
     const tablist = panel.getByRole('tablist');

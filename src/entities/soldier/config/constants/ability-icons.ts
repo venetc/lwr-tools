@@ -43,9 +43,15 @@ import assaultRungunDisabledIcon from '../icons/abilities/assault_rungun/assault
 import bombardTgaOriginalIcon from '../icons/abilities/bombard_tga/bombard_tga@4x.png';
 import bombardTgaAvailableIcon from '../icons/abilities/bombard_tga/bombard_tga@4x_available.png';
 import bombardTgaDisabledIcon from '../icons/abilities/bombard_tga/bombard_tga@4x_disabled.png';
+import commandOriginalIcon from '../icons/abilities/command/command@4x.png';
+import commandAvailableIcon from '../icons/abilities/command/command@4x_available.png';
+import commandDisabledIcon from '../icons/abilities/command/command@4x_disabled.png';
 import councilMedalOfHonor2Eu2012OriginalIcon from '../icons/abilities/council_medal_of_honor_2_eu2012/council_medal_of_honor_2_eu2012@4x.png';
 import councilMedalOfHonor2Eu2012AvailableIcon from '../icons/abilities/council_medal_of_honor_2_eu2012/council_medal_of_honor_2_eu2012@4x_available.png';
 import councilMedalOfHonor2Eu2012DisabledIcon from '../icons/abilities/council_medal_of_honor_2_eu2012/council_medal_of_honor_2_eu2012@4x_disabled.png';
+import dazedOriginalIcon from '../icons/abilities/dazed/dazed@4x.png';
+import dazedAvailableIcon from '../icons/abilities/dazed/dazed@4x_available.png';
+import dazedDisabledIcon from '../icons/abilities/dazed/dazed@4x_disabled.png';
 import defendersMedal1Eu2012OriginalIcon from '../icons/abilities/defenders_medal_1_eu2012/defenders_medal_1_eu2012@4x.png';
 import defendersMedal1Eu2012AvailableIcon from '../icons/abilities/defenders_medal_1_eu2012/defenders_medal_1_eu2012@4x_available.png';
 import defendersMedal1Eu2012DisabledIcon from '../icons/abilities/defenders_medal_1_eu2012/defenders_medal_1_eu2012@4x_disabled.png';
@@ -79,9 +85,15 @@ import heavySuppressionDisabledIcon from '../icons/abilities/heavy_suppression/h
 import heavyWilltosurviveOriginalIcon from '../icons/abilities/heavy_willtosurvive/heavy_willtosurvive@4x.png';
 import heavyWilltosurviveAvailableIcon from '../icons/abilities/heavy_willtosurvive/heavy_willtosurvive@4x_available.png';
 import heavyWilltosurviveDisabledIcon from '../icons/abilities/heavy_willtosurvive/heavy_willtosurvive@4x_disabled.png';
+import honorAOriginalIcon from '../icons/abilities/honor_a/honor_a@4x.png';
+import honorAAvailableIcon from '../icons/abilities/honor_a/honor_a@4x_available.png';
+import honorADisabledIcon from '../icons/abilities/honor_a/honor_a@4x_disabled.png';
 import itzIconOriginalIcon from '../icons/abilities/itz_icon/itz_icon@4x.png';
 import itzIconAvailableIcon from '../icons/abilities/itz_icon/itz_icon@4x_available.png';
 import itzIconDisabledIcon from '../icons/abilities/itz_icon/itz_icon@4x_disabled.png';
+import leadbyexampleOriginalIcon from '../icons/abilities/leadbyexample/leadbyexample@4x.png';
+import leadbyexampleAvailableIcon from '../icons/abilities/leadbyexample/leadbyexample@4x_available.png';
+import leadbyexampleDisabledIcon from '../icons/abilities/leadbyexample/leadbyexample@4x_disabled.png';
 import lwrAceOriginalIcon from '../icons/abilities/lwr_ace/lwr_ace@4x.png';
 import lwrAceAvailableIcon from '../icons/abilities/lwr_ace/lwr_ace@4x_available.png';
 import lwrAceDisabledIcon from '../icons/abilities/lwr_ace/lwr_ace@4x_disabled.png';
@@ -160,6 +172,9 @@ import lwrReconnaissanceDisabledIcon from '../icons/abilities/lwr_reconnaissance
 import lwrShockAndAweOriginalIcon from '../icons/abilities/lwr_shock_and_awe/lwr_shock_and_awe@4x.png';
 import lwrShockAndAweAvailableIcon from '../icons/abilities/lwr_shock_and_awe/lwr_shock_and_awe@4x_available.png';
 import lwrShockAndAweDisabledIcon from '../icons/abilities/lwr_shock_and_awe/lwr_shock_and_awe@4x_disabled.png';
+import lwrStayFrostyOriginalIcon from '../icons/abilities/lwr_stay_frosty/lwr_stay_frosty@4x.png';
+import lwrStayFrostyAvailableIcon from '../icons/abilities/lwr_stay_frosty/lwr_stay_frosty@4x_available.png';
+import lwrStayFrostyDisabledIcon from '../icons/abilities/lwr_stay_frosty/lwr_stay_frosty@4x_disabled.png';
 import lwrSurgicalTargetingOriginalIcon from '../icons/abilities/lwr_surgical_targeting/lwr_surgical_targeting@4x.png';
 import lwrSurgicalTargetingAvailableIcon from '../icons/abilities/lwr_surgical_targeting/lwr_surgical_targeting@4x_available.png';
 import lwrSurgicalTargetingDisabledIcon from '../icons/abilities/lwr_surgical_targeting/lwr_surgical_targeting@4x_disabled.png';
@@ -202,9 +217,18 @@ import mecShockAbsorbentArmorDisabledIcon from '../icons/abilities/mec_shock_abs
 import mecVitalPointTargetingOriginalIcon from '../icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x.png';
 import mecVitalPointTargetingAvailableIcon from '../icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x_available.png';
 import mecVitalPointTargetingDisabledIcon from '../icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x_disabled.png';
+import nationAimOriginalIcon from '../icons/abilities/nation_aim/nation_aim@4x.png';
+import nationAimAvailableIcon from '../icons/abilities/nation_aim/nation_aim@4x_available.png';
+import nationAimDisabledIcon from '../icons/abilities/nation_aim/nation_aim@4x_disabled.png';
+import nationWillOriginalIcon from '../icons/abilities/nation_will/nation_will@4x.png';
+import nationWillAvailableIcon from '../icons/abilities/nation_will/nation_will@4x_available.png';
+import nationWillDisabledIcon from '../icons/abilities/nation_will/nation_will@4x_disabled.png';
 import onslaughtLwrOriginalIcon from '../icons/abilities/onslaught_lwr/onslaught_lwr@4x.png';
 import onslaughtLwrAvailableIcon from '../icons/abilities/onslaught_lwr/onslaught_lwr@4x_available.png';
 import onslaughtLwrDisabledIcon from '../icons/abilities/onslaught_lwr/onslaught_lwr@4x_disabled.png';
+import overdriveOriginalIcon from '../icons/abilities/overdrive/overdrive@4x.png';
+import overdriveAvailableIcon from '../icons/abilities/overdrive/overdrive@4x_available.png';
+import overdriveDisabledIcon from '../icons/abilities/overdrive/overdrive@4x_disabled.png';
 import pheromonesTgaOriginalIcon from '../icons/abilities/pheromones_tga/pheromones_tga@4x.png';
 import pheromonesTgaAvailableIcon from '../icons/abilities/pheromones_tga/pheromones_tga@4x_available.png';
 import pheromonesTgaDisabledIcon from '../icons/abilities/pheromones_tga/pheromones_tga@4x_disabled.png';
@@ -241,6 +265,12 @@ import sniperSnapshotDisabledIcon from '../icons/abilities/sniper_snapshot/snipe
 import sniperSquadsightOriginalIcon from '../icons/abilities/sniper_squadsight/sniper_squadsight@4x.png';
 import sniperSquadsightAvailableIcon from '../icons/abilities/sniper_squadsight/sniper_squadsight@4x_available.png';
 import sniperSquadsightDisabledIcon from '../icons/abilities/sniper_squadsight/sniper_squadsight@4x_disabled.png';
+import starAOriginalIcon from '../icons/abilities/star_a/star_a@4x.png';
+import starAAvailableIcon from '../icons/abilities/star_a/star_a@4x_available.png';
+import starADisabledIcon from '../icons/abilities/star_a/star_a@4x_disabled.png';
+import starBOriginalIcon from '../icons/abilities/star_b/star_b@4x.png';
+import starBAvailableIcon from '../icons/abilities/star_b/star_b@4x_available.png';
+import starBDisabledIcon from '../icons/abilities/star_b/star_b@4x_disabled.png';
 import supportCombatdrugsOriginalIcon from '../icons/abilities/support_combatdrugs/support_combatdrugs@4x.png';
 import supportCombatdrugsAvailableIcon from '../icons/abilities/support_combatdrugs/support_combatdrugs@4x_available.png';
 import supportCombatdrugsDisabledIcon from '../icons/abilities/support_combatdrugs/support_combatdrugs@4x_disabled.png';
@@ -271,6 +301,9 @@ import supportSprinterDisabledIcon from '../icons/abilities/support_sprinter/sup
 import urbanCombatBadge2Eu2012OriginalIcon from '../icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x.png';
 import urbanCombatBadge2Eu2012AvailableIcon from '../icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x_available.png';
 import urbanCombatBadge2Eu2012DisabledIcon from '../icons/abilities/urban_combat_badge_2_eu2012/urban_combat_badge_2_eu2012@4x_disabled.png';
+import urbanDefenseOriginalIcon from '../icons/abilities/urban_defense/urban_defense@4x.png';
+import urbanDefenseAvailableIcon from '../icons/abilities/urban_defense/urban_defense@4x_available.png';
+import urbanDefenseDisabledIcon from '../icons/abilities/urban_defense/urban_defense@4x_disabled.png';
 import geneModAdrenalNeurosympathyGeneModEu2012OriginalIcon from '../icons/gene-mods/adrenal_neurosympathy_gene_mod_eu2012/adrenal_neurosympathy_gene_mod_eu2012@4x.png';
 import geneModAdrenalNeurosympathyGeneModEu2012DisabledIcon from '../icons/gene-mods/adrenal_neurosympathy_gene_mod_eu2012/adrenal_neurosympathy_gene_mod_eu2012@4x_disabled.png';
 import geneModAdrenalNeurosympathyGeneModEu2012SelectedIcon from '../icons/gene-mods/adrenal_neurosympathy_gene_mod_eu2012/adrenal_neurosympathy_gene_mod_eu2012@4x_selected.png';
@@ -334,7 +367,9 @@ const assaultRapidfireIcon: AbilityIcon = { selected: assaultRapidfireOriginalIc
 const assaultResillienceIcon: AbilityIcon = { selected: assaultResillienceOriginalIcon, available: assaultResillienceAvailableIcon, disabled: assaultResillienceDisabledIcon };
 const assaultRungunIcon: AbilityIcon = { selected: assaultRungunOriginalIcon, available: assaultRungunAvailableIcon, disabled: assaultRungunDisabledIcon };
 const bombardTgaIcon: AbilityIcon = { selected: bombardTgaOriginalIcon, available: bombardTgaAvailableIcon, disabled: bombardTgaDisabledIcon };
+const commandIcon: AbilityIcon = { selected: commandOriginalIcon, available: commandAvailableIcon, disabled: commandDisabledIcon };
 const councilMedalOfHonor2Eu2012Icon: AbilityIcon = { selected: councilMedalOfHonor2Eu2012OriginalIcon, available: councilMedalOfHonor2Eu2012AvailableIcon, disabled: councilMedalOfHonor2Eu2012DisabledIcon };
+const dazedIcon: AbilityIcon = { selected: dazedOriginalIcon, available: dazedAvailableIcon, disabled: dazedDisabledIcon };
 const defendersMedal1Eu2012Icon: AbilityIcon = { selected: defendersMedal1Eu2012OriginalIcon, available: defendersMedal1Eu2012AvailableIcon, disabled: defendersMedal1Eu2012DisabledIcon };
 const fireInTheHoleIcon: AbilityIcon = { selected: fireInTheHoleOriginalIcon, available: fireInTheHoleAvailableIcon, disabled: fireInTheHoleDisabledIcon };
 const heavyBulletswarmIcon: AbilityIcon = { selected: heavyBulletswarmOriginalIcon, available: heavyBulletswarmAvailableIcon, disabled: heavyBulletswarmDisabledIcon };
@@ -346,7 +381,9 @@ const heavyMayhemIcon: AbilityIcon = { selected: heavyMayhemOriginalIcon, availa
 const heavyRapidreactionIcon: AbilityIcon = { selected: heavyRapidreactionOriginalIcon, available: heavyRapidreactionAvailableIcon, disabled: heavyRapidreactionDisabledIcon };
 const heavySuppressionIcon: AbilityIcon = { selected: heavySuppressionOriginalIcon, available: heavySuppressionAvailableIcon, disabled: heavySuppressionDisabledIcon };
 const heavyWilltosurviveIcon: AbilityIcon = { selected: heavyWilltosurviveOriginalIcon, available: heavyWilltosurviveAvailableIcon, disabled: heavyWilltosurviveDisabledIcon };
+const honorAIcon: AbilityIcon = { selected: honorAOriginalIcon, available: honorAAvailableIcon, disabled: honorADisabledIcon };
 const itzIconIcon: AbilityIcon = { selected: itzIconOriginalIcon, available: itzIconAvailableIcon, disabled: itzIconDisabledIcon };
+const leadbyexampleIcon: AbilityIcon = { selected: leadbyexampleOriginalIcon, available: leadbyexampleAvailableIcon, disabled: leadbyexampleDisabledIcon };
 const lwrAceIcon: AbilityIcon = { selected: lwrAceOriginalIcon, available: lwrAceAvailableIcon, disabled: lwrAceDisabledIcon };
 const lwrAcidTechIcon: AbilityIcon = { selected: lwrAcidTechOriginalIcon, available: lwrAcidTechAvailableIcon, disabled: lwrAcidTechDisabledIcon };
 const lwrBlastIcon: AbilityIcon = { selected: lwrBlastOriginalIcon, available: lwrBlastAvailableIcon, disabled: lwrBlastDisabledIcon };
@@ -373,6 +410,7 @@ const lwrRakingFireIcon: AbilityIcon = { selected: lwrRakingFireOriginalIcon, av
 const lwrRapidPincersIcon: AbilityIcon = { selected: lwrRapidPincersOriginalIcon, available: lwrRapidPincersAvailableIcon, disabled: lwrRapidPincersDisabledIcon };
 const lwrReconnaissanceIcon: AbilityIcon = { selected: lwrReconnaissanceOriginalIcon, available: lwrReconnaissanceAvailableIcon, disabled: lwrReconnaissanceDisabledIcon };
 const lwrShockAndAweIcon: AbilityIcon = { selected: lwrShockAndAweOriginalIcon, available: lwrShockAndAweAvailableIcon, disabled: lwrShockAndAweDisabledIcon };
+const lwrStayFrostyIcon: AbilityIcon = { selected: lwrStayFrostyOriginalIcon, available: lwrStayFrostyAvailableIcon, disabled: lwrStayFrostyDisabledIcon };
 const lwrSurgicalTargetingIcon: AbilityIcon = { selected: lwrSurgicalTargetingOriginalIcon, available: lwrSurgicalTargetingAvailableIcon, disabled: lwrSurgicalTargetingDisabledIcon };
 const lwrSustainIcon: AbilityIcon = { selected: lwrSustainOriginalIcon, available: lwrSustainAvailableIcon, disabled: lwrSustainDisabledIcon };
 const lwrTandemWarheadsIcon: AbilityIcon = { selected: lwrTandemWarheadsOriginalIcon, available: lwrTandemWarheadsAvailableIcon, disabled: lwrTandemWarheadsDisabledIcon };
@@ -387,7 +425,10 @@ const mecReactiveTargetingSensorsIcon: AbilityIcon = { selected: mecReactiveTarg
 const mecRepairServosIcon: AbilityIcon = { selected: mecRepairServosOriginalIcon, available: mecRepairServosAvailableIcon, disabled: mecRepairServosDisabledIcon };
 const mecShockAbsorbentArmorIcon: AbilityIcon = { selected: mecShockAbsorbentArmorOriginalIcon, available: mecShockAbsorbentArmorAvailableIcon, disabled: mecShockAbsorbentArmorDisabledIcon };
 const mecVitalPointTargetingIcon: AbilityIcon = { selected: mecVitalPointTargetingOriginalIcon, available: mecVitalPointTargetingAvailableIcon, disabled: mecVitalPointTargetingDisabledIcon };
+const nationAimIcon: AbilityIcon = { selected: nationAimOriginalIcon, available: nationAimAvailableIcon, disabled: nationAimDisabledIcon };
+const nationWillIcon: AbilityIcon = { selected: nationWillOriginalIcon, available: nationWillAvailableIcon, disabled: nationWillDisabledIcon };
 const onslaughtLwrIcon: AbilityIcon = { selected: onslaughtLwrOriginalIcon, available: onslaughtLwrAvailableIcon, disabled: onslaughtLwrDisabledIcon };
+const overdriveIcon: AbilityIcon = { selected: overdriveOriginalIcon, available: overdriveAvailableIcon, disabled: overdriveDisabledIcon };
 const pheromonesTgaIcon: AbilityIcon = { selected: pheromonesTgaOriginalIcon, available: pheromonesTgaAvailableIcon, disabled: pheromonesTgaDisabledIcon };
 const sentinelModuleIconIcon: AbilityIcon = { selected: sentinelModuleIconOriginalIcon, available: sentinelModuleIconAvailableIcon, disabled: sentinelModuleIconDisabledIcon };
 const sniperDggIcon: AbilityIcon = { selected: sniperDggOriginalIcon, available: sniperDggAvailableIcon, disabled: sniperDggDisabledIcon };
@@ -400,6 +441,8 @@ const sniperLowprofileIcon: AbilityIcon = { selected: sniperLowprofileOriginalIc
 const sniperOpportunistIcon: AbilityIcon = { selected: sniperOpportunistOriginalIcon, available: sniperOpportunistAvailableIcon, disabled: sniperOpportunistDisabledIcon };
 const sniperSnapshotIcon: AbilityIcon = { selected: sniperSnapshotOriginalIcon, available: sniperSnapshotAvailableIcon, disabled: sniperSnapshotDisabledIcon };
 const sniperSquadsightIcon: AbilityIcon = { selected: sniperSquadsightOriginalIcon, available: sniperSquadsightAvailableIcon, disabled: sniperSquadsightDisabledIcon };
+const starAIcon: AbilityIcon = { selected: starAOriginalIcon, available: starAAvailableIcon, disabled: starADisabledIcon };
+const starBIcon: AbilityIcon = { selected: starBOriginalIcon, available: starBAvailableIcon, disabled: starBDisabledIcon };
 const supportCombatdrugsIcon: AbilityIcon = { selected: supportCombatdrugsOriginalIcon, available: supportCombatdrugsAvailableIcon, disabled: supportCombatdrugsDisabledIcon };
 const supportDeeppocketsIcon: AbilityIcon = { selected: supportDeeppocketsOriginalIcon, available: supportDeeppocketsAvailableIcon, disabled: supportDeeppocketsDisabledIcon };
 const supportDensesmokeIcon: AbilityIcon = { selected: supportDensesmokeOriginalIcon, available: supportDensesmokeAvailableIcon, disabled: supportDensesmokeDisabledIcon };
@@ -410,6 +453,7 @@ const supportSentinelIcon: AbilityIcon = { selected: supportSentinelOriginalIcon
 const supportSmokemirrorsIcon: AbilityIcon = { selected: supportSmokemirrorsOriginalIcon, available: supportSmokemirrorsAvailableIcon, disabled: supportSmokemirrorsDisabledIcon };
 const supportSprinterIcon: AbilityIcon = { selected: supportSprinterOriginalIcon, available: supportSprinterAvailableIcon, disabled: supportSprinterDisabledIcon };
 const urbanCombatBadge2Eu2012Icon: AbilityIcon = { selected: urbanCombatBadge2Eu2012OriginalIcon, available: urbanCombatBadge2Eu2012AvailableIcon, disabled: urbanCombatBadge2Eu2012DisabledIcon };
+const urbanDefenseIcon: AbilityIcon = { selected: urbanDefenseOriginalIcon, available: urbanDefenseAvailableIcon, disabled: urbanDefenseDisabledIcon };
 const geneModNeuralDampingGeneModEu2012Icon: AbilityIcon = { selected: geneModNeuralDampingGeneModEu2012SelectedIcon, available: geneModNeuralDampingGeneModEu2012OriginalIcon, disabled: geneModNeuralDampingGeneModEu2012DisabledIcon };
 const geneModDefendersMedal2Eu2012Icon: AbilityIcon = { selected: geneModDefendersMedal2Eu2012SelectedIcon, available: geneModDefendersMedal2Eu2012OriginalIcon, disabled: geneModDefendersMedal2Eu2012DisabledIcon };
 const geneModHyperReactivePupilsGeneModEu2012Icon: AbilityIcon = { selected: geneModHyperReactivePupilsGeneModEu2012SelectedIcon, available: geneModHyperReactivePupilsGeneModEu2012OriginalIcon, disabled: geneModHyperReactivePupilsGeneModEu2012DisabledIcon };
@@ -445,12 +489,18 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'breacher': lwrBreacherIcon,
   'bring-em-on': assaultBringthemonIcon,
   'bullseye': lwrBullseyeIcon,
+  'camaraderie': honorAIcon,
   'close-combat-specialist': assaultClosecombatIcon,
   'close-encounters': assaultClosepersonalIcon,
+  'clutch-leadership': nationAimIcon,
   'collateral-damage': mecCollateralDamageIcon,
   'combat-drugs': supportCombatdrugsIcon,
   'combined-arms': fireInTheHoleIcon,
+  'command': commandIcon,
+  'commanding-officer': leadbyexampleIcon,
   'countercharge': psionicNeuralfeedbackTga2Icon,
+  'cover-tactics': urbanDefenseIcon,
+  'cover-tenacity': overdriveIcon,
   'critical-system-targeting': lwrCriticalSystemTargetingIcon,
   'dampening-shield': lwrDampeningShieldIcon,
   'dash-and-bash': lwrDashAndBashIcon,
@@ -493,6 +543,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'mechanic': sentinelModuleIconIcon,
   'mind-fray': psionicPsiMindfrayTga2Icon,
   'muscle-amp': geneModMuscleFiberDensityGeneModEu2012Icon,
+  'natural-leadership': starAIcon,
   'neural-damping': geneModNeuralDampingGeneModEu2012Icon,
   'on-the-ready': lwrOnTheReadyIcon,
   'onslaught': onslaughtLwrIcon,
@@ -528,12 +579,15 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'shadowstep': assaultLightningreflexesIcon,
   'sharpshooter': urbanCombatBadge2Eu2012Icon,
   'shock-and-awe': lwrShockAndAweIcon,
+  'show-em-the-ropes': dazedIcon,
   'smart-macrophages': geneModDefendersMedal2Eu2012Icon,
   'smoke-and-mirrors': supportSmokemirrorsIcon,
   'snapshot': sniperSnapshotIcon,
   'sprinter': supportSprinterIcon,
   'squadsight': sniperSquadsightIcon,
+  'stay-frosty': lwrStayFrostyIcon,
   'steadfast': defendersMedal1Eu2012Icon,
+  'strength-in-numbers': nationWillIcon,
   'suppression': heavySuppressionIcon,
   'surgical-targeting': lwrSurgicalTargetingIcon,
   'sustain': lwrSustainIcon,
@@ -541,6 +595,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'telekinetic-field': psionicPsiTelekineticfieldTga2Icon,
   'tenacious-defense': lwrTenaciousDefenseIcon,
   'tinker': bombardTgaIcon,
+  'tricks-of-the-trade': starBIcon,
   'vital-point-targeting': mecVitalPointTargetingIcon,
   'will-to-survive': heavyWilltosurviveIcon,
 };

@@ -1,8 +1,8 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { BodyPartTier, ClassTreeRankTier, PsiLevelTier } from '@entities/soldier';
-import { useClassTreeTiers, useGeneModTiers, usePsionicTiers } from '@entities/soldier';
+import type { BodyPartTier, ClassTreeRankTier, OfficerRankTier, PsiLevelTier } from '@entities/soldier';
+import { useClassTreeTiers, useGeneModTiers, useOfficerTiers, usePsionicTiers } from '@entities/soldier';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
 
@@ -11,14 +11,30 @@ import type { BiosoldierBuild } from './biosoldier-builds';
 import { useBiosoldierBuildsStore } from './biosoldier-builds';
 
 /**
- * Branch of a biosoldier build: the class tree, the gene mods or the psionic abilities.
+ * Branch of a biosoldier build: the class tree, the gene mods, the psionic abilities or the officer perks.
  */
 export type BiosoldierBranch = keyof typeof BIOSOLDIER_BRANCH_TITLE;
 
 /**
- * Tier of a biosoldier build panel: a rank of the class tree, a body part or a psi level.
+ * Tier of a biosoldier build panel: a rank of the class tree, a body part, a psi level or an officer rank.
  */
-export type BiosoldierBuildTier = ClassTreeRankTier | BodyPartTier | PsiLevelTier;
+export type BiosoldierBuildTier = ClassTreeRankTier | BodyPartTier | PsiLevelTier | OfficerRankTier;
+
+/**
+ * Label of a tier of a biosoldier build panel.
+ */
+export interface BiosoldierTierLabel {
+  /** Rank icon; null for other tiers. */
+  icon: SvgIcon | null
+  /** Officer rank medal; null for other tiers. */
+  image: string | null
+  /** Whether the medal is faded: the officer rank is locked. */
+  faded: boolean
+  /** Tier name. */
+  name: string
+  /** Why the officer rank is locked; null for other tiers and open officer ranks. */
+  caption: string | null
+}
 
 /**
  * Tier group of a biosoldier build panel: one branch with its tab title and counter.
@@ -58,8 +74,8 @@ const branchGroup = (
 });
 
 /**
- * Tier groups of a biosoldier build panel: the class tree, the gene mods and the psionic abilities, and the selection
- * in them through the store.
+ * Tier groups of a biosoldier build panel: the class tree, the gene mods, the psionic abilities and the officer perks,
+ * and the selection in them through the store.
  *
  * @param build biosoldier build.
  */
@@ -72,8 +88,10 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
 
   const psionic = usePsionicTiers(build);
 
+  const officer = useOfficerTiers(build);
+
   const groups = computed((): BiosoldierBuildGroup[] => {
-    const { perks, geneMods: selectedGeneMods, psionicAbilities } = toValue(build);
+    const { perks, geneMods: selectedGeneMods, psionicAbilities, officerPerks } = toValue(build);
 
     return [
       branchGroup('class-tree', classTree.tiers.value, perks.length, classTree.featuredPickerItem.value),
@@ -84,12 +102,13 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
         geneMods.featuredPickerItem.value,
       ),
       branchGroup('psionic', psionic.tiers.value, psionicAbilities.length, psionic.featuredPickerItem.value),
+      branchGroup('officer', officer.tiers.value, officerPerks.length, officer.featuredPickerItem.value),
     ];
   });
 
   /**
-   * Selects an ability on a tier of the branch, or clears the tier: a perk on a rank, a gene mod of a body part
-   * or a psionic ability on a psi level.
+   * Selects an ability on a tier of the branch, or clears the tier: a perk on a rank, a gene mod of a body part,
+   * a psionic ability on a psi level or an officer perk on an officer rank.
    *
    * @param branch branch of the tier.
    * @param tierIndex tier index in the branch.
@@ -108,6 +127,11 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
       return;
     }
 
+    if (branch === 'officer') {
+      biosoldierBuildsStore.selectBuildOfficerPerk(buildId, tierIndex, abilityId);
+      return;
+    }
+
     biosoldierBuildsStore.selectBuildPerk(buildId, tierIndex, abilityId);
   };
 
@@ -115,8 +139,15 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
 };
 
 /**
- * Icon of a tier label: the rank icon for the class tree, none for a body part or a psi level.
+ * Label of a tier: the rank icon for the class tree; the medal, faded while locked, and the lock reason under the name
+ * for an officer rank; the name alone for a body part or a psi level.
  *
  * @param tier tier of a biosoldier build panel.
  */
-export const tierIcon = (tier: BiosoldierBuildTier): SvgIcon | null => ('rank' in tier ? tier.rank.icon : null);
+export const tierLabel = (tier: BiosoldierBuildTier): BiosoldierTierLabel => {
+  if ('officerRank' in tier) {
+    return { icon: null, image: tier.officerRank.medal, faded: tier.state === 'locked', name: tier.name, caption: tier.lockReason };
+  }
+
+  return { icon: 'rank' in tier ? tier.rank.icon : null, image: null, faded: false, name: tier.name, caption: null };
+};

@@ -2,6 +2,7 @@ import type { AbilityContent } from '@entities/soldier/model/abilities';
 import type { BodyPartContent } from '@entities/soldier/model/body-parts';
 import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier/model/build';
 import type { SoldierClass } from '@entities/soldier/model/classes';
+import type { OfficerRankContent } from '@entities/soldier/model/officer-ranks';
 import type { PsiLevelContent } from '@entities/soldier/model/psi-levels';
 import type { SoldierRankContent } from '@entities/soldier/model/ranks';
 
@@ -44,6 +45,12 @@ export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
   'middle': { code: 32, name: 'Middle', description: 'Only middle option.' },
   'high-left': { code: 33, name: 'High Left', description: 'Left high option.' },
   'high-right': { code: 34, name: 'High Right', description: 'Right high option.' },
+  'alpha-left': { code: 40, name: 'Alpha Left', description: 'Left alpha option.' },
+  'alpha-right': { code: 41, name: 'Alpha Right', description: 'Right alpha option.' },
+  'beta-left': { code: 42, name: 'Beta Left', description: 'Left beta option.' },
+  'beta-right': { code: 43, name: 'Beta Right', description: 'Right beta option.' },
+  'gamma-left': { code: 44, name: 'Gamma Left', description: 'Left gamma option.' },
+  'gamma-right': { code: 45, name: 'Gamma Right', description: 'Right gamma option.' },
 };
 
 export const BODY_PART_CONTENT_MOCK: Record<string, BodyPartContent> = {
@@ -77,4 +84,27 @@ export const createBiosoldierBuildMock = (geneMods: (string | null)[], psionicAb
   ...createBuildMock(BASE_PERKS),
   geneMods: [...geneMods] as BiosoldierBuildData['geneMods'],
   psionicAbilities: [...psionicAbilities] as BiosoldierBuildData['psionicAbilities'],
+  officerPerks: [],
+});
+
+export const OFFICER_RANK_CONTENT_MOCK: Record<string, OfficerRankContent> = {
+  alpha: { name: 'Alpha', abbreviation: 'A', requiredRank: 'second', perks: ['alpha-left', 'alpha-right'] },
+  beta: { name: 'Beta', abbreviation: 'B', requiredRank: 'third', perks: ['beta-left', 'beta-right'] },
+  gamma: { name: 'Gamma', abbreviation: 'G', requiredRank: 'third', perks: ['gamma-left', 'gamma-right'] },
+};
+
+export const ALPHA_OFFICER_PERKS = ['alpha-left'];
+
+export const ALL_OFFICER_PERKS = ['alpha-left', 'beta-left', 'gamma-right'];
+
+/**
+ * Fresh biosoldier build of the mock class with its own perks and officer perks arrays.
+ *
+ * @param perks selected perks by rank.
+ * @param officerPerks officer perks by officer rank.
+ */
+export const createOfficerBuildMock = (perks: string[], officerPerks: string[] = []): BiosoldierBuildData => ({
+  ...createBiosoldierBuildMock(NO_GENE_MODS),
+  perks: [...perks],
+  officerPerks: [...officerPerks] as BiosoldierBuildData['officerPerks'],
 });

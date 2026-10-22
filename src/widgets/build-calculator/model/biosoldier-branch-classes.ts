@@ -10,6 +10,7 @@ export const useBiosoldierBranchClasses = (style: Record<string, string>) => {
     'class-tree': { counter: style.counterClassTree, name: null },
     'gene-mods': { counter: style.counterGeneMods, name: style.geneModName },
     'psionic': { counter: style.counterPsionic, name: style.psionicName },
+    'officer': { counter: style.counterClassTree, name: null },
   };
 
   /**

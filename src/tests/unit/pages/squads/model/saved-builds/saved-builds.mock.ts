@@ -19,7 +19,7 @@ const soldierClassMock = (id: SoldierClass['id'], name: string) => ({ id, name }
  */
 const biosoldierBuildMock = (id: string, name: string, soldierClass: SoldierClass): SquadBuild => ({
   kind: 'biosoldier',
-  build: { id, name, readonly: false, soldierClass, perks: [], geneMods: [], psionicAbilities: [] },
+  build: { id, name, readonly: false, soldierClass, perks: [], geneMods: [], psionicAbilities: [], officerPerks: [] },
 });
 
 export const OVERWATCH_SNIPER = biosoldierBuildMock('sniper-build', 'Overwatch Sniper', soldierClassMock('sniper', 'Sniper'));

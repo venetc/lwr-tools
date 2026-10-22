@@ -11,5 +11,6 @@ export { default as BuildCalculator } from './ui/BuildCalculator.vue';
 export { default as BuildPanel } from './ui/BuildPanel.vue';
 export { default as MecBuildTree } from './ui/MecBuildTree.vue';
 export { default as MecMiniTree } from './ui/MecMiniTree.vue';
+export { default as OfficerRankBadge } from './ui/OfficerRankBadge.vue';
 export { default as ShivBuildTree } from './ui/ShivBuildTree.vue';
 export { default as ShivMiniTree } from './ui/ShivMiniTree.vue';

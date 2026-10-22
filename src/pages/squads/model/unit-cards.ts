@@ -48,7 +48,7 @@ export const useUnitCards = () => {
 
     if (!squadBuild) return [];
 
-    const wearer = unitWearer(squadBuild, unit.isOfficer);
+    const wearer = unitWearer(squadBuild);
 
     return [{
       id: unit.id,

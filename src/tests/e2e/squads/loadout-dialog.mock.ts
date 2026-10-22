@@ -94,6 +94,22 @@ export const REAPER_TOAST = 'Reaper Ammo removed: unsupported weapon.';
 
 export const GENE_MODS_TAB = /^Gene mods, /;
 
+export const CLASS_TREE_TAB = /^Class tree, /;
+
+export const OFFICER_TAB = /^Officer, /;
+
+/** Perks of Lance Corporal and Corporal of the default Sniper build, the ranks Lieutenant requires. */
+export const LIEUTENANT_PERKS = ['Magnum', 'Sharpshooter'];
+
+/** Officer perk of Lieutenant. */
+export const STRENGTH_IN_NUMBERS = 'Strength in Numbers';
+
+export const SERAPH = 'Seraph Armor';
+
+export const SERAPH_BLOCKED = 'Seraph Armor, Needs officer';
+
+export const OFFICER_MARK = /Officer/;
+
 /** Gene mod of the Skin of any default biosoldier build. */
 export const ENHANCED_METABOLISM = 'Enhanced Metabolism';
 

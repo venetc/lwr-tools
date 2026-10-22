@@ -55,6 +55,17 @@ export const selectAbility = async (panel: Locator, tabName: RegExp, abilityName
 };
 
 /**
+ * Switches the panel to the tab and selects the abilities on it in order, such as one Perk per rank of the Class tree.
+ *
+ * @param panel build panel.
+ * @param tabName accessible name of the tab.
+ * @param abilityNames ability names in selection order.
+ */
+export const selectAbilities = async (panel: Locator, tabName: RegExp, abilityNames: string[]) => {
+  for (const abilityName of abilityNames) await selectAbility(panel, tabName, abilityName);
+};
+
+/**
  * Description of the inspected ability below the rows.
  *
  * @param panel build panel.

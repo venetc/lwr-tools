@@ -37,8 +37,6 @@ export interface SquadUnit {
   id: string
   /** Build the Unit refers to. */
   build: SquadUnitBuild
-  /** Whether the Unit is marked as an Officer; always false for a MEC or a SHIV. */
-  isOfficer: boolean
   /** Items the Unit carries. */
   loadout: UnitLoadout
 }

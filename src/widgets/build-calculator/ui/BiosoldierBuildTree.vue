@@ -10,6 +10,7 @@ import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
 import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
 import BuildPanel from './BuildPanel.vue';
+import OfficerRankBadge from './OfficerRankBadge.vue';
 
 interface Props {
   /** Biosoldier build to render and edit. */
@@ -56,6 +57,10 @@ const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
   >
     <template #icon>
       <BiosoldierClassIcon :build="props.build" :class="$style.classIcon" />
+    </template>
+
+    <template #badge>
+      <OfficerRankBadge :build="props.build" />
     </template>
 
     <template #tab="{ group }">

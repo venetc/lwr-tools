@@ -1,6 +1,7 @@
+import type { Locator } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { selectAbility } from '../utils/build-panel';
+import { selectAbilities, selectAbility } from '../utils/build-panel';
 import {
   addSavedUnit,
   inventoryRow,
@@ -29,6 +30,7 @@ import {
   CERAMIC_STACKED,
   CHITIN_BLOCKED,
   CHITIN_REASONS,
+  CLASS_TREE_TAB,
   EMPTY_GEAR_SLOT_TILE,
   EMPTY_UTILITY_TILE,
   ENHANCED_METABOLISM,
@@ -45,9 +47,12 @@ import {
   HE_GRENADE_IN_GEAR_SLOT,
   HE_GRENADE_TWICE,
   LASER_RIFLE_TILE,
+  LIEUTENANT_PERKS,
   LMG,
   LMG_TOAST,
   MOVED_TOAST,
+  OFFICER_MARK,
+  OFFICER_TAB,
   PISTOL,
   PISTOL_EQUIPPED,
   PISTOL_SNIPER,
@@ -60,8 +65,11 @@ import {
   SCANNER_CARRIERS,
   SCANNER_OF_SCOUT,
   SECONDARY_TILE,
+  SERAPH,
+  SERAPH_BLOCKED,
   SHRUNK_TOAST,
   SNIPER,
+  STRENGTH_IN_NUMBERS,
   TACTICAL_VEST,
   VEST_FORMULA,
 } from './loadout-dialog.mock';
@@ -341,6 +349,60 @@ test.describe('Loadout dialog of a biosoldier', () => {
     const dialog = await openLocker(page, unitCards(page, SNIPER), ARMOR_TILE);
 
     await expect(lockerItem(dialog, GHOST)).toBeVisible();
+  });
+});
+
+test.describe('Seraph Armor of an Officer', () => {
+  /**
+   * Selects the Officer perk of Lieutenant in the build of the Unit through its Build dialog.
+   *
+   * @param buildDialog Build dialog of the Unit.
+   */
+  const selectLieutenantPerk = async (buildDialog: Locator) => {
+    await selectAbilities(buildDialog, CLASS_TREE_TAB, LIEUTENANT_PERKS);
+    await selectAbility(buildDialog, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+  };
+
+  test('keeps Seraph Armor dim with Needs officer while the build has no Officer perks', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
+
+    const dialog = await openLocker(page, unitCards(page, SNIPER), ARMOR_TILE);
+
+    await expect(lockerItem(dialog, SERAPH_BLOCKED)).toBeVisible();
+  });
+
+  test('lets Seraph Armor on once the build has an Officer perk', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
+    await selectLieutenantPerk(await openBuildDialog(page, unitCards(page, SNIPER), SNIPER));
+    await page.keyboard.press('Escape');
+
+    const dialog = await openLocker(page, unitCards(page, SNIPER), ARMOR_TILE);
+
+    await expect(lockerItem(dialog, SERAPH)).toBeVisible();
+  });
+
+  test('lets Seraph Armor on an Officer with a Gene mod', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
+    const buildDialog = await openBuildDialog(page, unitCards(page, SNIPER), SNIPER);
+    await selectAbility(buildDialog, GENE_MODS_TAB, ENHANCED_METABOLISM);
+    await selectLieutenantPerk(buildDialog);
+    await page.keyboard.press('Escape');
+
+    const dialog = await openLocker(page, unitCards(page, SNIPER), ARMOR_TILE);
+
+    await expect(lockerItem(dialog, SERAPH)).toBeVisible();
+  });
+
+  test('has no Officer switch on the Unit card', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
+
+    const card = unitCards(page, SNIPER);
+
+    await expect(card.getByRole('checkbox', { name: OFFICER_MARK }).or(card.getByRole('switch', { name: OFFICER_MARK }))).toHaveCount(0);
   });
 });
 

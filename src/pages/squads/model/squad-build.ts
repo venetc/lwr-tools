@@ -1,5 +1,5 @@
 import type { LoadoutUnitId, LoadoutWearer } from '@entities/loadout';
-import { biosoldierBuildBranchSet } from '@entities/soldier';
+import { biosoldierBuildBranchSet, isOfficerBuild } from '@entities/soldier';
 import type { SquadUnitBuild } from '@features/manage-squads';
 import type { BiosoldierBuild, MecBuild, ShivBuild } from '@widgets/build-calculator';
 
@@ -12,12 +12,11 @@ export type SquadBuild = { kind: 'biosoldier', build: BiosoldierBuild } | { kind
 
 /**
  * What the Loadout rules need to know about a Unit of the build: the class of a biosoldier with its gene mods,
- * psionic abilities and Officer mark; the MEC class of a MEC; nothing of a SHIV.
+ * psionic abilities and whether it is an Officer; the MEC class of a MEC; nothing of a SHIV.
  *
  * @param squadBuild build of the Unit.
- * @param isOfficer whether the Unit is marked as an Officer; only a biosoldier keeps the mark.
  */
-export const unitWearer = (squadBuild: SquadBuild, isOfficer: boolean): LoadoutWearer => {
+export const unitWearer = (squadBuild: SquadBuild): LoadoutWearer => {
   if (squadBuild.kind === 'biosoldier') {
     const branchSet = biosoldierBuildBranchSet(squadBuild.build);
 
@@ -26,7 +25,7 @@ export const unitWearer = (squadBuild: SquadBuild, isOfficer: boolean): LoadoutW
       classId: squadBuild.build.soldierClass.id,
       hasGeneMod: branchSet === 'gene-mods' || branchSet === 'both',
       hasPsionicAbility: branchSet === 'psionic' || branchSet === 'both',
-      isOfficer,
+      isOfficer: isOfficerBuild(squadBuild.build),
     };
   }
 

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   biosoldierBuildBranchSet,
+  isOfficerBuild,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPerk,
@@ -340,5 +341,23 @@ describe('biosoldierBuildBranchSet', () => {
     const branchSet = biosoldierBuildBranchSet(build);
 
     expect(branchSet).toBe('both');
+  });
+});
+
+describe('isOfficerBuild', () => {
+  it('is false for a build without officer perks', () => {
+    const build = createOfficerBuildMock(ALL_PERKS);
+
+    const isOfficer = isOfficerBuild(build);
+
+    expect(isOfficer).toBe(false);
+  });
+
+  it('is true for a build with an officer perk', () => {
+    const build = createOfficerBuildMock(ALL_PERKS, ALPHA_OFFICER_PERKS);
+
+    const isOfficer = isOfficerBuild(build);
+
+    expect(isOfficer).toBe(true);
   });
 });

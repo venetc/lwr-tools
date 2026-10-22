@@ -9,6 +9,7 @@ export { abilityById, isAbilityId } from './model/abilities';
 export type { SelectedGeneMods } from './model/body-parts';
 export {
   biosoldierBuildBranchSet,
+  isOfficerBuild,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPerk,

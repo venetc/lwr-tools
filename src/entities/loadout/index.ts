@@ -10,7 +10,7 @@ export type { CarriedItem } from './model/carriers';
 export type { Equipment, EquipmentId, EquipmentSlot, EquipmentStackGroup, EquipmentStat } from './model/equipment';
 export { fitLoadout } from './model/fit-loadout';
 export type { LoadoutAddition, LoadoutChange, LoadoutChangeReason, LoadoutFit, LoadoutMove, LoadoutRemoval, LoadoutReplacement } from './model/fit-loadout';
-export { blockReasons, canBeOfficer, defaultLoadout, loadoutSlots, utilitySlotSources } from './model/loadout';
+export { blockReasons, defaultLoadout, loadoutSlots, utilitySlotSources } from './model/loadout';
 export type { Loadout, LoadoutBlockReason, LoadoutItemId, LoadoutSlot, LoadoutSlotKind, LoadoutSlots, LoadoutWearer, UtilitySlotKind, UtilitySlotSources } from './model/loadout';
 export type { LoadoutAbility, LoadoutAbilityId } from './model/loadout-abilities';
 export type { LoadoutRequirement } from './model/loadout-requirements';

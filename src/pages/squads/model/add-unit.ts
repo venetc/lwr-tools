@@ -89,7 +89,7 @@ export const useAddUnit = () => {
    */
   const addUnit = (squadBuild: SquadBuild) => {
     const squad = openSquad.value;
-    const loadout = defaultLoadout(unitWearer(squadBuild, false));
+    const loadout = defaultLoadout(unitWearer(squadBuild));
 
     if (!squad || !loadout) return null;
 

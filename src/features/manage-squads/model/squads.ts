@@ -107,7 +107,7 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
 
     if (!squad) return;
 
-    squad.units.push({ id: createId(), build: { kind: build.kind, id: build.id }, isOfficer: false, loadout });
+    squad.units.push({ id: createId(), build: { kind: build.kind, id: build.id }, loadout });
     squadList.markItemChanged(squadId);
   };
 

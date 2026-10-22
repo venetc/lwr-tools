@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { abilityCell, description, openBuildPanel, selectAbility } from '../utils/build-panel';
+import { abilityCell, description, openBuildPanel, selectAbilities, selectAbility } from '../utils/build-panel';
 import {
   CAPTAIN,
   CLASS_TREE_TAB,
@@ -31,16 +31,6 @@ import {
 const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
 
 /**
- * Selects the perks of the Class tree up to the rank, one per rank from Lance Corporal.
- *
- * @param panel build panel.
- * @param perkNames perk names by rank.
- */
-const selectPerks = async (panel: Locator, perkNames: string[]) => {
-  for (const perkName of perkNames) await selectAbility(panel, CLASS_TREE_TAB, perkName);
-};
-
-/**
  * Row of the officer rank on the Officer tab.
  *
  * @param panel build panel.
@@ -61,7 +51,7 @@ test.describe('Officer tab', () => {
 
   test('opens Lieutenant once a perk is selected on Corporal', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 
@@ -70,7 +60,7 @@ test.describe('Officer tab', () => {
 
   test('locks Captain until Sergeant', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 
@@ -79,7 +69,7 @@ test.describe('Officer tab', () => {
 
   test('locks Captain until Lieutenant once Sergeant is completed', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER, RANGER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
 
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 
@@ -88,7 +78,7 @@ test.describe('Officer tab', () => {
 
   test('counts a selected officer perk on the Officer tab', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
 
@@ -97,7 +87,7 @@ test.describe('Officer tab', () => {
 
   test('keeps the officer ranks above when the officer perk of a completed one is replaced', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER, RANGER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
     await abilityCell(panel, COVER_TACTICS).click();
 
@@ -108,7 +98,7 @@ test.describe('Officer tab', () => {
 
   test('clears the officer perks of the officer ranks whose required rank is cleared in the Class tree', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER, RANGER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
     await abilityCell(panel, COVER_TACTICS).click();
 
@@ -119,7 +109,7 @@ test.describe('Officer tab', () => {
 
   test('keeps the officer perk of an officer rank whose required rank stays completed in the Class tree', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER, RANGER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
     await abilityCell(panel, COVER_TACTICS).click();
     await selectAbility(panel, CLASS_TREE_TAB, RANGER);
@@ -140,7 +130,7 @@ test.describe('Officer tab', () => {
 
   test('does not select an officer perk in a Read-only build', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectPerks(panel, [MAGNUM, SHARPSHOOTER]);
+    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
     await panel.getByRole('button', { name: LOCK_LABEL }).click();
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 

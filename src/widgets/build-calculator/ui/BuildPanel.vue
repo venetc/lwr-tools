@@ -65,6 +65,7 @@ const emit = defineEmits<Emits>();
 
 defineSlots<{
   'icon'?: () => VNode[]
+  'badge'?: () => VNode[]
   'tier'?: (props: TierSlotProps) => VNode[]
   'tab'?: (props: GroupSlotProps) => VNode[]
   'item-name'?: (props: ItemNameSlotProps) => VNode[]
@@ -92,6 +93,10 @@ const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.
       >
         <template #icon>
           <slot name="icon" />
+        </template>
+
+        <template #badge>
+          <slot name="badge" />
         </template>
       </EditableTitle>
       <ActionBar

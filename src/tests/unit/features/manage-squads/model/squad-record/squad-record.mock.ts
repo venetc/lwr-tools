@@ -7,14 +7,12 @@ export const UNKNOWN_CODE = 999;
 export const BIOSOLDIER_RECORD = {
   id: 'unit-1',
   build: { kind: 'biosoldier', id: 'build-1' },
-  isOfficer: true,
   loadout: { armor: 1, primary: 1, secondary: null, utility: [1, null], modules: [] },
 };
 
 export const BIOSOLDIER_UNIT: SquadUnit = {
   id: 'unit-1',
   build: { kind: 'biosoldier', id: 'build-1' },
-  isOfficer: true,
   loadout: { armor: 'tactical-vest', primary: 'assault-rifle', secondary: null, utility: ['he-grenade', null], modules: [] },
 };
 
@@ -27,7 +25,6 @@ export const SHIV_RECORD = {
 export const SHIV_UNIT: SquadUnit = {
   id: 'unit-2',
   build: { kind: 'shiv', id: 'build-2' },
-  isOfficer: false,
   loadout: { armor: 'shiv', primary: 'assault-rifle', secondary: null, utility: [], modules: [] },
 };
 
@@ -35,9 +32,7 @@ export const SQUAD_RECORD = { name: 'Alpha', units: [BIOSOLDIER_RECORD, SHIV_REC
 
 export const SQUAD: Squad = { id: SQUAD_ID, name: 'Alpha', units: [BIOSOLDIER_UNIT, SHIV_UNIT] };
 
-export const MEC_OFFICER_RECORD = { ...BIOSOLDIER_RECORD, build: { kind: 'mec', id: 'build-3' } };
-
-export const MEC_OFFICER_UNIT: SquadUnit = { ...BIOSOLDIER_UNIT, build: { kind: 'mec', id: 'build-3' }, isOfficer: false };
+export const OFFICER_MARK_RECORD = { ...BIOSOLDIER_RECORD, isOfficer: true };
 
 export const UNKNOWN_KIND_RECORD = { ...BIOSOLDIER_RECORD, build: { kind: 'tank', id: 'build-4' } };
 

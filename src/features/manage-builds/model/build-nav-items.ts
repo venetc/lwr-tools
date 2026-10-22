@@ -6,7 +6,7 @@ import type { ListNavItem } from '@shared/ui/list-nav';
 import type { ListedBuild, NamedBuildData } from './build-list';
 
 /**
- * Navigation item of a build, with the build for the item's icon slot.
+ * Navigation item of a build, with the build for the item's slots.
  */
 export interface BuildNavItem<Build> extends ListNavItem {
   /** Listed build. */

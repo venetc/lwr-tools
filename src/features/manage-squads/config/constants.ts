@@ -28,7 +28,7 @@ export const SQUAD_NAME = 'Squad';
 const STORED_ITEM_CODE_SCHEMA = z.number().int().nullable();
 
 /**
- * Stored Unit: its id, the build it refers to, the Officer mark (only a Biosoldier has it) and the Loadout as item codes.
+ * Stored Unit: its id, the build it refers to and the Loadout as item codes.
  */
 export const STORED_UNIT_SCHEMA = z.object({
   id: z.string(),
@@ -36,7 +36,6 @@ export const STORED_UNIT_SCHEMA = z.object({
     kind: z.string(),
     id: z.string(),
   }),
-  isOfficer: z.boolean().optional(),
   loadout: z.object({
     armor: STORED_ITEM_CODE_SCHEMA,
     primary: STORED_ITEM_CODE_SCHEMA,

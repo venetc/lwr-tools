@@ -1,4 +1,4 @@
-import type { SelectedGeneMods, SelectedPsionicAbilities, SoldierClass } from '@entities/soldier';
+import type { SelectedGeneMods, SelectedOfficerPerks, SelectedPsionicAbilities, SoldierClass } from '@entities/soldier';
 import type { SquadBuild } from '@pages/squads/model/squad-build';
 
 /**
@@ -12,11 +12,14 @@ const soldierClassMock = (id: SoldierClass['id'], name: string) => ({ id, name }
 /**
  * Biosoldier build of the Sniper class.
  *
- * @param build fields that differ from a build without gene mods and psionic abilities.
+ * @param build fields that differ from a build without gene mods, psionic abilities and officer perks.
  * @param build.geneMods gene mods by body part.
  * @param build.psionicAbilities psionic abilities by psi level.
+ * @param build.officerPerks officer perks by officer rank.
  */
-export const createBiosoldierBuildMock = (build: { geneMods?: SelectedGeneMods, psionicAbilities?: SelectedPsionicAbilities } = {}): SquadBuild => ({
+export const createBiosoldierBuildMock = (
+  build: { geneMods?: SelectedGeneMods, psionicAbilities?: SelectedPsionicAbilities, officerPerks?: SelectedOfficerPerks } = {},
+): SquadBuild => ({
   kind: 'biosoldier',
   build: {
     id: 'sniper-build',
@@ -26,7 +29,7 @@ export const createBiosoldierBuildMock = (build: { geneMods?: SelectedGeneMods, 
     perks: [],
     geneMods: build.geneMods ?? [null, null, null, null, null],
     psionicAbilities: build.psionicAbilities ?? [],
-    officerPerks: [],
+    officerPerks: build.officerPerks ?? [],
   },
 });
 
@@ -43,6 +46,8 @@ export const SHIV_BUILD: SquadBuild = {
 export const GENE_MODS: SelectedGeneMods = [null, 'ram', null, null, null];
 
 export const PSIONIC_ABILITIES: SelectedPsionicAbilities = ['mind-fray'];
+
+export const OFFICER_PERKS: SelectedOfficerPerks = ['stay-frosty'];
 
 export const SNIPER_WEARER = { unit: 'biosoldier', classId: 'sniper', hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
 

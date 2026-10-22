@@ -178,3 +178,10 @@ export const biosoldierBuildBranchSet = (build: BiosoldierBuildData): Biosoldier
   if (hasPsionicAbilities) return 'psionic';
   return 'plain';
 };
+
+/**
+ * Whether the biosoldier build is an Officer: at least one officer perk is selected.
+ *
+ * @param build biosoldier build.
+ */
+export const isOfficerBuild = (build: BiosoldierBuildData) => build.officerPerks.length > 0;

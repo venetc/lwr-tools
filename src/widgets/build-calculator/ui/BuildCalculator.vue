@@ -38,6 +38,7 @@ const slots = defineSlots<{
   'build'?: (props: BuildSlotProps) => VNode[]
   'add'?: () => VNode[]
   'nav-icon'?: (props: BuildSlotProps) => VNode[]
+  'nav-badge'?: (props: BuildSlotProps) => VNode[]
 }>();
 
 const { panelRef, scrollToPanel } = usePanelScroll();
@@ -82,6 +83,10 @@ const { navItems, hasNavIcon } = useBuildCalculatorNav(() => props.builds, slots
       >
         <template v-if="hasNavIcon" #icon="{ item }">
           <slot name="nav-icon" :build="item.build" />
+        </template>
+
+        <template #badge="{ item }">
+          <slot name="nav-badge" :build="item.build" />
         </template>
       </ListNav>
     </PageToolbar>

@@ -73,21 +73,15 @@ const parseLoadout = (kind: LoadoutUnitId, loadout: StoredLoadout): UnitLoadout 
 });
 
 /**
- * Stored record of the Unit; only a Biosoldier keeps the Officer mark.
+ * Stored record of the Unit.
  *
  * @param unit Unit of a Squad.
  */
-const serializeUnit = (unit: Readonly<SquadUnit>) => {
-  const record: StoredUnit = {
-    id: unit.id,
-    build: { kind: unit.build.kind, id: unit.build.id },
-    loadout: serializeLoadout(unit.build.kind, unit.loadout),
-  };
-
-  if (unit.build.kind === 'biosoldier') record.isOfficer = unit.isOfficer;
-
-  return record;
-};
+const serializeUnit = (unit: Readonly<SquadUnit>): StoredUnit => ({
+  id: unit.id,
+  build: { kind: unit.build.kind, id: unit.build.id },
+  loadout: serializeLoadout(unit.build.kind, unit.loadout),
+});
 
 /**
  * Unit of the stored record; null if the record does not match the schema or its build kind is unknown.
@@ -99,14 +93,13 @@ const parseUnit = (record: unknown): SquadUnit | null => {
 
   if (!storedUnit.success) return null;
 
-  const { id, build, isOfficer, loadout } = storedUnit.data;
+  const { id, build, loadout } = storedUnit.data;
 
   if (!isLoadoutUnitId(build.kind)) return null;
 
   return {
     id,
     build: { kind: build.kind, id: build.id },
-    isOfficer: build.kind === 'biosoldier' && isOfficer === true,
     loadout: parseLoadout(build.kind, loadout),
   };
 };

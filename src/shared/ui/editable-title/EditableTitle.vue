@@ -22,6 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineSlots<{
   icon?: () => VNode[]
+  badge?: () => VNode[]
 }>();
 
 /** Title text; the fallback is restored when the field is left blank. */
@@ -61,6 +62,7 @@ const { isEditable, restoreBlankTitle, finishEditing } = useEditableTitle({
         <span :class="$style.visuallyHidden">{{ props.editLabel }}</span>
       </Label>
     </div>
+    <slot name="badge" />
   </div>
 </template>
 

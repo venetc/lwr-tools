@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 import { BIOSOLDIER_CLASSES } from '@entities/soldier';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
-import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator, useBiosoldierBuildsStore } from '@widgets/build-calculator';
+import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator, OfficerRankBadge, useBiosoldierBuildsStore } from '@widgets/build-calculator';
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
@@ -55,6 +55,10 @@ const { builds } = storeToRefs(biosoldierBuildsStore);
 
     <template #nav-icon="{ build }">
       <BiosoldierClassIcon :build="build" :class="$style.navIcon" />
+    </template>
+
+    <template #nav-badge="{ build }">
+      <OfficerRankBadge :build="build" />
     </template>
   </BuildCalculator>
 </template>

@@ -47,7 +47,6 @@ export const BUILDS = [OVERWATCH_SNIPER, FIELD_MEDIC, GOLIATH_WALL, ALLOY_SUPPOR
 const unitMock = (id: string, build: SquadUnit['build']): SquadUnit => ({
   id,
   build,
-  isOfficer: false,
   loadout: { armor: null, primary: null, secondary: null, utility: [], modules: [] },
 });
 

@@ -1,0 +1,12 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+.badge {
+  @include typography.caps-4;
+  text-box: trim-both cap alphabetic;
+  flex: none;
+  padding: 3px 4px;
+  border: 1px solid colors.$accent-dim;
+  border-radius: 2px;
+  color: colors.$text-accent;
+}

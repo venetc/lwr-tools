@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { blockReasons, canBeOfficer, defaultLoadout, loadoutSlots, utilitySlotSources } from '@entities/loadout/model/loadout';
+import { blockReasons, defaultLoadout, loadoutSlots, utilitySlotSources } from '@entities/loadout/model/loadout';
 
 import { ASSAULT, createLoadoutMock, GENE_MODDED, GUNNER, MEC, OFFICER, PSIONIC, ROCKETEER, SCOUT, SHIV } from './loadout.mock';
 
@@ -247,10 +247,10 @@ describe('blockReasons', () => {
     expect(reasons).toEqual([]);
   });
 
-  it('ignores the Officer mark of a gene-modded unit', () => {
+  it('lets a gene-modded Officer wear officer armor', () => {
     const reasons = blockReasons('seraph-armor', { kind: 'armor' }, createLoadoutMock(), { ...OFFICER, hasGeneMod: true });
 
-    expect(reasons).toEqual(['needs-officer']);
+    expect(reasons).toEqual([]);
   });
 
   it('keeps a weapon of another class off the primary slot', () => {
@@ -441,31 +441,5 @@ describe('defaultLoadout', () => {
     const loadout = defaultLoadout(SHIV);
 
     expect(loadout).toEqual({ armor: 'shiv', primary: 'autocannon', secondary: null, utility: [null, null], modules: [] });
-  });
-});
-
-describe('canBeOfficer', () => {
-  it('lets a biosoldier without Gene mods and Psionic abilities be an Officer', () => {
-    const isAllowed = canBeOfficer(ASSAULT);
-
-    expect(isAllowed).toBe(true);
-  });
-
-  it('keeps a gene-modded biosoldier from being an Officer', () => {
-    const isAllowed = canBeOfficer(GENE_MODDED);
-
-    expect(isAllowed).toBe(false);
-  });
-
-  it('keeps a psionic biosoldier from being an Officer', () => {
-    const isAllowed = canBeOfficer(PSIONIC);
-
-    expect(isAllowed).toBe(false);
-  });
-
-  it('keeps a MEC from being an Officer', () => {
-    const isAllowed = canBeOfficer(MEC);
-
-    expect(isAllowed).toBe(false);
   });
 });

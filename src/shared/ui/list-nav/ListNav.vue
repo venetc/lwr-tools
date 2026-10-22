@@ -22,7 +22,7 @@ interface Emits {
   remove: [id: string]
 }
 
-interface IconSlotProps {
+interface ItemSlotProps {
   item: Item
 }
 
@@ -31,7 +31,8 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
 const slots = defineSlots<{
-  icon?: (props: IconSlotProps) => VNode[]
+  icon?: (props: ItemSlotProps) => VNode[]
+  badge?: (props: ItemSlotProps) => VNode[]
 }>();
 
 const { hasIcon, isRemoveDisabled, hasDetail, itemName } = useListNav(slots);
@@ -70,6 +71,7 @@ const { hasIcon, isRemoveDisabled, hasDetail, itemName } = useListNav(slots);
               {{ item.detail }}
             </span>
           </button>
+          <slot name="badge" :item="item" />
           <HoldButton
             :class="$style.remove"
             :disabled="isRemoveDisabled(item)"

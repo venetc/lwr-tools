@@ -26,7 +26,7 @@ export interface LoadoutWearer {
   hasGeneMod: boolean
   /** Whether the unit has at least one Psionic ability. */
   hasPsionicAbility: boolean
-  /** Whether the unit is marked as an Officer; it counts only while the unit may be one. */
+  /** Whether the unit is an Officer: its Build has an officer perk. */
   isOfficer: boolean
 }
 
@@ -157,13 +157,6 @@ export const loadoutSlots = (loadout: Pick<Loadout, 'armor' | 'primary'>, wearer
 };
 
 /**
- * Whether the unit may be an Officer: only a biosoldier without Gene mods and Psionic abilities.
- *
- * @param wearer unit to check.
- */
-export const canBeOfficer = (wearer: LoadoutWearer) => wearer.unit === 'biosoldier' && !wearer.hasGeneMod && !wearer.hasPsionicAbility;
-
-/**
  * Reasons the wearer does not meet the requirement of an item.
  *
  * @param requires what the item needs besides the unit and class; null if nothing.
@@ -172,7 +165,7 @@ export const canBeOfficer = (wearer: LoadoutWearer) => wearer.unit === 'biosoldi
 const requirementReasons = (requires: LoadoutRequirement | null, wearer: LoadoutWearer): [LoadoutBlockReason, boolean][] => [
   ['needs-gene-mod', requires === 'gene-mod' && !wearer.hasGeneMod],
   ['needs-psionic', requires === 'psionic' && !wearer.hasPsionicAbility],
-  ['needs-officer', requires === 'officer' && !(wearer.isOfficer && canBeOfficer(wearer))],
+  ['needs-officer', requires === 'officer' && !wearer.isOfficer],
 ];
 
 /**

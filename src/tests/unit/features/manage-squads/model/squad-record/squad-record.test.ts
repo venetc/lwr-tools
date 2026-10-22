@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest';
 import { parseSquad, serializeSquad } from '@features/manage-squads/model/squad-record';
 
 import {
+  BIOSOLDIER_UNIT,
   INVALID_UNIT_RECORD,
-  MEC_OFFICER_RECORD,
-  MEC_OFFICER_UNIT,
+  OFFICER_MARK_RECORD,
   SHIV_RECORD,
   SHIV_UNIT,
   SQUAD,
@@ -23,8 +23,8 @@ describe('serializeSquad', () => {
     expect(record).toEqual(SQUAD_RECORD);
   });
 
-  it('keeps no Officer mark for a SHIV', () => {
-    const record = serializeSquad({ ...SQUAD, units: [SHIV_UNIT] });
+  it('keeps no Officer mark', () => {
+    const record = serializeSquad({ ...SQUAD, units: [BIOSOLDIER_UNIT] });
 
     expect(record.units[0]).not.toHaveProperty('isOfficer');
   });
@@ -67,10 +67,10 @@ describe('parseSquad', () => {
     expect(squad?.units[0]?.loadout).toEqual(UNKNOWN_CODES_LOADOUT);
   });
 
-  it('ignores the Officer mark of a MEC', () => {
-    const squad = parseSquad(SQUAD_ID, { name: 'Alpha', units: [MEC_OFFICER_RECORD] });
+  it('drops the old Officer mark of a Unit', () => {
+    const squad = parseSquad(SQUAD_ID, { name: 'Alpha', units: [OFFICER_MARK_RECORD] });
 
-    expect(squad?.units).toEqual([MEC_OFFICER_UNIT]);
+    expect(squad?.units[0]).not.toHaveProperty('isOfficer');
   });
 
   it('reads the SHIV type code of a SHIV from the SHIV type catalog', () => {

@@ -25,9 +25,6 @@ const rankIds = typedEntries(SOLDIER_RANK_CONTENT).map(([id]) => id);
 
 const rankIdSchema = z.enum(rankIds);
 
-/** Officer rank ids in officer training order. */
-const OFFICER_RANK_IDS = ['lieutenant', 'captain', 'major', 'colonel', 'field-commander'];
-
 /**
  * Reports records whose `code` is not greater than the code of the record before: abilities are sorted by code,
  * so codes are unique.
@@ -231,19 +228,12 @@ const checkUniquePsionicAbilities = (psiLevels: Record<string, PsiLevelContent>,
 };
 
 /**
- * Reports officer ranks out of officer training order, and required ranks that do not rise strictly from one officer
- * rank to the next.
+ * Reports required ranks that do not rise strictly from one officer rank to the next.
  *
  * @param officerRanks officer rank records by id.
  * @param context refinement context that collects issues.
  */
-const checkOfficerRankOrder = (officerRanks: Record<string, OfficerRankContent>, context: z.RefinementCtx) => {
-  const ids = Object.keys(officerRanks);
-
-  if (ids.join() !== OFFICER_RANK_IDS.join()) {
-    context.addIssue({ code: 'custom', message: `Expected officer ranks ${OFFICER_RANK_IDS.join(', ')}, got ${ids.join(', ')}` });
-  }
-
+const checkRequiredRankOrder = (officerRanks: Record<string, OfficerRankContent>, context: z.RefinementCtx) => {
   Object.entries(officerRanks).reduce((previousRankIndex, [id, officerRank]) => {
     const rankIndex = rankIds.findIndex(rankId => rankId === officerRank.requiredRank);
 
@@ -308,28 +298,27 @@ const soldierRankContentSchema: z.ZodType<SoldierRankContent> = z.strictObject({
 
 const bodyPartContentSchema: z.ZodType<BodyPartContent> = z.strictObject({
   name: z.string().min(1),
-  geneMods: z.tuple([abilityIdSchema, abilityIdSchema]),
+  geneMods: z.array(abilityIdSchema).min(1),
 });
 
 const psiLevelContentSchema: z.ZodType<PsiLevelContent> = z.strictObject({
   name: z.string().min(1),
-  abilities: z.array(abilityIdSchema).min(1).max(3),
+  abilities: z.array(abilityIdSchema).min(1),
 });
 
 const officerRankContentSchema: z.ZodType<OfficerRankContent> = z.strictObject({
   name: z.string().min(1),
   abbreviation: z.string().min(1),
   requiredRank: rankIdSchema,
-  perks: z.tuple([abilityIdSchema, abilityIdSchema]),
+  perks: z.array(abilityIdSchema).min(1),
 });
 
 /**
  * Schema of all soldier content JSON: record shapes, code ranges, ability codes in ascending order, class codes unique across both class lists,
- * ability references and grant cycles; five body parts with two gene mods each, every gene mod in one body part,
- * and Neural Damping in Brain; five psi levels with one to three psionic abilities each, every ability on one level;
- * five officer ranks in officer training order with strictly rising required ranks and two officer perks each, every
- * officer perk on one officer rank;
- * no ability, granted ones included, in two kinds of branches.
+ * ability references and grant cycles; every gene mod in one body part, and Neural Damping in Brain; every psionic
+ * ability on one psi level; strictly rising required ranks of officer ranks, every officer perk on one officer rank;
+ * no ability, granted ones included, in two kinds of branches. Steps and the number of variants on each step are
+ * checked by the data test.
  */
 export const soldierContentSchema = z.strictObject({
   abilities: z.record(z.string(), abilityContentSchema).superRefine(checkOrderedCodes).superRefine(checkGrantCycles),
@@ -337,13 +326,10 @@ export const soldierContentSchema = z.strictObject({
   mecClasses: z.record(z.string(), soldierClassContentSchema),
   ranks: z.record(z.string(), soldierRankContentSchema),
   bodyParts: z.record(z.string(), bodyPartContentSchema)
-    .refine(bodyParts => Object.keys(bodyParts).length === 5, { error: 'Expected five body parts' })
     .superRefine(checkUniqueGeneMods)
     .superRefine(checkNeuralDamping),
-  psiLevels: z.record(z.string(), psiLevelContentSchema)
-    .refine(psiLevels => Object.keys(psiLevels).length === 5, { error: 'Expected five psi levels' })
-    .superRefine(checkUniquePsionicAbilities),
+  psiLevels: z.record(z.string(), psiLevelContentSchema).superRefine(checkUniquePsionicAbilities),
   officerRanks: z.record(z.string(), officerRankContentSchema)
-    .superRefine(checkOfficerRankOrder)
+    .superRefine(checkRequiredRankOrder)
     .superRefine(checkUniqueOfficerPerks),
 }).superRefine(checkSoldierClassLists).superRefine(checkBranchKinds);

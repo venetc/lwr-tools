@@ -6,12 +6,6 @@ import { isShivPerkId } from '@entities/shiv/model/perks';
 import type { TechnologyLevelContent } from '@entities/shiv/model/technology-levels';
 import { SHIV_PERK_CODE_BITS } from '@features/share-build/config/constants';
 
-/** Technology levels of the SHIV tree in the game. */
-const LEVEL_COUNT = 5;
-
-/** Perks offered on each technology level in the game. */
-const PERKS_PER_LEVEL = 3;
-
 const perkIdSchema = z.string().refine(isShivPerkId, { error: 'Unknown SHIV perk id' });
 
 /**
@@ -81,16 +75,14 @@ const perkContentSchema: z.ZodType<ShivPerkContent> = z.strictObject({
 
 const levelContentSchema: z.ZodType<TechnologyLevelContent> = z.strictObject({
   name: z.string().min(1),
-  perks: z.array(perkIdSchema).length(PERKS_PER_LEVEL),
+  perks: z.array(perkIdSchema).min(1),
 });
 
 /**
- * Schema of all SHIV content JSON: record shapes, code ranges and uniqueness, icons, five levels of three known perks,
- * each perk on one level only.
+ * Schema of all SHIV content JSON: record shapes, code ranges and uniqueness, icons, levels of known perks, each perk
+ * on one level only. The number of levels and perks on each level is checked by the data test.
  */
 export const shivContentSchema = z.strictObject({
   perks: z.record(z.string(), perkContentSchema).superRefine(checkUniqueCodes).superRefine(checkPerkIcons),
-  levels: z.record(z.string(), levelContentSchema)
-    .refine(levels => Object.keys(levels).length === LEVEL_COUNT, { error: `The SHIV tree has ${LEVEL_COUNT} levels` })
-    .superRefine(checkPerksOnOneLevel),
+  levels: z.record(z.string(), levelContentSchema).superRefine(checkPerksOnOneLevel),
 });

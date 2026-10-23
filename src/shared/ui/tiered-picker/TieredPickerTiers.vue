@@ -2,8 +2,6 @@
 import type { VNode } from 'vue';
 import { useCssModule } from 'vue';
 
-import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
-
 import { useTierGrid } from './lib/tier-grid';
 import { useTierAppearance } from './model/tier-appearance';
 import { useTierSelection } from './model/tier-selection';
@@ -34,7 +32,7 @@ defineSlots<{
   tier?: (props: TierSlotProps) => VNode[]
 }>();
 
-const { toggle, getAriaDisabled } = useTierSelection((tierIndex, itemId) => emit('select', tierIndex, itemId));
+const { isPressed, toggle, getAriaDisabled } = useTierSelection((tierIndex, itemId) => emit('select', tierIndex, itemId));
 
 const { gridStyle, getOptionStyle } = useTierGrid(() => props.tiers);
 
@@ -52,20 +50,20 @@ const { getTierClass } = useTierAppearance(useCssModule());
         <slot name="tier" :tier="tier" />
       </span>
 
-      <ToggleGroup
+      <div
         :class="$style.items"
-        :model-value="tier.selectedId"
-        :roving-focus="false"
+        role="group"
         :aria-label="tier.name"
-        @update:model-value="toggle(tier, tierIndex, $event)"
       >
-        <ToggleGroupOption
+        <button
           v-for="(option, optionIndex) in tier.options"
           :key="option.item.id"
           :class="$style.item"
           :style="getOptionStyle(tier, optionIndex)"
-          :value="option.item.id"
+          type="button"
+          :aria-pressed="isPressed(tier, option)"
           :aria-disabled="getAriaDisabled(tier, option)"
+          @click="toggle(tier, tierIndex, option)"
           @pointerenter="emit('inspect', tier, option)"
           @focus="emit('inspect', tier, option)"
         >
@@ -74,8 +72,8 @@ const { getTierClass } = useTierAppearance(useCssModule());
             :name="option.item.name"
             :appearance="option.appearance"
           />
-        </ToggleGroupOption>
-      </ToggleGroup>
+        </button>
+      </div>
     </li>
   </ol>
 </template>

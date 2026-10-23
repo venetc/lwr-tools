@@ -1,5 +1,3 @@
-import type { AcceptableValue } from 'reka-ui';
-
 import type { TieredPickerOption, TieredPickerTier } from './tiered-picker';
 
 /**
@@ -9,17 +7,26 @@ import type { TieredPickerOption, TieredPickerTier } from './tiered-picker';
  */
 export const useTierSelection = (onSelect: (tierIndex: number, itemId: string | null) => void) => {
   /**
-   * Requests an item selection on an editable tier; a disabled tier ignores the request, and so does a disabled item
-   * that would be selected, cleared or replaced.
+   * Checks whether the option is the selected one on its tier.
+   *
+   * @param tier tier of the option.
+   * @param option tier option.
+   */
+  const isPressed = (tier: TieredPickerTier, option: TieredPickerOption) => option.item.id === tier.selectedId;
+
+  /**
+   * Requests an item selection on an editable tier: the selected option clears the tier, any other one replaces
+   * the selection. A disabled tier ignores the request, and so does a disabled item that would be selected, cleared
+   * or replaced.
    *
    * @param tier tier whose selection is toggled.
    * @param tierIndex tier index in the picker.
-   * @param toggledValue selected item id; any other value means the selection was cleared.
+   * @param option toggled option.
    */
-  const toggle = (tier: TieredPickerTier, tierIndex: number, toggledValue: AcceptableValue | undefined) => {
+  const toggle = (tier: TieredPickerTier, tierIndex: number, option: TieredPickerOption) => {
     if (tier.isDisabled) return;
 
-    const itemId = typeof toggledValue === 'string' ? toggledValue : null;
+    const itemId = isPressed(tier, option) ? null : option.item.id;
     const isAffectedItemDisabled = tier.options.some(({ item, isDisabled }) => (
       isDisabled && (item.id === itemId || item.id === tier.selectedId)
     ));
@@ -35,9 +42,7 @@ export const useTierSelection = (onSelect: (tierIndex: number, itemId: string | 
    * @param tier tier of the option.
    * @param option tier option.
    */
-  const getAriaDisabled = (tier: TieredPickerTier, option: TieredPickerOption) => {
-    return tier.isDisabled || option.isDisabled ? 'true' : null;
-  };
+  const getAriaDisabled = (tier: TieredPickerTier, option: TieredPickerOption) => tier.isDisabled || option.isDisabled;
 
-  return { toggle, getAriaDisabled };
+  return { isPressed, toggle, getAriaDisabled };
 };

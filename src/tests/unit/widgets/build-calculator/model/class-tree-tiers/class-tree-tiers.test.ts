@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { useClassTreeTiers } from '@entities/soldier/model/class-tree-tiers';
+import { useClassTreeTiers } from '@widgets/build-calculator/model/class-tree-tiers';
 
 import { BASE_PERKS, createBuildMock, PARTIAL_PERKS } from './class-tree-tiers.mock';
 
@@ -11,6 +11,10 @@ vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
 vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => ({
   SOLDIER_RANK_CONTENT: (await import('./class-tree-tiers.mock')).SOLDIER_RANK_CONTENT_MOCK,
 }));
+
+vi.mock('@entities/soldier/config/constants/biosoldier-classes', () => ({ BIOSOLDIER_CLASSES: [] }));
+
+vi.mock('@entities/soldier/config/constants/mec-classes', () => ({ MEC_CLASSES: [] }));
 
 vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
 

@@ -1,7 +1,7 @@
 import type { AbilityContent } from '@entities/soldier/model/abilities';
 import type { BodyPartContent } from '@entities/soldier/model/body-parts';
 import type { PsiLevelContent } from '@entities/soldier/model/psi-levels';
-import type { PsionicTreeBuild } from '@entities/soldier/model/psionic-tiers';
+import type { PsionicTreeBuild } from '@widgets/build-calculator/model/psionic-tiers';
 
 export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
   'neural-damping': { code: 20, name: 'Neural Damping', description: 'Damps the brain.' },

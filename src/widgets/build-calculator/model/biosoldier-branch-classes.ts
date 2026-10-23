@@ -1,4 +1,5 @@
-import type { BiosoldierBranch, BiosoldierBuildGroup } from './biosoldier-build-groups';
+import type { BiosoldierBranch } from './biosoldier-branches';
+import type { BiosoldierBuildGroup } from './biosoldier-build-groups';
 
 /**
  * Colours of the biosoldier branches: the tab counter, grey for an empty branch, and the described ability name.

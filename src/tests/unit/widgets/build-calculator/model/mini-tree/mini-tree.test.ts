@@ -3,30 +3,12 @@ import { computed } from 'vue';
 
 import { miniTreeStep, useBiosoldierMiniTree } from '@widgets/build-calculator/model/mini-tree';
 
-import { BIOSOLDIER_BUILD_MOCK, CAPTION, createTierMock, officerRow } from './mini-tree.mock';
+import { BIOSOLDIER_BUILD_MOCK, branchRow, CAPTION, createTierMock } from './mini-tree.mock';
 
-vi.mock('@entities/soldier/model/class-tree-tiers', async () => {
-  const { CLASS_TREE_TIERS_MOCK } = await import('./mini-tree.mock');
+vi.mock('@widgets/build-calculator/model/biosoldier-branches', async () => {
+  const { BRANCHES_MOCK } = await import('./mini-tree.mock');
 
-  return { useClassTreeTiers: () => ({ tiers: computed(() => CLASS_TREE_TIERS_MOCK) }) };
-});
-
-vi.mock('@entities/soldier/model/gene-mod-tiers', async () => {
-  const { GENE_MOD_TIERS_MOCK } = await import('./mini-tree.mock');
-
-  return { useGeneModTiers: () => ({ tiers: computed(() => GENE_MOD_TIERS_MOCK) }) };
-});
-
-vi.mock('@entities/soldier/model/psionic-tiers', async () => {
-  const { PSIONIC_TIERS_MOCK } = await import('./mini-tree.mock');
-
-  return { usePsionicTiers: () => ({ tiers: computed(() => PSIONIC_TIERS_MOCK) }) };
-});
-
-vi.mock('@entities/soldier/model/officer-tiers', async () => {
-  const { OFFICER_TIERS_MOCK } = await import('./mini-tree.mock');
-
-  return { useOfficerTiers: () => ({ tiers: computed(() => OFFICER_TIERS_MOCK) }) };
+  return { useBiosoldierBranches: () => ({ branches: computed(() => BRANCHES_MOCK) }) };
 });
 
 describe('miniTreeStep', () => {
@@ -98,21 +80,33 @@ describe('useBiosoldierMiniTree', () => {
     expect(rows.value.map(({ id }) => id)).toEqual(['class-tree', 'gene-mods', 'psionic', 'officer']);
   });
 
-  it('titles the officer row as the officer branch', () => {
-    const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
-
-    expect(officerRow(rows.value)?.title).toBe('Officer');
-  });
-
   it('captions officer steps with the abbreviations of their officer ranks', () => {
     const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
 
-    expect(officerRow(rows.value)?.steps.map(({ caption }) => caption)).toEqual(['ALP', 'BET', 'GAM']);
+    expect(branchRow(rows.value, 'officer')?.steps.map(({ caption }) => caption)).toEqual(['ALP', 'BET', 'GAM']);
   });
 
   it('gives officer steps the looks of their officer ranks', () => {
     const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
 
-    expect(officerRow(rows.value)?.steps.map(({ state }) => state)).toEqual(['selected', 'open', 'locked']);
+    expect(branchRow(rows.value, 'officer')?.steps.map(({ state }) => state)).toEqual(['selected', 'open', 'locked']);
+  });
+
+  it('captions class tree steps with short rank names', () => {
+    const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
+
+    expect(branchRow(rows.value, 'class-tree')?.steps.map(({ caption }) => caption)).toEqual(['SPC']);
+  });
+
+  it('captions gene mod steps with the names of their body parts', () => {
+    const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
+
+    expect(branchRow(rows.value, 'gene-mods')?.steps.map(({ caption }) => caption)).toEqual(['Head']);
+  });
+
+  it('titles each row as its branch', () => {
+    const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
+
+    expect(rows.value.map(({ title }) => title)).toEqual(['Class tree', 'Gene mods', 'Psionic', 'Officer']);
   });
 });

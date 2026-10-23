@@ -1,9 +1,11 @@
 import type { TechnologyLevel } from '@entities/shiv';
 import { TECHNOLOGY_LEVELS } from '@entities/shiv';
-import type { ClassTreeRankTier } from '@entities/soldier';
+import type { ClassTreeRank } from '@entities/soldier';
+import { BODY_PARTS, OFFICER_RANKS, PSI_LEVELS } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerItem } from '@shared/ui/tiered-picker';
 
+import { abilityPickerItems } from '../model/ability-picker-item';
 import { shivPerkPickerItem } from '../model/shiv-perk-picker-item';
 
 /**
@@ -76,6 +78,21 @@ export const SHIV_PERK_PICKER_ITEM_BY_ID: ReadonlyMap<string, DeepReadonly<Tiere
   TECHNOLOGY_LEVEL_PICKER_ITEMS.flat().map(item => [item.id, item]),
 );
 
+/** Picker items of the gene mods by body part, built once: the body parts are static. */
+export const BODY_PART_PICKER_ITEMS: DeepReadonly<TieredPickerItem[][]> = BODY_PARTS.map(bodyPart => abilityPickerItems(bodyPart.geneMods));
+
+/** Picker items of the psionic abilities by psi level, built once: the psi levels are static. */
+export const PSI_LEVEL_PICKER_ITEMS: DeepReadonly<TieredPickerItem[][]> = PSI_LEVELS.map(psiLevel => abilityPickerItems(psiLevel.abilities));
+
+/** Picker items of the officer perks by officer rank, built once: the officer ranks are static. */
+export const OFFICER_RANK_PICKER_ITEMS: DeepReadonly<TieredPickerItem[][]> = OFFICER_RANKS.map(officerRank => abilityPickerItems(officerRank.perks));
+
+/** Note of Neural Damping blocked by psionic abilities. */
+export const PSIONIC_BLOCK_NOTE = 'Unavailable with Psionic abilities';
+
+/** Note of a psionic ability blocked by Neural Damping. */
+export const NEURAL_DAMPING_BLOCK_NOTE = 'Unavailable with Neural Damping';
+
 /** Title of the row of the SHIV tree in a mini-tree. */
 export const SHIV_MINI_TREE_TITLE = 'SHIV tree';
 
@@ -88,7 +105,7 @@ export const MINI_TREE_RANK_CAPTION = {
   'tech-sergeant': 'TSGT',
   'gunnery-sergeant': 'GSGT',
   'master-sergeant': 'MSGT',
-} as const satisfies Record<ClassTreeRankTier['rank']['id'], string>;
+} as const satisfies Record<ClassTreeRank['id'], string>;
 
 /** Short technology level captions under the steps of a SHIV mini-tree: full level names do not fit under a step. */
 export const MINI_TREE_TECHNOLOGY_LEVEL_CAPTION = {

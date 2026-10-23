@@ -1,14 +1,12 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
+import type { ClassTreeRank, SoldierBuildData } from '@entities/soldier';
+import { classTree, featuredPerk, rankState } from '@entities/soldier';
 import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 import { tierOption } from '@shared/ui/tiered-picker';
 
 import { treeAbilityPickerItem } from './ability-picker-item';
-import type { SoldierBuildData } from './build';
-import type { ClassTreeRank } from './class-tree';
-import { classTree, featuredPerk } from './class-tree';
-import { rankState } from './ranks';
 
 /**
  * Soldier build shown in a class tree: build data with its lock.

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { useOfficerTiers } from '@entities/soldier/model/officer-tiers';
+import { useOfficerTiers } from '@widgets/build-calculator/model/officer-tiers';
 
 import {
   ALL_OFFICER_PERKS,
@@ -29,6 +29,10 @@ vi.mock('@entities/soldier/config/constants/officer-rank-content', async () => (
 vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => ({
   SOLDIER_RANK_CONTENT: (await import('./officer-tiers.mock')).SOLDIER_RANK_CONTENT_MOCK,
 }));
+
+vi.mock('@entities/soldier/config/constants/biosoldier-classes', () => ({ BIOSOLDIER_CLASSES: [] }));
+
+vi.mock('@entities/soldier/config/constants/mec-classes', () => ({ MEC_CLASSES: [] }));
 
 vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
 

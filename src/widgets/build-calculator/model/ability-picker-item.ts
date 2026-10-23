@@ -1,8 +1,7 @@
+import type { AbilityId, TreeAbility } from '@entities/soldier';
+import { treeAbility } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerItem } from '@shared/ui/tiered-picker';
-
-import type { AbilityId, TreeAbility } from './abilities';
-import { treeAbility } from './abilities';
 
 /**
  * Picker item of a tree ability, with the abilities it grants as related items.

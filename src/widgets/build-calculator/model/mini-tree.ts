@@ -1,7 +1,6 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed } from 'vue';
 
-import { useClassTreeTiers, useGeneModTiers, useOfficerTiers, usePsionicTiers } from '@entities/soldier';
 import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 
 import {
@@ -14,8 +13,10 @@ import {
   SHIV_MINI_TREE_TITLE,
   SHIV_TREE_GROUP_ID,
 } from '../config/constants';
-import type { BiosoldierBranch } from './biosoldier-build-groups';
+import type { BiosoldierBranch, BiosoldierBuildTier } from './biosoldier-branches';
+import { useBiosoldierBranches } from './biosoldier-branches';
 import type { BiosoldierBuild } from './biosoldier-builds';
+import { useClassTreeTiers } from './class-tree-tiers';
 import type { MecBuild } from './mec-builds';
 import { useShivBuildTiers } from './shiv-build-tiers';
 import type { ShivBuild } from './shiv-builds';
@@ -77,46 +78,31 @@ export const miniTreeStep = (tier: TieredPickerTier, caption: string): MiniTreeS
 };
 
 /**
- * Mini-tree of a biosoldier build: the class tree, the gene mods, the psionic abilities and the officer tree, each a row
- * even when empty.
+ * Short caption under a step of a biosoldier mini-tree: the short rank name, the officer rank abbreviation, or the name
+ * of a body part or a psi level.
+ *
+ * @param tier tier of a biosoldier branch.
+ */
+const biosoldierStepCaption = (tier: BiosoldierBuildTier): string => {
+  if ('rank' in tier) return MINI_TREE_RANK_CAPTION[tier.rank.id];
+  if ('officerRank' in tier) return tier.officerRank.abbreviation;
+  return tier.name;
+};
+
+/**
+ * Mini-tree of a biosoldier build: a row for each branch, even when empty.
  *
  * @param build biosoldier build.
  */
 export const useBiosoldierMiniTree = (build: MaybeRefOrGetter<Readonly<BiosoldierBuild>>) => {
-  const classTree = useClassTreeTiers(build);
+  const { branches } = useBiosoldierBranches(build);
 
-  const geneMods = useGeneModTiers(build);
-
-  const psionic = usePsionicTiers(build);
-
-  const officer = useOfficerTiers(build);
-
-  return computed((): MiniTreeRow[] => [
-    {
-      id: 'class-tree',
-      title: BIOSOLDIER_BRANCH_TITLE['class-tree'],
-      tone: 'class-tree',
-      steps: classTree.tiers.value.map(tier => miniTreeStep(tier, MINI_TREE_RANK_CAPTION[tier.rank.id])),
-    },
-    {
-      id: 'gene-mods',
-      title: BIOSOLDIER_BRANCH_TITLE['gene-mods'],
-      tone: 'gene-mods',
-      steps: geneMods.tiers.value.map(tier => miniTreeStep(tier, tier.name)),
-    },
-    {
-      id: 'psionic',
-      title: BIOSOLDIER_BRANCH_TITLE.psionic,
-      tone: 'psionic',
-      steps: psionic.tiers.value.map(tier => miniTreeStep(tier, tier.name)),
-    },
-    {
-      id: 'officer',
-      title: BIOSOLDIER_BRANCH_TITLE.officer,
-      tone: 'officer',
-      steps: officer.tiers.value.map(tier => miniTreeStep(tier, tier.officerRank.abbreviation)),
-    },
-  ]);
+  return computed(() => branches.value.map((branch): MiniTreeRow => ({
+    id: branch.id,
+    title: BIOSOLDIER_BRANCH_TITLE[branch.id],
+    tone: branch.id,
+    steps: branch.tiers.map(tier => miniTreeStep(tier, biosoldierStepCaption(tier))),
+  })));
 };
 
 /**

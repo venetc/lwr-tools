@@ -1,7 +1,7 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { BiosoldierBranch } from './biosoldier-build-groups';
+import type { BiosoldierBranch } from './biosoldier-branches';
 import type { MiniTreeRow, MiniTreeStepState } from './mini-tree';
 
 /**

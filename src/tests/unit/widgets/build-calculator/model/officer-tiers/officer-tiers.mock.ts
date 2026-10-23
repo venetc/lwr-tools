@@ -1,8 +1,8 @@
 import type { AbilityContent } from '@entities/soldier/model/abilities';
 import type { BodyPartContent } from '@entities/soldier/model/body-parts';
 import type { OfficerRankContent } from '@entities/soldier/model/officer-ranks';
-import type { OfficerTreeBuild } from '@entities/soldier/model/officer-tiers';
 import type { SoldierRankContent } from '@entities/soldier/model/ranks';
+import type { OfficerTreeBuild } from '@widgets/build-calculator/model/officer-tiers';
 
 export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
   first: { name: 'First' },

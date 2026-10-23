@@ -1,17 +1,12 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
+import type { BiosoldierBuildData, BuildBlockReason, PsiLevel, RankState } from '@entities/soldier';
+import { PSI_LEVELS, psiLevelState, psionicAbilityBlockReason } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
-import { PSI_LEVEL_PICKER_ITEMS } from '../config/constants/psi-level-picker-items';
-import { NEURAL_DAMPING_BLOCK_NOTE, PSI_LEVELS } from '../config/constants/psi-levels';
-import type { BiosoldierBuildData } from './build';
-import type { BuildBlockReason } from './build-rules';
-import { psionicAbilityBlockReason } from './build-rules';
-import type { PsiLevel } from './psi-levels';
-import { psiLevelState } from './psi-levels';
-import type { RankState } from './ranks';
+import { NEURAL_DAMPING_BLOCK_NOTE, PSI_LEVEL_PICKER_ITEMS } from '../config/constants';
 
 /**
  * Biosoldier build shown in the psionic tree: its gene mods and psionic abilities with its lock.

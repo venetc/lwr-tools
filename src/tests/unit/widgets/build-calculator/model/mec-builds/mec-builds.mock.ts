@@ -22,6 +22,9 @@ export const GOLIATH = soldierClassMock('goliath', 'Goliath', 'body-shield');
  */
 export const SOLDIER_ENTITY_MOCK = {
   MEC_CLASSES: [VALKYRIE, GOLIATH],
+  BODY_PARTS: [],
+  PSI_LEVELS: [],
+  OFFICER_RANKS: [],
   selectSoldierBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
     build.perks[index] = id;
   },

@@ -1,8 +1,12 @@
 export { BIOSOLDIER_CLASSES } from './config/constants/biosoldier-classes';
-export { EMPTY_GENE_MODS } from './config/constants/body-parts';
+export { BODY_PARTS, EMPTY_GENE_MODS } from './config/constants/body-parts';
 export { MEC_CLASSES } from './config/constants/mec-classes';
 export { OFFICER_RANKS } from './config/constants/officer-ranks';
-export type { SelectedGeneMods } from './model/body-parts';
+export { PSI_LEVELS } from './config/constants/psi-levels';
+export { treeAbility } from './model/abilities';
+export type { AbilityId, TreeAbility } from './model/abilities';
+export { bodyPartState } from './model/body-parts';
+export type { BodyPart, SelectedGeneMods } from './model/body-parts';
 export {
   biosoldierBuildBranchSet,
   isOfficerBuild,
@@ -15,14 +19,14 @@ export {
 export type { BiosoldierBranchSet, BiosoldierBuildData, SoldierBuildData } from './model/build';
 export { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from './model/build-codes';
 export type { BiosoldierBuildCodes, SoldierBuildCodes } from './model/build-codes';
-export { useClassTreeTiers } from './model/class-tree-tiers';
-export type { ClassTreeRankTier } from './model/class-tree-tiers';
+export { geneModBlockReason, officerPerkBlockReason, psionicAbilityBlockReason } from './model/build-rules';
+export type { BuildBlockReason } from './model/build-rules';
+export { classTree, featuredPerk } from './model/class-tree';
+export type { ClassTreeRank } from './model/class-tree';
 export type { SoldierClass } from './model/classes';
-export { useGeneModTiers } from './model/gene-mod-tiers';
-export type { BodyPartTier } from './model/gene-mod-tiers';
-export type { SelectedOfficerPerks } from './model/officer-ranks';
-export { useOfficerTiers } from './model/officer-tiers';
-export type { OfficerRankTier } from './model/officer-tiers';
-export type { SelectedPsionicAbilities } from './model/psi-levels';
-export { usePsionicTiers } from './model/psionic-tiers';
-export type { PsiLevelTier } from './model/psionic-tiers';
+export { officerRankState } from './model/officer-ranks';
+export type { OfficerRank, SelectedOfficerPerks } from './model/officer-ranks';
+export { psiLevelState } from './model/psi-levels';
+export type { PsiLevel, SelectedPsionicAbilities } from './model/psi-levels';
+export { rankState } from './model/ranks';
+export type { RankState } from './model/ranks';

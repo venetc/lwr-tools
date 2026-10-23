@@ -51,7 +51,7 @@ const createBranchTierMock = (id: string, state: TieredPickerTierState, selected
 
 export const CLASS_TREE_TIERS_MOCK = [createBranchTierMock('specialist', 'completed', 'right', { rank: { id: 'specialist' } })];
 
-export const GENE_MOD_TIERS_MOCK = [createBranchTierMock('head', 'available', null, {})];
+export const GENE_MOD_TIERS_MOCK = [{ ...createBranchTierMock('head', 'available', null, {}), name: 'Head' }];
 
 export const PSIONIC_TIERS_MOCK = [createBranchTierMock('awakening', 'locked', null, {})];
 
@@ -61,11 +61,27 @@ export const OFFICER_TIERS_MOCK = [
   createBranchTierMock('gamma', 'locked', null, { officerRank: { abbreviation: 'GAM' } }),
 ];
 
+/**
+ * Branch of the mini-tree with its tiers.
+ *
+ * @param id branch id.
+ * @param tiers branch tiers.
+ */
+const createBranchMock = (id: string, tiers: object[]) => ({ id, tiers, selectedCount: 0, featuredPickerItem: null });
+
+export const BRANCHES_MOCK = [
+  createBranchMock('class-tree', CLASS_TREE_TIERS_MOCK),
+  createBranchMock('gene-mods', GENE_MOD_TIERS_MOCK),
+  createBranchMock('psionic', PSIONIC_TIERS_MOCK),
+  createBranchMock('officer', OFFICER_TIERS_MOCK),
+];
+
 export const BIOSOLDIER_BUILD_MOCK = {} as BiosoldierBuild;
 
 /**
- * Officer row of a mini-tree, or undefined without one.
+ * Row of a branch of a mini-tree, or undefined without one.
  *
  * @param rows rows of the mini-tree.
+ * @param id branch id.
  */
-export const officerRow = (rows: MiniTreeRow[]) => rows.find(({ id }) => id === 'officer');
+export const branchRow = (rows: MiniTreeRow[], id: string) => rows.find(row => row.id === id);

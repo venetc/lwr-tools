@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { useGeneModTiers } from '@entities/soldier/model/gene-mod-tiers';
+import { useGeneModTiers } from '@widgets/build-calculator/model/gene-mod-tiers';
 
 import { createBuildMock, HEAD_AND_CHEST_GENE_MODS, NO_GENE_MODS, PSIONICS, UNAVAILABLE_NOTE } from './gene-mod-tiers.mock';
 

@@ -1,24 +1,14 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { BodyPartTier, ClassTreeRankTier, OfficerRankTier, PsiLevelTier } from '@entities/soldier';
-import { useClassTreeTiers, useGeneModTiers, useOfficerTiers, usePsionicTiers } from '@entities/soldier';
 import type { SvgIcon } from '@shared/ui/svg-icon';
-import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
+import type { TieredPickerGroup } from '@shared/ui/tiered-picker';
 
 import { BIOSOLDIER_BRANCH_TITLE } from '../config/constants';
+import type { BiosoldierBranch, BiosoldierBranchTiers, BiosoldierBuildTier } from './biosoldier-branches';
+import { useBiosoldierBranches } from './biosoldier-branches';
 import type { BiosoldierBuild } from './biosoldier-builds';
 import { useBiosoldierBuildsStore } from './biosoldier-builds';
-
-/**
- * Branch of a biosoldier build: the class tree, the gene mods, the psionic abilities or the officer perks.
- */
-export type BiosoldierBranch = keyof typeof BIOSOLDIER_BRANCH_TITLE;
-
-/**
- * Tier of a biosoldier build panel: a rank of the class tree, a body part, a psi level or an officer rank.
- */
-export type BiosoldierBuildTier = ClassTreeRankTier | BodyPartTier | PsiLevelTier | OfficerRankTier;
 
 /**
  * Label of a tier of a biosoldier build panel.
@@ -53,89 +43,54 @@ export interface BiosoldierBuildGroup extends TieredPickerGroup<BiosoldierBuildT
 /**
  * Tier group of a branch with its tab: the accessible name carries the counter, such as "Gene mods, 2 of 5".
  *
- * @param branch branch of the group.
- * @param tiers branch tiers.
- * @param selectedCount abilities selected in the branch.
- * @param defaultItem item described while the user inspects none in the branch.
+ * @param branch branch with its picker tiers.
  */
-const branchGroup = (
-  branch: BiosoldierBranch,
-  tiers: readonly BiosoldierBuildTier[],
-  selectedCount: number,
-  defaultItem: TieredPickerItem | null,
-): BiosoldierBuildGroup => ({
-  id: branch,
-  name: `${BIOSOLDIER_BRANCH_TITLE[branch]}, ${selectedCount} of ${tiers.length}`,
-  title: BIOSOLDIER_BRANCH_TITLE[branch],
-  counter: `${selectedCount}/${tiers.length}`,
-  isEmpty: selectedCount === 0,
-  tiers,
-  defaultItem,
+const branchGroup = (branch: BiosoldierBranchTiers): BiosoldierBuildGroup => ({
+  id: branch.id,
+  name: `${BIOSOLDIER_BRANCH_TITLE[branch.id]}, ${branch.selectedCount} of ${branch.tiers.length}`,
+  title: BIOSOLDIER_BRANCH_TITLE[branch.id],
+  counter: `${branch.selectedCount}/${branch.tiers.length}`,
+  isEmpty: branch.selectedCount === 0,
+  tiers: branch.tiers,
+  defaultItem: branch.featuredPickerItem,
 });
 
 /**
- * Tier groups of a biosoldier build panel: the class tree, the gene mods, the psionic abilities and the officer perks,
- * and the selection in them through the store.
+ * Tier groups of a biosoldier build panel, one by branch, and the selection in them through the store.
  *
  * @param build biosoldier build.
  */
 export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<BiosoldierBuild>>) => {
   const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
-  const classTree = useClassTreeTiers(build);
+  const { tree, branches } = useBiosoldierBranches(build);
 
-  const geneMods = useGeneModTiers(build);
+  const groups = computed(() => branches.value.map(branchGroup));
 
-  const psionic = usePsionicTiers(build);
-
-  const officer = useOfficerTiers(build);
-
-  const groups = computed((): BiosoldierBuildGroup[] => {
-    const { perks, geneMods: selectedGeneMods, psionicAbilities, officerPerks } = toValue(build);
-
-    return [
-      branchGroup('class-tree', classTree.tiers.value, perks.length, classTree.featuredPickerItem.value),
-      branchGroup(
-        'gene-mods',
-        geneMods.tiers.value,
-        selectedGeneMods.filter(geneModId => geneModId !== null).length,
-        geneMods.featuredPickerItem.value,
-      ),
-      branchGroup('psionic', psionic.tiers.value, psionicAbilities.length, psionic.featuredPickerItem.value),
-      branchGroup('officer', officer.tiers.value, officerPerks.length, officer.featuredPickerItem.value),
-    ];
-  });
+  const selectByBranch = new Map<string, (buildId: string, tierIndex: number, abilityId: string | null) => void>([
+    ['class-tree', biosoldierBuildsStore.selectBuildPerk],
+    ['gene-mods', biosoldierBuildsStore.selectBuildGeneMod],
+    ['psionic', biosoldierBuildsStore.selectBuildPsionicAbility],
+    ['officer', biosoldierBuildsStore.selectBuildOfficerPerk],
+  ]);
 
   /**
    * Selects an ability on a tier of the branch, or clears the tier: a perk on a rank, a gene mod of a body part,
-   * a psionic ability on a psi level or an officer perk on an officer rank.
+   * a psionic ability on a psi level or an officer perk on an officer rank. An unknown branch changes nothing.
    *
    * @param branch branch of the tier.
    * @param tierIndex tier index in the branch.
    * @param abilityId selected ability id, or null to clear the tier.
    */
   const select = (branch: string, tierIndex: number, abilityId: string | null) => {
-    const buildId = toValue(build).id;
+    const selectInBranch = selectByBranch.get(branch);
 
-    if (branch === 'gene-mods') {
-      biosoldierBuildsStore.selectBuildGeneMod(buildId, tierIndex, abilityId);
-      return;
-    }
+    if (!selectInBranch) return;
 
-    if (branch === 'psionic') {
-      biosoldierBuildsStore.selectBuildPsionicAbility(buildId, tierIndex, abilityId);
-      return;
-    }
-
-    if (branch === 'officer') {
-      biosoldierBuildsStore.selectBuildOfficerPerk(buildId, tierIndex, abilityId);
-      return;
-    }
-
-    biosoldierBuildsStore.selectBuildPerk(buildId, tierIndex, abilityId);
+    selectInBranch(toValue(build).id, tierIndex, abilityId);
   };
 
-  return { tree: classTree.tree, groups, select };
+  return { tree, groups, select };
 };
 
 /**

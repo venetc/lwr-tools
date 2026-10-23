@@ -23,6 +23,9 @@ export const SNIPER = soldierClassMock('sniper', 'Sniper', 'squadsight');
 export const SOLDIER_ENTITY_MOCK = {
   BIOSOLDIER_CLASSES: [ASSAULT, SNIPER],
   EMPTY_GENE_MODS: [null, null],
+  BODY_PARTS: [],
+  PSI_LEVELS: [],
+  OFFICER_RANKS: [],
   selectBiosoldierBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
     build.perks[index] = id;
   },

@@ -1,17 +1,12 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
+import type { BiosoldierBuildData, BuildBlockReason, OfficerRank, RankState } from '@entities/soldier';
+import { OFFICER_RANKS, officerPerkBlockReason, officerRankState } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
-import { OFFICER_RANK_PICKER_ITEMS } from '../config/constants/officer-rank-picker-items';
-import { OFFICER_RANKS } from '../config/constants/officer-ranks';
-import type { BiosoldierBuildData } from './build';
-import type { BuildBlockReason } from './build-rules';
-import { officerPerkBlockReason } from './build-rules';
-import type { OfficerRank } from './officer-ranks';
-import { officerRankState } from './officer-ranks';
-import type { RankState } from './ranks';
+import { OFFICER_RANK_PICKER_ITEMS } from '../config/constants';
 
 /**
  * Biosoldier build shown in the officer tree: its perks and officer perks with its lock.

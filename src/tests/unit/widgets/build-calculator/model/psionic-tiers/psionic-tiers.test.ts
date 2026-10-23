@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { usePsionicTiers } from '@entities/soldier/model/psionic-tiers';
+import { usePsionicTiers } from '@widgets/build-calculator/model/psionic-tiers';
 
 import {
   ALL_UNAVAILABLE_NOTES,

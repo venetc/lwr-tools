@@ -1,7 +1,7 @@
 import type { AbilityContent } from '@entities/soldier/model/abilities';
-import type { ClassTreeBuild } from '@entities/soldier/model/class-tree-tiers';
 import type { SoldierClass } from '@entities/soldier/model/classes';
 import type { SoldierRankContent } from '@entities/soldier/model/ranks';
+import type { ClassTreeBuild } from '@widgets/build-calculator/model/class-tree-tiers';
 
 export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
   granted: { code: 10, name: 'Granted', description: 'Granted by the class.' },

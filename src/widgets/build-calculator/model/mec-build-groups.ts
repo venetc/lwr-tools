@@ -1,11 +1,11 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { ClassTreeRankTier } from '@entities/soldier';
-import { useClassTreeTiers } from '@entities/soldier';
 import type { TieredPickerGroup } from '@shared/ui/tiered-picker';
 
 import { MEC_TREE_GROUP_ID } from '../config/constants';
+import type { ClassTreeRankTier } from './class-tree-tiers';
+import { useClassTreeTiers } from './class-tree-tiers';
 import type { MecBuild } from './mec-builds';
 import { useMecBuildsStore } from './mec-builds';
 

@@ -94,7 +94,8 @@ const LOADOUT_ITEMS_MOCK: ReadonlyMap<LoadoutItemId, LoadoutCatalogItem> = new M
   ['he-grenade', { kind: 'equipment', item: equipmentMock({ id: 'he-grenade', name: 'Grenade' }) }],
   ['ceramic-plating', { kind: 'equipment', item: equipmentMock({ id: 'ceramic-plating', name: 'Ceramic' }) }],
   ['reaper-ammo', { kind: 'equipment', item: equipmentMock({ id: 'reaper-ammo', name: 'Reaper' }) }],
-  ['the-thumper', { kind: 'equipment', item: equipmentMock({ id: 'the-thumper', name: 'Thumper' }) }],
+  ['the-thumper', { kind: 'equipment', item: equipmentMock({ id: 'the-thumper', name: 'Thumper', units: ['mec'], requiredModule: 'kinetic-strike-module' }) }],
+  ['kinetic-strike-module', { kind: 'equipment', item: equipmentMock({ id: 'kinetic-strike-module', name: 'Kinetic', units: ['mec'], slot: 'module' }) }],
 ]);
 
 /**
@@ -105,6 +106,8 @@ const LOADOUT_ITEMS_MOCK: ReadonlyMap<LoadoutItemId, LoadoutCatalogItem> = new M
 export const findLoadoutItemStub = (id: LoadoutItemId) => LOADOUT_ITEMS_MOCK.get(id) ?? null;
 
 export const ASSAULT: LoadoutWearer = { unit: 'biosoldier', classId: 'assault', hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
+
+export const JAEGER: LoadoutWearer = { unit: 'mec', classId: 'jaeger', hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
 
 /**
  * Fresh biosoldier Loadout with its own slot arrays.
@@ -178,8 +181,24 @@ export const LAUNCHER_ADDED_FIT: LoadoutFit = {
 export const LAUNCHER_ADDED_NOTES = ['Launcher added to Secondary.'];
 
 export const THUMPER_REMOVED_FIT: LoadoutFit = {
-  loadout: createLoadoutMock(),
+  loadout: createLoadoutMock({ modules: [null] }),
   changes: [{ kind: 'removed', slot: 'utility', item: 'the-thumper', reason: 'needs-module' }],
 };
 
-export const THUMPER_REMOVED_NOTES = ['Thumper removed: needs Module.'];
+export const THUMPER_REMOVED_NOTES = ['Thumper removed: needs Kinetic.'];
+
+export const PALADIN_LOADOUT = createLoadoutMock({ armor: 'mec1-paladin', primary: 'minigun', utility: [null, null], modules: [null] });
+
+export const DAUNTLESS_FIT: LoadoutFit = {
+  loadout: createLoadoutMock({ armor: 'hmec3-dauntless', primary: 'minigun', utility: [null, null, null], modules: [null, null, null] }),
+  changes: [],
+};
+
+export const DAUNTLESS_NOTES = ['Module slots: 1 → 3.', 'Utility slots: 2 → 3.'];
+
+export const DEFENDER_FIT: LoadoutFit = {
+  loadout: createLoadoutMock({ armor: 'hmec2-defender', primary: 'minigun', utility: [null, null], modules: [null, null] }),
+  changes: [],
+};
+
+export const DEFENDER_NOTES = ['Module slots: 1 → 2.'];

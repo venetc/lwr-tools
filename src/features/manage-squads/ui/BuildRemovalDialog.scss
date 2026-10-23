@@ -1,0 +1,18 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+.note {
+  @include typography.body-1;
+  margin: 0;
+  color: colors.$text-secondary;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.buttonContent {
+  padding: 6px 12px;
+}

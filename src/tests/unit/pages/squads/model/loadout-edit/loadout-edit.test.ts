@@ -10,8 +10,13 @@ import {
   AURORA_FORMULA,
   AURORA_SOURCES,
   createLoadoutMock,
+  DAUNTLESS_FIT,
+  DAUNTLESS_NOTES,
+  DEFENDER_FIT,
+  DEFENDER_NOTES,
   GRENADE_MOVED_FIT,
   GRENADE_MOVED_NOTES,
+  JAEGER,
   LASER_REPLACED_FIT,
   LASER_REPLACED_NOTES,
   LAUNCHER_ADDED_FIT,
@@ -20,6 +25,7 @@ import {
   LMG_SOURCES,
   ONE_SLOT_FORMULA,
   ONE_SLOT_SOURCES,
+  PALADIN_LOADOUT,
   REAPER_REMOVED_FIT,
   REAPER_REMOVED_NOTES,
   SHRUNK_FIT,
@@ -129,13 +135,29 @@ describe('equipLoadoutItem', () => {
 
     expect(result.notes).toEqual(LAUNCHER_ADDED_NOTES);
   });
+
+  it('tells about the new utility and Module slot counts of an exoskeleton', () => {
+    vi.mocked(fitLoadout).mockReturnValue(DAUNTLESS_FIT);
+
+    const result = equipLoadoutItem(PALADIN_LOADOUT, { kind: 'armor' }, 'hmec3-dauntless', JAEGER);
+
+    expect(result.notes).toEqual(DAUNTLESS_NOTES);
+  });
+
+  it('tells about the new Module slot count alone when the utility slots stay', () => {
+    vi.mocked(fitLoadout).mockReturnValue(DEFENDER_FIT);
+
+    const result = equipLoadoutItem(PALADIN_LOADOUT, { kind: 'armor' }, 'hmec2-defender', JAEGER);
+
+    expect(result.notes).toEqual(DEFENDER_NOTES);
+  });
 });
 
 describe('removeLoadoutItem', () => {
-  it('tells about an item that needed the removed Module', () => {
+  it('tells about an item that needed the removed Module by its name', () => {
     vi.mocked(fitLoadout).mockReturnValue(THUMPER_REMOVED_FIT);
 
-    const result = removeLoadoutItem(createLoadoutMock({ utility: ['the-thumper', null, null] }), { kind: 'module', index: 0 }, ASSAULT);
+    const result = removeLoadoutItem(createLoadoutMock({ utility: ['the-thumper', null, null], modules: ['kinetic-strike-module'] }), { kind: 'module', index: 0 }, JAEGER);
 
     expect(result.notes).toEqual(THUMPER_REMOVED_NOTES);
   });

@@ -3,6 +3,7 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { BIOSOLDIER_CLASSES } from '@entities/soldier';
+import { BuildRemovalDialog, useBuildRemoval } from '@features/manage-squads';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
 import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator, OfficerRankBadge, useBiosoldierBuildsStore } from '@widgets/build-calculator';
@@ -10,6 +11,8 @@ import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator, OfficerRankB
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
 const { builds } = storeToRefs(biosoldierBuildsStore);
+
+const { isDialogOpen, title, note, removeBuild, confirmRemoval } = useBuildRemoval('biosoldier', biosoldierBuildsStore);
 </script>
 
 <template>
@@ -17,13 +20,13 @@ const { builds } = storeToRefs(biosoldierBuildsStore);
     :builds="builds"
     kind="biosoldier"
     @import="biosoldierBuildsStore.importBuild"
-    @remove="biosoldierBuildsStore.removeBuild"
+    @remove="removeBuild"
   >
     <template #build="{ build }">
       <BiosoldierBuildTree
         :build="build"
         removable
-        @remove="biosoldierBuildsStore.removeBuild"
+        @remove="removeBuild"
       />
     </template>
 
@@ -61,6 +64,13 @@ const { builds } = storeToRefs(biosoldierBuildsStore);
       <OfficerRankBadge :build="build" />
     </template>
   </BuildCalculator>
+
+  <BuildRemovalDialog
+    v-model:open="isDialogOpen"
+    :title="title"
+    :note="note"
+    @delete="confirmRemoval"
+  />
 </template>
 
 <style lang="scss" module src="./BiosoldierBuildsPage.scss" />

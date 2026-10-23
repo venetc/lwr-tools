@@ -83,6 +83,9 @@ export const EQUIPPED_LABEL = 'Equipped';
 /** Word before what an item needs: `Needs Kinetic Strike Module`. */
 export const NEEDS_WORD = 'Needs';
 
+/** Word before the Module an item needs, as the toast tells why it was taken off: `The Thumper removed: needs Kinetic Strike Module.` */
+export const CHANGE_NEEDS_WORD = 'needs';
+
 /** Why a Loadout change took an item off, as the toast tells it after the item name: `Reaper Ammo removed: unsupported weapon.` */
 export const CHANGE_REASON_TEXT = {
   'wrong-unit': 'wrong unit',
@@ -124,6 +127,9 @@ export const BUILD_NOT_FOUND_TEXT = 'removed: Build not found';
 
 /** Name of the utility slots in the slot count line and the toast. */
 export const UTILITY_SLOTS_NAME = 'Utility slots';
+
+/** Name of the Module slots of a MEC in the toast. */
+export const MODULE_SLOTS_NAME = 'Module slots';
 
 /** Name of one utility slot in the slot count line. */
 export const UTILITY_SLOT_NAME = 'Utility slot';

@@ -8,7 +8,7 @@ import { useStoredList } from '@shared/lib/stored-list';
 
 import { OPEN_SQUAD_KEY, SQUAD_KEY_PREFIX, SQUAD_ORDER_KEY } from '../config/constants';
 import type { SquadUnit, SquadUnitBuild } from './squad';
-import { createSquad, defaultSquads, nextSquadName } from './squad';
+import { createSquad, defaultSquads, isUnitOfBuild, nextSquadName } from './squad';
 import { parseSquad, serializeSquad } from './squad-record';
 
 /**
@@ -129,6 +129,25 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
   };
 
   /**
+   * Removes the Units of the build with their Loadouts from every Squad, as before the build itself is removed.
+   *
+   * @param build build the Units refer to.
+   */
+  const removeBuildUnits = (build: Readonly<SquadUnitBuild>) => {
+    for (const squad of squadList.items.value) {
+      const unitCount = squad.units.length;
+
+      for (let index = unitCount - 1; index >= 0; index -= 1) {
+        const unit = squad.units[index];
+
+        if (unit && isUnitOfBuild(unit, build)) squad.units.splice(index, 1);
+      }
+
+      if (squad.units.length !== unitCount) squadList.markItemChanged(squad.id);
+    }
+  };
+
+  /**
    * Replaces the Loadout of the Unit.
    *
    * @param squadId Squad id.
@@ -168,6 +187,7 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     removeSquad,
     addUnit,
     removeUnit,
+    removeBuildUnits,
     setUnitLoadout,
     setUnits,
   };

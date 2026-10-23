@@ -46,6 +46,8 @@ export const TACTICAL_VEST_TILE = 'Armor: Tactical Vest';
 
 export const REMOVE_BUILD_LABEL = 'Remove build';
 
+export const DELETE_LABEL = 'Delete';
+
 /** Time the remove button is held, in milliseconds: longer than the hold it needs. */
 export const REMOVE_HOLD_TIME = 700;
 

@@ -50,3 +50,24 @@ export const STORED_SQUAD_SCHEMA = z.object({
   name: z.string(),
   units: z.array(z.unknown()),
 });
+
+/** Word after the number of Units when it is one: `Bravo (1 Unit)`. */
+export const UNIT_WORD = 'Unit';
+
+/** Word after the number of Units when it is not one: `Alpha (2 Units)`. */
+export const UNITS_WORD = 'Units';
+
+/** Word before the build name in the title of the build removal dialog: `Delete «Assault Ace»?` */
+export const DELETE_WORD = 'Delete';
+
+/** Words before the Squads a build stands in, in the build removal dialog: `It is in Squads: Alpha (2 Units), Bravo (1 Unit).` */
+export const BUILD_SQUADS_LEAD = 'It is in Squads:';
+
+/** What the removal of a build with one Unit takes, in the build removal dialog. */
+export const ONE_UNIT_REMOVAL_TEXT = 'This Unit and its Loadout will be removed.';
+
+/** What the removal of a build with several Units takes, after `These 3 Units`, in the build removal dialog. */
+export const UNITS_REMOVAL_TEXT = 'and their Loadouts will be removed.';
+
+/** Word before the number of Units the removal of a build takes: `These 3 Units`. */
+export const UNITS_REMOVAL_LEAD = 'These';

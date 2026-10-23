@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { openBuildPanel, selectAbilities, selectAbility } from '../utils/build-panel';
+import { buildRemovalDialog, openBuildPanel, selectAbilities, selectAbility } from '../utils/build-panel';
 import { loadoutTile, notifications, openBuildDialog, openSquads, seedSquad, squadItem, unitCards } from '../utils/squads';
 import { setTabVisibility } from '../utils/tab-visibility';
 import {
@@ -13,6 +13,7 @@ import {
   CLASS_TREE_TAB,
   CLOSE_NOTE_TITLE,
   COUNTERCHARGE,
+  DELETE_LABEL,
   GENE_MODS_TAB,
   IRON_SKIN,
   LOST_UNIT,
@@ -250,6 +251,7 @@ test.describe('Unit check after a Build edit', () => {
     const otherPage = await page.context().newPage();
     const otherPanel = await openBuildPanel(otherPage, BIOSOLDIER_PATH, SNIPER);
     await otherPanel.getByRole('button', { name: REMOVE_BUILD_LABEL }).click({ delay: REMOVE_HOLD_TIME });
+    await buildRemovalDialog(otherPage, SNIPER).getByRole('button', { name: DELETE_LABEL, exact: true }).click();
     await setTabVisibility(otherPage, 'hidden');
     await unitCards(page, SNIPER).waitFor({ state: 'detached' });
 

@@ -1,10 +1,12 @@
-import type { Loadout, LoadoutChange, LoadoutItemId, LoadoutSlot, LoadoutWearer } from '@entities/loadout';
+import type { Loadout, LoadoutChange, LoadoutItemId, LoadoutRemoval, LoadoutSlot, LoadoutWearer } from '@entities/loadout';
 import { findLoadoutItem, fitLoadout, setSlotItem, utilitySlotSources } from '@entities/loadout';
 
 import {
+  CHANGE_NEEDS_WORD,
   CHANGE_REASON_TEXT,
   CHANGE_WORD,
   MAX_WORD,
+  MODULE_SLOTS_NAME,
   SECONDARY_SLOT_CAPTION,
   TACTICAL_RIGGING_NAME,
   UTILITY_SLOT_CAPTION,
@@ -32,7 +34,21 @@ export interface LoadoutEdit {
 const loadoutItemName = (id: LoadoutItemId) => findLoadoutItem(id)?.item.name ?? '';
 
 /**
- * Sentence about one change of `fitLoadout`: `Ceramic Plating moved to Utility.`, `Reaper Ammo removed: unsupported weapon.`
+ * Why a change took an item off, as the toast tells it: the Module the item needs is named.
+ *
+ * @param change removed item.
+ */
+const removalReasonText = (change: LoadoutRemoval) => {
+  const found = change.reason === 'needs-module' ? findLoadoutItem(change.item) : null;
+
+  if (found?.kind === 'equipment' && found.item.requiredModule) return `${CHANGE_NEEDS_WORD} ${loadoutItemName(found.item.requiredModule)}`;
+
+  return CHANGE_REASON_TEXT[change.reason];
+};
+
+/**
+ * Sentence about one change of `fitLoadout`: `Ceramic Plating moved to Utility.`, `Reaper Ammo removed: unsupported weapon.`,
+ * `The Thumper removed: needs Kinetic Strike Module.`
  *
  * @param change moved, removed, replaced or added item.
  */
@@ -45,12 +61,22 @@ export const changeNote = (change: LoadoutChange) => {
 
   if (change.kind === 'replaced') return `${name} ${CHANGE_WORD.replaced} ${loadoutItemName(change.by)}: ${CHANGE_REASON_TEXT[change.reason]}.`;
 
-  return `${name} ${CHANGE_WORD.removed}: ${CHANGE_REASON_TEXT[change.reason]}.`;
+  return `${name} ${CHANGE_WORD.removed}: ${removalReasonText(change)}.`;
 };
 
 /**
- * Brings a changed Loadout to the rules with `fitLoadout`: a new armor, SHIV type or primary weapon counts the slots
- * again, and a removed Module takes off the items that need it.
+ * Sentence about a new number of slots: `Utility slots: 3 → 2.`
+ *
+ * @param name name of the slots.
+ * @param before number of the slots before the change.
+ * @param after number of the slots after the change.
+ * @returns the sentence; null if the number stayed.
+ */
+const slotCountNote = (name: string, before: number, after: number) => (before === after ? null : `${name}: ${before} → ${after}.`);
+
+/**
+ * Brings a changed Loadout to the rules with `fitLoadout`: a new armor, MEC exoskeleton, SHIV type or primary weapon
+ * counts the Module and utility slots again, in INVENTORY order, and a removed Module takes off the items that need it.
  *
  * @param before Loadout before the change.
  * @param changed Loadout after the change.
@@ -58,13 +84,12 @@ export const changeNote = (change: LoadoutChange) => {
  */
 const fitEdit = (before: Loadout, changed: Loadout, wearer: LoadoutWearer): LoadoutEdit => {
   const fit = fitLoadout(changed, wearer);
-  const notes = fit.changes.map(changeNote);
-  const beforeCount = before.utility.length;
-  const afterCount = fit.loadout.utility.length;
+  const countNotes = [
+    slotCountNote(MODULE_SLOTS_NAME, before.modules.length, fit.loadout.modules.length),
+    slotCountNote(UTILITY_SLOTS_NAME, before.utility.length, fit.loadout.utility.length),
+  ].filter(note => note !== null);
 
-  if (beforeCount !== afterCount) notes.unshift(`${UTILITY_SLOTS_NAME}: ${beforeCount} → ${afterCount}.`);
-
-  return { loadout: fit.loadout, notes };
+  return { loadout: fit.loadout, notes: [...countNotes, ...fit.changes.map(changeNote)] };
 };
 
 /**

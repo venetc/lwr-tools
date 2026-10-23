@@ -26,3 +26,5 @@ export const GONE_OPEN_SQUAD_STORAGE = {
 };
 
 export const EMPTY_SQUAD_1 = { id: expect.any(String), name: 'Squad 1', units: [] };
+
+export const OTHER_KIND_BUILD = { kind: 'mec', id: 'build-1' } as const;

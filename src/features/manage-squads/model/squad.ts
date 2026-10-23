@@ -37,6 +37,16 @@ export interface Squad {
 }
 
 /**
+ * Checks whether the Unit refers to the build.
+ *
+ * @param unit Unit of a Squad.
+ * @param build build to compare with.
+ */
+export const isUnitOfBuild = (unit: Readonly<SquadUnit>, build: Readonly<SquadUnitBuild>) => (
+  unit.build.kind === build.kind && unit.build.id === build.id
+);
+
+/**
  * New empty Squad.
  *
  * @param id Squad id.

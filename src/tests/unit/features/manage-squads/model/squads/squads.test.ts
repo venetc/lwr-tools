@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSquadsStore } from '@features/manage-squads/model/squads';
 
 import { changeInOtherTab, SAVE_DELAY, stubPage } from '../../../../shared/lib/stored-list/stored-list/stored-list.mock';
-import { BUILD, CHECKED_UNITS, EMPTY_SQUAD_1, GONE_OPEN_SQUAD_STORAGE, SQUAD_KEY_PREFIX, UNIT_LOADOUT } from './squads.mock';
+import { BUILD, CHECKED_UNITS, EMPTY_SQUAD_1, GONE_OPEN_SQUAD_STORAGE, OTHER_KIND_BUILD, SQUAD_KEY_PREFIX, UNIT_LOADOUT } from './squads.mock';
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -46,6 +46,48 @@ describe('setUnits', () => {
     store.setUnits('missing-squad', CHECKED_UNITS);
 
     expect(store.squads[0]?.units).toEqual([]);
+  });
+});
+
+describe('removeBuildUnits', () => {
+  it('removes the Units of the build from every Squad', () => {
+    stubPage();
+    const store = useSquadsStore();
+    store.addUnit(store.squads[0]?.id ?? '', BUILD, UNIT_LOADOUT);
+    store.addSquad();
+    store.addUnit(store.squads[1]?.id ?? '', BUILD, UNIT_LOADOUT);
+    store.addUnit(store.squads[1]?.id ?? '', BUILD, UNIT_LOADOUT);
+
+    store.removeBuildUnits(BUILD);
+
+    expect(store.squads.map(squad => squad.units.length)).toEqual([0, 0]);
+  });
+
+  it('keeps the Units of a build of another kind with the same id', () => {
+    stubPage();
+    const store = useSquadsStore();
+    const squadId = store.squads[0]?.id ?? '';
+    store.addUnit(squadId, BUILD, UNIT_LOADOUT);
+    store.addUnit(squadId, OTHER_KIND_BUILD, UNIT_LOADOUT);
+
+    store.removeBuildUnits(BUILD);
+
+    expect(store.squads[0]?.units.map(unit => unit.build)).toEqual([OTHER_KIND_BUILD]);
+  });
+
+  it('stores the Squads without the Units', () => {
+    stubPage();
+    const store = useSquadsStore();
+    const squadId = store.squads[0]?.id ?? '';
+    store.addUnit(squadId, BUILD, UNIT_LOADOUT);
+    vi.advanceTimersByTime(SAVE_DELAY);
+    store.removeBuildUnits(BUILD);
+    vi.advanceTimersByTime(SAVE_DELAY);
+    setActivePinia(createPinia());
+
+    const nextStore = useSquadsStore();
+
+    expect(nextStore.squads[0]?.units).toEqual([]);
   });
 });
 

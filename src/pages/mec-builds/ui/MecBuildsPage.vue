@@ -3,6 +3,7 @@ import { Plus } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 
 import { MEC_CLASSES } from '@entities/soldier';
+import { BuildRemovalDialog, useBuildRemoval } from '@features/manage-squads';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
 import { BuildCalculator, MecBuildTree, useMecBuildsStore } from '@widgets/build-calculator';
@@ -10,6 +11,8 @@ import { BuildCalculator, MecBuildTree, useMecBuildsStore } from '@widgets/build
 const mecBuildsStore = useMecBuildsStore();
 
 const { builds } = storeToRefs(mecBuildsStore);
+
+const { isDialogOpen, title, note, removeBuild, confirmRemoval } = useBuildRemoval('mec', mecBuildsStore);
 </script>
 
 <template>
@@ -17,13 +20,13 @@ const { builds } = storeToRefs(mecBuildsStore);
     :builds="builds"
     kind="mec"
     @import="mecBuildsStore.importBuild"
-    @remove="mecBuildsStore.removeBuild"
+    @remove="removeBuild"
   >
     <template #build="{ build }">
       <MecBuildTree
         :build="build"
         removable
-        @remove="mecBuildsStore.removeBuild"
+        @remove="removeBuild"
       />
     </template>
 
@@ -57,6 +60,13 @@ const { builds } = storeToRefs(mecBuildsStore);
       <component :is="build.soldierClass.icon" :class="$style.navIcon" />
     </template>
   </BuildCalculator>
+
+  <BuildRemovalDialog
+    v-model:open="isDialogOpen"
+    :title="title"
+    :note="note"
+    @delete="confirmRemoval"
+  />
 </template>
 
 <style lang="scss" module src="./MecBuildsPage.scss" />

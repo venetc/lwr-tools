@@ -71,3 +71,18 @@ export const selectAbilities = async (panel: Locator, tabName: RegExp, abilityNa
  * @param panel build panel.
  */
 export const description = (panel: Locator) => panel.locator('[aria-live="polite"]');
+
+/**
+ * Removes the build of the panel by holding its trash button.
+ *
+ * @param panel build panel.
+ */
+export const removeBuild = (panel: Locator) => panel.getByRole('button', { name: 'Remove build', exact: true }).click({ delay: 700 });
+
+/**
+ * Dialog that asks whether to delete a build standing in Squads.
+ *
+ * @param page browser page.
+ * @param buildName build name.
+ */
+export const buildRemovalDialog = (page: Page, buildName: string) => page.getByRole('dialog', { name: `Delete «${buildName}»?` });

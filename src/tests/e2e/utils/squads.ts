@@ -154,19 +154,43 @@ export interface SeededUnit {
 }
 
 /**
+ * Stored Squad for seeding the Squad list.
+ */
+export interface SeededSquad {
+  /** Squad id. */
+  id: string
+  /** Squad name. */
+  name: string
+  /** Units of the Squad. */
+  units: SeededUnit[]
+}
+
+/**
+ * Saves the Squads before the first page load, the first one open; later loads of the tab keep what the page saved.
+ *
+ * @param page browser page.
+ * @param squads Squads in list order.
+ */
+export const seedSquads = (page: Page, squads: SeededSquad[]) => page.addInitScript((seededSquads) => {
+  if (sessionStorage.getItem('seeded')) return;
+
+  localStorage.setItem('lwr-tools.squads.v1.order', JSON.stringify(seededSquads.map(squad => squad.id)));
+
+  for (const squad of seededSquads) {
+    localStorage.setItem(`lwr-tools.squads.v1.squad.${squad.id}`, JSON.stringify({ name: squad.name, units: squad.units }));
+  }
+
+  localStorage.setItem('lwr-tools.squads.v1.open', seededSquads[0]?.id ?? '');
+  sessionStorage.setItem('seeded', 'true');
+}, squads);
+
+/**
  * Saves a Squad with the Units before the first page load, as the only and open Squad.
  *
  * @param page browser page.
  * @param units Units of the Squad.
  */
-export const seedSquad = (page: Page, units: SeededUnit[]) => page.addInitScript((seededUnits) => {
-  if (sessionStorage.getItem('seeded')) return;
-
-  localStorage.setItem('lwr-tools.squads.v1.order', JSON.stringify(['seeded']));
-  localStorage.setItem('lwr-tools.squads.v1.squad.seeded', JSON.stringify({ name: 'Seeded', units: seededUnits }));
-  localStorage.setItem('lwr-tools.squads.v1.open', 'seeded');
-  sessionStorage.setItem('seeded', 'true');
-}, units);
+export const seedSquad = (page: Page, units: SeededUnit[]) => seedSquads(page, [{ id: 'seeded', name: 'Seeded', units }]);
 
 /**
  * Notifications region of the page.

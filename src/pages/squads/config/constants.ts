@@ -60,8 +60,14 @@ export const ADD_UNIT_TAB = {
 /** Tabs of the Add Unit dialog in order. */
 export const ADD_UNIT_TABS = [ADD_UNIT_TAB.saved, ADD_UNIT_TAB.new, ADD_UNIT_TAB.code] as const satisfies readonly TabsItem[];
 
-/** Error of a Share code the Add Unit dialog cannot read. */
-export const INVALID_UNIT_CODE_TEXT = 'Invalid code. Copy the Share code again and paste it whole.';
+/** Error of a Share code the Add Unit dialog or the Squad import cannot read. */
+export const INVALID_SHARE_CODE_TEXT = 'Invalid code. Copy the Share code again and paste it whole.';
+
+/** Message of a Squad code entered in the Add Unit dialog. */
+export const SQUAD_CODE_IN_ADD_UNIT_TEXT = 'This is a Squad code. Use Import in the toolbar.';
+
+/** Message of a Unit code or a build code entered in the Squad import. */
+export const UNIT_CODE_IN_SQUAD_IMPORT_TEXT = 'This is a Unit code. Add it through an empty cell.';
 
 /** Default builds of the New build tab by Build calculator, in unit type order. */
 export const NEW_BUILD_GROUPS: DeepReadonly<NewBuildGroup[]> = LOADOUT_UNITS.map(newBuildGroup);

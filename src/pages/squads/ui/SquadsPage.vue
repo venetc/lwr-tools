@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Plus } from '@lucide/vue';
+import { Plus, Share2 } from '@lucide/vue';
 
 import { SQUAD_NAME } from '@features/manage-squads';
 import { Button } from '@shared/ui/button';
@@ -8,10 +8,12 @@ import { ListNav } from '@shared/ui/list-nav';
 import { PageToolbar } from '@shared/ui/page-toolbar';
 
 import { useBuildEditCheck } from '../model/build-edit-check';
+import { useSquadCodeCopy } from '../model/squad-code-copy';
 import { useSquadsPage } from '../model/squads-page';
 import { useUnitCards } from '../model/unit-cards';
 import { useUnitCodeCopy } from '../model/unit-code-copy';
 import AddUnitDialog from './AddUnitDialog.vue';
+import SquadImportDialog from './SquadImportDialog.vue';
 import UnitCard from './UnitCard.vue';
 
 const { openSquad, name, summary, navItems, switchSquad, addSquad, removeSquad } = useSquadsPage();
@@ -21,6 +23,8 @@ const { unitCards, removeUnit } = useUnitCards();
 const { showCloseNote, checkClosedBuild } = useBuildEditCheck(unitCards);
 
 const { copyUnitCode } = useUnitCodeCopy();
+
+const { copySquadCode } = useSquadCodeCopy(unitCards);
 </script>
 
 <template>
@@ -35,6 +39,12 @@ const { copyUnitCode } = useUnitCodeCopy();
         <p :class="$style.summary">
           {{ summary }}
         </p>
+        <Button title="Copy Share code of the Squad" @click="copySquadCode">
+          <span :class="$style.shareContent">
+            <Share2 :class="$style.shareIcon" aria-hidden="true" />
+            Share code
+          </span>
+        </Button>
       </header>
 
       <div :class="$style.units">
@@ -60,6 +70,8 @@ const { copyUnitCode } = useUnitCodeCopy();
             New Squad
           </span>
         </Button>
+
+        <SquadImportDialog />
       </template>
 
       <ListNav

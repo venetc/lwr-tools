@@ -5,11 +5,11 @@ import { createId } from '@shared/lib/id';
 import { useToastQueue } from '@shared/ui/toast';
 
 import type { BuildCodeKind, BuildDataByKind } from './build-codecs';
-import { BUILD_CODECS } from './build-codecs';
+import { decodeBuildImport } from './build-import';
 
 /**
  * Share code import form: open state, entered code and its validity; a valid code is passed on and closes the form,
- * a code of another unit is reported with a toast and stays in the open form. The error is linked to the field while shown.
+ * a code of another unit or a Squad code is reported with a toast and stays in the open form. The error is linked to the field while shown.
  *
  * @param kind kind of build code the form accepts.
  * @param onImport receives the build of a valid code.
@@ -52,11 +52,11 @@ export const useShareCodeImport = <Kind extends BuildCodeKind>(
   };
 
   /**
-   * Decodes the entered code: marks an invalid code, reports a code of another unit,
+   * Decodes the entered code: marks an invalid code, reports a code of another unit or a Squad code,
    * otherwise passes the build on and closes the form.
    */
   const submit = () => {
-    const result = BUILD_CODECS[toValue(kind)].decode(code.value);
+    const result = decodeBuildImport(toValue(kind), code.value);
 
     if (result.status === 'invalid') {
       isInvalid.value = true;
@@ -66,6 +66,12 @@ export const useShareCodeImport = <Kind extends BuildCodeKind>(
 
     if (result.status === 'other-unit') {
       showToast({ title: `This is a ${result.unit} build code`, description: `Import it in the ${result.unit} Build calculator.` });
+
+      return;
+    }
+
+    if (result.status === 'squad-code') {
+      showToast({ title: 'This is a Squad code', description: 'Import it in the Squad planner.' });
 
       return;
     }

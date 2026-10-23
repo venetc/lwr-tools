@@ -322,3 +322,20 @@ export const importUnitCode = async (page: Page, code: string) => {
 
   return dialog;
 };
+
+/**
+ * Imports a Share code through the Import dialog of the toolbar and returns the dialog.
+ *
+ * @param page browser page.
+ * @param code Share code of a Squad.
+ */
+export const importSquadCode = async (page: Page, code: string) => {
+  await page.getByRole('main').getByRole('button', { name: 'Import', exact: true }).click();
+
+  const dialog = page.getByRole('dialog', { name: 'Import Squad' });
+
+  await dialog.getByRole('textbox', { name: 'Share code' }).fill(code);
+  await dialog.getByRole('button', { name: 'Import', exact: true }).click();
+
+  return dialog;
+};

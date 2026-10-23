@@ -9,7 +9,7 @@ import { Label } from '@shared/ui/label';
 import { Tabs } from '@shared/ui/tabs';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
-import { ADD_UNIT_TABS, INVALID_UNIT_CODE_TEXT, NEW_BUILD_GROUPS } from '../config/constants';
+import { ADD_UNIT_TABS, NEW_BUILD_GROUPS } from '../config/constants';
 import { useAddUnit } from '../model/add-unit';
 import UnitBuildIcon from './UnitBuildIcon.vue';
 import UnitOfficerRankBadge from './UnitOfficerRankBadge.vue';
@@ -23,6 +23,7 @@ const {
   groups,
   emptyNote,
   code,
+  codeError,
   isCodeInvalid,
   codeErrorId,
   codeErrorDescribedBy,
@@ -179,12 +180,12 @@ const codeInputId = createId();
           </div>
 
           <p
-            v-if="isCodeInvalid"
+            v-if="codeError"
             :id="codeErrorId"
             :class="$style.error"
             role="alert"
           >
-            {{ INVALID_UNIT_CODE_TEXT }}
+            {{ codeError }}
           </p>
 
           <output

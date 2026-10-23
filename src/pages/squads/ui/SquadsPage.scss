@@ -56,3 +56,16 @@ $grid-gap: 24px;
   width: 14px;
   height: 14px;
 }
+
+.shareContent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+}
+
+.shareIcon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}

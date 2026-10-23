@@ -182,6 +182,7 @@ export const useAddUnit = () => {
     groups,
     emptyNote,
     code: codeField.code,
+    codeError: codeField.error,
     isCodeInvalid: codeField.isInvalid,
     codeErrorId: codeField.errorId,
     codeErrorDescribedBy: codeField.errorDescribedBy,

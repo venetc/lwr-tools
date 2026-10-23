@@ -10,6 +10,8 @@ SHIV build codes share the layout and rules: [SHIV build codes](shiv-share-codes
 
 A Unit code is the build code of its format plus sections: see [Unit codes](#unit-codes).
 
+A whole Squad is a chain of Unit codes behind a Squad header: [Squad codes](squad-share-codes.en.md).
+
 ## Structure
 
 ```
@@ -28,6 +30,8 @@ A decoder returns `{ status: 'decoded', build }`, or why it failed:
 - `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
 - `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, an unknown code, a class of another format, or a Build that breaks a Build rule. The rules: each perk on its own rank of the class tree, ranks, Psi levels and Officer ranks in order without gaps, each Gene mod in its own Body part (in `GENE_MODS` Body parts go Brain to Legs, each once), Neural Damping against Psionic abilities, each Officer rank only once the class tree completes its required Rank. The import shows "Invalid code" under the field.
 
+The import of a Build calculator decodes with `decodeBuildImport`: a code its build decoder finds invalid but that is a valid Squad code gives `{ status: 'squad-code' }`, and the import shows a toast "This is a Squad code. Import it in the Squad planner." and keeps the form open.
+
 A code opens only with a Build the Build calculator can assemble, and every Build it assembles encodes.
 
 A stored build whose code does not decode is skipped on loading.
@@ -36,7 +40,7 @@ Code:
 
 - `entities/soldier` — Build ↔ codes: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. The entity turns a Build into stable codes and back and gives null for an unknown code, a class of another kind or a Build that breaks a Build rule. From codes it assembles the Build from the Default build step by step with the mutators of the Build calculator; a Build is encoded only if the same pass assembles it.
 - `shared/lib/binary-code` — header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`.
-- `features/share-build` — bits only: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format, the `NAME` section, `BuildCodeLayout` — the format, the sections of a build and reading them back — and `buildCodec`, which turns a layout into the encoder and decoder), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList` and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildLayout` builds the layout of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`: `BIOSOLDIER_BUILD_LAYOUT` is format 1 with the Gene mods, Psionic abilities and Officer perks extension, `MEC_BUILD_LAYOUT` format 3 without one; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` and `encodeMecBuild` / `decodeMecBuild` are `buildCodec` over them), `model/unit-code.ts` (Unit codes), `model/build-codecs.ts` (the codecs and layouts by kind of build), `model/stored-build.ts` (stored build records over a share code). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+- `features/share-build` — bits only: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format, the `NAME` section, `BuildCodeLayout` — the format, the sections of a build and reading them back — and `buildCodec`, which turns a layout into the encoder and decoder), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList` and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildLayout` builds the layout of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`: `BIOSOLDIER_BUILD_LAYOUT` is format 1 with the Gene mods, Psionic abilities and Officer perks extension, `MEC_BUILD_LAYOUT` format 3 without one; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` and `encodeMecBuild` / `decodeMecBuild` are `buildCodec` over them), `model/unit-code.ts` (Unit codes), `model/squad-code.ts` (Squad codes), `model/build-import.ts` (the decoder of a Build calculator import), `model/build-codecs.ts` (the codecs and layouts by kind of build), `model/stored-build.ts` (stored build records over a share code). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 

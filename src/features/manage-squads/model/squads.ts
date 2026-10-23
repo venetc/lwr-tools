@@ -53,6 +53,21 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
   };
 
   /**
+   * Adds a Squad of the Units with the name, which may repeat the name of another Squad, last in the list and opens it;
+   * a blank name becomes `Squad N` with the smallest free number.
+   *
+   * @param name Squad name.
+   * @param units builds and Loadouts of the Units in Squad order; each Unit gets its own id and takes its Loadout over.
+   */
+  const importSquad = (name: string, units: readonly Pick<SquadUnit, 'build' | 'loadout'>[]) => {
+    const squad = createSquad(createId(), name.trim() ? name : nextSquadName(squadList.items.value.map(item => item.name)));
+
+    squad.units.push(...units.map(unit => ({ id: createId(), build: { kind: unit.build.kind, id: unit.build.id }, loadout: unit.loadout })));
+    squadList.addItem(squad);
+    switchSquad(squad.id);
+  };
+
+  /**
    * Renames the Squad.
    *
    * @param squadId Squad id.
@@ -183,6 +198,7 @@ export const useSquadsStore = defineStore('manage-squads-squads', () => {
     openSquad,
     switchSquad,
     addSquad,
+    importSquad,
     renameSquad,
     removeSquad,
     addUnit,

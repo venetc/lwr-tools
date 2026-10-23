@@ -1,9 +1,10 @@
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
 import type { DecodedUnit } from '@features/share-build';
-import { decodeUnit } from '@features/share-build';
-import { createId } from '@shared/lib/id';
+import { decodeSquad, decodeUnit } from '@features/share-build';
 
+import { INVALID_SHARE_CODE_TEXT, SQUAD_CODE_IN_ADD_UNIT_TEXT } from '../config/constants';
+import { useShareCodeField } from './share-code-field';
 import type { SquadBuildData } from './squad-build';
 import { squadBuildCaption } from './squad-build';
 
@@ -20,17 +21,12 @@ export interface UnitCodePreview {
 }
 
 /**
- * Share code field of the Add Unit dialog: the entered code, the preview of its Unit and the error of an invalid code,
- * linked to the field while shown. A Build code and a Unit code of any kind are accepted.
+ * Share code field of the Add Unit dialog: the entered code, the preview of its Unit and the message of a code it does
+ * not take, linked to the field while shown. A Build code and a Unit code of any kind are accepted; a Squad code is sent
+ * to the Import of the toolbar.
  */
 export const useUnitCodeField = () => {
-  const code = ref('');
-
-  const isInvalid = ref(false);
-
-  const errorId = createId();
-
-  const errorDescribedBy = computed(() => (isInvalid.value ? errorId : null));
+  const { code, error, isInvalid, errorId, errorDescribedBy, showError, clearError, reset } = useShareCodeField();
 
   const preview = computed((): UnitCodePreview | null => {
     const result = decodeUnit(code.value);
@@ -41,34 +37,20 @@ export const useUnitCodeField = () => {
   });
 
   /**
-   * Hides the error once the code is edited.
-   */
-  const clearError = () => {
-    isInvalid.value = false;
-  };
-
-  /**
-   * Clears the code and the error.
-   */
-  const reset = () => {
-    code.value = '';
-    clearError();
-  };
-
-  /**
-   * Unit of the entered code, decoded afresh so that its build can be handed over; an invalid code shows the error.
+   * Unit of the entered code, decoded afresh so that its build can be handed over; a Squad code and any other invalid
+   * code show their messages.
    *
-   * @returns the Unit; null for an invalid code.
+   * @returns the Unit; null for a Squad code or an invalid code.
    */
   const readUnit = (): DecodedUnit | null => {
     const result = decodeUnit(code.value);
 
     if (result.status === 'decoded') return result.unit;
 
-    isInvalid.value = true;
+    showError(decodeSquad(code.value).status === 'decoded' ? SQUAD_CODE_IN_ADD_UNIT_TEXT : INVALID_SHARE_CODE_TEXT);
 
     return null;
   };
 
-  return { code, isInvalid, errorId, errorDescribedBy, preview, clearError, reset, readUnit };
+  return { code, error, isInvalid, errorId, errorDescribedBy, preview, clearError, reset, readUnit };
 };

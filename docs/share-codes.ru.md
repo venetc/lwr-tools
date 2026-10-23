@@ -10,6 +10,8 @@
 
 Код Unit — код Build своего формата плюс секции: см. [Коды Unit](#коды-unit).
 
+Весь Squad — цепочка кодов Unit за заголовком Squad: [коды Squad](squad-share-codes.ru.md).
+
 ## Устройство
 
 ```
@@ -28,6 +30,8 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - `{ status: 'other-unit', unit }` — CRC и заголовок валидны, но `format` принадлежит билдам другого юнита (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). Импорт показывает toast «This is a <unit> build code» и оставляет форму открытой с кодом.
 - `{ status: 'invalid' }` — всё остальное: битый код, неизвестный формат, отсутствующая или битая секция, неизвестный код, класс другого формата или Build, нарушающий Build rule. Правила: каждый перк на своём ранге дерева класса, ранги, Psi levels и Officer ranks по порядку без пропусков, каждый Gene mod в своей Body part (в `GENE_MODS` Body parts идут от Brain к Legs, каждая один раз), Neural Damping против Psionic abilities, Officer rank — только когда дерево класса завершает его нужный Rank. Импорт показывает «Invalid code» под полем.
 
+Импорт калькулятора декодирует через `decodeBuildImport`: код, невалидный для декодера билда, но валидный код Squad, даёт `{ status: 'squad-code' }`, и импорт показывает тост «This is a Squad code. Import it in the Squad planner.» и оставляет форму открытой.
+
 Код открывается, только если такой Build можно собрать в калькуляторе, и любой собранный в калькуляторе Build кодируется.
 
 Сохранённый билд, чей код не декодируется, при загрузке пропускается.
@@ -36,7 +40,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 - `entities/soldier` — Build ↔ коды: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. Entity переводит Build в стабильные коды и обратно и отдаёт null на неизвестный код, класс другого вида или Build, нарушающий Build rule. Из кодов она собирает Build от Default build по шагам мутаторами калькулятора; Build кодируется, только если его собирает тот же проход.
 - `shared/lib/binary-code` — заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`.
-- `features/share-build` — только биты: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата, секция `NAME`, `BuildCodeLayout` — формат, секции билда и их чтение — и `buildCodec`, который делает из раскладки кодер и декодер), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` и `encodeMecBuild` / `decodeMecBuild` — `buildCodec` поверх них), `model/unit-code.ts` (коды Unit), `model/build-codecs.ts` (кодеки и раскладки по видам билдов), `model/stored-build.ts` (записи хранилища поверх share-кода). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
+- `features/share-build` — только биты: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата, секция `NAME`, `BuildCodeLayout` — формат, секции билда и их чтение — и `buildCodec`, который делает из раскладки кодер и декодер), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` и `encodeMecBuild` / `decodeMecBuild` — `buildCodec` поверх них), `model/unit-code.ts` (коды Unit), `model/squad-code.ts` (коды Squad), `model/build-import.ts` (декодер импорта калькулятора), `model/build-codecs.ts` (кодеки и раскладки по видам билдов), `model/stored-build.ts` (записи хранилища поверх share-кода). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 

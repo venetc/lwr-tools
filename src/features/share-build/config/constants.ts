@@ -10,6 +10,7 @@ export const SHARE_CODE_FORMAT = {
   BIOSOLDIER_BUILD: 1,
   SHIV_BUILD: 2,
   MEC_BUILD: 3,
+  SQUAD: 4,
 } as const;
 
 /** Unit whose builds each format carries, by format number; a code of a listed format is reported as another unit's. */
@@ -89,6 +90,17 @@ export const MODULE_COUNT_BITS = 2;
 
 /** Item code of an empty slot in the `LOADOUT` section. */
 export const EMPTY_ITEM_CODE = 0;
+
+/**
+ * Section ids of the Squad header, the first part of a Squad code. A new section gets the next id; ids are never
+ * changed or reused.
+ */
+export const SQUAD_SECTION = {
+  NAME: 1,
+} as const;
+
+/** Separator of the parts of a Squad code: the Squad header, then a Unit code per Unit; base64url has no dot. */
+export const SQUAD_CODE_SEPARATOR = '.';
 
 /** Result of a broken share code: a build code or a Unit code. */
 export const INVALID_SHARE_CODE = { status: 'invalid' } as const satisfies ShareCodeFailure;

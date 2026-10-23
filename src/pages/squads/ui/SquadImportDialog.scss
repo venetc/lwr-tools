@@ -1,0 +1,48 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+.triggerContent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+}
+
+.triggerIcon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.note {
+  @include typography.body-2;
+  margin: 0;
+  color: colors.$text-tertiary;
+}
+
+.label {
+  @include typography.caption;
+  color: colors.$text-secondary;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.submitContent {
+  padding: 6px 12px;
+}
+
+.error {
+  @include typography.caption;
+  margin: 0;
+  color: colors.$danger;
+}

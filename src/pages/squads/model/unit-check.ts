@@ -50,11 +50,23 @@ export interface SquadCheck {
 }
 
 /**
+ * What the Unit check changed in one Unit, with the Build that groups it on a toast line.
+ */
+export interface UnitChanges {
+  /** Key of the Build of the Unit: Units of one Build share a line. */
+  buildKey: string
+  /** Build name. */
+  buildName: string
+  /** Items the check moved, removed, replaced or added. */
+  changes: readonly LoadoutChange[]
+}
+
+/**
  * Changed Units of one Build, as a line of the Unit check toast tells them.
  */
 interface BuildChanges {
-  /** Build of the Units. */
-  squadBuild: SquadBuild
+  /** Build name. */
+  buildName: string
   /** Number of the Units of the Build the check changed. */
   unitCount: number
   /** Sentences about the changes, without repeats, in the order they first appear. */
@@ -152,7 +164,30 @@ const unitCountText = (count: number) => `${count} ${count === 1 ? UNIT_WORD : U
 const buildChangesLine = (buildChanges: BuildChanges) => {
   const count = buildChanges.unitCount > 1 ? ` (${unitCountText(buildChanges.unitCount)})` : '';
 
-  return `${buildChanges.squadBuild.build.name}${count}${UNIT_CHECK_BUILD_SEPARATOR}${[...buildChanges.notes].join(' ')}`;
+  return `${buildChanges.buildName}${count}${UNIT_CHECK_BUILD_SEPARATOR}${[...buildChanges.notes].join(' ')}`;
+};
+
+/**
+ * Lines of a toast about the Unit check by Build: a line on each Build with changed Units, in the order the Builds
+ * first appear.
+ *
+ * @param units what the check changed in each Unit, in Squad order.
+ * @returns toast lines by Build key; a Build whose Units the check left as they were has no line.
+ */
+export const buildChangeLines = (units: readonly UnitChanges[]): ReadonlyMap<string, string> => {
+  const changesByBuild = units.reduce((acc, unit) => {
+    if (!unit.changes.length) return acc;
+
+    const buildChanges = acc.get(unit.buildKey) ?? { buildName: unit.buildName, unitCount: 0, notes: new Set<string>() };
+
+    buildChanges.unitCount += 1;
+    unit.changes.forEach(change => buildChanges.notes.add(changeNote(change)));
+    acc.set(unit.buildKey, buildChanges);
+
+    return acc;
+  }, new Map<string, BuildChanges>());
+
+  return [...changesByBuild].reduce((acc, [key, buildChanges]) => acc.set(key, buildChangesLine(buildChanges)), new Map<string, string>());
 };
 
 /**
@@ -162,22 +197,11 @@ const buildChangesLine = (buildChanges: BuildChanges) => {
  * @param check Units of the Squad after the Unit check.
  * @returns toast lines by `squadBuildKey`; a Build whose Units the check left as they were has no line.
  */
-export const unitCheckBuildLines = (check: SquadCheck): ReadonlyMap<string, string> => {
-  const changesByBuild = check.units.reduce((acc, checked) => {
-    if (!checked.changes.length) return acc;
-
-    const key = squadBuildKey(checked.unit.build);
-    const buildChanges = acc.get(key) ?? { squadBuild: checked.squadBuild, unitCount: 0, notes: new Set<string>() };
-
-    buildChanges.unitCount += 1;
-    checked.changes.forEach(change => buildChanges.notes.add(changeNote(change)));
-    acc.set(key, buildChanges);
-
-    return acc;
-  }, new Map<string, BuildChanges>());
-
-  return [...changesByBuild].reduce((acc, [key, buildChanges]) => acc.set(key, buildChangesLine(buildChanges)), new Map<string, string>());
-};
+export const unitCheckBuildLines = (check: SquadCheck) => buildChangeLines(check.units.map(checked => ({
+  buildKey: squadBuildKey(checked.unit.build),
+  buildName: checked.squadBuild.build.name,
+  changes: checked.changes,
+})));
 
 /**
  * Toast of a Unit check: a line on each Build with changed Units, in Squad order, and the number of Units whose Build

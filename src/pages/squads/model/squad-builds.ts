@@ -4,7 +4,7 @@ import type { LoadoutUnitId } from '@entities/loadout';
 import type { SquadUnitBuild } from '@features/manage-squads';
 
 import type { NewBuildOption } from './new-build';
-import type { SquadBuild, SquadBuildOf } from './squad-build';
+import type { SquadBuild, SquadBuildDataOf, SquadBuildOf } from './squad-build';
 import { squadBuildKey } from './squad-build';
 import { SQUAD_BUILD_KINDS } from './squad-build-kinds';
 
@@ -16,6 +16,17 @@ import { SQUAD_BUILD_KINDS } from './squad-build-kinds';
 const kindSquadBuilds = <Kind extends LoadoutUnitId>(kind: Kind) => {
   return SQUAD_BUILD_KINDS[kind].builds().map((build): SquadBuildOf<Kind> => ({ kind, build }));
 };
+
+/**
+ * Adds the build to the Build calculator of its kind, which takes the data over.
+ *
+ * @param squadBuild build of a Share code with its kind.
+ * @returns kind and id of the new build.
+ */
+export const importSquadBuild = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildDataOf<Kind>): SquadUnitBuild => ({
+  kind: squadBuild.kind,
+  id: SQUAD_BUILD_KINDS[squadBuild.kind].importBuild(squadBuild.build),
+});
 
 /**
  * Saved builds of all three Build calculators, as Units refer to them: as a list and by `squadBuildKey`.

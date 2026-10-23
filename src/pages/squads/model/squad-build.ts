@@ -1,5 +1,6 @@
 import type { LoadoutUnitId } from '@entities/loadout';
 import type { SquadUnitBuild } from '@features/manage-squads';
+import type { BuildDataByKind } from '@features/share-build';
 import type { BiosoldierBuild, MecBuild, ShivBuild } from '@widgets/build-calculator';
 
 import { BUILD_LIST_WORD, CAPTION_SEPARATOR, UNIT_NAME_BY_KIND } from '../config/constants';
@@ -18,11 +19,24 @@ export interface BuildByKind {
 }
 
 /**
- * Saved build of the kind a Unit refers to, with the kind of its Build calculator.
+ * Build of the kind, saved or not yet, such as one of a Share code, with the kind of its Build calculator.
  */
-export interface SquadBuildOf<Kind extends LoadoutUnitId> {
+export interface SquadBuildDataOf<Kind extends LoadoutUnitId> {
   /** Kind of the build: the unit type of its Build calculator. */
   kind: Kind
+  /** Build data. */
+  build: BuildDataByKind[Kind]
+}
+
+/**
+ * Build of any kind, saved or not yet, with the kind of its Build calculator.
+ */
+export type SquadBuildData = { [Kind in LoadoutUnitId]: SquadBuildDataOf<Kind> }[LoadoutUnitId];
+
+/**
+ * Saved build of the kind a Unit refers to, with the kind of its Build calculator.
+ */
+export interface SquadBuildOf<Kind extends LoadoutUnitId> extends SquadBuildDataOf<Kind> {
   /** Build as its Build calculator keeps it. */
   build: BuildByKind[Kind]
 }
@@ -37,7 +51,7 @@ export type SquadBuild = { [Kind in LoadoutUnitId]: SquadBuildOf<Kind> }[Loadout
  *
  * @param squadBuild build of the Unit.
  */
-export const squadBuildClassName = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildOf<Kind>) => {
+export const squadBuildClassName = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildDataOf<Kind>) => {
   return SQUAD_BUILD_KINDS[squadBuild.kind].className(squadBuild.build) ?? UNIT_NAME_BY_KIND.get(squadBuild.kind) ?? '';
 };
 
@@ -46,7 +60,7 @@ export const squadBuildClassName = <Kind extends LoadoutUnitId>(squadBuild: Squa
  *
  * @param squadBuild build of the Unit.
  */
-export const squadBuildCaption = (squadBuild: SquadBuild) => {
+export const squadBuildCaption = (squadBuild: SquadBuildData) => {
   if (!SQUAD_BUILD_KINDS[squadBuild.kind].classes) return squadBuildClassName(squadBuild);
 
   return [UNIT_NAME_BY_KIND.get(squadBuild.kind), squadBuildClassName(squadBuild)].join(CAPTION_SEPARATOR);
@@ -58,7 +72,7 @@ export const squadBuildCaption = (squadBuild: SquadBuild) => {
  *
  * @param squadBuild build of the Unit.
  */
-export const squadBuildWearer = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildOf<Kind>) => {
+export const squadBuildWearer = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildDataOf<Kind>) => {
   return SQUAD_BUILD_KINDS[squadBuild.kind].wearer(squadBuild.build);
 };
 
@@ -67,7 +81,7 @@ export const squadBuildWearer = <Kind extends LoadoutUnitId>(squadBuild: SquadBu
  *
  * @param squadBuild build of the icon.
  */
-export const squadBuildClassIcon = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildOf<Kind>) => {
+export const squadBuildClassIcon = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildDataOf<Kind>) => {
   return SQUAD_BUILD_KINDS[squadBuild.kind].classIcon(squadBuild.build);
 };
 

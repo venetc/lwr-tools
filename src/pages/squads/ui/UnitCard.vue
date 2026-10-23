@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Trash2 } from '@lucide/vue';
+import { Copy, Trash2 } from '@lucide/vue';
 
 import { createId } from '@shared/lib/id';
 import { HoldButton } from '@shared/ui/hold-button';
@@ -18,6 +18,8 @@ interface Props {
 interface Emits {
   /** Requests removal of the Unit from the Squad once the trash button is held. */
   remove: []
+  /** Requests copying the Share code of the Unit. */
+  copyCode: []
   /** Tells of an edit of what the Build of the Unit holds, made in the Build dialog. */
   buildChange: []
   /** Tells that the Build dialog of the Unit closed, so the edits made in it can be checked against the Loadouts. */
@@ -47,6 +49,16 @@ const headingId = createId();
           {{ props.card.caption }}
         </p>
       </div>
+
+      <button
+        :class="$style.copy"
+        type="button"
+        title="Copy Share code"
+        @click="emit('copyCode')"
+      >
+        <Copy :class="$style.copyIcon" aria-hidden="true" />
+        <span :class="$style.visuallyHidden">Copy Share code of {{ props.card.squadBuild.build.name }}</span>
+      </button>
 
       <HoldButton
         :class="$style.remove"

@@ -12,7 +12,7 @@ import {
   UNITS_WORD,
 } from '../config/constants';
 import { changeNote } from './loadout-edit';
-import type { SquadBuild } from './squad-build';
+import type { SquadBuild, SquadBuildData } from './squad-build';
 import { squadBuildKey, squadBuildWearer } from './squad-build';
 
 /**
@@ -66,11 +66,11 @@ interface BuildChanges {
  * or a primary weapon of an unknown code silently becomes the default one, and anything else that no longer fits is
  * taken off or replaced with the default.
  *
- * @param loadout Loadout of the Unit as the Squad keeps it; null for a new Unit.
- * @param squadBuild build of the Unit.
+ * @param loadout Loadout of the Unit as the Squad keeps it or a Share code brings it; null for a new Unit.
+ * @param squadBuild build of the Unit, saved or not yet.
  * @returns the checked Unit; null if no armor or primary weapon fits the Unit.
  */
-export const checkUnit = (loadout: Readonly<DecodedLoadout> | null, squadBuild: SquadBuild): CheckedUnit | null => {
+export const checkUnit = (loadout: Readonly<DecodedLoadout> | null, squadBuild: SquadBuildData): CheckedUnit | null => {
   const wearer = squadBuildWearer(squadBuild);
   const defaults = defaultLoadout(wearer);
 

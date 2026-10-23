@@ -50,11 +50,18 @@ export const BUILD_LIST_WORD = 'builds';
 /** Name of the filter of saved builds that keeps every unit type. */
 export const ALL_BUILDS_FILTER_NAME = 'All';
 
-/** Tabs of the Add Unit dialog: where the build of the new Unit comes from. */
-export const ADD_UNIT_TABS = [
-  { id: 'saved', name: 'Saved builds' },
-  { id: 'new', name: 'New build' },
-] as const satisfies readonly TabsItem[];
+/** Tabs of the Add Unit dialog by what they offer: where the build of the new Unit comes from. */
+export const ADD_UNIT_TAB = {
+  saved: { id: 'saved', name: 'Saved builds' },
+  new: { id: 'new', name: 'New build' },
+  code: { id: 'code', name: 'Share code' },
+} as const satisfies Record<string, TabsItem>;
+
+/** Tabs of the Add Unit dialog in order. */
+export const ADD_UNIT_TABS = [ADD_UNIT_TAB.saved, ADD_UNIT_TAB.new, ADD_UNIT_TAB.code] as const satisfies readonly TabsItem[];
+
+/** Error of a Share code the Add Unit dialog cannot read. */
+export const INVALID_UNIT_CODE_TEXT = 'Invalid code. Copy the Share code again and paste it whole.';
 
 /** Default builds of the New build tab by Build calculator, in unit type order. */
 export const NEW_BUILD_GROUPS: DeepReadonly<NewBuildGroup[]> = LOADOUT_UNITS.map(newBuildGroup);

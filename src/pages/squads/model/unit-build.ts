@@ -2,7 +2,7 @@ import type { MaybeRefOrGetter } from 'vue';
 import { computed, ref, toValue } from 'vue';
 
 import { CLOSE_NOTE_TOAST_TITLE } from '../config/constants';
-import type { SquadBuild } from './squad-build';
+import type { SquadBuild, SquadBuildData } from './squad-build';
 import { squadBuildClassIcon } from './squad-build';
 import { SQUAD_BUILD_KINDS } from './squad-build-kinds';
 
@@ -10,9 +10,9 @@ import { SQUAD_BUILD_KINDS } from './squad-build-kinds';
  * How a Unit card shows the build of its kind: the mini-tree, the tree of the Build dialog, the class icon and the
  * officer rank badge.
  *
- * @param squadBuild build of the Unit.
+ * @param squadBuild build of the Unit, saved or not yet.
  */
-export const useSquadBuildViews = (squadBuild: MaybeRefOrGetter<SquadBuild>) => {
+export const useSquadBuildViews = (squadBuild: MaybeRefOrGetter<SquadBuildData>) => {
   const miniTree = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].miniTree);
 
   const buildTree = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].buildTree);

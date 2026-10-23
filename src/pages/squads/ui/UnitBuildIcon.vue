@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { SquadBuild } from '../model/squad-build';
+import type { SquadBuildData } from '../model/squad-build';
 import { useSquadBuildViews } from '../model/unit-build';
 
 interface Props {
-  /** Build whose class icon is shown. */
-  squadBuild: SquadBuild
+  /** Build whose class icon is shown, saved or not yet. */
+  squadBuild: SquadBuildData
 }
 
 const props = defineProps<Props>();

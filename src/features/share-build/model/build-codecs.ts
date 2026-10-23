@@ -1,9 +1,9 @@
 import type { ShivBuildData } from '@entities/shiv';
 import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier';
 
-import type { ShareCodeDecodeResult } from './share-code';
-import { decodeShivBuild, encodeShivBuild } from './shiv-build-code';
-import { decodeBiosoldierBuild, decodeMecBuild, encodeBiosoldierBuild, encodeMecBuild } from './soldier-build-code';
+import type { BuildCodeLayout, ShareCodeDecodeResult } from './share-code';
+import { decodeShivBuild, encodeShivBuild, SHIV_BUILD_LAYOUT } from './shiv-build-code';
+import { BIOSOLDIER_BUILD_LAYOUT, decodeBiosoldierBuild, decodeMecBuild, encodeBiosoldierBuild, encodeMecBuild, MEC_BUILD_LAYOUT } from './soldier-build-code';
 
 /**
  * Build data each kind of build code carries.
@@ -37,4 +37,11 @@ export const BUILD_CODECS: { readonly [Kind in BuildCodeKind]: BuildCodec<BuildD
   biosoldier: { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild },
   mec: { encode: encodeMecBuild, decode: decodeMecBuild },
   shiv: { encode: encodeShivBuild, decode: decodeShivBuild },
+};
+
+/** Code layout of each kind of build: its format, sections and the `LOADOUT` section of its Unit codes. */
+export const BUILD_CODE_LAYOUTS: { readonly [Kind in BuildCodeKind]: BuildCodeLayout<BuildDataByKind[Kind]> } = {
+  biosoldier: BIOSOLDIER_BUILD_LAYOUT,
+  mec: MEC_BUILD_LAYOUT,
+  shiv: SHIV_BUILD_LAYOUT,
 };

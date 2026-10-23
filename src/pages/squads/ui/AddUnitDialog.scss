@@ -216,3 +216,47 @@ $add-cell-border: 1px dashed colors.$accent;
   height: 36px;
   color: colors.$accent;
 }
+
+.codeLabel {
+  @include typography.caption;
+  color: colors.$text-secondary;
+}
+
+.codeField {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.importContent {
+  padding: 6px 12px;
+}
+
+.error {
+  @include typography.caption;
+  margin: 0;
+  color: colors.$danger;
+}
+
+.preview {
+  display: block;
+}
+
+.previewRow {
+  @include typography.body-1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-block-size: 44px;
+  padding: 6px 8px;
+  border: 1px solid colors.$border;
+  color: colors.$text-primary;
+}
+
+.previewName {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

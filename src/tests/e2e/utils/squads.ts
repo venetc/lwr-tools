@@ -293,3 +293,32 @@ export const lockerItem = (dialog: Locator, label: string) => locker(dialog).get
  * @param dialog Loadout dialog.
  */
 export const itemDetails = (dialog: Locator) => dialog.getByRole('region', { name: 'Item details' });
+
+/**
+ * Opens the Share code tab of the Add Unit dialog, enters the code and returns the dialog.
+ *
+ * @param page browser page.
+ * @param code Share code of a Build or a Unit.
+ */
+export const enterUnitCode = async (page: Page, code: string) => {
+  const dialog = await openAddUnit(page);
+
+  await dialog.getByRole('tab', { name: 'Share code' }).click();
+  await dialog.getByRole('textbox', { name: 'Share code' }).fill(code);
+
+  return dialog;
+};
+
+/**
+ * Adds a Unit of a Share code through the Share code tab of the Add Unit dialog and returns the dialog.
+ *
+ * @param page browser page.
+ * @param code Share code of a Build or a Unit.
+ */
+export const importUnitCode = async (page: Page, code: string) => {
+  const dialog = await enterUnitCode(page, code);
+
+  await dialog.getByRole('button', { name: 'Import', exact: true }).click();
+
+  return dialog;
+};

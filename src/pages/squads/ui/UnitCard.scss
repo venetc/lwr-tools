@@ -3,6 +3,38 @@
 @use 'styles/shape';
 @use 'styles/typography';
 
+@mixin -header-button {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  background: none;
+  cursor: pointer;
+}
+
+@mixin -faint {
+  color: colors.$text-tertiary;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      opacity: 0.35;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  @include media.with-touch {
+    opacity: 0.35;
+  }
+}
+
+@mixin -header-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .card {
   @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
   display: flex;
@@ -52,30 +84,20 @@
   color: colors.$text-tertiary;
 }
 
+.copy {
+  @include -header-button;
+  @include -faint;
+}
+
+.copyIcon {
+  @include -header-icon;
+}
+
 .remove {
-  flex: none;
-  display: grid;
-  place-items: center;
-  padding: 4px;
-  background: none;
-  cursor: pointer;
+  @include -header-button;
 
   &[data-state='idle'] {
-    color: colors.$text-tertiary;
-
-    @include media.with-hover {
-      &:not(:hover) {
-        opacity: 0.35;
-      }
-
-      &:hover {
-        opacity: 0.8;
-      }
-    }
-
-    @include media.with-touch {
-      opacity: 0.35;
-    }
+    @include -faint;
   }
 
   &[data-state='holding'] {
@@ -84,8 +106,7 @@
 }
 
 .removeIcon {
-  width: 18px;
-  height: 18px;
+  @include -header-icon;
 }
 
 .visuallyHidden {

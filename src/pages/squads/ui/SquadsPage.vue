@@ -10,6 +10,7 @@ import { PageToolbar } from '@shared/ui/page-toolbar';
 import { useBuildEditCheck } from '../model/build-edit-check';
 import { useSquadsPage } from '../model/squads-page';
 import { useUnitCards } from '../model/unit-cards';
+import { useUnitCodeCopy } from '../model/unit-code-copy';
 import AddUnitDialog from './AddUnitDialog.vue';
 import UnitCard from './UnitCard.vue';
 
@@ -18,6 +19,8 @@ const { openSquad, name, summary, navItems, switchSquad, addSquad, removeSquad }
 const { unitCards, removeUnit } = useUnitCards();
 
 const { showCloseNote, checkClosedBuild } = useBuildEditCheck(unitCards);
+
+const { copyUnitCode } = useUnitCodeCopy();
 </script>
 
 <template>
@@ -40,6 +43,7 @@ const { showCloseNote, checkClosedBuild } = useBuildEditCheck(unitCards);
           :key="card.id"
           :card="card"
           @remove="removeUnit(card)"
+          @copy-code="copyUnitCode(card)"
           @build-change="showCloseNote(card.id)"
           @build-close="checkClosedBuild"
         />

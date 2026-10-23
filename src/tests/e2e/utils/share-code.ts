@@ -38,3 +38,10 @@ export const importCode = async (page: Page, trigger: Locator, code: string) => 
  * @param page browser page.
  */
 export const toolbarImport = (page: Page) => page.getByRole('main').getByRole('button', { name: 'Import', exact: true });
+
+/**
+ * Outdated selections dialog of an import.
+ *
+ * @param page browser page.
+ */
+export const outdatedDialog = (page: Page) => page.getByRole('dialog', { name: 'Outdated selections' });

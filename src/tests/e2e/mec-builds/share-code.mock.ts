@@ -13,8 +13,6 @@ export const OUTDATED_BUILD_CODE = 'AwiJOh2IQgBs';
 /** Jaeger Unit code with the perks of `OUTDATED_BUILD_CODE` and an empty Loadout. */
 export const OUTDATED_UNIT_CODE = 'AwiJOh2IQjB0AAAAAI4';
 
-export const OUTDATED_DIALOG_NAME = 'Outdated selections';
-
 /** Card of `OUTDATED_BUILD_CODE`: the rank, the perk of the code and the one the tree has there now. */
 export const OUTDATED_CARD_TEXT = /Class tree.*Lance Corporal.*Sharpshooter.*Rapid Fire/;
 

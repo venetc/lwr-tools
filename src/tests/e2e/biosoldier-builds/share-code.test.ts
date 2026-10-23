@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import { abilityCell, openBuildPanel, selectAbility } from '../utils/build-panel';
-import { exportCode, importCode, toolbarImport } from '../utils/share-code';
+import { exportCode, importCode, outdatedDialog, toolbarImport } from '../utils/share-code';
 import {
   BIOSOLDIER_CODE_TITLE,
   BROKEN_CODE,
@@ -25,7 +25,6 @@ import {
   OFFICER_TAB_WITH_ONE,
   OUTDATED_BUILD_CODE,
   OUTDATED_CARD_TEXTS,
-  OUTDATED_DIALOG_NAME,
   OUTDATED_UNIT_CODE,
   PAGE_PATH,
   PANEL_NAME,
@@ -53,13 +52,6 @@ const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
  * @param page browser page.
  */
 const classPanels = (page: Page) => page.getByRole('region', { name: PANEL_NAME });
-
-/**
- * Outdated selections dialog.
- *
- * @param page browser page.
- */
-const outdatedDialog = (page: Page) => page.getByRole('dialog', { name: OUTDATED_DIALOG_NAME });
 
 /**
  * Opens the Biosoldier Build calculator and enters the code in the import form of the toolbar.

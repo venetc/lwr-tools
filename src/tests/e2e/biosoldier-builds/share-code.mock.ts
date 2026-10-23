@@ -62,8 +62,6 @@ export const OUTDATED_BUILD_CODE = 'AQiIOh2FIRhqy-bIIErW8ChGzoAA1w';
 /** Sniper Unit code with the selections of `OUTDATED_BUILD_CODE` and an empty Loadout. */
 export const OUTDATED_UNIT_CODE = 'AQiIOh2FIRhqy-bIIErW8ChGzoBg6AAAAAAr';
 
-export const OUTDATED_DIALOG_NAME = 'Outdated selections';
-
 /** Cards of `OUTDATED_BUILD_CODE`: the step, the ability of the code and the one the tree has there now. */
 export const OUTDATED_CARD_TEXTS = [
   /Class tree.*Lance Corporal.*Sharpshooter.*Magnum/,

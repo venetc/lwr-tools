@@ -5,8 +5,7 @@ import { abilityById, BODY_PARTS, OFFICER_RANKS, PSI_LEVELS, SOLDIER_RANKS } fro
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
 import { REMOVED_FROM_SHIV_TREE_NOTE, SHIV_TREE_SECTION, SOLDIER_STEP_SECTION } from '../config/constants';
-import type { DecodedUnit } from './unit-code';
-import { isUnitOf } from './unit-code';
+import type { DecodedSquadBuild } from './squad-code';
 
 /**
  * Ability on an Outdated selection card.
@@ -49,8 +48,8 @@ export interface OutdatedSelectionCard {
 export interface OutdatedSelectionGroup {
   /** Group id. */
   id: string
-  /** Unit or build name. */
-  name: string
+  /** Build name as the heading of the group; null for the single build of a code, which needs no heading. */
+  name: string | null
   /** Cards in tree order. */
   cards: OutdatedSelectionCard[]
 }
@@ -162,13 +161,29 @@ const soldierOutdatedCards = (outdated: readonly SoldierOutdatedSelection[]): Ou
 }));
 
 /**
- * Cards of the Outdated selections of a Unit of a share code.
+ * Cards of the Outdated selections of a build of a share code.
  *
- * @param unit Unit of a share code.
- * @returns the cards; empty for a Unit without Outdated selections.
+ * @param squadBuild build of a share code with its kind and Outdated selections.
+ * @returns the cards; empty for a build without Outdated selections.
  */
-export const unitOutdatedCards = (unit: DecodedUnit): OutdatedSelectionCard[] => {
-  if (isUnitOf(unit, 'shiv')) return shivOutdatedCards(unit.outdated);
+const buildOutdatedCards = (squadBuild: DecodedSquadBuild): OutdatedSelectionCard[] => {
+  if (squadBuild.kind === 'shiv') return shivOutdatedCards(squadBuild.outdated);
 
-  return soldierOutdatedCards(unit.outdated);
+  return soldierOutdatedCards(squadBuild.outdated);
 };
+
+/**
+ * Card groups of the Outdated selections of the builds of a share code: a group per build that has them, in the order
+ * of the builds. Units of one build share its group. A code of several builds names each group after its build, even if
+ * only one of them has Outdated selections.
+ *
+ * @param builds builds of a share code: the build of a Unit or the builds of a Squad.
+ * @returns the groups; empty if no build has Outdated selections.
+ */
+export const outdatedSelectionGroups = (builds: readonly DecodedSquadBuild[]) => builds.reduce<OutdatedSelectionGroup[]>((groups, squadBuild, index) => {
+  if (!squadBuild.outdated.length) return groups;
+
+  groups.push({ id: `build-${index}`, name: builds.length > 1 ? squadBuild.build.name : null, cards: buildOutdatedCards(squadBuild) });
+
+  return groups;
+}, []);

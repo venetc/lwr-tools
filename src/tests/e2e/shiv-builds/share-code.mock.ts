@@ -10,8 +10,6 @@ export const COLLISION_BUILD_CODE = 'AghVgiBATQ';
 /** SHIV Unit code with the perks of `COLLISION_BUILD_CODE` and an empty Loadout. */
 export const COLLISION_UNIT_CODE = 'AghVgiBDDoAAAAAA_A';
 
-export const OUTDATED_DIALOG_NAME = 'Outdated selections';
-
 export const COLLISION_CARD_TEXT = /Basic Config.*Lock N' Load.*Repair Servos.*Both on Basic Config now/;
 
 export const CANCEL_LABEL = 'Cancel';

@@ -269,6 +269,37 @@ describe('readShareCode of a Squad code', () => {
     });
   });
 
+  it('gives the Outdated selections of each build, once for Units of a shared build', () => {
+    const soldierPart = encodeBinaryCode(1, [...OTHER_RANK_PERK_SECTIONS, EMPTY_SOLDIER_LOADOUT_SECTION]);
+    const parts = [
+      encodeBinaryCode(4, [SQUAD_HEADER_SECTION]),
+      soldierPart,
+      encodeBinaryCode(2, [rawShivPerksSection(COLLISION_CODES), EMPTY_SHIV_LOADOUT_SECTION]),
+      soldierPart,
+      encodeBinaryCode(3, [OTHER_RANK_MEC_PERKS_SECTION]),
+    ];
+
+    const result = readShareCode(parts.join(SEPARATOR));
+
+    expect(result).toEqual({
+      status: 'squad',
+      squad: {
+        name: SQUAD_NAME,
+        builds: [
+          { kind: 'biosoldier', build: SNIPER_BUILD, outdated: OTHER_RANK_PERK_OUTDATED },
+          { kind: 'shiv', build: SHIV_BUILD, outdated: COLLISION_OUTDATED },
+          { kind: 'mec', build: LONE_WOLF_MEC_BUILD, outdated: OTHER_RANK_MEC_OUTDATED },
+        ],
+        units: [
+          { buildIndex: 0, loadout: EMPTY_LOADOUT },
+          { buildIndex: 1, loadout: EMPTY_LOADOUT },
+          { buildIndex: 0, loadout: EMPTY_LOADOUT },
+          { buildIndex: 2, loadout: null },
+        ],
+      },
+    });
+  });
+
   it('gives invalid for a Squad code with a broken part', () => {
     const code = encodeSquad({ name: SQUAD_NAME, units: [{ kind: 'shiv', build: SHIV_BUILD, loadout: SHIV_LOADOUT }] }) ?? '';
 

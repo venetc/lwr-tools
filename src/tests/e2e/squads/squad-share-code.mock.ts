@@ -35,3 +35,31 @@ export const SQUAD_CODE_UNIT_HINT = 'This is a Squad code. Use Import in the too
 export const SQUAD_CODE_CALCULATOR_HINT = 'Import it in the Squad planner.';
 
 export const INVALID_CODE_ERROR = 'Invalid code. Copy the Share code again and paste it whole.';
+
+/**
+ * Squad code of `Alpha` from an older mod version: two Units of the Sniper build `Sniper` with Outdated selections on
+ * a rank, a body part, a psi level and an officer rank, a Unit of a SHIV build whose Lock N' Load and Repair Servos
+ * share Basic Config, and a Unit of `Field Sniper`, which fits the trees.
+ */
+export const OUTDATED_SQUAD_CODE = 'BAi0qC2ODQwghg.AQiIOh2FIRhqy-bIIErW8ChGzoBg6AAAAAAr.AghVgiBDDoAAAAAA_A.AQiIOh2FIRhqy-bIIErW8ChGzoBg6AAAAAAr.AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw';
+
+/** Headings of the card groups of `OUTDATED_SQUAD_CODE`: a Build with Outdated selections each, in Squad order. */
+export const OUTDATED_GROUP_NAMES = ['Sniper', 'SHIV'];
+
+/** Cards of `OUTDATED_SQUAD_CODE`: four of the shared Sniper build, then the SHIV collision. */
+export const OUTDATED_CARD_TEXTS = [
+  /Class tree.*Lance Corporal.*Sharpshooter.*Magnum/,
+  /Gene mods.*Brain.*Advanced Perception.*Neural Damping/,
+  /Psionic.*Awakened.*Psi Mastery.*Mind Fray/,
+  /Officer.*Lieutenant.*Cover Tactics.*Strength in Numbers/,
+  /Basic Config.*Lock N' Load.*Repair Servos.*Both on Basic Config now/,
+];
+
+export const OUTDATED_BUILD_NAME = 'Sniper';
+
+/** Squad code of `Alpha` with a Unit of the outdated Sniper build `Sniper` and a Unit of `Field Sniper`. */
+export const ONE_OUTDATED_BUILD_SQUAD_CODE = 'BAi0qC2ODQwghg.AQiIOh2FIRhqy-bIIErW8ChGzoBg6AAAAAAr.AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw';
+
+export const CANCEL_LABEL = 'Cancel';
+
+export const IMPORT_LABEL = 'Import';

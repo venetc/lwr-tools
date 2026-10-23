@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Plus } from '@lucide/vue';
 
+import { OutdatedSelectionsDialog } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 import { Dialog } from '@shared/ui/dialog';
 import { Input } from '@shared/ui/input';
@@ -24,11 +25,15 @@ const {
   code,
   codeError,
   codePreview,
+  isOutdatedOpen,
+  outdatedGroups,
   isSavedBuildsTab,
   isNewBuildTab,
   setOpen,
   addSavedBuild,
   addNewBuild,
+  setOutdatedOpen,
+  confirmOutdated,
   importUnitCode,
 } = useAddUnit();
 </script>
@@ -177,6 +182,14 @@ const {
       </template>
     </Tabs>
   </Dialog>
+
+  <OutdatedSelectionsDialog
+    :open="isOutdatedOpen"
+    mode="import"
+    :groups="outdatedGroups"
+    @update:open="setOutdatedOpen"
+    @confirm="confirmOutdated"
+  />
 </template>
 
 <style lang="scss" module src="./AddUnitDialog.scss" />

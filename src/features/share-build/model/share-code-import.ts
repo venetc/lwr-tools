@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue';
-import { ref, shallowRef, toValue } from 'vue';
+import { ref, toValue } from 'vue';
 
 import type { LoadoutUnitId } from '@entities/loadout';
 import { LOADOUT_UNITS } from '@entities/loadout';
@@ -7,8 +7,7 @@ import { useToastQueue } from '@shared/ui/toast';
 
 import { INVALID_CODE_TEXT } from '../config/constants';
 import type { BuildDataByKind } from './build-code';
-import type { OutdatedSelectionGroup } from './outdated-selection-cards';
-import { unitOutdatedCards } from './outdated-selection-cards';
+import { useOutdatedImport } from './outdated-import';
 import { readShareCode } from './share-code';
 import { isUnitOf } from './unit-code';
 
@@ -33,11 +32,25 @@ export const useShareCodeImport = <Kind extends LoadoutUnitId>(
 
   const error = ref<string | null>(null);
 
-  const isOutdatedOpen = ref(false);
+  /**
+   * Closes the form and clears the code and the error.
+   */
+  const closeForm = () => {
+    isOpen.value = false;
+    code.value = '';
+    error.value = null;
+  };
 
-  const outdatedGroups = shallowRef<OutdatedSelectionGroup[]>([]);
-
-  const outdatedBuild = shallowRef<BuildDataByKind[Kind] | null>(null);
+  const {
+    isOpen: isOutdatedOpen,
+    groups: outdatedGroups,
+    setOpen: setOutdatedOpen,
+    requestImport,
+    confirm: confirmOutdated,
+  } = useOutdatedImport<{ build: BuildDataByKind[Kind] }>(({ build }) => {
+    onImport(build);
+    closeForm();
+  });
 
   /**
    * Opens or closes the form; closing clears the code and the error. The form stays open under the Outdated selections
@@ -46,38 +59,13 @@ export const useShareCodeImport = <Kind extends LoadoutUnitId>(
    * @param isNextOpen whether the form becomes open.
    */
   const setOpen = (isNextOpen: boolean) => {
-    if (!isNextOpen && isOutdatedOpen.value) return;
+    if (isNextOpen) {
+      isOpen.value = true;
 
-    isOpen.value = isNextOpen;
+      return;
+    }
 
-    if (isNextOpen) return;
-
-    code.value = '';
-    error.value = null;
-  };
-
-  /**
-   * Opens or closes the Outdated selections dialog; closing it without the confirmation drops the build of the code.
-   *
-   * @param isNextOpen whether the dialog becomes open.
-   */
-  const setOutdatedOpen = (isNextOpen: boolean) => {
-    isOutdatedOpen.value = isNextOpen;
-
-    if (!isNextOpen) outdatedBuild.value = null;
-  };
-
-  /**
-   * Confirms the Outdated selections dialog: passes the build without them on and closes the dialog and the form.
-   */
-  const confirmOutdated = () => {
-    const build = outdatedBuild.value;
-
-    if (!build) return;
-
-    setOutdatedOpen(false);
-    onImport(build);
-    setOpen(false);
+    if (!isOutdatedOpen.value) closeForm();
   };
 
   /**
@@ -108,16 +96,7 @@ export const useShareCodeImport = <Kind extends LoadoutUnitId>(
       return;
     }
 
-    if (result.unit.outdated.length) {
-      outdatedBuild.value = result.unit.build;
-      outdatedGroups.value = [{ id: 'build', name: result.unit.build.name, cards: unitOutdatedCards(result.unit) }];
-      setOutdatedOpen(true);
-
-      return;
-    }
-
-    onImport(result.unit.build);
-    setOpen(false);
+    requestImport([result.unit], result.unit);
   };
 
   return { isOpen, code, error, isOutdatedOpen, outdatedGroups, setOpen, setOutdatedOpen, confirmOutdated, submit };

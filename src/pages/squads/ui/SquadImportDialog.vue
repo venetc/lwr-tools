@@ -1,13 +1,24 @@
 <script setup lang="ts">
 import { ClipboardPaste } from '@lucide/vue';
 
+import { OutdatedSelectionsDialog } from '@features/share-build';
 import { Button } from '@shared/ui/button';
 import { Dialog } from '@shared/ui/dialog';
 import { TextField } from '@shared/ui/text-field';
 
 import { useSquadImport } from '../model/squad-import';
 
-const { isOpen, code, error, setOpen, importSquadCode } = useSquadImport();
+const {
+  isOpen,
+  code,
+  error,
+  isOutdatedOpen,
+  outdatedGroups,
+  setOpen,
+  setOutdatedOpen,
+  confirmOutdated,
+  importSquadCode,
+} = useSquadImport();
 </script>
 
 <template>
@@ -40,6 +51,14 @@ const { isOpen, code, error, setOpen, importSquadCode } = useSquadImport();
       </TextField>
     </form>
   </Dialog>
+
+  <OutdatedSelectionsDialog
+    :open="isOutdatedOpen"
+    mode="import"
+    :groups="outdatedGroups"
+    @update:open="setOutdatedOpen"
+    @confirm="confirmOutdated"
+  />
 </template>
 
 <style lang="scss" module src="./SquadImportDialog.scss" />

@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import { abilityCell, openBuildPanel } from '../utils/build-panel';
-import { exportCode, importCode, toolbarImport } from '../utils/share-code';
+import { exportCode, importCode, outdatedDialog, toolbarImport } from '../utils/share-code';
 import {
   CANCEL_LABEL,
   CODE_LABEL,
@@ -12,7 +12,6 @@ import {
   HOLO_ROUNDS,
   IMPORT_LABEL,
   LOCK_N_LOAD,
-  OUTDATED_DIALOG_NAME,
   PAGE_PATH,
   PANEL_NAME,
 } from './share-code.mock';
@@ -23,13 +22,6 @@ import {
  * @param page browser page.
  */
 const shivPanels = (page: Page) => page.getByRole('region', { name: PANEL_NAME });
-
-/**
- * Outdated selections dialog.
- *
- * @param page browser page.
- */
-const outdatedDialog = (page: Page) => page.getByRole('dialog', { name: OUTDATED_DIALOG_NAME });
 
 /**
  * Opens the SHIV Build calculator and enters the code in the import form of the toolbar.

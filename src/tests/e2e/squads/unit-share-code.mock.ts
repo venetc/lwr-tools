@@ -41,3 +41,19 @@ export const TACTICAL_VEST_TILE = 'Armor: Tactical Vest';
 export const SNIPER_RIFLE_TILE = 'Primary: Sniper Rifle';
 
 export const RENAME_LABEL = 'Rename build';
+
+/**
+ * Unit code of the Sniper build `Sniper` from an older mod version: Outdated selections on a rank, a body part, a psi
+ * level and an officer rank, and an empty Loadout.
+ */
+export const OUTDATED_UNIT_CODE = 'AQiIOh2FIRhqy-bIIErW8ChGzoBg6AAAAAAr';
+
+export const OUTDATED_CARD_COUNT = 4;
+
+export const OUTDATED_BUILD_NAME = 'Sniper';
+
+export const OUTDATED_TOAST = 'Sniper added to Squad 1 and to Biosoldier builds.';
+
+export const CANCEL_LABEL = 'Cancel';
+
+export const IMPORT_LABEL = 'Import';

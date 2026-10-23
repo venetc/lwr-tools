@@ -82,13 +82,13 @@ export const ARCHANGEL = 'Archangel Armor';
 
 export const VEST_FORMULA = 'Tactical Vest 2 + Tactical Rigging 1 = 3 Utility slots.';
 
-export const ARCHANGEL_FORMULA = 'Archangel Armor 3 + Tactical Rigging 1 = 4 Utility slots, last two are Gear Slots.';
+export const ARCHANGEL_FORMULA = 'Archangel Armor 3 + Tactical Rigging 1 = 4 Utility slots, last one is a Gear Slot.';
 
 export const SHRUNK_TOAST = 'Utility slots: 4 → 3. Respirator Implant removed: slot removed.';
 
-export const MOVED_TOAST = 'Utility slots: 3 → 4. Smoke Grenade moved to Utility. Medikit removed: Gear Slot takes passive gear only.';
+export const MOVED_TOAST = 'Utility slots: 3 → 4. Medikit moved to Utility.';
 
-export const LMG_TOAST = 'Utility slots: 3 → 2.';
+export const LMG_TOAST = 'Utility slots: 3 → 1.';
 
 export const REAPER_TOAST = 'Reaper Ammo removed: unsupported weapon.';
 

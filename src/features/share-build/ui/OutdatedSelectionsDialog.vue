@@ -11,7 +11,7 @@ import { useOutdatedSelectionsDialog } from '../model/outdated-selections-dialog
 interface Props {
   /** What the dialog confirms: the import of a code or the update of an Outdated build. */
   mode: OutdatedSelectionsDialogMode
-  /** Cards by Unit; headings are shown for several groups only. */
+  /** Cards by build, under the build name if the group has one. */
   groups: readonly OutdatedSelectionGroup[]
 }
 
@@ -27,7 +27,7 @@ const emit = defineEmits<Emits>();
 /** Whether the dialog is open; closing it cancels. */
 const open = defineModel<boolean>('open', { default: false });
 
-const { text, hasGroupHeadings } = useOutdatedSelectionsDialog(() => props.mode, () => props.groups);
+const { text } = useOutdatedSelectionsDialog(() => props.mode);
 </script>
 
 <template>
@@ -42,7 +42,7 @@ const { text, hasGroupHeadings } = useOutdatedSelectionsDialog(() => props.mode,
         :key="group.id"
         :class="$style.group"
       >
-        <h3 v-if="hasGroupHeadings" :class="$style.groupName">
+        <h3 v-if="group.name" :class="$style.groupName">
           {{ group.name }}
         </h3>
 

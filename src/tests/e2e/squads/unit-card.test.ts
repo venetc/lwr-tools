@@ -75,12 +75,12 @@ test.describe('Unit card', () => {
     await expect(unitCards(page, SNIPER).getByRole('button', { name: EMPTY_UTILITY }).first()).toHaveCSS('border-top-style', 'dashed');
   });
 
-  test('captions the Gear Slots', async ({ page }) => {
+  test('captions the Gear Slot', async ({ page }) => {
     await seedSquad(page, [ARCHANGEL_SNIPER]);
 
     await openSquads(page);
 
-    await expect(unitCards(page, SNIPER).getByRole('button', { name: GEAR_SLOT })).toHaveCount(2);
+    await expect(unitCards(page, SNIPER).getByRole('button', { name: GEAR_SLOT })).toHaveCount(1);
   });
 
   test('captions the Psi Slot', async ({ page }) => {

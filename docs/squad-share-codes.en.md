@@ -40,6 +40,7 @@ The name is cut to 31 bytes. A header without `NAME` is invalid; unknown section
 
 Import of a Squad code:
 
+- with Outdated selections in any build, first opens one "Outdated selections" dialog for the whole Squad: the cards of each such build under its name, once per build, so Units of one build share them. "Cancel" imports nothing and keeps the code in the field; "Import" goes on with the builds without the Outdated selections. A Unit code in the Share code tab of Add Unit opens the same dialog with the cards of its build;
 - creates a new Squad with the name of the code, last in the list; names may repeat;
 - adds each shared build once to its Build calculator: Squad import always creates new Builds;
 - brings each Unit to the rules of its build with the Unit check;
@@ -54,7 +55,9 @@ The Share code button next to the Squad name copies the code of the open Squad: 
 - `model/squad-code.ts` — `encodeSquad` writes the header and the Unit codes of `encodeUnit`, null if a Unit code can't be written; `readSquad`, called by `readShareCode` with the opened header and parts, reads them back and merges Units into builds by their build sections.
 - `model/share-code.ts` — `readShareCode`: every place that takes a code checks its result with one condition, as in the table above.
 
-`pages/squads` turns a read Squad into a Squad: `model/squad-import.ts` (Import in the toolbar), `model/squad-code-copy.ts` (the Share code button).
+- `model/outdated-import.ts` — `useOutdatedImport`: imports a read code at once, or first opens the "Outdated selections" dialog with the card groups of its builds (`outdatedSelectionGroups` of `model/outdated-selection-cards.ts`); the Build calculators and the Squad planner import through it.
+
+`pages/squads` turns a read Squad into a Squad: `model/squad-import.ts` (Import in the toolbar), `model/add-unit.ts` (the Share code tab of Add Unit), `model/squad-code-copy.ts` (the Share code button).
 
 ## Evolving the format
 

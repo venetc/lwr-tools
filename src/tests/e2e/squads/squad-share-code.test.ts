@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { importCode, toolbarImport } from '../utils/share-code';
+import { importCode, outdatedDialog, toolbarImport } from '../utils/share-code';
 import {
   addNewBuildUnit,
   importSquadCode,
@@ -17,10 +17,17 @@ import {
   BIOSOLDIER_BUILDS,
   BIOSOLDIER_PATH,
   BROKEN_SQUAD_CODE,
+  CANCEL_LABEL,
   COPIED_TOAST,
+  IMPORT_LABEL,
   IMPORTED_TOAST,
   INVALID_CODE_ERROR,
   OFFICER_BUILD_NAME,
+  ONE_OUTDATED_BUILD_SQUAD_CODE,
+  OUTDATED_BUILD_NAME,
+  OUTDATED_CARD_TEXTS,
+  OUTDATED_GROUP_NAMES,
+  OUTDATED_SQUAD_CODE,
   SERAPH_REPLACED_LINE,
   SNIPER,
   SQUAD_CODE,
@@ -124,6 +131,95 @@ test.describe('Squad import in the toolbar', () => {
     const dialog = await importSquadCode(page, UNIT_CODE);
 
     await expect(dialog.getByRole('alert')).toHaveText(UNIT_CODE_HINT);
+  });
+});
+
+test.describe('Squad import with Outdated selections', () => {
+  test('opens the Outdated selections dialog', async ({ page }) => {
+    await openSquads(page);
+
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await expect(outdatedDialog(page)).toBeVisible();
+  });
+
+  test('groups the cards under the Builds that have Outdated selections', async ({ page }) => {
+    await openSquads(page);
+
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await expect(outdatedDialog(page).getByRole('heading', { level: 3 })).toHaveText(OUTDATED_GROUP_NAMES);
+  });
+
+  test('names the Build even if it is the only one with Outdated selections', async ({ page }) => {
+    await openSquads(page);
+
+    await importSquadCode(page, ONE_OUTDATED_BUILD_SQUAD_CODE);
+
+    await expect(outdatedDialog(page).getByRole('heading', { level: 3 })).toHaveText([OUTDATED_BUILD_NAME]);
+  });
+
+  test('shows the cards of a Build of two Units once', async ({ page }) => {
+    await openSquads(page);
+
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await expect(outdatedDialog(page).getByRole('listitem')).toHaveText(OUTDATED_CARD_TEXTS);
+  });
+
+  test('keeps the code in the import dialog on Cancel', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_SQUAD_CODE);
+  });
+
+  test('creates no Squad on Cancel', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+    await dialog.getByRole('button', { name: 'Close', exact: true }).click();
+
+    await expect(squadItem(page, SQUAD_NAME, SQUAD_UNIT_COUNT)).toHaveCount(0);
+  });
+
+  test('opens the imported Squad on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(squadTitle(page)).toHaveValue(SQUAD_NAME);
+  });
+
+  test('shows a card for each Unit of the shared Build on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(unitCards(page, OUTDATED_BUILD_NAME)).toHaveCount(2);
+  });
+
+  test('tells how many Builds went to each Build calculator on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(notifications(page)).toContainText(IMPORTED_TOAST);
+  });
+
+  test('imports a Squad code without Outdated selections without the dialog', async ({ page }) => {
+    await openSquads(page);
+
+    await importSquadCode(page, SQUAD_CODE);
+    await notifications(page).getByText(IMPORTED_TOAST).waitFor();
+
+    await expect(outdatedDialog(page)).toHaveCount(0);
   });
 });
 

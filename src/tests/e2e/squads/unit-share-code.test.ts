@@ -1,18 +1,24 @@
 import { expect, test } from '@playwright/test';
 
-import { importCode, toolbarImport } from '../utils/share-code';
+import { importCode, outdatedDialog, toolbarImport } from '../utils/share-code';
 import { addNewBuildUnit, enterUnitCode, importUnitCode, loadoutTile, notifications, openSquads, unitCards } from '../utils/squads';
 import {
   BIOSOLDIER_PATH,
   BROKEN_CODE,
   BUILD_CODES,
+  CANCEL_LABEL,
   COPIED_TOAST,
+  IMPORT_LABEL,
   INVALID_CODE_ERROR,
   JAEGER,
   JAEGER_BUILD_CODE,
   JAEGER_TOAST,
   OFFICER_BUILD_NAME,
   OFFICER_UNIT_CODE,
+  OUTDATED_BUILD_NAME,
+  OUTDATED_CARD_COUNT,
+  OUTDATED_TOAST,
+  OUTDATED_UNIT_CODE,
   RENAME_LABEL,
   SERAPH_BUILD_NAME,
   SERAPH_REPLACED,
@@ -125,6 +131,69 @@ test.describe('Add Unit from a Share code', () => {
     await dialog.getByRole('textbox', { name: 'Share code' }).press('x');
 
     await expect(dialog.getByRole('alert')).toHaveCount(0);
+  });
+});
+
+test.describe('Add Unit from a Share code with Outdated selections', () => {
+  test('opens the Outdated selections dialog', async ({ page }) => {
+    await openSquads(page);
+
+    await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await expect(outdatedDialog(page)).toBeVisible();
+  });
+
+  test('shows a card for each Outdated selection', async ({ page }) => {
+    await openSquads(page);
+
+    await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await expect(outdatedDialog(page).getByRole('listitem')).toHaveCount(OUTDATED_CARD_COUNT);
+  });
+
+  test('shows no Build heading for one Unit', async ({ page }) => {
+    await openSquads(page);
+
+    await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await expect(outdatedDialog(page).getByRole('heading', { level: 3 })).toHaveCount(0);
+  });
+
+  test('keeps the code in the Add Unit dialog on Cancel', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_UNIT_CODE);
+  });
+
+  test('adds no Unit on Cancel', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+    await dialog.getByRole('button', { name: 'Close', exact: true }).click();
+
+    await expect(unitCards(page, OUTDATED_BUILD_NAME)).toHaveCount(0);
+  });
+
+  test('adds the Unit on Import', async ({ page }) => {
+    await openSquads(page);
+    await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(unitCards(page, OUTDATED_BUILD_NAME)).toBeVisible();
+  });
+
+  test('tells where the Build of the code is added on Import', async ({ page }) => {
+    await openSquads(page);
+    await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(notifications(page)).toContainText(OUTDATED_TOAST);
   });
 });
 

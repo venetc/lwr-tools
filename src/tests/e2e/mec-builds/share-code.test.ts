@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import { abilityCell, openBuildPanel } from '../utils/build-panel';
-import { exportCode, importCode, toolbarImport } from '../utils/share-code';
+import { exportCode, importCode, outdatedDialog, toolbarImport } from '../utils/share-code';
 import {
   CANCEL_LABEL,
   CODE_LABEL,
@@ -10,7 +10,6 @@ import {
   LONE_WOLF,
   OUTDATED_BUILD_CODE,
   OUTDATED_CARD_TEXT,
-  OUTDATED_DIALOG_NAME,
   OUTDATED_UNIT_CODE,
   PAGE_PATH,
   PANEL_NAME,
@@ -24,13 +23,6 @@ import {
  * @param page browser page.
  */
 const classPanels = (page: Page) => page.getByRole('region', { name: PANEL_NAME });
-
-/**
- * Outdated selections dialog.
- *
- * @param page browser page.
- */
-const outdatedDialog = (page: Page) => page.getByRole('dialog', { name: OUTDATED_DIALOG_NAME });
 
 /**
  * Opens the MEC Build calculator and enters the code in the import form of the toolbar.

@@ -1,7 +1,8 @@
 import { ref } from 'vue';
 
 import { useSquadsStore } from '@features/manage-squads';
-import { readShareCode } from '@features/share-build';
+import type { DecodedSquad } from '@features/share-build';
+import { readShareCode, useOutdatedImport } from '@features/share-build';
 import { useToastQueue } from '@shared/ui/toast';
 
 import { INVALID_SHARE_CODE_TEXT, UNIT_CODE_IN_SQUAD_IMPORT_TEXT } from '../config/constants';
@@ -10,8 +11,10 @@ import { importUnits, squadImportToast } from './unit-import';
 
 /**
  * Squad import dialog of the toolbar: a Squad code becomes a new Squad with new builds in the Build calculators, which
- * opens; Units of one build share one new build, and their Loadouts are brought to the rules by the Unit check. A Unit
- * code or a build code is sent to an empty cell and an invalid code shows the error, both under the field.
+ * opens; Units of one build share one new build, and their Loadouts are brought to the rules by the Unit check. A Squad
+ * code with Outdated selections first opens the Outdated selections dialog over the import dialog: its confirmation
+ * imports the builds without them, its cancel imports nothing and keeps the code. A Unit code or a build code is sent
+ * to an empty cell and an invalid code shows the error, both under the field.
  */
 export const useSquadImport = () => {
   const squadsStore = useSquadsStore();
@@ -38,9 +41,23 @@ export const useSquadImport = () => {
     error.value = null;
   };
 
+  const {
+    isOpen: isOutdatedOpen,
+    groups: outdatedGroups,
+    setOpen: setOutdatedOpen,
+    requestImport,
+    confirm: confirmOutdated,
+  } = useOutdatedImport((squad: DecodedSquad) => {
+    const units = importUnits(squad, importSquadBuild);
+
+    squadsStore.importSquad(squad.name, units);
+    setOpen(false);
+    showToast(squadImportToast(squadsStore.openSquad?.name ?? squad.name, units));
+  });
+
   /**
-   * Imports the entered Squad code as a new Squad and opens it, closing the dialog; tells where the builds went and
-   * what the Unit check took off.
+   * Imports the entered Squad code as a new Squad and opens it, closing the dialog, or first asks about its Outdated
+   * selections; tells where the builds went and what the Unit check took off.
    */
   const importSquadCode = () => {
     const result = readShareCode(code.value);
@@ -51,12 +68,8 @@ export const useSquadImport = () => {
       return;
     }
 
-    const units = importUnits(result.squad, importSquadBuild);
-
-    squadsStore.importSquad(result.squad.name, units);
-    setOpen(false);
-    showToast(squadImportToast(squadsStore.openSquad?.name ?? result.squad.name, units));
+    requestImport(result.squad.builds, result.squad);
   };
 
-  return { isOpen, code, error, setOpen, importSquadCode };
+  return { isOpen, code, error, isOutdatedOpen, outdatedGroups, setOpen, setOutdatedOpen, confirmOutdated, importSquadCode };
 };

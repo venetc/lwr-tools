@@ -5,6 +5,8 @@ import { computed, ref } from 'vue';
 import type { Loadout } from '@entities/loadout';
 import type { SquadUnitBuild } from '@features/manage-squads';
 import { useSquadsStore } from '@features/manage-squads';
+import type { DecodedUnit } from '@features/share-build';
+import { useOutdatedImport } from '@features/share-build';
 import type { TabsItem } from '@shared/ui/tabs';
 import { useToastQueue } from '@shared/ui/toast';
 
@@ -23,7 +25,8 @@ import { importUnits } from './unit-import';
 /**
  * Add Unit dialog of the open Squad: its tabs, the search and filter of saved builds, and adding a Unit of a saved build,
  * of a new Default build or of a Share code. A new Unit gets the Default Loadout, a Unit code brings its own through the
- * Unit check; the dialog closes and a toast tells where the build is and what the check took off.
+ * Unit check; the dialog closes and a toast tells where the build is and what the check took off. A Share code with
+ * Outdated selections first opens the Outdated selections dialog: its confirmation adds the Unit, its cancel nothing.
  */
 export const useAddUnit = () => {
   const squadsStore = useSquadsStore();
@@ -163,15 +166,16 @@ export const useAddUnit = () => {
   };
 
   /**
-   * Adds the build of the entered Share code to its Build calculator and a Unit of it: a Unit code with its Loadout,
-   * a Build code with the Default Loadout, both through the Unit check of the import. A code no Loadout fits adds
-   * nothing. The toast tells what the Unit check took off, without repeats; an invalid code shows the error.
+   * Adds the build of a Share code to its Build calculator and a Unit of it: a Unit code with its Loadout, a Build code
+   * with the Default Loadout, both through the Unit check of the import. A code no Loadout fits adds nothing. The toast
+   * tells what the Unit check took off, without repeats.
+   *
+   * @param unit Unit of the code, its build without the Outdated selections.
    */
-  const importUnitCode = () => {
+  const addCodeUnit = (unit: DecodedUnit) => {
     if (!openSquad.value) return;
 
-    const unit = codeField.readUnit();
-    const [imported] = unit ? importUnits({ builds: [unit], units: [{ buildIndex: 0, loadout: unit.loadout }] }, importSquadBuild) : [];
+    const [imported] = importUnits({ builds: [unit], units: [{ buildIndex: 0, loadout: unit.loadout }] }, importSquadBuild);
     const squadName = imported ? placeUnit(imported.build, imported.loadout) : null;
 
     if (!imported || !squadName) return;
@@ -181,6 +185,26 @@ export const useAddUnit = () => {
     if (imported.changes.length) lines.push(changeNotes(imported.changes).join(' '));
 
     showToast({ title: 'Unit added', description: lines.join(UNIT_CHECK_LINE_BREAK) });
+  };
+
+  const {
+    isOpen: isOutdatedOpen,
+    groups: outdatedGroups,
+    setOpen: setOutdatedOpen,
+    requestImport,
+    confirm: confirmOutdated,
+  } = useOutdatedImport(addCodeUnit);
+
+  /**
+   * Adds a Unit of the entered Share code, or first asks about its Outdated selections; an invalid code shows the
+   * error.
+   */
+  const importUnitCode = () => {
+    const unit = codeField.readUnit();
+
+    if (!unit) return;
+
+    requestImport([unit], unit);
   };
 
   return {
@@ -194,11 +218,15 @@ export const useAddUnit = () => {
     code: codeField.code,
     codeError: codeField.error,
     codePreview: codeField.preview,
+    isOutdatedOpen,
+    outdatedGroups,
     isSavedBuildsTab,
     isNewBuildTab,
     setOpen,
     addSavedBuild,
     addNewBuild,
+    setOutdatedOpen,
+    confirmOutdated,
     importUnitCode,
   };
 };

@@ -232,7 +232,7 @@ test.describe('Loadout dialog of a biosoldier', () => {
     await expect(dialog.getByText(VEST_FORMULA, { exact: true })).toBeVisible();
   });
 
-  test('explains the Gear Slots of the armor', async ({ page }) => {
+  test('explains the Gear Slot of the armor', async ({ page }) => {
     await seedSquad(page, [ARCHANGEL_SNIPER]);
     await openSquads(page);
 
@@ -263,7 +263,7 @@ test.describe('Loadout dialog of a biosoldier', () => {
     await expect(notifications(page)).toContainText(MOVED_TOAST);
   });
 
-  test('takes a utility slot away for an LMG', async ({ page }) => {
+  test('takes utility slots away for an LMG', async ({ page }) => {
     await openSquads(page);
     await addSavedUnit(page, BIOSOLDIER_BUILDS, GUNNER);
     const dialog = await openLocker(page, unitCards(page, GUNNER), PRIMARY_TILE);

@@ -18,12 +18,13 @@ import penetratorIcon from '../icons/abilities/heavy_heat_ammo/heavy_heat_ammo@4
 import shredderIcon from '../icons/abilities/heavy_shredder/heavy_shredder@4x.png';
 import aerialTrackingIcon from '../icons/abilities/itz_icon/itz_icon@4x.png';
 import bulletstormIcon from '../icons/abilities/lwr_bulletstorm/lwr_bulletstorm@4x.png';
+import repulsorIcon from '../icons/abilities/lwr_repulsor/lwr_repulsor@4x.png';
 import awarenessIcon from '../icons/abilities/mec_automated_threat_assessment/mec_automated_threat_assessment@4x.png';
 import bodyShieldIcon from '../icons/abilities/mec_body_shield/mec_body_shield@4x.png';
 import sublimatorIcon from '../icons/abilities/mec_collateral_damage/mec_collateral_damage@4x.png';
 import damageControlIcon from '../icons/abilities/mec_damage_control/mec_damage_control@4x.png';
 import platformStabilityIcon from '../icons/abilities/mec_platform_stability/mec_platform_stability@4x.png';
-import repulsorIcon from '../icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x.png';
+import ablationIcon from '../icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x.png';
 import breachIcon from '../icons/abilities/sniper_dgg/sniper_dgg@4x.png';
 import squadsightIcon from '../icons/abilities/sniper_squadsight/sniper_squadsight@4x.png';
 import sprinterIcon from '../icons/abilities/support_sprinter/support_sprinter@4x.png';
@@ -34,6 +35,7 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'advanced-grapple': grappleIcon,
   'damage-control': damageControlIcon,
   'repulsor': repulsorIcon,
+  'ablation': ablationIcon,
   'sealed': PLACEHOLDER_ICON.cyan,
   'flame-resistant': PLACEHOLDER_ICON.cyan,
   'ghost': ghostIcon,
@@ -58,7 +60,6 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'aerial-tracking': aerialTrackingIcon,
   'carapace-shredder': shredderIcon,
   'prototype-rigging': PLACEHOLDER_ICON.cyan,
-  'gear-slots': PLACEHOLDER_ICON.cyan,
   'gear-slot': PLACEHOLDER_ICON.cyan,
   'psi-slot': PLACEHOLDER_ICON.cyan,
   'hardened': hardenedIcon,

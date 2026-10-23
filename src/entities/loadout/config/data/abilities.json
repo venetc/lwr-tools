@@ -13,7 +13,11 @@
   },
   "repulsor": {
     "name": "Repulsor",
-    "description": "If at full HP, non-psionic attacks are repulsed, causing them to graze (dealing only half of the original damage)."
+    "description": "The first non-psionic attack this unit takes each mission is repulsed: it grazes (dealing only half of the original damage)."
+  },
+  "ablation": {
+    "name": "Ablation",
+    "description": "Outer armor layers break away to absorb a heavy blow. While this unit is protected by cover, the first non-psionic attack that deals more damage than its remaining armor HP is reduced to the amount of remaining armor HP instead. Losing all armor HP also uses it up."
   },
   "sealed": {
     "name": "Sealed",
@@ -57,7 +61,7 @@
   },
   "bulletstorm": {
     "name": "Bulletstorm",
-    "description": "Spray fire across a 30 degree cone out to 18 tiles. Every enemy in the cone has 2x 24% chances (12% with an LMG) to take Standard Shot Damage. Requires 2 ammo."
+    "description": "Spray fire across a 30 degree cone out to 18 tiles. Every enemy in the cone has 2x 20% chances (15% with an LMG) to take Standard Shot Damage. Requires 2 ammo."
   },
   "shredder": {
     "name": "Shredder",
@@ -65,7 +69,7 @@
   },
   "danger-zone": {
     "name": "Danger Zone",
-    "description": "Suppression affects (with half suppressive fire damage) targets in a 2.5 tile radius around the primary target."
+    "description": "Suppression affects (with half suppressive fire damage) targets in a 2.5 tile radius around the primary target. Widens Bulletstorm's cone to 60 degrees."
   },
   "maim": {
     "name": "Maim",
@@ -110,10 +114,6 @@
   "prototype-rigging": {
     "name": "Prototype Rigging",
     "description": "+1 utility slot. Does not gain extra effects from Tactical Rigging."
-  },
-  "gear-slots": {
-    "name": "Gear Slots",
-    "description": "The last two utility slots on this armor can only hold passive gear, such as plating, scopes, ammo, and mags."
   },
   "gear-slot": {
     "name": "Gear Slot",

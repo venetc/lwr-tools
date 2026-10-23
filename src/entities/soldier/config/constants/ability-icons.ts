@@ -169,6 +169,9 @@ import lwrRapidPincersDisabledIcon from '../icons/abilities/lwr_rapid_pincers/lw
 import lwrReconnaissanceOriginalIcon from '../icons/abilities/lwr_reconnaissance/lwr_reconnaissance@4x.png';
 import lwrReconnaissanceAvailableIcon from '../icons/abilities/lwr_reconnaissance/lwr_reconnaissance@4x_available.png';
 import lwrReconnaissanceDisabledIcon from '../icons/abilities/lwr_reconnaissance/lwr_reconnaissance@4x_disabled.png';
+import lwrRepulsorOriginalIcon from '../icons/abilities/lwr_repulsor/lwr_repulsor@4x.png';
+import lwrRepulsorAvailableIcon from '../icons/abilities/lwr_repulsor/lwr_repulsor@4x_available.png';
+import lwrRepulsorDisabledIcon from '../icons/abilities/lwr_repulsor/lwr_repulsor@4x_disabled.png';
 import lwrShockAndAweOriginalIcon from '../icons/abilities/lwr_shock_and_awe/lwr_shock_and_awe@4x.png';
 import lwrShockAndAweAvailableIcon from '../icons/abilities/lwr_shock_and_awe/lwr_shock_and_awe@4x_available.png';
 import lwrShockAndAweDisabledIcon from '../icons/abilities/lwr_shock_and_awe/lwr_shock_and_awe@4x_disabled.png';
@@ -211,9 +214,6 @@ import mecReactiveTargetingSensorsDisabledIcon from '../icons/abilities/mec_reac
 import mecRepairServosOriginalIcon from '../icons/abilities/mec_repair_servos/mec_repair_servos@4x.png';
 import mecRepairServosAvailableIcon from '../icons/abilities/mec_repair_servos/mec_repair_servos@4x_available.png';
 import mecRepairServosDisabledIcon from '../icons/abilities/mec_repair_servos/mec_repair_servos@4x_disabled.png';
-import mecShockAbsorbentArmorOriginalIcon from '../icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x.png';
-import mecShockAbsorbentArmorAvailableIcon from '../icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x_available.png';
-import mecShockAbsorbentArmorDisabledIcon from '../icons/abilities/mec_shock_absorbent_armor/mec_shock_absorbent_armor@4x_disabled.png';
 import mecVitalPointTargetingOriginalIcon from '../icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x.png';
 import mecVitalPointTargetingAvailableIcon from '../icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x_available.png';
 import mecVitalPointTargetingDisabledIcon from '../icons/abilities/mec_vital_point_targeting/mec_vital_point_targeting@4x_disabled.png';
@@ -409,6 +409,7 @@ const lwrPyroIcon: AbilityIcon = { selected: lwrPyroOriginalIcon, available: lwr
 const lwrRakingFireIcon: AbilityIcon = { selected: lwrRakingFireOriginalIcon, available: lwrRakingFireAvailableIcon, disabled: lwrRakingFireDisabledIcon };
 const lwrRapidPincersIcon: AbilityIcon = { selected: lwrRapidPincersOriginalIcon, available: lwrRapidPincersAvailableIcon, disabled: lwrRapidPincersDisabledIcon };
 const lwrReconnaissanceIcon: AbilityIcon = { selected: lwrReconnaissanceOriginalIcon, available: lwrReconnaissanceAvailableIcon, disabled: lwrReconnaissanceDisabledIcon };
+const lwrRepulsorIcon: AbilityIcon = { selected: lwrRepulsorOriginalIcon, available: lwrRepulsorAvailableIcon, disabled: lwrRepulsorDisabledIcon };
 const lwrShockAndAweIcon: AbilityIcon = { selected: lwrShockAndAweOriginalIcon, available: lwrShockAndAweAvailableIcon, disabled: lwrShockAndAweDisabledIcon };
 const lwrStayFrostyIcon: AbilityIcon = { selected: lwrStayFrostyOriginalIcon, available: lwrStayFrostyAvailableIcon, disabled: lwrStayFrostyDisabledIcon };
 const lwrSurgicalTargetingIcon: AbilityIcon = { selected: lwrSurgicalTargetingOriginalIcon, available: lwrSurgicalTargetingAvailableIcon, disabled: lwrSurgicalTargetingDisabledIcon };
@@ -423,7 +424,6 @@ const mecExpandedStorageIcon: AbilityIcon = { selected: mecExpandedStorageOrigin
 const mecJetBootModuleIcon: AbilityIcon = { selected: mecJetBootModuleOriginalIcon, available: mecJetBootModuleAvailableIcon, disabled: mecJetBootModuleDisabledIcon };
 const mecReactiveTargetingSensorsIcon: AbilityIcon = { selected: mecReactiveTargetingSensorsOriginalIcon, available: mecReactiveTargetingSensorsAvailableIcon, disabled: mecReactiveTargetingSensorsDisabledIcon };
 const mecRepairServosIcon: AbilityIcon = { selected: mecRepairServosOriginalIcon, available: mecRepairServosAvailableIcon, disabled: mecRepairServosDisabledIcon };
-const mecShockAbsorbentArmorIcon: AbilityIcon = { selected: mecShockAbsorbentArmorOriginalIcon, available: mecShockAbsorbentArmorAvailableIcon, disabled: mecShockAbsorbentArmorDisabledIcon };
 const mecVitalPointTargetingIcon: AbilityIcon = { selected: mecVitalPointTargetingOriginalIcon, available: mecVitalPointTargetingAvailableIcon, disabled: mecVitalPointTargetingDisabledIcon };
 const nationAimIcon: AbilityIcon = { selected: nationAimOriginalIcon, available: nationAimAvailableIcon, disabled: nationAimDisabledIcon };
 const nationWillIcon: AbilityIcon = { selected: nationWillOriginalIcon, available: nationWillAvailableIcon, disabled: nationWillDisabledIcon };
@@ -569,7 +569,7 @@ export const ABILITY_ICON: DeepReadonly<Record<AbilityId, AbilityIcon>> = {
   'regenesis': geneModLwrRegenesisIcon,
   'repair': alienRepairIcon,
   'repair-servos': mecRepairServosIcon,
-  'repulsor': mecShockAbsorbentArmorIcon,
+  'repulsor': lwrRepulsorIcon,
   'revive': supportReviveIcon,
   'run-and-gun': assaultRungunIcon,
   'sapper': aceHoleIcon,

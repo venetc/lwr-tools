@@ -114,14 +114,14 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearSlots": 2,
+    "gearSlots": 1,
     "psiSlots": 0,
     "fuel": 0,
     "info": "Provides greatly enhanced protection and mobility. Heavy armor set.",
     "grants": [
-      "repulsor",
+      "ablation",
       "damage-control",
-      "gear-slots"
+      "gear-slot"
     ]
   },
   "banshee-armor": {
@@ -184,16 +184,16 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearSlots": 2,
+    "gearSlots": 1,
     "psiSlots": 0,
     "fuel": 0,
     "info": "Offers greatly enhanced protection with immunity to strangulation. Heavy armor set.",
     "grants": [
-      "repulsor",
+      "ablation",
       "damage-control",
       "sealed",
       "flame-resistant",
-      "gear-slots"
+      "gear-slot"
     ]
   },
   "seraph-armor": {
@@ -235,16 +235,16 @@
     "fullHpAim": 0,
     "utilitySlots": 3,
     "moduleSlots": 0,
-    "gearSlots": 2,
+    "gearSlots": 1,
     "psiSlots": 0,
     "fuel": 12,
     "info": "Offers greatly enhanced protection while airborne with limited flight capability. Flying sets mobility to 9.3, increases defense by +30, and avoids the crit bonus exposed targets receive. Flight take off, hovering, and movement costs 1 fuel. Toggle flight mode to initiate flying. The jets can also scale heights without flying, like Muscle Amp, for 1 fuel per move. Provides immunity to strangulation. Heavy armor set.",
     "grants": [
-      "repulsor",
+      "ablation",
       "damage-control",
       "sealed",
       "flame-resistant",
-      "gear-slots"
+      "gear-slot"
     ]
   },
   "ghost-armor": {

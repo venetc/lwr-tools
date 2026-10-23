@@ -231,7 +231,7 @@
   "raking-fire": {
     "code": 46,
     "name": "Raking Fire",
-    "description": "Fire 2 additional reaction shots during overwatch. Reaction Fire and Bulletstorm shots that miss have a 50% chance to take suppressive fire. [Suppressive Fire deals 40% standard shot damage]"
+    "description": "Fire 2 additional reaction shots during overwatch. Reaction Fire and Bulletstorm shots that miss have a 35% chance to take suppressive fire. [Suppressive Fire deals 40% standard shot damage]"
   },
   "ranger": {
     "code": 47,
@@ -477,7 +477,7 @@
   "repulsor": {
     "code": 91,
     "name": "Repulsor",
-    "description": "If at full HP, non-psionic attacks are repulsed, causing them to graze (dealing only half of the original damage)."
+    "description": "The first non-psionic attack this unit takes each mission is repulsed: it grazes (dealing only half of the original damage)."
   },
   "sentry": {
     "code": 92,
@@ -502,7 +502,7 @@
   "predictive-tracking": {
     "code": 96,
     "name": "Predictive Tracking",
-    "description": "Reaction shots gain +10 aim. Bulletstorm gains +6% hit chance (+3% with an LMG)."
+    "description": "Reaction shots gain +10 aim. Bulletstorm gains +5% hit chance."
   },
   "dual-heart": {
     "code": 97,

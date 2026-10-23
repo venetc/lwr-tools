@@ -113,7 +113,6 @@ const checkModules = (records: Record<string, EquipmentContent>, context: z.Refi
  */
 const slotsByGrant = new Map([
   ['gear-slot', { gear: 1, psi: 0 }],
-  ['gear-slots', { gear: 2, psi: 0 }],
   ['psi-slot', { gear: 0, psi: 1 }],
 ]);
 

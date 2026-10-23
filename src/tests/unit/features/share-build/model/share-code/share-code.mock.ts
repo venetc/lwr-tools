@@ -171,17 +171,123 @@ export const ROOKIE_GAP_BUILD = {
   officerPerks: [null, 'cover-tenacity', null, null, null],
 };
 
+/** Sniper with Sharpshooter, a perk of Corporal, on Lance Corporal. */
+export const OTHER_RANK_PERK_SECTIONS = [rawPerksSection(SNIPER_CODE, [[0, 59], null, null, null, null, null])];
+
+/** Sniper build of the default build, as a build code without selections gives it. */
+export const SNIPER_BUILD = { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS), name: 'Sniper' };
+
+/** Outdated selection of `OTHER_RANK_PERK_SECTIONS`. */
+export const OTHER_RANK_PERK_OUTDATED = [
+  { stepKind: 'rank', stepIndex: 1, variantIndex: 0, abilityId: 'sharpshooter', currentAbilityId: 'magnum' },
+];
+
+/** Sniper with Squadsight, its Base perk, on Lance Corporal. */
+export const BASE_PERK_ON_RANK_SECTIONS = [rawPerksSection(SNIPER_CODE, [[0, 64], null, null, null, null, null])];
+
+/** Outdated selection of `BASE_PERK_ON_RANK_SECTIONS`. */
+export const BASE_PERK_ON_RANK_OUTDATED = [
+  { stepKind: 'rank', stepIndex: 1, variantIndex: 0, abilityId: 'squadsight', currentAbilityId: 'magnum' },
+];
+
+/** Sniper with Magnum, the first perk of Lance Corporal, under the second variant index. */
+export const SWAPPED_PERK_SECTIONS = [rawPerksSection(SNIPER_CODE, [[1, 35], null, null, null, null, null])];
+
+/** Sniper build of `SWAPPED_PERK_SECTIONS`. */
+export const MAGNUM_BUILD = { ...SNIPER_BUILD, perks: ['squadsight', 'magnum', null, null, null, null, null] };
+
+/** Sniper with Smart Macrophages, the second Brain gene mod, under the first variant index. */
+export const SWAPPED_GENE_MOD_SECTIONS = [
+  rawPerksSection(SNIPER_CODE, [null, null, null, null, null, null]),
+  rawBranchSection(3, [[0, 94], null, null, null, null], 1),
+];
+
+/** Sniper build of `SWAPPED_GENE_MOD_SECTIONS`. */
+export const SMART_MACROPHAGES_BUILD = { ...SNIPER_BUILD, geneMods: ['smart-macrophages', null, null, null, null] };
+
+/** Outdated selections of a code with one selection on a step of each branch that no longer offers it. */
+export const OUTDATED_BRANCH_CASES: [string, BinaryCodeSection[], unknown[]][] = [
+  [
+    'a gene mod of another body part',
+    [rawPerksSection(SNIPER_CODE, [null, null, null, null, null, null]), rawBranchSection(3, [[0, 95], null, null, null, null], 1)],
+    [{ stepKind: 'body-part', stepIndex: 0, variantIndex: 0, abilityId: 'advanced-perception', currentAbilityId: 'neural-damping' }],
+  ],
+  [
+    'a psionic ability of another psi level',
+    [rawPerksSection(SNIPER_CODE, [null, null, null, null, null, null]), rawBranchSection(4, [[1, 111], null, null, null, null], 2)],
+    [{ stepKind: 'psi-level', stepIndex: 0, variantIndex: 1, abilityId: 'psi-mastery', currentAbilityId: 'mind-fray' }],
+  ],
+  [
+    'an officer perk of another officer rank',
+    [rawPerksSection(SNIPER_CODE, [null, null, null, null, null, null]), rawBranchSection(5, [[0, 116], null, null, null, null], 1)],
+    [{ stepKind: 'officer-rank', stepIndex: 0, variantIndex: 0, abilityId: 'cover-tactics', currentAbilityId: 'strength-in-numbers' }],
+  ],
+];
+
+/**
+ * Sniper with kept and outdated selections between empty steps: Sharpshooter on Lance Corporal (outdated), Executioner
+ * on Sergeant, Lone Wolf on Master Sergeant; Iron Skin on Skin; Psi Mastery on Psion (outdated); Cover Tenacity on
+ * Lieutenant (outdated) and Camaraderie on Field Commander.
+ */
+export const MIXED_SOLDIER_SECTIONS = [
+  rawPerksSection(SNIPER_CODE, [[0, 59], null, [2, 15], null, null, [1, 33]]),
+  rawBranchSection(3, [null, null, null, [1, 100], null], 1),
+  rawBranchSection(4, [null, null, null, [0, 111], null], 2),
+  rawBranchSection(5, [[1, 117], null, null, null, [0, 122]], 1),
+];
+
+/** Sniper build of `MIXED_SOLDIER_SECTIONS`. */
+export const MIXED_SOLDIER_BUILD = {
+  ...SNIPER_BUILD,
+  perks: ['squadsight', null, null, 'executioner', null, null, 'lone-wolf'],
+  geneMods: [null, null, null, 'iron-skin', null],
+  officerPerks: [null, null, null, null, 'camaraderie'],
+};
+
+/** Outdated selections of `MIXED_SOLDIER_SECTIONS`, in tree order. */
+export const MIXED_SOLDIER_OUTDATED = [
+  { stepKind: 'rank', stepIndex: 1, variantIndex: 0, abilityId: 'sharpshooter', currentAbilityId: 'magnum' },
+  { stepKind: 'psi-level', stepIndex: 3, variantIndex: 0, abilityId: 'psi-mastery', currentAbilityId: 'inner-fire' },
+  { stepKind: 'officer-rank', stepIndex: 0, variantIndex: 1, abilityId: 'cover-tenacity', currentAbilityId: 'stay-frosty' },
+];
+
+/** Jaeger class number. */
+const JAEGER_CODE = 9;
+
+/** Jaeger with Sharpshooter, a perk of Corporal, on Lance Corporal, and Lone Wolf on Gunnery Sergeant. */
+export const OTHER_RANK_MEC_PERKS_SECTION = rawPerksSection(JAEGER_CODE, [[0, 59], null, null, null, [0, 33], null]);
+
+/** Jaeger build of `OTHER_RANK_MEC_PERKS_SECTION`. */
+export const LONE_WOLF_MEC_BUILD = {
+  ...defaultSoldierBuild(FIRST_MEC_CLASS),
+  name: 'Jaeger',
+  perks: ['hunter', null, null, null, null, 'lone-wolf', null],
+};
+
+/** Outdated selection of `OTHER_RANK_MEC_PERKS_SECTION`. */
+export const OTHER_RANK_MEC_OUTDATED = [
+  { stepKind: 'rank', stepIndex: 1, variantIndex: 0, abilityId: 'sharpshooter', currentAbilityId: 'rapid-fire' },
+];
+
+/** Soldier `LOADOUT` section with every slot empty: three empty item numbers, no utility and no Module slots. */
+export const EMPTY_SOLDIER_LOADOUT_SECTION: BinaryCodeSection = {
+  id: 6,
+  write: (writer) => {
+    writer.writeUint(0, 8);
+    writer.writeUint(0, 8);
+    writer.writeUint(0, 8);
+    writer.writeUint(0, 3);
+    writer.writeUint(0, 2);
+  },
+};
+
 /** Invalid biosoldier build codes by what breaks them, as code sections. */
 export const INVALID_BIOSOLDIER_SECTIONS: [string, BinaryCodeSection[]][] = [
   ['an unknown ability code', [rawPerksSection(SNIPER_CODE, [[0, 200], null, null, null, null, null])]],
   ['an unknown class', [rawPerksSection(30, LONE_WOLF_STEPS)]],
   ['fewer ranks than the class tree has', [rawPerksSection(SNIPER_CODE, [null, null, null, null, [1, 33]])]],
   ['a variant index outside its rank', [rawPerksSection(SNIPER_CODE, [null, null, null, [1, 45], null, null])]],
-  ['a perk of another rank', [rawPerksSection(SNIPER_CODE, [[0, 59], null, null, null, null, null])]],
-  ['a perk of another variant of its rank', [rawPerksSection(SNIPER_CODE, [[1, 35], null, null, null, null, null])]],
   ['fewer body parts than the build has', [LONE_WOLF_PERKS_SECTION, rawBranchSection(3, [[1, 94], null, null, null], 1)]],
-  ['a psionic ability of another psi level', [LONE_WOLF_PERKS_SECTION, rawBranchSection(4, [[0, 111], null, null, null, null], 2)]],
-  ['an officer perk of another officer rank', [LONE_WOLF_PERKS_SECTION, rawBranchSection(5, [[0, 116], null, null, null, null], 1)]],
   ['Neural Damping with a psionic ability', [
     LONE_WOLF_PERKS_SECTION,
     rawBranchSection(3, [[0, 93], null, null, null, null], 1),

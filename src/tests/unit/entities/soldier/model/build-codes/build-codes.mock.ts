@@ -72,7 +72,8 @@ const UNKNOWN_ABILITY_CODE = 99;
  */
 const selection = (variantIndex: number, code: number): SelectionCode => ({ variantIndex, code });
 
-const PLAIN_BUILD: BiosoldierBuildData = {
+/** Build of the codes of `createCodesMock` without branch codes: the right and top perks, empty branches. */
+export const PLAIN_BUILD: BiosoldierBuildData = {
   soldierClass: BIOSOLDIER_CLASS_MOCK,
   perks: ['granted', 'right', 'top'],
   name: 'Tester',
@@ -174,6 +175,31 @@ export const NEURAL_DAMPING_ONLY_CODES = [selection(0, 20), null];
 export const LOW_PSIONIC_CODES = [selection(0, 30), null];
 
 export const OTHER_RANK_OFFICER_CODES = [selection(0, 42), null];
+
+/** Build of the plain codes with `OTHER_RANK_PERK_CODES`: both ranks above the base perk empty. */
+export const OTHER_RANK_PERK_BUILD = { ...PLAIN_BUILD, perks: ['granted', null, null] } as unknown as BiosoldierBuildData;
+
+/** Outdated selection of `OTHER_RANK_PERK_CODES`. */
+export const OTHER_RANK_PERK_OUTDATED = [{ stepKind: 'rank', stepIndex: 1, variantIndex: 0, abilityId: 'top', currentAbilityId: 'left' }];
+
+/** MEC build of `OTHER_RANK_PERK_CODES`. */
+export const OTHER_RANK_MEC_BUILD: SoldierBuildData = { ...MEC_BUILD, perks: ['granted', null, null] };
+
+/** Outdated selections of branch codes that put an ability on a step that does not offer it, with the build of the rest. */
+export const OUTDATED_BRANCH_CASES: [string, Partial<BiosoldierBuildCodes>, unknown][] = [
+  ['a gene mod code of another ability', { geneMods: OTHER_ABILITY_GENE_MOD_CODES }, [
+    { stepKind: 'body-part', stepIndex: 0, variantIndex: 0, abilityId: 'right', currentAbilityId: 'neural-damping' },
+  ]],
+  ['a psionic ability of another psi level', { psionicAbilities: OTHER_LEVEL_PSIONIC_CODES }, [
+    { stepKind: 'psi-level', stepIndex: 0, variantIndex: 0, abilityId: 'high', currentAbilityId: 'low-left' },
+  ]],
+  ['an officer perk of another officer rank', { officerPerks: OTHER_RANK_OFFICER_CODES }, [
+    { stepKind: 'officer-rank', stepIndex: 0, variantIndex: 0, abilityId: 'beta-left', currentAbilityId: 'alpha-left' },
+  ]],
+];
+
+/** Codes of the right perk on the second rank under the variant index of the left one. */
+export const SWAPPED_PERK_CODES = [selection(0, 12), selection(0, 13)];
 
 /**
  * Biosoldier build of the mock class with the given choices, the rest as in a plain build.

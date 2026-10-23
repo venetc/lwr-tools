@@ -6,6 +6,7 @@ import { readShareCode } from '@features/share-build/model/share-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import {
+  BIOSOLDIER_BUILD_OF_CODES_STUB,
   BIOSOLDIER_BUILD_STUB,
   BIOSOLDIER_DECODED_RESULT,
   BIOSOLDIER_FORMAT,
@@ -16,6 +17,7 @@ import {
   GARBAGE_CODE,
   geneModsSection,
   INVALID_RESULT,
+  MEC_BUILD_OF_CODES_STUB,
   MEC_BUILD_STUB,
   MEC_CODES,
   MEC_DECODED_RESULT,
@@ -127,8 +129,8 @@ describe('encodeBuild of a biosoldier build', () => {
 });
 
 describe('readShareCode of a biosoldier build code', () => {
-  it('gives the build of the codes', () => {
-    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+  it('gives the build of the codes and its Outdated selections', () => {
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_OF_CODES_STUB);
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, FULL_SECTIONS) ?? '';
 
     const result = readShareCode(code);
@@ -192,7 +194,7 @@ describe('readShareCode of a biosoldier build code', () => {
     ['psionic', [PLAIN_PERKS_SECTION, psionicSection(SINGLE_PSIONIC_STEPS, 1)]],
     ['officer', [PLAIN_PERKS_SECTION, officerSection(SINGLE_OFFICER_STEPS, 1)]],
   ])('rejects a broken %s section', (_, sections) => {
-    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_OF_CODES_STUB);
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, sections) ?? '';
 
     const result = readShareCode(code);
@@ -205,7 +207,7 @@ describe('readShareCode of a biosoldier build code', () => {
     ['psionic', [PLAIN_PERKS_SECTION, psionicSection([])]],
     ['officer', [PLAIN_PERKS_SECTION, officerSection([])]],
   ])('rejects a %s section without steps', (_, sections) => {
-    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_OF_CODES_STUB);
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, sections) ?? '';
 
     const result = readShareCode(code);
@@ -214,7 +216,7 @@ describe('readShareCode of a biosoldier build code', () => {
   });
 
   it('rejects a code without the perks section', () => {
-    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_OF_CODES_STUB);
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [UNKNOWN_SECTION]) ?? '';
 
     const result = readShareCode(code);
@@ -256,8 +258,8 @@ describe('encodeBuild of a MEC build', () => {
 });
 
 describe('readShareCode of a MEC build code', () => {
-  it('gives the build of the codes', () => {
-    vi.mocked(mecBuildFromCodes).mockReturnValue(MEC_BUILD_STUB);
+  it('gives the build of the codes and its Outdated selections', () => {
+    vi.mocked(mecBuildFromCodes).mockReturnValue(MEC_BUILD_OF_CODES_STUB);
     const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION]) ?? '';
 
     const result = readShareCode(code);

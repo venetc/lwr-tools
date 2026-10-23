@@ -6,6 +6,8 @@ import { exportCode, importCode, toolbarImport } from '../utils/share-code';
 import {
   BIOSOLDIER_CODE_TITLE,
   BROKEN_CODE,
+  CANCEL_LABEL,
+  CODE_LABEL,
   COPIED_LABEL,
   COPY_LABEL,
   COUNTERCHARGE,
@@ -13,12 +15,18 @@ import {
   EXPORTED_NAME,
   GENE_MODS_TAB,
   GENE_MODS_TAB_WITH_ONE,
+  IMPORT_LABEL,
   INVALID_CODE_ERROR,
   IRON_SKIN,
+  LONE_WOLF,
   MAGNUM,
   NOTIFICATIONS,
   OFFICER_TAB,
   OFFICER_TAB_WITH_ONE,
+  OUTDATED_BUILD_CODE,
+  OUTDATED_CARD_TEXTS,
+  OUTDATED_DIALOG_NAME,
+  OUTDATED_UNIT_CODE,
   PAGE_PATH,
   PANEL_NAME,
   PSIONIC_TAB,
@@ -45,6 +53,24 @@ const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
  * @param page browser page.
  */
 const classPanels = (page: Page) => page.getByRole('region', { name: PANEL_NAME });
+
+/**
+ * Outdated selections dialog.
+ *
+ * @param page browser page.
+ */
+const outdatedDialog = (page: Page) => page.getByRole('dialog', { name: OUTDATED_DIALOG_NAME });
+
+/**
+ * Opens the Biosoldier Build calculator and enters the code in the import form of the toolbar.
+ *
+ * @param page browser page.
+ * @param code Share code.
+ */
+const importInCalculator = async (page: Page, code: string) => {
+  await openPanel(page);
+  await importCode(page, toolbarImport(page), code);
+};
 
 /**
  * Selects perks up to Corporal, a gene mod, a psionic ability and an officer perk in the tested build, renames it and
@@ -206,5 +232,65 @@ test.describe('Share code of another unit', () => {
     await notifications.getByRole('button', { name: 'Close' }).click();
 
     await expect(notifications.getByText(SHIV_CODE_TITLE)).toHaveCount(0);
+  });
+});
+
+test.describe('Share code with Outdated selections', () => {
+  test('opens the Outdated selections dialog for a build code', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await expect(outdatedDialog(page)).toBeVisible();
+  });
+
+  test('opens the Outdated selections dialog for a Unit code', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_UNIT_CODE);
+
+    await expect(outdatedDialog(page)).toBeVisible();
+  });
+
+  test('shows a card for a rank, a body part, a psi level and an officer rank', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await expect(outdatedDialog(page).getByRole('listitem')).toHaveText(OUTDATED_CARD_TEXTS);
+  });
+
+  test('keeps the code in the import form on Cancel', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+
+    await expect(page.getByRole('textbox', { name: CODE_LABEL })).toHaveValue(OUTDATED_BUILD_CODE);
+  });
+
+  test('adds no build on Cancel', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+
+    await expect(classPanels(page)).toHaveCount(1);
+  });
+
+  test('adds the build with the other selections on Import', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(abilityCell(classPanels(page).last(), LONE_WOLF)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('adds the build without the Outdated selections on Import', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(abilityCell(classPanels(page).last(), SHARPSHOOTER)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('closes the import form on Import', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(page.getByRole('textbox', { name: CODE_LABEL })).toBeHidden();
   });
 });

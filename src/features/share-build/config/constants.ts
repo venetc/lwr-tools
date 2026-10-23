@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { SoldierStepKind } from '@entities/soldier';
+
 import type { StepListBits } from '../model/section-fields';
 import type { ShareCodeReadResult } from '../model/share-code';
 
@@ -112,6 +114,14 @@ export const INVALID_CODE_TEXT = 'Invalid code';
 
 /** Section name of a SHIV tree step on an Outdated selection card. */
 export const SHIV_TREE_SECTION = 'SHIV tree';
+
+/** Section name of a soldier step on an Outdated selection card, by the kind of the step. */
+export const SOLDIER_STEP_SECTION = {
+  'rank': 'Class tree',
+  'body-part': 'Gene mods',
+  'psi-level': 'Psionic',
+  'officer-rank': 'Officer',
+} as const satisfies Record<SoldierStepKind, string>;
 
 /** Note of the empty cell of an Outdated selection card for a perk gone from the SHIV tree. */
 export const REMOVED_FROM_SHIV_TREE_NOTE = 'Removed from the SHIV tree';

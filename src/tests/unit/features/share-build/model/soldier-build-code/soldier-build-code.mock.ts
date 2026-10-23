@@ -1,9 +1,25 @@
-import type { BiosoldierBuildCodes, BiosoldierBuildData, SelectionCode, SoldierBuildCodes, SoldierBuildData, StepCodes } from '@entities/soldier';
+import type {
+  BiosoldierBuildCodes,
+  BiosoldierBuildData,
+  SelectionCode,
+  SoldierBuildCodes,
+  SoldierBuildData,
+  SoldierOutdatedSelection,
+  StepCodes,
+} from '@entities/soldier';
 import type { BinaryCodeSection, BitWriter } from '@shared/lib/binary-code';
 
 export const BIOSOLDIER_BUILD_STUB = { name: 'Tester' } as BiosoldierBuildData;
 
 export const MEC_BUILD_STUB = { name: 'Walker' } as SoldierBuildData;
+
+const OUTDATED_STUB: SoldierOutdatedSelection[] = [
+  { stepKind: 'rank', stepIndex: 1, variantIndex: 0, abilityId: 'sharpshooter', currentAbilityId: 'magnum' },
+];
+
+export const BIOSOLDIER_BUILD_OF_CODES_STUB = { build: BIOSOLDIER_BUILD_STUB, outdated: OUTDATED_STUB };
+
+export const MEC_BUILD_OF_CODES_STUB = { build: MEC_BUILD_STUB, outdated: OUTDATED_STUB };
 
 export const BIOSOLDIER_CLASS_CODE = 3;
 
@@ -75,9 +91,9 @@ export const UNKNOWN_SECTION_ID = 20;
 
 export const INVALID_RESULT = { status: 'invalid' };
 
-export const BIOSOLDIER_DECODED_RESULT = { status: 'unit', unit: { kind: 'biosoldier', build: BIOSOLDIER_BUILD_STUB, outdated: [], loadout: null } };
+export const BIOSOLDIER_DECODED_RESULT = { status: 'unit', unit: { kind: 'biosoldier', build: BIOSOLDIER_BUILD_STUB, outdated: OUTDATED_STUB, loadout: null } };
 
-export const MEC_DECODED_RESULT = { status: 'unit', unit: { kind: 'mec', build: MEC_BUILD_STUB, outdated: [], loadout: null } };
+export const MEC_DECODED_RESULT = { status: 'unit', unit: { kind: 'mec', build: MEC_BUILD_STUB, outdated: OUTDATED_STUB, loadout: null } };
 
 export const GARBAGE_CODE = 'not a code';
 

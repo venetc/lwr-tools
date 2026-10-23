@@ -51,3 +51,32 @@ export const NOTIFICATIONS = /^Notifications/;
 export const SHIV_CODE_TITLE = 'This is a SHIV build code';
 
 export const BIOSOLDIER_CODE_TITLE = 'This is a Biosoldier build code';
+
+/**
+ * Sniper build code from an older mod version: Sharpshooter on Lance Corporal, Advanced Perception on Brain, Psi
+ * Mastery on Awakened and Cover Tactics on Lieutenant no longer fit their steps; Lone Wolf on Master Sergeant and Iron
+ * Skin on Skin do.
+ */
+export const OUTDATED_BUILD_CODE = 'AQiIOh2FIRhqy-bIIErW8ChGzoAA1w';
+
+/** Sniper Unit code with the selections of `OUTDATED_BUILD_CODE` and an empty Loadout. */
+export const OUTDATED_UNIT_CODE = 'AQiIOh2FIRhqy-bIIErW8ChGzoBg6AAAAAAr';
+
+export const OUTDATED_DIALOG_NAME = 'Outdated selections';
+
+/** Cards of `OUTDATED_BUILD_CODE`: the step, the ability of the code and the one the tree has there now. */
+export const OUTDATED_CARD_TEXTS = [
+  /Class tree.*Lance Corporal.*Sharpshooter.*Magnum/,
+  /Gene mods.*Brain.*Advanced Perception.*Neural Damping/,
+  /Psionic.*Awakened.*Psi Mastery.*Mind Fray/,
+  /Officer.*Lieutenant.*Cover Tactics.*Strength in Numbers/,
+];
+
+/** Perk of Master Sergeant that `OUTDATED_BUILD_CODE` keeps. */
+export const LONE_WOLF = 'Lone Wolf';
+
+export const CANCEL_LABEL = 'Cancel';
+
+export const IMPORT_LABEL = 'Import';
+
+export const CODE_LABEL = 'Code';

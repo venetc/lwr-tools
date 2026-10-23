@@ -26,17 +26,20 @@ import {
   NEURAL_DAMPING_BUILD,
   NEURAL_DAMPING_CODES,
   NEURAL_DAMPING_ONLY_CODES,
-  OTHER_ABILITY_GENE_MOD_CODES,
-  OTHER_LEVEL_PSIONIC_CODES,
-  OTHER_RANK_OFFICER_CODES,
+  OTHER_RANK_MEC_BUILD,
+  OTHER_RANK_PERK_BUILD,
   OTHER_RANK_PERK_CODES,
+  OTHER_RANK_PERK_OUTDATED,
   OUT_OF_TREE_VARIANT_PERK_CODES,
+  OUTDATED_BRANCH_CASES,
+  PLAIN_BUILD,
   ROOKIE_OFFICER_BUILD,
   ROOKIE_OFFICER_CODES,
   SHORT_GENE_MOD_CODES,
   SHORT_PERK_CODES,
   SUPER_SOLDIER_BUILD,
   SUPER_SOLDIER_CODES,
+  SWAPPED_PERK_CODES,
   UNKNOWN_ABILITY_PERK_CODES,
   UNKNOWN_CLASS_CODE,
 } from './build-codes.mock';
@@ -187,43 +190,43 @@ describe('biosoldierBuildFromCodes', () => {
   it('restores a build with every part', () => {
     const build = biosoldierBuildFromCodes(SUPER_SOLDIER_CODES);
 
-    expect(build).toEqual(SUPER_SOLDIER_BUILD);
+    expect(build).toEqual({ build: SUPER_SOLDIER_BUILD, outdated: [] });
   });
 
   it('restores a build with empty steps', () => {
     const build = biosoldierBuildFromCodes(GAPPED_CODES);
 
-    expect(build).toEqual(GAPPED_BUILD);
+    expect(build).toEqual({ build: GAPPED_BUILD, outdated: [] });
   });
 
   it('restores an officer perk with only the base perk', () => {
     const build = biosoldierBuildFromCodes(ROOKIE_OFFICER_CODES);
 
-    expect(build).toEqual(ROOKIE_OFFICER_BUILD);
+    expect(build).toEqual({ build: ROOKIE_OFFICER_BUILD, outdated: [] });
   });
 
   it('restores a build with its own name and empty branches', () => {
     const build = biosoldierBuildFromCodes(NAMED_CODES);
 
-    expect(build).toEqual(NAMED_BUILD);
+    expect(build).toEqual({ build: NAMED_BUILD, outdated: [] });
   });
 
   it('names a build with a blank name after its class', () => {
     const build = biosoldierBuildFromCodes(BLANK_NAME_CODES);
 
-    expect(build?.name).toBe('Tester');
+    expect(build?.build.name).toBe('Tester');
   });
 
   it('places each gene mod in its body part', () => {
     const build = biosoldierBuildFromCodes(FEET_GENE_MOD_CODES);
 
-    expect(build).toEqual(FEET_GENE_MOD_BUILD);
+    expect(build).toEqual({ build: FEET_GENE_MOD_BUILD, outdated: [] });
   });
 
   it('restores Neural Damping without psionic abilities', () => {
     const build = biosoldierBuildFromCodes(NEURAL_DAMPING_CODES);
 
-    expect(build).toEqual(NEURAL_DAMPING_BUILD);
+    expect(build).toEqual({ build: NEURAL_DAMPING_BUILD, outdated: [] });
   });
 
   it('gives null for an unknown class', () => {
@@ -244,10 +247,22 @@ describe('biosoldierBuildFromCodes', () => {
     expect(build).toBeNull();
   });
 
-  it('gives null for a perk of another rank', () => {
+  it('leaves a perk of another rank out as an Outdated selection', () => {
     const build = biosoldierBuildFromCodes(createCodesMock({ perks: OTHER_RANK_PERK_CODES }));
 
-    expect(build).toBeNull();
+    expect(build).toEqual({ build: OTHER_RANK_PERK_BUILD, outdated: OTHER_RANK_PERK_OUTDATED });
+  });
+
+  it('takes a perk of its rank under another variant index', () => {
+    const build = biosoldierBuildFromCodes(createCodesMock({ perks: SWAPPED_PERK_CODES }));
+
+    expect(build).toEqual({ build: PLAIN_BUILD, outdated: [] });
+  });
+
+  it.each(OUTDATED_BRANCH_CASES)('leaves %s out as an Outdated selection', (_, codes, outdated) => {
+    const build = biosoldierBuildFromCodes(createCodesMock(codes));
+
+    expect(build).toEqual({ build: PLAIN_BUILD, outdated });
   });
 
   it('gives null for a variant index outside the rank', () => {
@@ -274,26 +289,8 @@ describe('biosoldierBuildFromCodes', () => {
     expect(build).toBeNull();
   });
 
-  it('gives null for a gene mod code of another ability', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: OTHER_ABILITY_GENE_MOD_CODES }));
-
-    expect(build).toBeNull();
-  });
-
-  it('gives null for a psionic ability outside its psi level', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ psionicAbilities: OTHER_LEVEL_PSIONIC_CODES }));
-
-    expect(build).toBeNull();
-  });
-
   it('gives null for Neural Damping with psionic abilities', () => {
     const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: NEURAL_DAMPING_ONLY_CODES, psionicAbilities: LOW_PSIONIC_CODES }));
-
-    expect(build).toBeNull();
-  });
-
-  it('gives null for an officer perk outside its officer rank', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ officerPerks: OTHER_RANK_OFFICER_CODES }));
 
     expect(build).toBeNull();
   });
@@ -329,13 +326,13 @@ describe('mecBuildFromCodes', () => {
   it('restores a build with the default name', () => {
     const build = mecBuildFromCodes(MEC_CODES);
 
-    expect(build).toEqual(MEC_BUILD);
+    expect(build).toEqual({ build: MEC_BUILD, outdated: [] });
   });
 
   it('restores a build with its own name', () => {
     const build = mecBuildFromCodes(NAMED_MEC_CODES);
 
-    expect(build).toEqual(NAMED_MEC_BUILD);
+    expect(build).toEqual({ build: NAMED_MEC_BUILD, outdated: [] });
   });
 
   it('gives null for a biosoldier class', () => {
@@ -344,9 +341,9 @@ describe('mecBuildFromCodes', () => {
     expect(build).toBeNull();
   });
 
-  it('gives null for a perk of another rank', () => {
+  it('leaves a perk of another rank out as an Outdated selection', () => {
     const build = mecBuildFromCodes({ ...MEC_CODES, perks: OTHER_RANK_PERK_CODES });
 
-    expect(build).toBeNull();
+    expect(build).toEqual({ build: OTHER_RANK_MEC_BUILD, outdated: OTHER_RANK_PERK_OUTDATED });
   });
 });

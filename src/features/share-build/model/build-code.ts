@@ -1,6 +1,6 @@
 import type { LoadoutUnitId } from '@entities/loadout';
 import type { ShivBuildData, ShivOutdatedSelection } from '@entities/shiv';
-import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier';
+import type { BiosoldierBuildData, SoldierBuildData, SoldierOutdatedSelection } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 
@@ -24,10 +24,10 @@ export interface BuildDataByKind {
  * for, left out of the build.
  */
 export interface OutdatedSelectionByKind {
-  /** Biosoldier: none, a misplaced ability makes the code invalid. */
-  biosoldier: never
-  /** MEC: none, a misplaced ability makes the code invalid. */
-  mec: never
+  /** Biosoldier: an ability its rank, body part, psi level or officer rank no longer offers. */
+  biosoldier: SoldierOutdatedSelection
+  /** MEC: a perk its rank no longer offers. */
+  mec: SoldierOutdatedSelection
   /** SHIV: a perk gone from the SHIV tree or sharing a technology level now. */
   shiv: ShivOutdatedSelection
 }

@@ -7,12 +7,15 @@ import { encodeUnit } from '@features/share-build/model/unit-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import {
+  BASE_PERK_ON_RANK_OUTDATED,
+  BASE_PERK_ON_RANK_SECTIONS,
   BIOSOLDIER_BUILD,
   COLLISION_CODES,
   COLLISION_OUTDATED,
   COLLISION_WITH_HOLO_ROUNDS_CODES,
   EMPTY_LOADOUT,
   EMPTY_SHIV_LOADOUT_SECTION,
+  EMPTY_SOLDIER_LOADOUT_SECTION,
   GAPPED_BIOSOLDIER_BUILD,
   GAPPED_MEC_BUILD,
   GARBAGE_CODE,
@@ -20,10 +23,20 @@ import {
   HOLO_ROUNDS_CODES,
   INVALID_BIOSOLDIER_SECTIONS,
   INVALID_RESULT,
+  LONE_WOLF_MEC_BUILD,
+  MAGNUM_BUILD,
   MEC_BUILD,
   MEC_LOADOUT,
   MIXED_CODES,
   MIXED_OUTDATED,
+  MIXED_SOLDIER_BUILD,
+  MIXED_SOLDIER_OUTDATED,
+  MIXED_SOLDIER_SECTIONS,
+  OTHER_RANK_MEC_OUTDATED,
+  OTHER_RANK_MEC_PERKS_SECTION,
+  OTHER_RANK_PERK_OUTDATED,
+  OTHER_RANK_PERK_SECTIONS,
+  OUTDATED_BRANCH_CASES,
   rawShivPerksSection,
   REMOVED_PERK_CODES,
   ROOKIE_GAP_BUILD,
@@ -32,8 +45,12 @@ import {
   SERAPH_LOADOUT,
   SHIV_BUILD,
   SHIV_LOADOUT,
+  SMART_MACROPHAGES_BUILD,
+  SNIPER_BUILD,
   SQUAD_HEADER_SECTION,
   SQUAD_NAME,
+  SWAPPED_GENE_MOD_SECTIONS,
+  SWAPPED_PERK_SECTIONS,
   UNKNOWN_FORMAT,
   UNKNOWN_PERK_CODES,
   UNKNOWN_SECTION,
@@ -90,6 +107,56 @@ describe('readShareCode of a Build code with empty steps', () => {
     const result = readShareCode(encodeBinaryCode(1, sections) ?? '');
 
     expect(result).toEqual(INVALID_RESULT);
+  });
+});
+
+describe('readShareCode of a soldier build code with Outdated selections', () => {
+  it('leaves a perk of another rank out of the build', () => {
+    const result = readShareCode(encodeBinaryCode(1, OTHER_RANK_PERK_SECTIONS) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SNIPER_BUILD, outdated: OTHER_RANK_PERK_OUTDATED, loadout: null } });
+  });
+
+  it.each(OUTDATED_BRANCH_CASES)('leaves %s out of the build', (_, sections, outdated) => {
+    const result = readShareCode(encodeBinaryCode(1, sections) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SNIPER_BUILD, outdated, loadout: null } });
+  });
+
+  it('takes a perk of its rank under another variant index', () => {
+    const result = readShareCode(encodeBinaryCode(1, SWAPPED_PERK_SECTIONS) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: MAGNUM_BUILD, outdated: [], loadout: null } });
+  });
+
+  it('takes a gene mod of its body part under another variant index', () => {
+    const result = readShareCode(encodeBinaryCode(1, SWAPPED_GENE_MOD_SECTIONS) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SMART_MACROPHAGES_BUILD, outdated: [], loadout: null } });
+  });
+
+  it('takes the Base perk from the tree and leaves it out of a higher rank', () => {
+    const result = readShareCode(encodeBinaryCode(1, BASE_PERK_ON_RANK_SECTIONS) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SNIPER_BUILD, outdated: BASE_PERK_ON_RANK_OUTDATED, loadout: null } });
+  });
+
+  it('keeps the other selections and empty steps next to the Outdated selections', () => {
+    const result = readShareCode(encodeBinaryCode(1, MIXED_SOLDIER_SECTIONS) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: MIXED_SOLDIER_BUILD, outdated: MIXED_SOLDIER_OUTDATED, loadout: null } });
+  });
+
+  it('leaves a MEC perk of another rank out of the build', () => {
+    const result = readShareCode(encodeBinaryCode(3, [OTHER_RANK_MEC_PERKS_SECTION]) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'mec', build: LONE_WOLF_MEC_BUILD, outdated: OTHER_RANK_MEC_OUTDATED, loadout: null } });
+  });
+
+  it('gives a Unit code with its Loadout and Outdated selections', () => {
+    const result = readShareCode(encodeBinaryCode(1, [...OTHER_RANK_PERK_SECTIONS, EMPTY_SOLDIER_LOADOUT_SECTION]) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SNIPER_BUILD, outdated: OTHER_RANK_PERK_OUTDATED, loadout: EMPTY_LOADOUT } });
   });
 });
 

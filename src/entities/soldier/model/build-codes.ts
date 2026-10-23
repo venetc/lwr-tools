@@ -62,6 +62,38 @@ export interface BiosoldierBuildCodes extends SoldierBuildCodes {
 }
 
 /**
+ * Kind of a step of a soldier build: a rank of the class tree, a body part, a psi level or an officer rank.
+ */
+export type SoldierStepKind = 'rank' | 'body-part' | 'psi-level' | 'officer-rank';
+
+/**
+ * Outdated selection of a soldier build code: a selection whose ability its step no longer offers, left out of the
+ * build.
+ */
+export interface SoldierOutdatedSelection {
+  /** Kind of the step. */
+  stepKind: SoldierStepKind
+  /** Index of the step in the build: of the rank from the first rank, of the body part, psi level or officer rank. */
+  stepIndex: number
+  /** Index of the variant on the step in the code. */
+  variantIndex: number
+  /** Ability of the code. */
+  abilityId: AbilityId
+  /** Ability the current tree has at the same place. */
+  currentAbilityId: AbilityId
+}
+
+/**
+ * Soldier build of stable codes and the selections of the codes left out of it.
+ */
+export interface SoldierBuildOfCodes<Build> {
+  /** Build without the Outdated selections. */
+  build: Build
+  /** Outdated selections in tree order; empty if every selection stands on its step. */
+  outdated: SoldierOutdatedSelection[]
+}
+
+/**
  * Selected ids by step; null for an empty step.
  */
 type StepIds = readonly (string | null)[];
@@ -192,32 +224,58 @@ const branchCodes = (stepIds: StepIds, variantsByStep: StepVariants) => {
 };
 
 /**
- * Ids of the selections by step: each one is the variant of its step whose ability has the code.
+ * Ids of the selections of the steps of a tree and the selections of the codes left out of them.
+ */
+interface StepIdsOfCodes {
+  /** Ability ids by step; null for an empty step or an Outdated selection. */
+  ids: (AbilityId | null)[]
+  /** Outdated selections in step order. */
+  outdated: SoldierOutdatedSelection[]
+}
+
+/**
+ * Ids of the selections by step: the ability of the code wherever its step offers it, under the variant index of the
+ * code or another one. An ability its step no longer offers is an Outdated selection, and the step stays empty.
  *
  * @param codes selections by step.
  * @param variantsByStep variants of each step.
- * @returns the ids; null if the steps differ in number from the tree, or a selection names a variant outside its step
- * or an ability other than the one the tree has there, unknown ones included.
+ * @param stepKind kind of the steps.
+ * @param firstStepIndex index of the step of the first code in the build.
+ * @returns the ids and the Outdated selections; null if the steps differ in number from the tree, or a selection names
+ * an unknown ability or a variant outside its step.
  */
-const stepIdsOfCodes = (codes: Readonly<StepCodes>, variantsByStep: StepVariants) => {
+const stepIdsOfCodes = (
+  codes: Readonly<StepCodes>,
+  variantsByStep: StepVariants,
+  stepKind: SoldierStepKind,
+  firstStepIndex: number,
+): StepIdsOfCodes | null => {
   if (codes.length !== variantsByStep.length) return null;
 
-  const ids: (AbilityId | null)[] = [];
+  const result: StepIdsOfCodes = { ids: [], outdated: [] };
 
-  for (const [stepIndex, selection] of codes.entries()) {
+  for (const [index, selection] of codes.entries()) {
     if (!selection) {
-      ids.push(null);
+      result.ids.push(null);
       continue;
     }
 
-    const abilityId = variantsByStep[stepIndex]?.[selection.variantIndex] ?? null;
+    const variants = variantsByStep[index] ?? [];
+    const currentAbilityId = variants[selection.variantIndex] ?? null;
+    const abilityId = ABILITY_ID_BY_CODE.get(selection.code) ?? null;
 
-    if (!abilityId || ABILITY_ID_BY_CODE.get(selection.code) !== abilityId) return null;
+    if (!currentAbilityId || !abilityId) return null;
 
-    ids.push(abilityId);
+    if (variants.includes(abilityId)) {
+      result.ids.push(abilityId);
+      continue;
+    }
+
+    result.ids.push(null);
+    result.outdated.push({ stepKind, stepIndex: firstStepIndex + index, variantIndex: selection.variantIndex, abilityId, currentAbilityId });
   }
 
-  return ids;
+  return result;
 };
 
 /**
@@ -225,11 +283,12 @@ const stepIdsOfCodes = (codes: Readonly<StepCodes>, variantsByStep: StepVariants
  *
  * @param codes selections by step; empty for a branch without any.
  * @param variantsByStep variants of each step.
+ * @param stepKind kind of the steps.
  */
-const branchIdsOfCodes = (codes: Readonly<StepCodes>, variantsByStep: StepVariants) => {
-  if (codes.length === 0) return variantsByStep.map(() => null);
+const branchIdsOfCodes = (codes: Readonly<StepCodes>, variantsByStep: StepVariants, stepKind: SoldierStepKind): StepIdsOfCodes | null => {
+  if (codes.length === 0) return { ids: variantsByStep.map(() => null), outdated: [] };
 
-  return stepIdsOfCodes(codes, variantsByStep);
+  return stepIdsOfCodes(codes, variantsByStep, stepKind, 0);
 };
 
 /**
@@ -291,19 +350,22 @@ export const mecBuildCodes = (build: Readonly<SoldierBuildData>): SoldierBuildCo
 };
 
 /**
- * MEC build of stable codes, assembled with the mutators by the Build rules.
+ * MEC build of stable codes, assembled with the mutators by the Build rules. A perk its rank no longer offers is an
+ * Outdated selection and stays out of the build; the base perk always comes from the current tree.
  *
  * @param codes MEC build codes.
- * @returns the build; null for an unknown code, a class of another kind, steps or a variant that the tree does not
- * have, or an ability other than the one the tree has on its place.
+ * @returns the build and its Outdated selections; null for an unknown code, a class of another kind, or steps or a
+ * variant that the tree does not have.
  */
-export const mecBuildFromCodes = (codes: Readonly<SoldierBuildCodes>): SoldierBuildData | null => {
+export const mecBuildFromCodes = (codes: Readonly<SoldierBuildCodes>): SoldierBuildOfCodes<SoldierBuildData> | null => {
   const soldierClass = MEC_CLASS_BY_CODE.get(codes.classCode) ?? null;
-  const perkIds = soldierClass && stepIdsOfCodes(codes.perks, rankVariants(soldierClass));
+  const perks = soldierClass && stepIdsOfCodes(codes.perks, rankVariants(soldierClass), 'rank', 1);
 
-  if (!soldierClass || !perkIds) return null;
+  if (!soldierClass || !perks) return null;
 
-  return assembleSoldierBuild(soldierClass, perkIds, nameOfCode(codes.name, soldierClass.name));
+  const build = assembleSoldierBuild(soldierClass, perks.ids, nameOfCode(codes.name, soldierClass.name));
+
+  return build && { build, outdated: perks.outdated };
 };
 
 /**
@@ -342,22 +404,30 @@ export const biosoldierBuildCodes = (build: Readonly<BiosoldierBuildData>): Bios
 };
 
 /**
- * Biosoldier build of stable codes, assembled with the mutators by the Build rules.
+ * Biosoldier build of stable codes, assembled with the mutators by the Build rules. An ability its step no longer
+ * offers is an Outdated selection and stays out of the build; the base perk always comes from the current tree.
  *
  * @param codes biosoldier build codes.
- * @returns the build; null for an unknown code, a class of another kind, steps or a variant that the tree does not
- * have, an ability other than the one the tree has on its place, or a choice a Build rule refuses.
+ * @returns the build and its Outdated selections in tree order: ranks, body parts, psi levels, officer ranks; null for
+ * an unknown code, a class of another kind, steps or a variant that the tree does not have, or a choice a Build rule
+ * refuses.
  */
-export const biosoldierBuildFromCodes = (codes: Readonly<BiosoldierBuildCodes>): BiosoldierBuildData | null => {
+export const biosoldierBuildFromCodes = (codes: Readonly<BiosoldierBuildCodes>): SoldierBuildOfCodes<BiosoldierBuildData> | null => {
   const soldierClass = BIOSOLDIER_CLASS_BY_CODE.get(codes.classCode) ?? null;
-  const perks = soldierClass && stepIdsOfCodes(codes.perks, rankVariants(soldierClass));
-  const geneMods = branchIdsOfCodes(codes.geneMods, GENE_MODS_BY_BODY_PART);
-  const psionicAbilities = branchIdsOfCodes(codes.psionicAbilities, PSIONIC_ABILITIES_BY_PSI_LEVEL);
-  const officerPerks = branchIdsOfCodes(codes.officerPerks, OFFICER_PERKS_BY_OFFICER_RANK);
+  const perks = soldierClass && stepIdsOfCodes(codes.perks, rankVariants(soldierClass), 'rank', 1);
+  const geneMods = branchIdsOfCodes(codes.geneMods, GENE_MODS_BY_BODY_PART, 'body-part');
+  const psionicAbilities = branchIdsOfCodes(codes.psionicAbilities, PSIONIC_ABILITIES_BY_PSI_LEVEL, 'psi-level');
+  const officerPerks = branchIdsOfCodes(codes.officerPerks, OFFICER_PERKS_BY_OFFICER_RANK, 'officer-rank');
 
   if (!soldierClass || !perks || !geneMods || !psionicAbilities || !officerPerks) return null;
 
-  const selections: BiosoldierSelections = { perks, geneMods, psionicAbilities, officerPerks };
+  const selections: BiosoldierSelections = {
+    perks: perks.ids,
+    geneMods: geneMods.ids,
+    psionicAbilities: psionicAbilities.ids,
+    officerPerks: officerPerks.ids,
+  };
+  const build = assembleBiosoldierBuild(soldierClass, selections, nameOfCode(codes.name, soldierClass.name));
 
-  return assembleBiosoldierBuild(soldierClass, selections, nameOfCode(codes.name, soldierClass.name));
+  return build && { build, outdated: [...perks.outdated, ...geneMods.outdated, ...psionicAbilities.outdated, ...officerPerks.outdated] };
 };

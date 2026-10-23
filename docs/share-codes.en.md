@@ -29,7 +29,7 @@ Every place that takes a code reads it with `readShareCode(code)`. It opens the 
 
 - `{ status: 'unit', unit }` — a build code or a Unit code: `unit` is `{ kind, build, outdated, loadout }`, with `loadout: null` for a build code. `outdated` lists the Outdated selections of the code, left out of `build`; empty for a code that fits the current trees. SHIV: [SHIV build codes](shiv-share-codes.en.md#sections). The unit type comes from the format of its build layout (`1` Biosoldier, `2` SHIV, `3` MEC).
 - `{ status: 'squad', squad }` — a [Squad code](squad-share-codes.en.md).
-- `{ status: 'invalid' }` — everything else: a broken part, an unknown format, several parts without a Squad header, a missing or broken section, an unknown code, a class of another format, a step count or a variant index the current tree does not have, a selection whose ability is not the one the tree has at its place, or a Build that breaks a Build rule. The rules: the base perk on the first rank, one selection per step, Neural Damping against Psionic abilities. Ranks, Psi levels and Officer ranks are taken in any order and may stay empty; an Officer rank does not need its Rank.
+- `{ status: 'invalid' }` — everything else: a broken part, an unknown format, several parts without a Squad header, a missing or broken section, an unknown code, a class of another format, a step count or a variant index the current tree does not have, or a Build that breaks a Build rule. The rules: the base perk on the first rank, one selection per step, Neural Damping against Psionic abilities. Ranks, Psi levels and Officer ranks are taken in any order and may stay empty; an Officer rank does not need its Rank.
 
 Each place checks the result with one condition. The Import of a Build calculator:
 
@@ -46,7 +46,7 @@ A stored build is read the same way: a record whose code is no build of the kind
 
 Code:
 
-- `entities/soldier` — Build ↔ codes: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. The entity turns a Build into stable codes and back: each selection as its variant index on the step and the `code` of its ability. It gives null for an unknown code, a class of another kind, steps or a variant the tree does not have, an ability off its place or a Build that breaks a Build rule. From codes it assembles the Build from the Default build step by step with the mutators of the Build calculator; a Build is encoded only if the same pass assembles it.
+- `entities/soldier` — Build ↔ codes: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. The entity turns a Build into stable codes and back: each selection as its variant index on the step and the `code` of its ability. It gives null for an unknown code, a class of another kind, steps or a variant the tree does not have or a Build that breaks a Build rule. From codes it also gives the Outdated selections (`SoldierOutdatedSelection`: step kind and index, variant index, the ability of the code and the one of the tree there), whose steps it leaves empty. From codes it assembles the Build from the Default build step by step with the mutators of the Build calculator; a Build is encoded only if the same pass assembles it.
 - `shared/lib/binary-code` — header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`.
 - `features/share-build` — bits only. Public API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `storedBuildCodec(kind)`, the `ShareCodeImport` and `ShareCodeExport` components and the types. Inside: `config/constants.ts` (format numbers, section ids, field widths), `model/share-code.ts` (`readShareCode` and its result), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — the format, the sections of a build and reading them back — `BUILD_CODE_LAYOUTS` by unit type of `LoadoutUnitId`, so a unit type without a layout does not compile, and `encodeBuild`), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList`, a step list `writeStepList` / `readStepList`, the `NAME` section and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildLayout` builds the layout of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`: `BIOSOLDIER_BUILD_LAYOUT` is format 1 with the Gene mods, Psionic abilities and Officer perks extension, `MEC_BUILD_LAYOUT` format 3 without one), `model/unit-code.ts` (Unit codes), `model/squad-code.ts` (Squad codes), `model/stored-build.ts` (stored build records over a share code; a code with Outdated selections reads no record), `model/outdated-selection-cards.ts` and `ui/OutdatedSelectionsDialog.vue` (the cards and the dialog of Outdated selections). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
@@ -65,7 +65,7 @@ Steps are a list of every step of the tree: `count` 3, then per step `selected` 
 
 In `PERKS`, the steps are the ranks bottom to top, from the second one: the base perk is taken from the current tree on import. In `GENE_MODS`, the Body parts Brain to Legs; in `PSIONIC`, the Psi levels Awakened to Master; in `OFFICER`, the Officer ranks Lieutenant to Field Commander. A code without one of these sections gives empty steps there; a present one always has steps.
 
-The ability of a selection must be the one the current tree has at its step and variant, and the step count must be the one of the tree; otherwise the code is invalid.
+The step count must be the one of the tree and the variant index must exist on its step; otherwise the code is invalid. A selection whose ability its step offers is taken, under any variant index: reordering the variants of a step changes nothing. An ability the step no longer offers is an Outdated selection: the step stays empty, and the dialog card shows the step, the ability of the code and the one the tree has at its variant now. The base perk is not in the code, so it is never outdated.
 
 MEC codes never carry `GENE_MODS`, `PSIONIC` or `OFFICER`, and the MEC decoder skips them as unknown.
 
@@ -102,7 +102,7 @@ Example: new ability, max `code` is N.
 
 ## Safe edits
 
-Edit names, descriptions, icons; rename ids (keep `code`); add classes; rename Body parts, Psi levels and Officer ranks; change an Officer rank's `abbreviation` or `requiredRank`, which is only a hint.
+Edit names, descriptions, icons; rename ids (keep `code`); reorder the variants of a step; add classes; rename Body parts, Psi levels and Officer ranks; change an Officer rank's `abbreviation` or `requiredRank`, which is only a hint.
 
 ## Breaking edits
 
@@ -111,8 +111,8 @@ Edit names, descriptions, icons; rename ids (keep `code`); add classes; rename B
 | change or reuse a `code` | show the wrong ability |
 | change or reuse a `code` of a Loadout catalog | Unit codes show the wrong item |
 | delete a record | "Invalid code" |
-| move an ability to another step or variant, remove it from a tree or replace it | codes that select it: "Invalid code" |
-| reorder Body parts, Psi levels or Officer ranks | codes with a selection there: "Invalid code" |
+| move an ability to another step, remove it from a tree or replace it | codes that select it: an Outdated selection |
+| reorder Body parts, Psi levels or Officer ranks | codes with a selection there: Outdated selections |
 | change the number of ranks, Body parts, Psi levels or Officer ranks | codes of that tree: "Invalid code" |
 | remove a variant from a step | codes that select a variant past the new end of the step: "Invalid code" |
 | change a section's fields or their widths | "Invalid code" or wrong data |

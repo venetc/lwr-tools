@@ -1,4 +1,12 @@
-import type { BiosoldierBuildCodes, BiosoldierBuildData, SoldierBuildCodes, SoldierBuildData, StepCodes } from '@entities/soldier';
+import type {
+  BiosoldierBuildCodes,
+  BiosoldierBuildData,
+  SoldierBuildCodes,
+  SoldierBuildData,
+  SoldierBuildOfCodes,
+  SoldierOutdatedSelection,
+  StepCodes,
+} from '@entities/soldier';
 import { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 
@@ -31,15 +39,15 @@ interface SoldierBuildExtension<Codes extends SoldierBuildCodes> {
  *
  * @param format share code format number.
  * @param buildCodes build codes of a build; null if it cannot be encoded.
- * @param buildFromCodes build of the codes; null if they make no build.
+ * @param buildFromCodes build of the codes and its Outdated selections; null if they make no build.
  * @param extension parts of the format beyond the soldier ones.
  */
 const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
   format: number,
   buildCodes: (build: Build) => Codes | null,
-  buildFromCodes: (codes: Codes) => Build | null,
+  buildFromCodes: (codes: Codes) => SoldierBuildOfCodes<Build> | null,
   extension: SoldierBuildExtension<Codes>,
-): BuildCodeLayout<Build> => {
+): BuildCodeLayout<Build, SoldierOutdatedSelection> => {
   /**
    * Sections of the build: the `PERKS` section with the class and perks, the `NAME` section if the build has its own
    * name, then the extension sections.
@@ -71,8 +79,8 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
    * Build of the code sections. Absent sections of the extra parts give empty parts; unknown sections are skipped.
    *
    * @param sections code sections by id.
-   * @returns the build without Outdated selections; null if there is no `PERKS` section, a section is broken, or the
-   * codes make no build.
+   * @returns the build without its Outdated selections and the selections; null if there is no `PERKS` section, a
+   * section is broken, or the codes make no build.
    */
   const readBuild = (sections: ReadonlyMap<number, BitReader>) => {
     const perksReader = sections.get(SOLDIER_BUILD_SECTION.PERKS) ?? null;
@@ -86,9 +94,7 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
 
     const codes = extension.read({ ...perks, name: nameField.name }, sections);
 
-    const build = codes && buildFromCodes(codes);
-
-    return build && { build, outdated: [] };
+    return codes && buildFromCodes(codes);
   };
 
   return { format, loadoutSection: SOLDIER_BUILD_SECTION.LOADOUT, writeBuild, readBuild };

@@ -1,8 +1,10 @@
 import type { ShivOutdatedSelection, ShivPerkId } from '@entities/shiv';
 import { shivPerkById, TECHNOLOGY_LEVELS } from '@entities/shiv';
+import type { AbilityId, SoldierOutdatedSelection } from '@entities/soldier';
+import { abilityById, BODY_PARTS, OFFICER_RANKS, PSI_LEVELS, SOLDIER_RANKS } from '@entities/soldier';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
-import { REMOVED_FROM_SHIV_TREE_NOTE, SHIV_TREE_SECTION } from '../config/constants';
+import { REMOVED_FROM_SHIV_TREE_NOTE, SHIV_TREE_SECTION, SOLDIER_STEP_SECTION } from '../config/constants';
 import type { DecodedUnit } from './unit-code';
 import { isUnitOf } from './unit-code';
 
@@ -107,6 +109,59 @@ const shivOutdatedCards = (outdated: readonly ShivOutdatedSelection[]): Outdated
 };
 
 /**
+ * Card ability of a soldier ability.
+ *
+ * @param abilityId ability id.
+ */
+const soldierCardAbility = (abilityId: AbilityId): OutdatedCardAbility => {
+  const ability = abilityById(abilityId);
+
+  return { id: ability.id, name: ability.name, icon: ability.icon.available };
+};
+
+/**
+ * Step of a soldier Outdated selection on its card: its name with the rank icon of a rank or the medal of an officer
+ * rank.
+ *
+ * @param selection soldier Outdated selection.
+ */
+const soldierCardStep = (selection: SoldierOutdatedSelection): Pick<OutdatedSelectionCard, 'stepName' | 'stepIcon' | 'stepImage'> => {
+  switch (selection.stepKind) {
+    case 'rank': {
+      const rank = SOLDIER_RANKS[selection.stepIndex];
+
+      return { stepName: rank?.name ?? null, stepIcon: rank?.icon ?? null, stepImage: null };
+    }
+    case 'body-part': {
+      return { stepName: BODY_PARTS[selection.stepIndex]?.name ?? null, stepIcon: null, stepImage: null };
+    }
+    case 'psi-level': {
+      return { stepName: PSI_LEVELS[selection.stepIndex]?.name ?? null, stepIcon: null, stepImage: null };
+    }
+    case 'officer-rank': {
+      const officerRank = OFFICER_RANKS[selection.stepIndex];
+
+      return { stepName: officerRank?.name ?? null, stepIcon: null, stepImage: officerRank?.medal ?? null };
+    }
+  }
+};
+
+/**
+ * Cards of soldier Outdated selections, one per step in tree order: the ability of the code and the one the current
+ * tree has at the same place.
+ *
+ * @param outdated Outdated selections of a soldier build code.
+ */
+const soldierOutdatedCards = (outdated: readonly SoldierOutdatedSelection[]): OutdatedSelectionCard[] => outdated.map(selection => ({
+  id: `${selection.stepKind}-${selection.stepIndex}`,
+  section: SOLDIER_STEP_SECTION[selection.stepKind],
+  ...soldierCardStep(selection),
+  codeAbilities: [soldierCardAbility(selection.abilityId)],
+  current: soldierCardAbility(selection.currentAbilityId),
+  note: null,
+}));
+
+/**
  * Cards of the Outdated selections of a Unit of a share code.
  *
  * @param unit Unit of a share code.
@@ -115,5 +170,5 @@ const shivOutdatedCards = (outdated: readonly ShivOutdatedSelection[]): Outdated
 export const unitOutdatedCards = (unit: DecodedUnit): OutdatedSelectionCard[] => {
   if (isUnitOf(unit, 'shiv')) return shivOutdatedCards(unit.outdated);
 
-  return [];
+  return soldierOutdatedCards(unit.outdated);
 };

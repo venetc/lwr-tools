@@ -23,7 +23,7 @@ The name is cut to 31 bytes. A header without `NAME` is invalid; unknown section
 
 ## Decoding
 
-`decodeSquad` gives `{ status: 'decoded', squad }`, `{ status: 'unit-code' }` for a Unit code or a build code of any kind, or `{ status: 'invalid' }`.
+`readShareCode` tells a Squad code by the format `4` of its first part and gives `{ status: 'squad', squad }`; a Unit code or a build code gives `{ status: 'unit', unit }`, anything else `{ status: 'invalid' }` (see [Decoding result](share-codes.en.md#decoding-result)).
 
 - Every part has its own CRC. Any broken part — the header, a Unit, an empty part — makes the whole code invalid: no partial import.
 - `squad` has the `name`, the `builds` and the `units` in Squad order; a Unit refers to its build by `buildIndex` and carries its Loadout, null for a build code part.
@@ -51,10 +51,10 @@ The Share code button next to the Squad name copies the code of the open Squad: 
 
 `features/share-build`:
 
-- `model/squad-code.ts` — `encodeSquad` writes the header and the Unit codes of `encodeUnit`, null if a Unit code can't be written; `decodeSquad` reads them back and merges Units into builds by their build sections.
-- `model/build-import.ts` — `decodeBuildImport`: the decoder of a Build calculator import, which tells a valid Squad code apart as `squad-code`.
+- `model/squad-code.ts` — `encodeSquad` writes the header and the Unit codes of `encodeUnit`, null if a Unit code can't be written; `readSquad`, called by `readShareCode` with the opened header and parts, reads them back and merges Units into builds by their build sections.
+- `model/share-code.ts` — `readShareCode`: every place that takes a code checks its result with one condition, as in the table above.
 
-`pages/squads` turns a decoded Squad into a Squad: `model/squad-import.ts` (Import in the toolbar), `model/squad-code-copy.ts` (the Share code button).
+`pages/squads` turns a read Squad into a Squad: `model/squad-import.ts` (Import in the toolbar), `model/squad-code-copy.ts` (the Share code button).
 
 ## Evolving the format
 

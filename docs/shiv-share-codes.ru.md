@@ -6,7 +6,7 @@
 
 ## Формат
 
-`SHARE_CODE_FORMAT.SHIV_BUILD` = `2`. Код биосолдата или MEC в декодере SHIV и код SHIV в декодере солдат декодируются как `other-unit`.
+`SHARE_CODE_FORMAT.SHIV_BUILD` = `2`. `readShareCode` читает код этого формата как Unit SHIV; Import калькулятора солдат сообщает о нём как о коде другого юнита, а калькулятор SHIV так же сообщает о коде биосолдата или MEC.
 
 ## Секции
 
@@ -16,11 +16,11 @@
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | если имя отличается от «SHIV» |
 | `LOADOUT` | 3 | `shivType` 8 · `primary` 8 · `secondary` 8 · `utilityCount` 3 · `item` 8 × utilityCount · `moduleCount` 2 · `item` 8 × moduleCount | только в кодах Unit |
 
-Код Unit SHIV — код билда SHIV плюс `LOADOUT` с раскладкой из [Кодов Unit](share-codes.ru.md#коды-unit): первый предмет — `code` SHIV type из `shiv-types.json`, `secondary` и `moduleCount` всегда `0`. Build calculator пропускает `LOADOUT` как неизвестную секцию.
+Код Unit SHIV — код билда SHIV плюс `LOADOUT` с раскладкой из [Кодов Unit](share-codes.ru.md#коды-unit): первый предмет — `code` SHIV type из `shiv-types.json`, `secondary` и `moduleCount` всегда `0`. Build calculator SHIV берёт из него Build и оставляет Loadout.
 
 `PERKS` хранит выбранные перки набором, без строк дерева. При импорте каждый перк встаёт в свою строку текущего дерева SHIV. Код невалиден, если перк неизвестен или не из дерева либо два перка из одной строки.
 
-Код: `entities/shiv` — Build ↔ коды `shivBuildCodes` / `shivBuildFromCodes`: коды перков по порядку строк, перк в своей строке по Build rule из `selectShivBuildPerk`, раскладка перков по Technology levels. `features/share-build` — только биты: `config/constants.ts` (`SHIV_BUILD_SECTION`, ширины полей), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT` и `encodeShivBuild` / `decodeShivBuild` — его `buildCodec`) поверх счётного списка кодов и `readWholeSection` из `model/section-fields.ts`.
+Код: `entities/shiv` — Build ↔ коды `shivBuildCodes` / `shivBuildFromCodes`: коды перков по порядку строк, перк в своей строке по Build rule из `selectShivBuildPerk`, раскладка перков по Technology levels. `features/share-build` — только биты: `config/constants.ts` (`SHIV_BUILD_SECTION`, ширины полей), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT`, под `shiv` в `BUILD_CODE_LAYOUTS` из `model/build-code.ts`) поверх счётного списка кодов и `readWholeSection` из `model/section-fields.ts`.
 
 ## Нумерация
 

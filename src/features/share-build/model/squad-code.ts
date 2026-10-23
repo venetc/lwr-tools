@@ -1,12 +1,13 @@
-import type { DecodedLoadout } from '@entities/loadout';
-import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
+import type { DecodedLoadout, LoadoutUnitId } from '@entities/loadout';
+import type { BitReader, OpenedBinaryCode } from '@shared/lib/binary-code';
+import { encodeBinaryCode } from '@shared/lib/binary-code';
 
-import { INVALID_SHARE_CODE, SHARE_CODE_FORMAT, SQUAD_CODE_SEPARATOR, SQUAD_SECTION } from '../config/constants';
-import type { BuildCodeKind, BuildDataByKind } from './build-codecs';
-import { BUILD_CODECS } from './build-codecs';
-import { nameSection, readNameSection } from './share-code';
+import { SHARE_CODE_FORMAT, SQUAD_CODE_SEPARATOR, SQUAD_SECTION } from '../config/constants';
+import type { BuildDataByKind } from './build-code';
+import { encodeBuild } from './build-code';
+import { nameSection, readNameSection } from './section-fields';
 import type { DecodedUnit, DecodedUnitOf, UnitCodeData } from './unit-code';
-import { decodeUnit, encodeUnit } from './unit-code';
+import { encodeUnit, readUnit } from './unit-code';
 
 /**
  * Squad to share: its name and its Units in Squad order.
@@ -15,13 +16,13 @@ export interface SquadCodeData {
   /** Squad name. */
   name: string
   /** Units in Squad order. */
-  units: readonly UnitCodeData<BuildCodeKind>[]
+  units: readonly UnitCodeData<LoadoutUnitId>[]
 }
 
 /**
  * Build of a Squad code of one kind.
  */
-export interface DecodedSquadBuildOf<Kind extends BuildCodeKind> {
+export interface DecodedSquadBuildOf<Kind extends LoadoutUnitId> {
   /** Kind of the build: the Build calculator it belongs to. */
   kind: Kind
   /** Build data. */
@@ -31,7 +32,7 @@ export interface DecodedSquadBuildOf<Kind extends BuildCodeKind> {
 /**
  * Build of a Squad code of any kind.
  */
-export type DecodedSquadBuild = { [Kind in BuildCodeKind]: DecodedSquadBuildOf<Kind> }[BuildCodeKind];
+export type DecodedSquadBuild = { [Kind in LoadoutUnitId]: DecodedSquadBuildOf<Kind> }[LoadoutUnitId];
 
 /**
  * Unit of a Squad code: its build among the builds of the code and its Loadout.
@@ -56,17 +57,12 @@ export interface DecodedSquad {
 }
 
 /**
- * Result of decoding a Squad code: the Squad; `unit-code` for a Unit code or a build code; `invalid` for anything else.
- */
-export type SquadCodeDecodeResult = { status: 'decoded', squad: DecodedSquad } | { status: 'unit-code' } | { status: 'invalid' };
-
-/**
  * Key of the build sections of the Unit: Units with equal keys have the same build, name and officer perks included;
  * null for a build without codes, which shares its build with no other Unit.
  *
  * @param unit Unit of a Squad code.
  */
-const buildSectionsKey = <Kind extends BuildCodeKind>(unit: DecodedUnitOf<Kind>) => BUILD_CODECS[unit.kind].encode(unit.build);
+const buildSectionsKey = <Kind extends LoadoutUnitId>(unit: DecodedUnitOf<Kind>) => encodeBuild(unit.kind, unit.build);
 
 /**
  * Build of the Unit without its Loadout.
@@ -122,27 +118,22 @@ export const encodeSquad = (squad: SquadCodeData) => {
 };
 
 /**
- * Squad of a Squad code. Every part has its own CRC, and any broken part makes the whole code invalid. A Unit code or
- * a build code of any kind is told apart as `unit-code`.
+ * Squad of an opened Squad code: the Squad header and the Unit parts after it. Every part has its own CRC, and any
+ * broken part makes the whole code invalid.
  *
- * @param code share code.
+ * @param headerSections sections of the Squad header by id.
+ * @param unitParts opened Unit parts in Squad order; null for a part that does not open.
+ * @returns the Squad; null if the `NAME` section is absent or broken, or a part is no Unit.
  */
-export const decodeSquad = (code: string): SquadCodeDecodeResult => {
-  const [header = '', ...unitParts] = code.trim().split(SQUAD_CODE_SEPARATOR);
-  const binaryCode = openBinaryCode(header);
+export const readSquad = (headerSections: ReadonlyMap<number, BitReader>, unitParts: readonly (OpenedBinaryCode | null)[]) => {
+  const nameField = readNameSection(headerSections.get(SQUAD_SECTION.NAME) ?? null);
+  const units = unitParts.flatMap((part) => {
+    const unit = part && readUnit(part);
 
-  if (binaryCode?.format !== SHARE_CODE_FORMAT.SQUAD) {
-    return decodeUnit(code).status === 'decoded' ? { status: 'unit-code' } : INVALID_SHARE_CODE;
-  }
+    return unit ? [unit] : [];
+  });
 
-  const nameField = readNameSection(binaryCode.sections.get(SQUAD_SECTION.NAME) ?? null);
-  const units = unitParts.map(decodeUnit);
+  if (typeof nameField?.name !== 'string' || units.length !== unitParts.length) return null;
 
-  if (typeof nameField?.name !== 'string') return INVALID_SHARE_CODE;
-
-  const decodedUnits = units.flatMap(result => (result.status === 'decoded' ? [result.unit] : []));
-
-  if (decodedUnits.length !== units.length) return INVALID_SHARE_CODE;
-
-  return { status: 'decoded', squad: squadOfUnits(nameField.name, decodedUnits) };
+  return squadOfUnits(nameField.name, units);
 };

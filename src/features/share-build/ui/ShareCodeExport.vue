@@ -1,11 +1,12 @@
-<script setup lang="ts" generic="Kind extends BuildCodeKind">
+<script setup lang="ts" generic="Kind extends LoadoutUnitId">
+import type { LoadoutUnitId } from '@entities/loadout';
 import { createId } from '@shared/lib/id';
 import { Button } from '@shared/ui/button';
 import { Input } from '@shared/ui/input';
 import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
 
-import type { BuildCodeKind, BuildDataByKind } from '../model/build-codecs';
+import type { BuildDataByKind } from '../model/build-code';
 import { useShareCodeExport } from '../model/share-code-export';
 
 interface Props {

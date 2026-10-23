@@ -25,22 +25,23 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 ## Результат декодирования
 
-Декодер возвращает `{ status: 'decoded', build }` или причину неудачи:
+Каждое место ввода читает код через `readShareCode(code)`. Он открывает рамку каждой части один раз, определяет вид кода по `format` первой части и отдаёт:
 
-- `{ status: 'other-unit', unit }` — CRC и заголовок валидны, но `format` принадлежит билдам другого юнита (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). Импорт показывает toast «This is a <unit> build code» и оставляет форму открытой с кодом.
-- `{ status: 'invalid' }` — всё остальное: битый код, неизвестный формат, отсутствующая или битая секция, неизвестный код, класс другого формата или Build, нарушающий Build rule. Правила: каждый перк на своём ранге дерева класса, ранги, Psi levels и Officer ranks по порядку без пропусков, каждый Gene mod в своей Body part (в `GENE_MODS` Body parts идут от Brain к Legs, каждая один раз), Neural Damping против Psionic abilities, Officer rank — только когда дерево класса завершает его нужный Rank. Импорт показывает «Invalid code» под полем.
+- `{ status: 'unit', unit }` — код Build или код Unit: `unit` — `{ kind, build, loadout }`, у кода Build `loadout: null`. Вид Unit — по формату его раскладки (`1` Biosoldier, `2` SHIV, `3` MEC).
+- `{ status: 'squad', squad }` — [код Squad](squad-share-codes.ru.md).
+- `{ status: 'invalid' }` — всё остальное: битая часть, неизвестный формат, несколько частей без заголовка Squad, отсутствующая или битая секция, неизвестный код, класс другого формата или Build, нарушающий Build rule. Правила: каждый перк на своём ранге дерева класса, ранги, Psi levels и Officer ranks по порядку без пропусков, каждый Gene mod в своей Body part (в `GENE_MODS` Body parts идут от Brain к Legs, каждая один раз), Neural Damping против Psionic abilities, Officer rank — только когда дерево класса завершает его нужный Rank.
 
-Импорт калькулятора декодирует через `decodeBuildImport`: код, невалидный для декодера билда, но валидный код Squad, даёт `{ status: 'squad-code' }`, и импорт показывает тост «This is a Squad code. Import it in the Squad planner.» и оставляет форму открытой.
+Каждое место проверяет результат одним условием. Import калькулятора берёт `unit` своего вида и оставляет его Build; `unit` другого вида показывает тост «This is a <unit> build code» с именем вида Unit из `entities/loadout`, `squad` — тост «This is a Squad code. Import it in the Squad planner.», оба оставляют форму открытой; `invalid` показывает «Invalid code» под полем. Места Squad planner — в [кодах Squad](squad-share-codes.ru.md#декодирование).
 
 Код открывается, только если такой Build можно собрать в калькуляторе, и любой собранный в калькуляторе Build кодируется.
 
-Сохранённый билд, чей код не декодируется, при загрузке пропускается.
+Сохранённый билд читается так же: запись, чей код — не Build вида своего калькулятора, при загрузке пропускается.
 
 Код:
 
 - `entities/soldier` — Build ↔ коды: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. Entity переводит Build в стабильные коды и обратно и отдаёт null на неизвестный код, класс другого вида или Build, нарушающий Build rule. Из кодов она собирает Build от Default build по шагам мутаторами калькулятора; Build кодируется, только если его собирает тот же проход.
 - `shared/lib/binary-code` — заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`.
-- `features/share-build` — только биты: `config/constants.ts` (номера форматов и их юниты, id секций, ширины полей), `model/share-code.ts` (результат декодирования, открытие кода ожидаемого формата, секция `NAME`, `BuildCodeLayout` — формат, секции билда и их чтение — и `buildCodec`, который делает из раскладки кодер и декодер), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` и `encodeMecBuild` / `decodeMecBuild` — `buildCodec` поверх них), `model/unit-code.ts` (коды Unit), `model/squad-code.ts` (коды Squad), `model/build-import.ts` (декодер импорта калькулятора), `model/build-codecs.ts` (кодеки и раскладки по видам билдов), `model/stored-build.ts` (записи хранилища поверх share-кода). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
+- `features/share-build` — только биты. Публичный API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `storedBuildCodec(kind)`, компоненты `ShareCodeImport` и `ShareCodeExport` и типы. Внутри: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/share-code.ts` (`readShareCode` и его результат), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — формат, секции билда и их чтение, — `BUILD_CODE_LAYOUTS` по видам Unit из `LoadoutUnitId`, так что вид без раскладки не компилируется, и `encodeBuild`), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList`, секция `NAME` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения), `model/unit-code.ts` (коды Unit), `model/squad-code.ts` (коды Squad), `model/stored-build.ts` (записи хранилища поверх share-кода). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 
@@ -71,10 +72,10 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - Предметы — номера `code` каталогов Loadout из `entities/loadout`: броня и MEC exoskeletons из `armors.json` (в коде SHIV — его SHIV type из `shiv-types.json`), оружие из `weapons.json`, Equipment и Modules из `equipment.json`. `0` — пустой слот, в том числе Secondary.
 - Utility slots идут по позициям, Gear Slots и Psi Slots последними; Module slots — по позициям.
 - Декодер не сверяет Loadout с Build: неизвестный код предмета оставляет слот пустым, Seraph Armor без Officer perks — не `invalid`. Squad planner при импорте приводит Loadout к правилам проверкой Unit и сообщает тостом, что снято.
-- Build calculator читает код Unit как код Build: `LOADOUT` он пропускает как неизвестную секцию. Код Build, импортированный как Unit, получает Default Loadout.
+- Build calculator берёт Build из кода Unit своего вида и оставляет Loadout. Код Build, добавленный как Unit, получает Default Loadout.
 - Новая часть Unit — новая секция после `LOADOUT`, по тем же правилам, что новая часть Build.
 
-Код: `model/unit-code.ts` — `encodeUnit` пишет секции раскладки своего вида (`BUILD_CODE_LAYOUTS`) и `LOADOUT` поверх `loadoutCodes` из `entities/loadout`; `decodeUnit` принимает код любого формата билдов и отдаёт вид, Build и Loadout из `loadoutFromCodes`, null — у кода Build.
+Код: `model/unit-code.ts` — `encodeUnit` пишет секции раскладки своего вида (`BUILD_CODE_LAYOUTS`) и `LOADOUT` поверх `loadoutCodes` из `entities/loadout`; `readUnit`, который вызывает `readShareCode`, читает открытый код любого формата билдов в вид, Build и Loadout из `loadoutFromCodes`, null — у кода Build.
 
 ## Нумерация
 

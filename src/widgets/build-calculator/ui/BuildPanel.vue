@@ -1,8 +1,9 @@
-<script setup lang="ts" generic="Kind extends BuildCodeKind, Group extends TieredPickerGroup">
+<script setup lang="ts" generic="Kind extends LoadoutUnitId, Group extends TieredPickerGroup">
 import { ClipboardPaste, RotateCcw, Share2 } from '@lucide/vue';
 import type { VNode } from 'vue';
 
-import type { BuildCodeKind, BuildDataByKind } from '@features/share-build';
+import type { LoadoutUnitId } from '@entities/loadout';
+import type { BuildDataByKind } from '@features/share-build';
 import { ShareCodeExport, ShareCodeImport } from '@features/share-build';
 import type { LockableItem } from '@shared/lib/stored-list';
 import { ActionBar } from '@shared/ui/action-bar';

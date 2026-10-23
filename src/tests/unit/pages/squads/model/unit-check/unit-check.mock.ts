@@ -1,73 +1,50 @@
-import type { DecodedLoadout } from '@entities/loadout';
-import type { ArmorContent } from '@entities/loadout/model/armors';
-import type { EquipmentContent } from '@entities/loadout/model/equipment';
-import type { ShivTypeContent } from '@entities/loadout/model/shiv-types';
-import type { WeaponContent } from '@entities/loadout/model/weapons';
+import type { DecodedLoadout, Loadout, LoadoutChange, LoadoutFit, LoadoutItemId, LoadoutUnitId, LoadoutWearer } from '@entities/loadout';
 import type { SelectedGeneMods, SelectedOfficerPerks, SelectedPsionicAbilities, SoldierClass } from '@entities/soldier';
 import type { SquadUnit } from '@features/manage-squads';
 import type { SquadBuild } from '@pages/squads/model/squad-build';
 
-/**
- * Armor record with zero stats and no slots besides the given fields.
- *
- * @param content fields that differ from the empty record.
- */
-const armorMock = (content: Pick<ArmorContent, 'code' | 'unit' | 'name'> & Partial<ArmorContent>): ArmorContent => ({
-  category: 'light',
-  hp: 0,
-  damageReduction: 0,
-  defense: 0,
-  mobility: 0,
-  will: 0,
-  critResist: 0,
-  fullHpAim: 0,
-  utilitySlots: 0,
-  moduleSlots: 0,
-  gearSlots: 0,
-  psiSlots: 0,
-  fuel: 0,
-  info: '',
-  ...content,
-});
+/** Names of the items the toast lines tell. */
+const ITEM_NAMES = new Map<LoadoutItemId, string>([
+  ['tactical-vest', 'Vest'],
+  ['seraph-armor', 'Seraph'],
+  ['psi-grenade', 'Grenade'],
+]);
 
 /**
- * Weapon record with zero stats besides the given fields.
+ * Stub of `findLoadoutItem` that knows only the names of the items of the mock.
  *
- * @param content fields that differ from the empty record.
+ * @param id item id.
  */
-const weaponMock = (content: Pick<WeaponContent, 'code' | 'unit' | 'name' | 'type' | 'slot'> & Partial<WeaponContent>): WeaponContent => ({
-  tier: 'ballistic',
-  damage: 0,
-  penetration: 0,
-  crit: 0,
-  aim: 0,
-  ammo: 0,
-  mobility: 0,
-  range: 0,
-  utilitySlots: 0,
-  info: '',
-  ...content,
-});
+export const findLoadoutItemStub = (id: LoadoutItemId) => {
+  const name = ITEM_NAMES.get(id) ?? null;
 
-export const ARMOR_CONTENT_MOCK: Record<string, ArmorContent> = {
-  'tactical-vest': armorMock({ code: 1, unit: 'biosoldier', name: 'Vest', utilitySlots: 2 }),
-  'seraph-armor': armorMock({ code: 20, unit: 'biosoldier', name: 'Seraph', utilitySlots: 2, requires: 'officer' }),
-  'mec1-paladin': armorMock({ code: 15, unit: 'mec', name: 'Paladin', category: 'standard', utilitySlots: 1, moduleSlots: 1 }),
+  return name ? { item: { name } } : null;
 };
 
-export const WEAPON_CONTENT_MOCK: Record<string, WeaponContent> = {
-  'assault-rifle': weaponMock({ code: 1, unit: 'biosoldier', name: 'Rifle', type: 'assault-rifle', slot: 'primary' }),
-  'minigun': weaponMock({ code: 10, unit: 'mec', name: 'Minigun', type: 'mec-weapon', slot: 'primary' }),
-  'autocannon': weaponMock({ code: 11, unit: 'shiv', name: 'Autocannon', type: 'autocannon', slot: 'primary' }),
-};
+export const SNIPER_DEFAULT_LOADOUT: Loadout = { armor: 'tactical-vest', primary: 'assault-rifle', secondary: null, utility: [null, null, null], modules: [] };
 
-export const EQUIPMENT_CONTENT_MOCK: Record<string, EquipmentContent> = {
-  'psi-grenade': { code: 1, units: ['biosoldier'], slot: 'utility', name: 'Grenade', requires: 'psionic', stats: [] },
-};
+export const MEC_DEFAULT_LOADOUT: Loadout = { armor: 'mec1-paladin', primary: 'minigun', secondary: null, utility: [null], modules: [null] };
 
-export const SHIV_TYPE_CONTENT_MOCK: Record<string, ShivTypeContent> = {
-  shiv: { code: 1, name: 'SHIV', hp: 0, damageReduction: 0, critResist: 0, defense: 0, mobility: 0, aim: 0, utilitySlots: 2, fuel: 0, info: '' },
-};
+/** Default Loadout of each unit type. */
+const DEFAULT_LOADOUTS = new Map<LoadoutUnitId, Loadout>([
+  ['biosoldier', SNIPER_DEFAULT_LOADOUT],
+  ['mec', MEC_DEFAULT_LOADOUT],
+  ['shiv', { armor: 'shiv', primary: 'autocannon', secondary: null, utility: [null, null], modules: [] }],
+]);
+
+/**
+ * Stub of `defaultLoadout`: the Default Loadout of the unit type of the wearer.
+ *
+ * @param wearer profile of the Unit.
+ */
+export const defaultLoadoutStub = (wearer: LoadoutWearer) => DEFAULT_LOADOUTS.get(wearer.unit) ?? null;
+
+/**
+ * Stub of `fitLoadout` that keeps the Loadout as it is.
+ *
+ * @param loadout Loadout to fit.
+ */
+export const keepingFitStub = (loadout: Loadout): LoadoutFit => ({ loadout, changes: [] });
 
 /**
  * Class with only the fields the Squad planner reads.
@@ -123,17 +100,25 @@ export const MEC_WEARER = { unit: 'mec', classId: 'goliath', hasGeneMod: false, 
 
 export const SHIV_WEARER = { unit: 'shiv', classId: null, hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
 
-export const SNIPER_DEFAULT_LOADOUT = { armor: 'tactical-vest', primary: 'assault-rifle', secondary: null, utility: [null, null, null], modules: [] };
-
-export const MEC_DEFAULT_LOADOUT = { armor: 'mec1-paladin', primary: 'minigun', secondary: null, utility: [null], modules: [null] };
-
-export const SHIV_DEFAULT_LOADOUT = { armor: 'shiv', primary: 'autocannon', secondary: null, utility: [null, null], modules: [] };
-
 export const UNKNOWN_CODES_LOADOUT: DecodedLoadout = { armor: null, primary: null, secondary: null, utility: [null, null, null], modules: [] };
 
 export const SERAPH_LOADOUT: DecodedLoadout = { armor: 'seraph-armor', primary: 'assault-rifle', secondary: null, utility: [null, null, null], modules: [] };
 
-export const SERAPH_REPLACED = [{ kind: 'replaced', slot: 'armor', item: 'seraph-armor', by: 'tactical-vest', reason: 'needs-officer' }];
+export const SERAPH_REPLACED: LoadoutChange[] = [{ kind: 'replaced', slot: 'armor', item: 'seraph-armor', by: 'tactical-vest', reason: 'needs-officer' }];
+
+export const SERAPH_FIT: LoadoutFit = { loadout: SNIPER_DEFAULT_LOADOUT, changes: SERAPH_REPLACED };
+
+export const SERAPH_AND_GRENADE_FIT: LoadoutFit = {
+  loadout: SNIPER_DEFAULT_LOADOUT,
+  changes: [...SERAPH_REPLACED, { kind: 'removed', slot: 'utility', item: 'psi-grenade', reason: 'needs-psionic' }],
+};
+
+export const MEC_GRENADE_FIT: LoadoutFit = {
+  loadout: MEC_DEFAULT_LOADOUT,
+  changes: [{ kind: 'removed', slot: 'utility', item: 'psi-grenade', reason: 'wrong-unit' }],
+};
+
+export const UNKNOWN_CODES_FIT_INPUT: Loadout = { ...UNKNOWN_CODES_LOADOUT, armor: 'tactical-vest', primary: 'assault-rifle' };
 
 export const SNIPER_UNIT: SquadUnit = { id: 'unit-1', build: { kind: 'biosoldier', id: 'sniper-build' }, loadout: SERAPH_LOADOUT };
 

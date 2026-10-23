@@ -82,12 +82,6 @@ export const SEPARATOR = '.';
 
 export const INVALID_RESULT = { status: 'invalid' };
 
-export const UNIT_CODE_RESULT = { status: 'unit-code' };
-
-export const SQUAD_CODE_RESULT = { status: 'squad-code' };
-
-export const GARBAGE_CODE = 'not a code';
-
 /** `NAME` section of the Squad header: name byte length 5 bits, then the UTF-8 bytes. */
 export const NAME_SECTION: BinaryCodeSection = {
   id: SQUAD_NAME_SECTION_ID,

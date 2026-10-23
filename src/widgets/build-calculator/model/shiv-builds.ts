@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import type { ShivBuildData } from '@entities/shiv';
 import { selectShivBuildPerk, SHIV_BUILD_NAME, TECHNOLOGY_LEVELS } from '@entities/shiv';
 import { useBuildList } from '@features/manage-builds';
-import { decodeShivBuild, encodeShivBuild, storedBuildCodec } from '@features/share-build';
+import { storedBuildCodec } from '@features/share-build';
 import type { LockableItem } from '@shared/lib/stored-list';
 
 import { DEFAULT_SHIV_BUILD_ID, SHIV_BUILD_KEY_PREFIX, SHIV_BUILD_ORDER_KEY } from '../config/constants';
@@ -28,7 +28,7 @@ export const useShivBuildsStore = defineStore('build-calculator-shiv-builds', ()
   const buildList = useBuildList<ShivBuildData>({
     orderKey: SHIV_BUILD_ORDER_KEY,
     itemKeyPrefix: SHIV_BUILD_KEY_PREFIX,
-    ...storedBuildCodec(encodeShivBuild, decodeShivBuild),
+    ...storedBuildCodec('shiv'),
     defaultItems: () => [{ ...newShivBuildData(), id: DEFAULT_SHIV_BUILD_ID, readonly: false }],
     newData: newShivBuildData,
   });

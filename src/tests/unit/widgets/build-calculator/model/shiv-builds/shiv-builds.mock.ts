@@ -18,8 +18,6 @@ export const SHIV_ENTITY_MOCK = {
  */
 export const SHARE_BUILD_MOCK = {
   storedBuildCodec: () => ({ serialize: (build: object) => build, parse: () => null }),
-  encodeShivBuild: () => null,
-  decodeShivBuild: () => null,
 };
 
 export const DEFAULT_SHIV_ID = 'default-shiv';

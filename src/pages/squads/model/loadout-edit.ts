@@ -65,6 +65,13 @@ export const changeNote = (change: LoadoutChange) => {
 };
 
 /**
+ * Sentences about the changes without repeats, in the order they first appear.
+ *
+ * @param changes moved, removed, replaced or added items.
+ */
+export const changeNotes = (changes: readonly LoadoutChange[]) => [...new Set(changes.map(changeNote))];
+
+/**
  * Sentence about a new number of slots: `Utility slots: 3 → 2.`
  *
  * @param name name of the slots.

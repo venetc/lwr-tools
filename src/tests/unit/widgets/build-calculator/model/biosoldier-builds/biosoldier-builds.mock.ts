@@ -45,8 +45,6 @@ export const SOLDIER_ENTITY_MOCK = {
  */
 export const SHARE_BUILD_MOCK = {
   storedBuildCodec: () => ({ serialize: (build: object) => build, parse: () => null }),
-  encodeBiosoldierBuild: () => null,
-  decodeBiosoldierBuild: () => null,
 };
 
 export const DEFAULT_ASSAULT_ID = 'default-assault';

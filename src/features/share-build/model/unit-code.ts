@@ -1,24 +1,17 @@
-import type { DecodedLoadout, LoadoutCodes } from '@entities/loadout';
-import { loadoutCodes, loadoutFromCodes } from '@entities/loadout';
-import type { BinaryCodeSection, BitReader, BitWriter } from '@shared/lib/binary-code';
-import { encodeBinaryCode, openBinaryCode } from '@shared/lib/binary-code';
+import type { DecodedLoadout, LoadoutCodes, LoadoutUnitId } from '@entities/loadout';
+import { LOADOUT_UNITS, loadoutCodes, loadoutFromCodes } from '@entities/loadout';
+import type { BinaryCodeSection, BitReader, BitWriter, OpenedBinaryCode } from '@shared/lib/binary-code';
+import { encodeBinaryCode } from '@shared/lib/binary-code';
 
-import {
-  BUILD_CODE_KIND_BY_FORMAT,
-  EMPTY_ITEM_CODE,
-  INVALID_SHARE_CODE,
-  LOADOUT_ITEM_CODE_BITS,
-  MODULE_COUNT_BITS,
-  UTILITY_COUNT_BITS,
-} from '../config/constants';
-import type { BuildCodeKind, BuildDataByKind } from './build-codecs';
-import { BUILD_CODE_LAYOUTS } from './build-codecs';
+import { EMPTY_ITEM_CODE, LOADOUT_ITEM_CODE_BITS, MODULE_COUNT_BITS, UTILITY_COUNT_BITS } from '../config/constants';
+import type { BuildDataByKind } from './build-code';
+import { BUILD_CODE_LAYOUTS } from './build-code';
 import { readCodeList, readWholeSection, writeCodeList } from './section-fields';
 
 /**
  * Unit to share: its build of the kind and its Loadout.
  */
-export interface UnitCodeData<Kind extends BuildCodeKind> {
+export interface UnitCodeData<Kind extends LoadoutUnitId> {
   /** Kind of the build: the Build calculator it belongs to. */
   kind: Kind
   /** Build of the Unit. */
@@ -30,7 +23,7 @@ export interface UnitCodeData<Kind extends BuildCodeKind> {
 /**
  * Unit of a share code of one kind.
  */
-export interface DecodedUnitOf<Kind extends BuildCodeKind> {
+export interface DecodedUnitOf<Kind extends LoadoutUnitId> {
   /** Kind of the build: the Build calculator it belongs to. */
   kind: Kind
   /** Build of the Unit. */
@@ -42,12 +35,7 @@ export interface DecodedUnitOf<Kind extends BuildCodeKind> {
 /**
  * Unit of a share code of any of the kinds, all of them by default.
  */
-export type DecodedUnit<Kinds extends BuildCodeKind = BuildCodeKind> = { [Kind in Kinds]: DecodedUnitOf<Kind> }[Kinds];
-
-/**
- * Result of decoding a Unit code: the Unit, or `invalid` for a broken code.
- */
-export type UnitCodeDecodeResult = { status: 'decoded', unit: DecodedUnit } | { status: 'invalid' };
+export type DecodedUnit<Kinds extends LoadoutUnitId = LoadoutUnitId> = { [Kind in Kinds]: DecodedUnitOf<Kind> }[Kinds];
 
 /**
  * Code of an item in the `LOADOUT` section: the catalog code, `0` for an empty slot.
@@ -98,7 +86,7 @@ const readLoadoutFields = (reader: BitReader): LoadoutCodes => ({
  * @returns the code; null if the build has no codes, or the Loadout has more utility or Module slots than the section
  * counts.
  */
-export const encodeUnit = <Kind extends BuildCodeKind>(unit: UnitCodeData<Kind>) => {
+export const encodeUnit = <Kind extends LoadoutUnitId>(unit: UnitCodeData<Kind>) => {
   const layout = BUILD_CODE_LAYOUTS[unit.kind];
   const buildSections = layout.writeBuild(unit.build);
   const codes = loadoutCodes(unit.loadout, unit.kind);
@@ -119,7 +107,7 @@ export const encodeUnit = <Kind extends BuildCodeKind>(unit: UnitCodeData<Kind>)
  * @returns the Unit, with a null Loadout without the `LOADOUT` section; null if the build cannot be read or the
  * `LOADOUT` section is broken.
  */
-const readUnit = <Kind extends BuildCodeKind>(kind: Kind, sections: ReadonlyMap<number, BitReader>): DecodedUnit<Kind> | null => {
+const readUnitOf = <Kind extends LoadoutUnitId>(kind: Kind, sections: ReadonlyMap<number, BitReader>): DecodedUnit<Kind> | null => {
   const layout = BUILD_CODE_LAYOUTS[kind];
   const build = layout.readBuild(sections);
   const loadoutReader = sections.get(layout.loadoutSection) ?? null;
@@ -131,21 +119,23 @@ const readUnit = <Kind extends BuildCodeKind>(kind: Kind, sections: ReadonlyMap<
 };
 
 /**
- * Unit of a share code of any kind: a Unit code brings its Loadout, a build code none. Items of unknown codes leave
- * their slots empty, and the Loadout is not checked against the build: the Unit check brings it to the rules.
+ * Unit of an opened code of a build format, of the kind whose layout has the format: a Unit code brings its Loadout,
+ * a build code none. Items of unknown codes leave their slots empty, and the Loadout is not checked against the build:
+ * the Unit check brings it to the rules.
  *
- * @param code share code.
- * @returns the Unit; `invalid` if the code is broken, of no build format, or its build or `LOADOUT` section is broken.
+ * @param binaryCode opened code.
+ * @returns the Unit; null if the format is of no build, or the build or the `LOADOUT` section is broken.
  */
-export const decodeUnit = (code: string): UnitCodeDecodeResult => {
-  const binaryCode = openBinaryCode(code);
+export const readUnit = (binaryCode: OpenedBinaryCode): DecodedUnit | null => {
+  const kind = LOADOUT_UNITS.find(unit => BUILD_CODE_LAYOUTS[unit.id].format === binaryCode.format)?.id ?? null;
 
-  if (!binaryCode) return INVALID_SHARE_CODE;
-
-  const kind = BUILD_CODE_KIND_BY_FORMAT.get(binaryCode.format) ?? null;
-  const unit = kind && readUnit(kind, binaryCode.sections);
-
-  if (!unit) return INVALID_SHARE_CODE;
-
-  return { status: 'decoded', unit };
+  return kind && readUnitOf(kind, binaryCode.sections);
 };
+
+/**
+ * Whether the Unit is of the kind.
+ *
+ * @param unit Unit of a share code.
+ * @param kind unit type.
+ */
+export const isUnitOf = <Kind extends LoadoutUnitId>(unit: DecodedUnit, kind: Kind): unit is DecodedUnit & DecodedUnitOf<Kind> => unit.kind === kind;

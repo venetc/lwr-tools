@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Plus } from '@lucide/vue';
 
-import { createId } from '@shared/lib/id';
 import { Button } from '@shared/ui/button';
 import { Dialog } from '@shared/ui/dialog';
 import { Input } from '@shared/ui/input';
-import { Label } from '@shared/ui/label';
 import { Tabs } from '@shared/ui/tabs';
+import { TextField } from '@shared/ui/text-field';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
 import { ADD_UNIT_TABS, NEW_BUILD_GROUPS } from '../config/constants';
@@ -24,11 +23,7 @@ const {
   emptyNote,
   code,
   codeError,
-  isCodeInvalid,
-  codeErrorId,
-  codeErrorDescribedBy,
   codePreview,
-  clearCodeError,
   isSavedBuildsTab,
   isNewBuildTab,
   setOpen,
@@ -36,8 +31,6 @@ const {
   addNewBuild,
   importUnitCode,
 } = useAddUnit();
-
-const codeInputId = createId();
 </script>
 
 <template>
@@ -162,37 +155,18 @@ const codeInputId = createId();
             A Build code comes with the Default Loadout, a Unit code with its own. The Build also appears in its Build calculator.
           </p>
 
-          <Label :class="$style.codeLabel" :for="codeInputId">
-            Share code
-          </Label>
-          <div :class="$style.codeField">
-            <Input
-              :id="codeInputId"
-              v-model="code"
-              placeholder="Paste a Build or Unit code"
-              :aria-invalid="isCodeInvalid"
-              :aria-describedby="codeErrorDescribedBy"
-              @update:model-value="clearCodeError"
-            />
+          <TextField
+            v-model="code"
+            v-model:error="codeError"
+            label="Share code"
+            placeholder="Paste a Build or Unit code"
+          >
             <Button type="submit">
               <span :class="$style.importContent">Import</span>
             </Button>
-          </div>
+          </TextField>
 
-          <p
-            v-if="codeError"
-            :id="codeErrorId"
-            :class="$style.error"
-            role="alert"
-          >
-            {{ codeError }}
-          </p>
-
-          <output
-            :class="$style.preview"
-            :for="codeInputId"
-            aria-label="Preview"
-          >
+          <output :class="$style.preview" aria-label="Preview">
             <span v-if="codePreview" :class="$style.previewRow">
               <UnitBuildIcon :class="$style.rowIcon" :squad-build="codePreview.squadBuild" />
               <span :class="$style.previewName">{{ codePreview.name }}</span>

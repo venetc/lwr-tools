@@ -109,6 +109,23 @@ test.describe('Add Unit from a Share code', () => {
 
     await expect(dialog.getByRole('alert')).toHaveText(INVALID_CODE_ERROR);
   });
+
+  test('links the error to the field', async ({ page }) => {
+    await openSquads(page);
+
+    const dialog = await importUnitCode(page, BROKEN_CODE);
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveAccessibleDescription(INVALID_CODE_ERROR);
+  });
+
+  test('hides the error once the code is edited', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importUnitCode(page, BROKEN_CODE);
+
+    await dialog.getByRole('textbox', { name: 'Share code' }).press('x');
+
+    await expect(dialog.getByRole('alert')).toHaveCount(0);
+  });
 });
 
 test.describe('Unit code in a Build calculator', () => {

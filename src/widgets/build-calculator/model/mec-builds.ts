@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
 import { MEC_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
-import { decodeMecBuild, encodeMecBuild, storedBuildCodec } from '@features/share-build';
+import { storedBuildCodec } from '@features/share-build';
 import type { LockableItem } from '@shared/lib/stored-list';
 
 import { DEFAULT_BUILD_ID_PREFIX, MEC_BUILD_KEY_PREFIX, MEC_BUILD_ORDER_KEY } from '../config/constants';
@@ -40,7 +40,7 @@ export const useMecBuildsStore = defineStore('build-calculator-mec-builds', () =
   const buildList = useBuildList<SoldierBuildData>({
     orderKey: MEC_BUILD_ORDER_KEY,
     itemKeyPrefix: MEC_BUILD_KEY_PREFIX,
-    ...storedBuildCodec(encodeMecBuild, decodeMecBuild),
+    ...storedBuildCodec('mec'),
     defaultItems: createDefaultBuilds,
     newData: build => newMecBuildData(build.soldierClass),
   });

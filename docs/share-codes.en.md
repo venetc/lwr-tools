@@ -25,22 +25,23 @@ section = id (5) | length (9) | fields
 
 ## Decoding result
 
-A decoder returns `{ status: 'decoded', build }`, or why it failed:
+Every place that takes a code reads it with `readShareCode(code)`. It opens the frame of each part once, tells the kind of code by the `format` of the first part, and gives:
 
-- `{ status: 'other-unit', unit }` — the CRC and header are valid, but `format` belongs to another unit's builds (`SHARE_CODE_FORMAT_UNIT`: `1` Biosoldier, `2` SHIV, `3` MEC). The import shows a toast "This is a <unit> build code" and keeps the form open with the code.
-- `{ status: 'invalid' }` — everything else: a broken code, an unknown format, a missing or broken section, an unknown code, a class of another format, or a Build that breaks a Build rule. The rules: each perk on its own rank of the class tree, ranks, Psi levels and Officer ranks in order without gaps, each Gene mod in its own Body part (in `GENE_MODS` Body parts go Brain to Legs, each once), Neural Damping against Psionic abilities, each Officer rank only once the class tree completes its required Rank. The import shows "Invalid code" under the field.
+- `{ status: 'unit', unit }` — a build code or a Unit code: `unit` is `{ kind, build, loadout }`, with `loadout: null` for a build code. The unit type comes from the format of its build layout (`1` Biosoldier, `2` SHIV, `3` MEC).
+- `{ status: 'squad', squad }` — a [Squad code](squad-share-codes.en.md).
+- `{ status: 'invalid' }` — everything else: a broken part, an unknown format, several parts without a Squad header, a missing or broken section, an unknown code, a class of another format, or a Build that breaks a Build rule. The rules: each perk on its own rank of the class tree, ranks, Psi levels and Officer ranks in order without gaps, each Gene mod in its own Body part (in `GENE_MODS` Body parts go Brain to Legs, each once), Neural Damping against Psionic abilities, each Officer rank only once the class tree completes its required Rank.
 
-The import of a Build calculator decodes with `decodeBuildImport`: a code its build decoder finds invalid but that is a valid Squad code gives `{ status: 'squad-code' }`, and the import shows a toast "This is a Squad code. Import it in the Squad planner." and keeps the form open.
+Each place checks the result with one condition. The Import of a Build calculator takes a `unit` of its own kind and keeps its Build; a `unit` of another kind shows a toast "This is a <unit> build code" with the unit type name of `entities/loadout`, a `squad` shows a toast "This is a Squad code. Import it in the Squad planner.", both keeping the form open; `invalid` shows "Invalid code" under the field. The Squad planner places are in [Squad codes](squad-share-codes.en.md#decoding).
 
 A code opens only with a Build the Build calculator can assemble, and every Build it assembles encodes.
 
-A stored build whose code does not decode is skipped on loading.
+A stored build is read the same way: a record whose code is no build of the kind of its Build calculator is skipped on loading.
 
 Code:
 
 - `entities/soldier` — Build ↔ codes: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. The entity turns a Build into stable codes and back and gives null for an unknown code, a class of another kind or a Build that breaks a Build rule. From codes it assembles the Build from the Default build step by step with the mutators of the Build calculator; a Build is encoded only if the same pass assembles it.
 - `shared/lib/binary-code` — header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`.
-- `features/share-build` — bits only: `config/constants.ts` (format numbers and their units, section ids, field widths), `model/share-code.ts` (decoding result, opening a code of the expected format, the `NAME` section, `BuildCodeLayout` — the format, the sections of a build and reading them back — and `buildCodec`, which turns a layout into the encoder and decoder), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList` and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildLayout` builds the layout of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`: `BIOSOLDIER_BUILD_LAYOUT` is format 1 with the Gene mods, Psionic abilities and Officer perks extension, `MEC_BUILD_LAYOUT` format 3 without one; `encodeBiosoldierBuild` / `decodeBiosoldierBuild` and `encodeMecBuild` / `decodeMecBuild` are `buildCodec` over them), `model/unit-code.ts` (Unit codes), `model/squad-code.ts` (Squad codes), `model/build-import.ts` (the decoder of a Build calculator import), `model/build-codecs.ts` (the codecs and layouts by kind of build), `model/stored-build.ts` (stored build records over a share code). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+- `features/share-build` — bits only. Public API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `storedBuildCodec(kind)`, the `ShareCodeImport` and `ShareCodeExport` components and the types. Inside: `config/constants.ts` (format numbers, section ids, field widths), `model/share-code.ts` (`readShareCode` and its result), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — the format, the sections of a build and reading them back — `BUILD_CODE_LAYOUTS` by unit type of `LoadoutUnitId`, so a unit type without a layout does not compile, and `encodeBuild`), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList`, the `NAME` section and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildLayout` builds the layout of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`: `BIOSOLDIER_BUILD_LAYOUT` is format 1 with the Gene mods, Psionic abilities and Officer perks extension, `MEC_BUILD_LAYOUT` format 3 without one), `model/unit-code.ts` (Unit codes), `model/squad-code.ts` (Squad codes), `model/stored-build.ts` (stored build records over a share code). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
@@ -71,10 +72,10 @@ A Unit code is the build code of its format plus the `LOADOUT` section with the 
 - Items are the `code` numbers of the Loadout catalogs of `entities/loadout`: armor and MEC exoskeletons from `armors.json` (a SHIV code: its SHIV type from `shiv-types.json`), weapons from `weapons.json`, Equipment and Modules from `equipment.json`. `0` is an empty slot, also of the secondary weapon.
 - Utility slots go by position, Gear Slots and Psi Slots last; Module slots by position.
 - The decoder does not check the Loadout against the Build: an unknown item code leaves its slot empty, and Seraph Armor without Officer perks is not invalid. The Squad planner brings the Loadout to the rules with the Unit check on import and tells in a toast what it took off.
-- A Build calculator reads a Unit code as a build code: it skips `LOADOUT` as an unknown section. A build code imported as a Unit gets the Default Loadout.
+- A Build calculator takes the Build of a Unit code of its kind and leaves the Loadout. A build code added as a Unit gets the Default Loadout.
 - A new part of a Unit is a new section after `LOADOUT`, by the same rules as a new part of a Build.
 
-Code: `model/unit-code.ts` — `encodeUnit` writes the sections of the layout of the kind (`BUILD_CODE_LAYOUTS`) and `LOADOUT` over `loadoutCodes` of `entities/loadout`; `decodeUnit` takes a code of any build format and gives the kind, the Build and the Loadout of `loadoutFromCodes`, null for a build code.
+Code: `model/unit-code.ts` — `encodeUnit` writes the sections of the layout of the kind (`BUILD_CODE_LAYOUTS`) and `LOADOUT` over `loadoutCodes` of `entities/loadout`; `readUnit`, called by `readShareCode`, reads an opened code of any build format into the kind, the Build and the Loadout of `loadoutFromCodes`, null for a build code.
 
 ## Numbering
 

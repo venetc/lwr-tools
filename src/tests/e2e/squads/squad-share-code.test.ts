@@ -101,6 +101,23 @@ test.describe('Squad import in the toolbar', () => {
     await expect(dialog.getByRole('alert')).toHaveText(INVALID_CODE_ERROR);
   });
 
+  test('links the error to the field', async ({ page }) => {
+    await openSquads(page);
+
+    const dialog = await importSquadCode(page, BROKEN_SQUAD_CODE);
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveAccessibleDescription(INVALID_CODE_ERROR);
+  });
+
+  test('hides the error once the code is edited', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importSquadCode(page, BROKEN_SQUAD_CODE);
+
+    await dialog.getByRole('textbox', { name: 'Share code' }).press('x');
+
+    await expect(dialog.getByRole('alert')).toHaveCount(0);
+  });
+
   test('tells to add a Unit code through an empty cell', async ({ page }) => {
     await openSquads(page);
 

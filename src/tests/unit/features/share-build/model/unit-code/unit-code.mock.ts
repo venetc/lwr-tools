@@ -1,7 +1,14 @@
 import type { DecodedLoadout } from '@entities/loadout';
 import { defaultShivBuild } from '@entities/shiv/model/build';
 import type { BiosoldierBuildData, SoldierClass } from '@entities/soldier';
-import { BIOSOLDIER_CLASSES, MEC_CLASSES, OFFICER_RANKS, selectBiosoldierBuildOfficerPerk, selectBiosoldierBuildPerk } from '@entities/soldier';
+import {
+  BIOSOLDIER_CLASSES,
+  biosoldierBuildCodes,
+  MEC_CLASSES,
+  OFFICER_RANKS,
+  selectBiosoldierBuildOfficerPerk,
+  selectBiosoldierBuildPerk,
+} from '@entities/soldier';
 import { SOLDIER_RANKS } from '@entities/soldier/config/constants/soldier-ranks';
 import { defaultBiosoldierBuild, defaultSoldierBuild } from '@entities/soldier/model/build';
 import type { BinaryCodeSection, BitWriter } from '@shared/lib/binary-code';
@@ -71,6 +78,8 @@ export const BIOSOLDIER_FORMAT = 1;
 
 export const UNKNOWN_FORMAT = 5;
 
+export const SOLDIER_PERKS_SECTION_ID = 1;
+
 export const SOLDIER_LOADOUT_SECTION_ID = 6;
 
 export const UNKNOWN_SECTION_ID = 20;
@@ -114,6 +123,21 @@ export const loadoutSection = (
 });
 
 export const SERAPH_LOADOUT_SECTION = loadoutSection(SERAPH_LOADOUT_CODES);
+
+/** Codes of `PLAIN_BIOSOLDIER_BUILD`: its class and base perk, no name of its own and no other parts. */
+const PLAIN_BUILD_CODES = biosoldierBuildCodes(PLAIN_BIOSOLDIER_BUILD);
+
+/** `PERKS` section of `PLAIN_BIOSOLDIER_BUILD` with raw numbers: class 5 bits, perk count 3 bits, ability numbers 8 bits each. */
+export const PLAIN_PERKS_SECTION: BinaryCodeSection = {
+  id: SOLDIER_PERKS_SECTION_ID,
+  write: (writer: BitWriter) => {
+    const perks = PLAIN_BUILD_CODES?.perks ?? [];
+
+    writer.writeUint(PLAIN_BUILD_CODES?.classCode ?? 0, 5);
+    writer.writeUint(perks.length, 3);
+    perks.forEach(code => writer.writeUint(code, 8));
+  },
+};
 
 export const UNKNOWN_ARMOR_SECTION = loadoutSection({ ...SERAPH_LOADOUT_CODES, armor: UNKNOWN_ITEM_CODE });
 

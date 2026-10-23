@@ -149,6 +149,14 @@ test.describe('Broken Share code', () => {
     await expect(page.getByRole('dialog').getByRole('alert')).toHaveText(INVALID_CODE_ERROR);
   });
 
+  test('is linked to the field', async ({ page }) => {
+    await openPanel(page);
+
+    await importCode(page, toolbarImport(page), BROKEN_CODE);
+
+    await expect(page.getByRole('dialog').getByRole('textbox', { name: 'Code' })).toHaveAccessibleDescription(INVALID_CODE_ERROR);
+  });
+
   test('stops being reported once the code is edited', async ({ page }) => {
     await openPanel(page);
     await importCode(page, toolbarImport(page), BROKEN_CODE);

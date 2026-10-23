@@ -23,7 +23,7 @@
 
 ## Декодирование
 
-`decodeSquad` отдаёт `{ status: 'decoded', squad }`, `{ status: 'unit-code' }` на код Unit или код Build любого вида или `{ status: 'invalid' }`.
+`readShareCode` узнаёт код Squad по формату `4` первой части и отдаёт `{ status: 'squad', squad }`; код Unit или код Build даёт `{ status: 'unit', unit }`, всё остальное — `{ status: 'invalid' }` (см. [Результат декодирования](share-codes.ru.md#результат-декодирования)).
 
 - У каждой части свой CRC. Любая битая часть — заголовок, Unit, пустая часть — делает невалидным весь код: частичного импорта нет.
 - В `squad` — `name`, `builds` и `units` в порядке Squad; Unit ссылается на свой Build через `buildIndex` и несёт Loadout, null у части с кодом Build.
@@ -51,10 +51,10 @@
 
 `features/share-build`:
 
-- `model/squad-code.ts` — `encodeSquad` пишет заголовок и коды Unit из `encodeUnit`, null, если код Unit не записать; `decodeSquad` читает их обратно и склеивает Units в Builds по секциям Build.
-- `model/build-import.ts` — `decodeBuildImport`: декодер импорта калькулятора, который отличает валидный код Squad как `squad-code`.
+- `model/squad-code.ts` — `encodeSquad` пишет заголовок и коды Unit из `encodeUnit`, null, если код Unit не записать; `readSquad`, который вызывает `readShareCode` с открытыми заголовком и частями, читает их обратно и склеивает Units в Builds по секциям Build.
+- `model/share-code.ts` — `readShareCode`: каждое место ввода проверяет его результат одним условием, как в таблице выше.
 
-`pages/squads` превращает декодированный Squad в Squad: `model/squad-import.ts` (Import в тулбаре), `model/squad-code-copy.ts` (кнопка Share code).
+`pages/squads` превращает прочитанный Squad в Squad: `model/squad-import.ts` (Import в тулбаре), `model/squad-code-copy.ts` (кнопка Share code).
 
 ## Развитие формата
 

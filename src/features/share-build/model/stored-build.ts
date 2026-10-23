@@ -1,26 +1,26 @@
+import type { LoadoutUnitId } from '@entities/loadout';
 import type { LockableItem } from '@shared/lib/stored-list';
 
 import { STORED_BUILD_SCHEMA } from '../config/constants';
-import type { ShareCodeDecodeResult } from './share-code';
+import type { BuildDataByKind } from './build-code';
+import { encodeBuild } from './build-code';
+import { readShareCode } from './share-code';
+import { isUnitOf } from './unit-code';
 
 /**
- * Stored records of builds through their share codes: `{ code, readonly }`. The code format already keeps old codes
- * readable, so the record only adds the lock.
+ * Stored records of builds of the kind through their share codes: `{ code, readonly }`. The code format already keeps
+ * old codes readable, so the record only adds the lock.
  *
- * @param encode share code of the build data; null if it cannot be encoded.
- * @param decode build data of a share code.
+ * @param kind unit type of the builds.
  */
-export const storedBuildCodec = <Data>(
-  encode: (data: Data) => string | null,
-  decode: (code: string) => ShareCodeDecodeResult<Data>,
-) => {
+export const storedBuildCodec = <Kind extends LoadoutUnitId>(kind: Kind) => {
   /**
    * Stored record of the build; null if the build has no share code.
    *
    * @param build stored build.
    */
-  const serialize = (build: Readonly<LockableItem<Data>>) => {
-    const code = encode(build);
+  const serialize = (build: Readonly<LockableItem<BuildDataByKind[Kind]>>) => {
+    const code = encodeBuild(kind, build);
 
     if (code === null) return null;
 
@@ -28,21 +28,21 @@ export const storedBuildCodec = <Data>(
   };
 
   /**
-   * Build of the stored record; null if the record does not match the schema or its code does not decode to a build.
+   * Build of the stored record; null if the record does not match the schema or its code is no Build of the kind.
    *
    * @param id build id.
    * @param record stored record.
    */
-  const parse = (id: string, record: unknown): LockableItem<Data> | null => {
+  const parse = (id: string, record: unknown) => {
     const storedBuild = STORED_BUILD_SCHEMA.safeParse(record);
 
     if (!storedBuild.success) return null;
 
-    const result = decode(storedBuild.data.code);
+    const result = readShareCode(storedBuild.data.code);
 
-    if (result.status !== 'decoded') return null;
+    if (result.status !== 'unit' || !isUnitOf(result.unit, kind)) return null;
 
-    return { ...result.build, id, readonly: storedBuild.data.readonly };
+    return { ...result.unit.build, id, readonly: storedBuild.data.readonly };
   };
 
   return { serialize, parse };

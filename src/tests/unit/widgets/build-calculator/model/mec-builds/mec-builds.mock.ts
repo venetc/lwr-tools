@@ -35,8 +35,6 @@ export const SOLDIER_ENTITY_MOCK = {
  */
 export const SHARE_BUILD_MOCK = {
   storedBuildCodec: () => ({ serialize: (build: object) => build, parse: () => null }),
-  encodeMecBuild: () => null,
-  decodeMecBuild: () => null,
 };
 
 export const DEFAULT_VALKYRIE_ID = 'default-valkyrie';

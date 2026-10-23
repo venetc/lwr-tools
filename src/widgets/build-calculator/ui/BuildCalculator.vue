@@ -1,8 +1,9 @@
-<script setup lang="ts" generic="Kind extends BuildCodeKind, Build extends LockableItem<BuildDataByKind[Kind]>">
+<script setup lang="ts" generic="Kind extends LoadoutUnitId, Build extends LockableItem<BuildDataByKind[Kind]>">
 import { ClipboardPaste } from '@lucide/vue';
 import type { VNode } from 'vue';
 
-import type { BuildCodeKind, BuildDataByKind } from '@features/share-build';
+import type { LoadoutUnitId } from '@entities/loadout';
+import type { BuildDataByKind } from '@features/share-build';
 import { ShareCodeImport } from '@features/share-build';
 import { usePanelScroll } from '@shared/lib/panel-scroll';
 import type { LockableItem } from '@shared/lib/stored-list';

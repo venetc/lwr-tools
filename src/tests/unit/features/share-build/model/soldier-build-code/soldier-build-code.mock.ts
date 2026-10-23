@@ -41,8 +41,6 @@ export const NAMED_MEC_CODES: SoldierBuildCodes = { ...MEC_CODES, name: BUILD_NA
 
 export const BIOSOLDIER_FORMAT = 1;
 
-export const SHIV_FORMAT = 2;
-
 export const MEC_FORMAT = 3;
 
 export const UNKNOWN_FORMAT = 5;
@@ -61,15 +59,9 @@ export const UNKNOWN_SECTION_ID = 20;
 
 export const INVALID_RESULT = { status: 'invalid' };
 
-export const BIOSOLDIER_DECODED_RESULT = { status: 'decoded', build: BIOSOLDIER_BUILD_STUB };
+export const BIOSOLDIER_DECODED_RESULT = { status: 'unit', unit: { kind: 'biosoldier', build: BIOSOLDIER_BUILD_STUB, loadout: null } };
 
-export const MEC_DECODED_RESULT = { status: 'decoded', build: MEC_BUILD_STUB };
-
-export const SHIV_CODE_RESULT = { status: 'other-unit', unit: 'SHIV' };
-
-export const MEC_CODE_RESULT = { status: 'other-unit', unit: 'MEC' };
-
-export const BIOSOLDIER_CODE_RESULT = { status: 'other-unit', unit: 'Biosoldier' };
+export const MEC_DECODED_RESULT = { status: 'unit', unit: { kind: 'mec', build: MEC_BUILD_STUB, loadout: null } };
 
 export const GARBAGE_CODE = 'not a code';
 

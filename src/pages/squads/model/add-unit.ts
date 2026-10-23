@@ -2,13 +2,14 @@ import { storeToRefs } from 'pinia';
 import type { AcceptableValue } from 'reka-ui';
 import { computed, ref } from 'vue';
 
-import type { DecodedLoadout } from '@entities/loadout';
+import type { Loadout } from '@entities/loadout';
+import type { SquadUnitBuild } from '@features/manage-squads';
 import { useSquadsStore } from '@features/manage-squads';
 import type { TabsItem } from '@shared/ui/tabs';
 import { useToastQueue } from '@shared/ui/toast';
 
 import { ADD_UNIT_TAB, ADD_UNIT_TABS, UNIT_CHECK_LINE_BREAK } from '../config/constants';
-import { changeNote } from './loadout-edit';
+import { changeNotes } from './loadout-edit';
 import type { NewBuildOption } from './new-build';
 import type { SavedBuildKind, SavedBuildRow } from './saved-builds';
 import { matchingBuilds, savedBuildFilters, savedBuildGroups } from './saved-builds';
@@ -17,6 +18,7 @@ import { buildListName } from './squad-build';
 import { importSquadBuild, useSquadBuilds } from './squad-builds';
 import { checkUnit } from './unit-check';
 import { useUnitCodeField } from './unit-code-field';
+import { importUnits } from './unit-import';
 
 /**
  * Add Unit dialog of the open Squad: its tabs, the search and filter of saved builds, and adding a Unit of a saved build,
@@ -96,23 +98,35 @@ export const useAddUnit = () => {
   };
 
   /**
-   * Adds a Unit of the build last in the open Squad, with the Loadout brought to the rules of the build by the Unit check.
+   * Puts a Unit with the checked Loadout last in the open Squad and closes the dialog.
    *
-   * @param squadBuild build of the new Unit.
-   * @param loadout Loadout of the new Unit; null for the Default Loadout.
-   * @returns name of the Squad the Unit is added to and what the check changed in the Loadout; null if no Squad is open
-   * or no Loadout fits the build.
+   * @param build kind and id of the saved build of the Unit.
+   * @param loadout Loadout that fits the build.
+   * @returns name of the Squad the Unit is added to; null if no Squad is open.
    */
-  const addUnit = (squadBuild: SquadBuild, loadout: Readonly<DecodedLoadout> | null) => {
+  const placeUnit = (build: SquadUnitBuild, loadout: Loadout) => {
     const squad = openSquad.value;
-    const checked = checkUnit(loadout, squadBuild);
 
-    if (!squad || !checked) return null;
+    if (!squad) return null;
 
-    squadsStore.addUnit(squad.id, { kind: squadBuild.kind, id: squadBuild.build.id }, checked.loadout);
+    squadsStore.addUnit(squad.id, build, loadout);
     setOpen(false);
 
-    return { squadName: squad.name, changes: checked.changes };
+    return squad.name;
+  };
+
+  /**
+   * Adds a Unit of the saved build last in the open Squad with the Default Loadout of the Unit check.
+   *
+   * @param squadBuild build of the new Unit.
+   * @returns name of the Squad the Unit is added to; null if no Squad is open or no Loadout fits the build.
+   */
+  const addUnit = (squadBuild: SquadBuild) => {
+    const checked = checkUnit(null, squadBuild);
+
+    if (!checked) return null;
+
+    return placeUnit({ kind: squadBuild.kind, id: squadBuild.build.id }, checked.loadout);
   };
 
   /**
@@ -121,11 +135,11 @@ export const useAddUnit = () => {
    * @param row saved build of the list.
    */
   const addSavedBuild = (row: SavedBuildRow) => {
-    const added = addUnit(row.squadBuild, null);
+    const squadName = addUnit(row.squadBuild);
 
-    if (!added) return;
+    if (!squadName) return;
 
-    showToast({ title: 'Unit added', description: `${row.squadBuild.build.name} added to ${added.squadName}.` });
+    showToast({ title: 'Unit added', description: `${row.squadBuild.build.name} added to ${squadName}.` });
   };
 
   /**
@@ -138,37 +152,33 @@ export const useAddUnit = () => {
 
     const build = addDefaultBuild(option);
     const squadBuild = build ? findSquadBuild(build) : null;
-    const added = squadBuild ? addUnit(squadBuild, null) : null;
+    const squadName = squadBuild ? addUnit(squadBuild) : null;
 
-    if (!added) return;
+    if (!squadName) return;
 
     showToast({
       title: 'Unit added',
-      description: `New ${option.name} build added to ${added.squadName} and to ${buildListName(option.kind)}.`,
+      description: `New ${option.name} build added to ${squadName} and to ${buildListName(option.kind)}.`,
     });
   };
 
   /**
    * Adds the build of the entered Share code to its Build calculator and a Unit of it: a Unit code with its Loadout,
-   * a Build code with the Default Loadout. The Unit is checked before the build is saved, so a code no Loadout fits
-   * adds nothing. The toast tells what the Unit check took off, without repeats; an invalid code shows the error.
+   * a Build code with the Default Loadout, both through the Unit check of the import. A code no Loadout fits adds
+   * nothing. The toast tells what the Unit check took off, without repeats; an invalid code shows the error.
    */
   const importUnitCode = () => {
     if (!openSquad.value) return;
 
     const unit = codeField.readUnit();
-    const checked = unit && checkUnit(unit.loadout, unit);
+    const [imported] = unit ? importUnits({ builds: [unit], units: [{ buildIndex: 0, loadout: unit.loadout }] }, importSquadBuild) : [];
+    const squadName = imported ? placeUnit(imported.build, imported.loadout) : null;
 
-    if (!unit || !checked) return;
+    if (!imported || !squadName) return;
 
-    const squadBuild = findSquadBuild(importSquadBuild(unit));
-    const added = squadBuild && addUnit(squadBuild, checked.loadout);
+    const lines = [`${imported.buildName} added to ${squadName} and to ${buildListName(imported.build.kind)}.`];
 
-    if (!added || !squadBuild) return;
-
-    const lines = [`${squadBuild.build.name} added to ${added.squadName} and to ${buildListName(squadBuild.kind)}.`];
-
-    if (checked.changes.length) lines.push([...new Set(checked.changes.map(changeNote))].join(' '));
+    if (imported.changes.length) lines.push(changeNotes(imported.changes).join(' '));
 
     showToast({ title: 'Unit added', description: lines.join(UNIT_CHECK_LINE_BREAK) });
   };
@@ -183,11 +193,7 @@ export const useAddUnit = () => {
     emptyNote,
     code: codeField.code,
     codeError: codeField.error,
-    isCodeInvalid: codeField.isInvalid,
-    codeErrorId: codeField.errorId,
-    codeErrorDescribedBy: codeField.errorDescribedBy,
     codePreview: codeField.preview,
-    clearCodeError: codeField.clearError,
     isSavedBuildsTab,
     isNewBuildTab,
     setOpen,

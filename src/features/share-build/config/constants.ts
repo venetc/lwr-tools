@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-import type { BuildCodeKind } from '../model/build-codecs';
-import type { ShareCodeFailure } from '../model/share-code';
+import type { ShareCodeReadResult } from '../model/share-code';
 
 /**
  * Formats of all share codes of the app; a new format gets the next number; numbers are never changed or reused.
@@ -12,20 +11,6 @@ export const SHARE_CODE_FORMAT = {
   MEC_BUILD: 3,
   SQUAD: 4,
 } as const;
-
-/** Unit whose builds each format carries, by format number; a code of a listed format is reported as another unit's. */
-export const SHARE_CODE_FORMAT_UNIT: ReadonlyMap<number, string> = new Map([
-  [SHARE_CODE_FORMAT.BIOSOLDIER_BUILD, 'Biosoldier'],
-  [SHARE_CODE_FORMAT.SHIV_BUILD, 'SHIV'],
-  [SHARE_CODE_FORMAT.MEC_BUILD, 'MEC'],
-]);
-
-/** Kind of build each build code format carries, by format number; a Unit code shares the format of its build. */
-export const BUILD_CODE_KIND_BY_FORMAT: ReadonlyMap<number, BuildCodeKind> = new Map([
-  [SHARE_CODE_FORMAT.BIOSOLDIER_BUILD, 'biosoldier'],
-  [SHARE_CODE_FORMAT.SHIV_BUILD, 'shiv'],
-  [SHARE_CODE_FORMAT.MEC_BUILD, 'mec'],
-]);
 
 /**
  * Section ids of soldier build codes, shared by every soldier format, and of the Unit codes over them (`LOADOUT`).
@@ -102,8 +87,11 @@ export const SQUAD_SECTION = {
 /** Separator of the parts of a Squad code: the Squad header, then a Unit code per Unit; base64url has no dot. */
 export const SQUAD_CODE_SEPARATOR = '.';
 
-/** Result of a broken share code: a build code or a Unit code. */
-export const INVALID_SHARE_CODE = { status: 'invalid' } as const satisfies ShareCodeFailure;
+/** Error under the Import field of a Build calculator for a code that reads as no Unit and no Squad. */
+export const INVALID_CODE_TEXT = 'Invalid code';
+
+/** Result of a share code that reads as no Unit and no Squad. */
+export const INVALID_SHARE_CODE = { status: 'invalid' } as const satisfies ShareCodeReadResult;
 
 /** Stored build record: share code of the build and its lock. */
 export const STORED_BUILD_SCHEMA = z.object({

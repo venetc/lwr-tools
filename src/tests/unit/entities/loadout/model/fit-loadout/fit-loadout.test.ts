@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { fitLoadout } from '@entities/loadout/model/fit-loadout';
 
-import { ASSAULT, createLoadoutMock, GUNNER, MEC, ROCKETEER, SHIV } from '../loadout/loadout.mock';
+import { ASSAULT, createLoadoutMock, GUNNER, MEC, OFFICER, ROCKETEER, SHIV } from '../loadout/loadout.mock';
 import { createMecLoadoutMock } from './fit-loadout.mock';
 
 vi.mock('@entities/loadout/config/constants/armor-content', async () => ({
@@ -184,6 +184,30 @@ describe('fitLoadout', () => {
     const fit = fitLoadout(loadout, ASSAULT);
 
     expect(fit.changes).toEqual([{ kind: 'replaced', slot: 'armor', item: 'seraph-armor', by: 'tactical-vest', reason: 'needs-officer' }]);
+  });
+
+  it('keeps Seraph Armor of an Officer', () => {
+    const loadout = createLoadoutMock({ armor: 'seraph-armor', utility: [null, null, null, null] });
+
+    const fit = fitLoadout(loadout, OFFICER);
+
+    expect(fit.changes).toEqual([]);
+  });
+
+  it('removes equipment that needs a psionic ability', () => {
+    const loadout = createLoadoutMock({ utility: ['psi-grenade', null, null] });
+
+    const fit = fitLoadout(loadout, ASSAULT);
+
+    expect(fit.changes).toEqual([{ kind: 'removed', slot: 'utility', item: 'psi-grenade', reason: 'needs-psionic' }]);
+  });
+
+  it('removes equipment of another unit', () => {
+    const loadout = createMecLoadoutMock({ utility: ['he-grenade', null] });
+
+    const fit = fitLoadout(loadout, MEC);
+
+    expect(fit.changes).toEqual([{ kind: 'removed', slot: 'utility', item: 'he-grenade', reason: 'wrong-unit' }]);
   });
 
   it('counts utility slots of the default armor', () => {

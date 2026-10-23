@@ -10,7 +10,7 @@ import {
   selectBiosoldierBuildPsionicAbility,
 } from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
-import { decodeBiosoldierBuild, encodeBiosoldierBuild, storedBuildCodec } from '@features/share-build';
+import { storedBuildCodec } from '@features/share-build';
 import type { LockableItem } from '@shared/lib/stored-list';
 
 import { BIOSOLDIER_BUILD_KEY_PREFIX, BIOSOLDIER_BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
@@ -50,7 +50,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
   const buildList = useBuildList<BiosoldierBuildData>({
     orderKey: BIOSOLDIER_BUILD_ORDER_KEY,
     itemKeyPrefix: BIOSOLDIER_BUILD_KEY_PREFIX,
-    ...storedBuildCodec(encodeBiosoldierBuild, decodeBiosoldierBuild),
+    ...storedBuildCodec('biosoldier'),
     defaultItems: createDefaultBuilds,
     newData: build => newBiosoldierBuildData(build.soldierClass),
   });

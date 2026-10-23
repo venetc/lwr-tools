@@ -217,25 +217,8 @@ $add-cell-border: 1px dashed colors.$accent;
   color: colors.$accent;
 }
 
-.codeLabel {
-  @include typography.caption;
-  color: colors.$text-secondary;
-}
-
-.codeField {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
-}
-
 .importContent {
   padding: 6px 12px;
-}
-
-.error {
-  @include typography.caption;
-  margin: 0;
-  color: colors.$danger;
 }
 
 .preview {

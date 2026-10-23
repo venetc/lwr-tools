@@ -12,9 +12,8 @@ import {
   SHARE_CODE_FORMAT,
   SOLDIER_BUILD_SECTION,
 } from '../config/constants';
-import { readCodeList, readWholeSection, writeCodeList } from './section-fields';
-import type { BuildCodeLayout } from './share-code';
-import { buildCodec, nameSection, readNameSection } from './share-code';
+import type { BuildCodeLayout } from './build-code';
+import { nameSection, readCodeList, readNameSection, readWholeSection, writeCodeList } from './section-fields';
 
 /**
  * Parts a soldier format carries beyond the class, perks and name: their sections and how they are read.
@@ -163,9 +162,3 @@ export const MEC_BUILD_LAYOUT = soldierBuildLayout<SoldierBuildData, SoldierBuil
   mecBuildFromCodes,
   SOLDIER_BUILD_EXTENSION,
 );
-
-/** Share code encoder and decoder of biosoldier builds. */
-export const { encode: encodeBiosoldierBuild, decode: decodeBiosoldierBuild } = buildCodec(BIOSOLDIER_BUILD_LAYOUT);
-
-/** Share code encoder and decoder of MEC builds. */
-export const { encode: encodeMecBuild, decode: decodeMecBuild } = buildCodec(MEC_BUILD_LAYOUT);

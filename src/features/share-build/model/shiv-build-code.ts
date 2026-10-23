@@ -3,9 +3,8 @@ import { shivBuildCodes, shivBuildFromCodes } from '@entities/shiv';
 import type { BinaryCodeSection } from '@shared/lib/binary-code';
 
 import { SHARE_CODE_FORMAT, SHIV_BUILD_SECTION, SHIV_PERK_CODE_BITS, SHIV_PERK_COUNT_BITS } from '../config/constants';
-import { readCodeList, readWholeSection, writeCodeList } from './section-fields';
-import type { BuildCodeLayout } from './share-code';
-import { buildCodec, nameSection, readNameSection } from './share-code';
+import type { BuildCodeLayout } from './build-code';
+import { nameSection, readCodeList, readNameSection, readWholeSection, writeCodeList } from './section-fields';
 
 /**
  * Layout of SHIV build codes: format 2 with the `PERKS` section of the selected perks and the `NAME` section if the
@@ -39,6 +38,3 @@ export const SHIV_BUILD_LAYOUT: BuildCodeLayout<ShivBuildData> = {
     return shivBuildFromCodes({ perks, name: nameField.name });
   },
 };
-
-/** Share code encoder and decoder of SHIV builds. */
-export const { encode: encodeShivBuild, decode: decodeShivBuild } = buildCodec(SHIV_BUILD_LAYOUT);

@@ -1,11 +1,10 @@
-<script setup lang="ts" generic="Kind extends BuildCodeKind">
-import { createId } from '@shared/lib/id';
+<script setup lang="ts" generic="Kind extends LoadoutUnitId">
+import type { LoadoutUnitId } from '@entities/loadout';
 import { Button } from '@shared/ui/button';
-import { Input } from '@shared/ui/input';
-import { Label } from '@shared/ui/label';
 import { Popover } from '@shared/ui/popover';
+import { TextField } from '@shared/ui/text-field';
 
-import type { BuildCodeKind, BuildDataByKind } from '../model/build-codecs';
+import type { BuildDataByKind } from '../model/build-code';
 import { useShareCodeImport } from '../model/share-code-import';
 
 interface Props {
@@ -22,9 +21,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
-const inputId = createId();
-
-const { isOpen, code, isInvalid, errorId, errorDescribedBy, clearError, setOpen, submit } = useShareCodeImport(
+const { isOpen, code, error, setOpen, submit } = useShareCodeImport(
   () => props.kind,
   build => emit('import', build),
 );
@@ -37,28 +34,16 @@ const { isOpen, code, isInvalid, errorId, errorDescribedBy, clearError, setOpen,
     </template>
 
     <form :class="$style.form" @submit.prevent="submit">
-      <Label :class="$style.label" :for="inputId">Code</Label>
-      <div :class="$style.field">
-        <Input
-          :id="inputId"
-          v-model="code"
-          placeholder="Paste code"
-          :aria-invalid="isInvalid"
-          :aria-describedby="errorDescribedBy"
-          @update:model-value="clearError"
-        />
+      <TextField
+        v-model="code"
+        v-model:error="error"
+        label="Code"
+        placeholder="Paste code"
+      >
         <Button type="submit">
           <span :class="$style.buttonContent">Import</span>
         </Button>
-      </div>
-      <p
-        v-if="isInvalid"
-        :id="errorId"
-        :class="$style.error"
-        role="alert"
-      >
-        Invalid code
-      </p>
+      </TextField>
     </form>
   </Popover>
 </template>

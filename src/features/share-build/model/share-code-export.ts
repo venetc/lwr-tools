@@ -2,8 +2,10 @@ import { useClipboard } from '@vueuse/core';
 import type { MaybeRefOrGetter, Ref } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { BuildCodeKind, BuildDataByKind } from './build-codecs';
-import { BUILD_CODECS } from './build-codecs';
+import type { LoadoutUnitId } from '@entities/loadout';
+
+import type { BuildDataByKind } from './build-code';
+import { encodeBuild } from './build-code';
 
 /**
  * Share code export form: the code of the build, encoded only while the form is open, and copying it.
@@ -12,12 +14,12 @@ import { BUILD_CODECS } from './build-codecs';
  * @param build build to share.
  * @param isOpen whether the form is open.
  */
-export const useShareCodeExport = <Kind extends BuildCodeKind>(
+export const useShareCodeExport = <Kind extends LoadoutUnitId>(
   kind: MaybeRefOrGetter<Kind>,
   build: MaybeRefOrGetter<BuildDataByKind[Kind]>,
   isOpen: Readonly<Ref<boolean>>,
 ) => {
-  const code = computed(() => (isOpen.value ? BUILD_CODECS[toValue(kind)].encode(toValue(build)) : ''));
+  const code = computed(() => (isOpen.value ? encodeBuild(toValue(kind), toValue(build)) : ''));
 
   const hasCode = computed(() => code.value !== null);
 

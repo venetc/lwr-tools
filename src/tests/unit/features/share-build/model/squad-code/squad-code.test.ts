@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { BUILD_CODECS } from '@features/share-build/model/build-codecs';
-import { decodeSquad, encodeSquad } from '@features/share-build/model/squad-code';
+import { encodeBuild } from '@features/share-build/model/build-code';
+import { readShareCode } from '@features/share-build/model/share-code';
+import { encodeSquad } from '@features/share-build/model/squad-code';
 import { encodeUnit } from '@features/share-build/model/unit-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import {
-  GARBAGE_CODE,
   INVALID_RESULT,
   LONG_NAME_SECTION,
   MEC_BUILD,
@@ -21,7 +21,6 @@ import {
   SHIV_UNIT,
   SQUAD_FORMAT,
   SQUAD_NAME,
-  UNIT_CODE_RESULT,
   UNKNOWN_SECTION,
   VEST_LOADOUT,
 } from './squad-code.mock';
@@ -43,10 +42,10 @@ describe('squad code round trip', () => {
       ],
     }) ?? '';
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual({
-      status: 'decoded',
+      status: 'squad',
       squad: {
         name: SQUAD_NAME,
         builds: [
@@ -74,10 +73,10 @@ describe('squad code builds', () => {
       ],
     }) ?? '';
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual({
-      status: 'decoded',
+      status: 'squad',
       squad: {
         name: SQUAD_NAME,
         builds: [{ kind: 'biosoldier', build: OFFICER_BUILD }],
@@ -95,10 +94,10 @@ describe('squad code builds', () => {
       ],
     }) ?? '';
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual({
-      status: 'decoded',
+      status: 'squad',
       squad: {
         name: SQUAD_NAME,
         builds: [{ kind: 'biosoldier', build: OFFICER_BUILD }, { kind: 'biosoldier', build: OTHER_OFFICER_BUILD }],
@@ -122,20 +121,20 @@ describe('encodeSquad', () => {
   });
 });
 
-describe('decodeSquad', () => {
+describe('readShareCode of a Squad code', () => {
   it('reads an empty Squad of the header alone', () => {
-    const result = decodeSquad(HEADER);
+    const result = readShareCode(HEADER);
 
-    expect(result).toEqual({ status: 'decoded', squad: { name: SQUAD_NAME, builds: [], units: [] } });
+    expect(result).toEqual({ status: 'squad', squad: { name: SQUAD_NAME, builds: [], units: [] } });
   });
 
   it('gives a Unit without a Loadout for a build code part', () => {
-    const code = [HEADER, BUILD_CODECS.shiv.encode(SHIV_BUILD)].join(SEPARATOR);
+    const code = [HEADER, encodeBuild('shiv', SHIV_BUILD)].join(SEPARATOR);
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual({
-      status: 'decoded',
+      status: 'squad',
       squad: { name: SQUAD_NAME, builds: [{ kind: 'shiv', build: SHIV_BUILD }], units: [{ buildIndex: 0, loadout: null }] },
     });
   });
@@ -143,27 +142,15 @@ describe('decodeSquad', () => {
   it('skips unknown sections of the header', () => {
     const code = encodeBinaryCode(SQUAD_FORMAT, [NAME_SECTION, UNKNOWN_SECTION]) ?? '';
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'decoded', squad: { name: SQUAD_NAME, builds: [], units: [] } });
-  });
-
-  it('gives unit-code for a Unit code', () => {
-    const result = decodeSquad(SHIV_UNIT_CODE);
-
-    expect(result).toEqual(UNIT_CODE_RESULT);
-  });
-
-  it('gives unit-code for a build code', () => {
-    const result = decodeSquad(BUILD_CODECS.biosoldier.encode(OFFICER_BUILD) ?? '');
-
-    expect(result).toEqual(UNIT_CODE_RESULT);
+    expect(result).toEqual({ status: 'squad', squad: { name: SQUAD_NAME, builds: [], units: [] } });
   });
 
   it('gives invalid for a broken Unit part', () => {
     const code = [HEADER, SHIV_UNIT_CODE.slice(0, -1), MEC_UNIT_CODE].join(SEPARATOR);
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -171,7 +158,7 @@ describe('decodeSquad', () => {
   it('gives invalid for a broken header', () => {
     const code = [HEADER.slice(0, -1), SHIV_UNIT_CODE].join(SEPARATOR);
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -179,7 +166,7 @@ describe('decodeSquad', () => {
   it('gives invalid for an empty part', () => {
     const code = [HEADER, SHIV_UNIT_CODE, ''].join(SEPARATOR);
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -187,7 +174,7 @@ describe('decodeSquad', () => {
   it('gives invalid for a header without the NAME section', () => {
     const code = [encodeBinaryCode(SQUAD_FORMAT, [UNKNOWN_SECTION]), SHIV_UNIT_CODE].join(SEPARATOR);
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -195,7 +182,7 @@ describe('decodeSquad', () => {
   it('gives invalid for a NAME section with extra bits', () => {
     const code = encodeBinaryCode(SQUAD_FORMAT, [LONG_NAME_SECTION]) ?? '';
 
-    const result = decodeSquad(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -203,21 +190,7 @@ describe('decodeSquad', () => {
   it('gives invalid for a Squad header as a Unit part', () => {
     const code = [HEADER, HEADER].join(SEPARATOR);
 
-    const result = decodeSquad(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('gives invalid for Unit codes without a Squad header', () => {
-    const code = [SHIV_UNIT_CODE, MEC_UNIT_CODE].join(SEPARATOR);
-
-    const result = decodeSquad(code);
-
-    expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('gives invalid for text that is no code', () => {
-    const result = decodeSquad(GARBAGE_CODE);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });

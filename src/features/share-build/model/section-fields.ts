@@ -1,4 +1,6 @@
-import type { BitReader, BitWriter } from '@shared/lib/binary-code';
+import type { BinaryCodeSection, BitReader, BitWriter } from '@shared/lib/binary-code';
+
+import { NAME_LENGTH_BITS } from '../config/constants';
 
 /**
  * Writes a counted code list: the number of codes, then each code.
@@ -38,4 +40,27 @@ export const readWholeSection = <Fields>(reader: BitReader, readFields: (reader:
   if (!reader.isComplete) return null;
 
   return fields;
+};
+
+/**
+ * Section with the build name.
+ *
+ * @param id id of the `NAME` section of the format.
+ * @param name build name.
+ */
+export const nameSection = (id: number, name: string): BinaryCodeSection => ({
+  id,
+  write: writer => writer.writeString(name, NAME_LENGTH_BITS),
+});
+
+/**
+ * Build name of a `NAME` section read in whole.
+ *
+ * @param reader reader of the `NAME` section; null if the code has none.
+ * @returns `{ name }` with the name, or with null without the section; null if the section is broken.
+ */
+export const readNameSection = (reader: BitReader | null): { name: string | null } | null => {
+  if (!reader) return { name: null };
+
+  return readWholeSection(reader, sectionReader => ({ name: sectionReader.readString(NAME_LENGTH_BITS) }));
 };

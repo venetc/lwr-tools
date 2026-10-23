@@ -1,49 +1,41 @@
 import { describe, expect, it } from 'vitest';
 
+import { encodeBuild } from '@features/share-build/model/build-code';
 import { storedBuildCodec } from '@features/share-build/model/stored-build';
 
-import {
-  BUILD_DATA_MOCK,
-  BUILD_ID,
-  BUILD_MOCK,
-  decodeMock,
-  encodeMock,
-  INVALID_CODE,
-  UNENCODABLE_BUILD_MOCK,
-  VALID_CODE,
-} from './stored-build.mock';
+import { BUILD_ID, INVALID_CODE, MEC_BUILD, SHIV_BUILD, UNENCODABLE_SHIV_BUILD } from './stored-build.mock';
 
-const { serialize, parse } = storedBuildCodec(encodeMock, decodeMock);
+const { serialize, parse } = storedBuildCodec('shiv');
 
 describe('storedBuildCodec serialize', () => {
-  it('stores the share code and the lock', () => {
-    const record = serialize({ ...BUILD_MOCK, readonly: true });
+  it('stores a record that restores the build with the id and the lock', () => {
+    const record = serialize(SHIV_BUILD);
 
-    expect(record).toEqual({ code: 'code-Overwatch', readonly: true });
+    expect(parse(BUILD_ID, record)).toEqual(SHIV_BUILD);
   });
 
   it('returns null for a build without a share code', () => {
-    const record = serialize(UNENCODABLE_BUILD_MOCK);
+    const record = serialize(UNENCODABLE_SHIV_BUILD);
 
     expect(record).toBeNull();
   });
 });
 
 describe('storedBuildCodec parse', () => {
-  it('restores the build with the id and the lock', () => {
-    const build = parse(BUILD_ID, { code: VALID_CODE, readonly: true });
-
-    expect(build).toEqual({ ...BUILD_DATA_MOCK, id: BUILD_ID, readonly: true });
-  });
-
   it('returns null for a record of another shape', () => {
-    const build = parse(BUILD_ID, { code: VALID_CODE, readonly: 'yes' });
+    const build = parse(BUILD_ID, { code: serialize(SHIV_BUILD)?.code, readonly: 'yes' });
 
     expect(build).toBeNull();
   });
 
   it('returns null for an invalid share code', () => {
     const build = parse(BUILD_ID, { code: INVALID_CODE, readonly: false });
+
+    expect(build).toBeNull();
+  });
+
+  it('returns null for a build code of another unit type', () => {
+    const build = parse(BUILD_ID, { code: encodeBuild('mec', MEC_BUILD), readonly: false });
 
     expect(build).toBeNull();
   });

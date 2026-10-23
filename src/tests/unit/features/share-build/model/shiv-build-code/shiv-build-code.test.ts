@@ -1,12 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { shivBuildCodes, shivBuildFromCodes } from '@entities/shiv';
-import { decodeShivBuild, encodeShivBuild } from '@features/share-build/model/shiv-build-code';
+import { encodeBuild } from '@features/share-build/model/build-code';
+import { readShareCode } from '@features/share-build/model/share-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import {
-  BIOSOLDIER_CODE_RESULT,
-  BIOSOLDIER_FORMAT,
   BROKEN_NAME_SECTION,
   BUILD_NAME,
   BUILD_STUB,
@@ -14,8 +13,6 @@ import {
   DEFAULT_NAME_CODES,
   GARBAGE_CODE,
   INVALID_RESULT,
-  MEC_CODE_RESULT,
-  MEC_FORMAT,
   NAMED_CODES,
   nameSection,
   perksSection,
@@ -25,11 +22,11 @@ import {
 
 vi.mock('@entities/shiv', () => ({ shivBuildCodes: vi.fn(), shivBuildFromCodes: vi.fn() }));
 
-describe('encodeShivBuild', () => {
+describe('encodeBuild of a SHIV build', () => {
   it('writes the perks section without the name section for the default name', () => {
     vi.mocked(shivBuildCodes).mockReturnValue(DEFAULT_NAME_CODES);
 
-    const code = encodeShivBuild(BUILD_STUB);
+    const code = encodeBuild('shiv', BUILD_STUB);
 
     expect(code).toBe(encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]));
   });
@@ -37,7 +34,7 @@ describe('encodeShivBuild', () => {
   it('writes the name section for its own name', () => {
     vi.mocked(shivBuildCodes).mockReturnValue(NAMED_CODES);
 
-    const code = encodeShivBuild(BUILD_STUB);
+    const code = encodeBuild('shiv', BUILD_STUB);
 
     expect(code).toBe(encodeBinaryCode(SHIV_FORMAT, [perksSection(NAMED_CODES.perks), nameSection(BUILD_NAME)]));
   });
@@ -45,18 +42,18 @@ describe('encodeShivBuild', () => {
   it('gives null for a build without codes', () => {
     vi.mocked(shivBuildCodes).mockReturnValue(null);
 
-    const code = encodeShivBuild(BUILD_STUB);
+    const code = encodeBuild('shiv', BUILD_STUB);
 
     expect(code).toBeNull();
   });
 });
 
-describe('decodeShivBuild', () => {
+describe('readShareCode of a SHIV build code', () => {
   it('gives the build of the codes', () => {
     vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]) ?? '';
 
-    const result = decodeShivBuild(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(DECODED_RESULT);
   });
@@ -64,7 +61,7 @@ describe('decodeShivBuild', () => {
   it('reads the perk codes and no name without the name section', () => {
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]) ?? '';
 
-    decodeShivBuild(code);
+    readShareCode(code);
 
     expect(shivBuildFromCodes).toHaveBeenLastCalledWith(DEFAULT_NAME_CODES);
   });
@@ -72,7 +69,7 @@ describe('decodeShivBuild', () => {
   it('reads the name of the name section', () => {
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(NAMED_CODES.perks), nameSection(BUILD_NAME)]) ?? '';
 
-    decodeShivBuild(code);
+    readShareCode(code);
 
     expect(shivBuildFromCodes).toHaveBeenLastCalledWith(NAMED_CODES);
   });
@@ -80,7 +77,7 @@ describe('decodeShivBuild', () => {
   it('skips unknown sections', () => {
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks), UNKNOWN_SECTION]) ?? '';
 
-    decodeShivBuild(code);
+    readShareCode(code);
 
     expect(shivBuildFromCodes).toHaveBeenLastCalledWith(DEFAULT_NAME_CODES);
   });
@@ -89,7 +86,7 @@ describe('decodeShivBuild', () => {
     vi.mocked(shivBuildFromCodes).mockReturnValue(null);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]) ?? '';
 
-    const result = decodeShivBuild(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -98,7 +95,7 @@ describe('decodeShivBuild', () => {
     vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1], 1)]) ?? '';
 
-    const result = decodeShivBuild(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -107,7 +104,7 @@ describe('decodeShivBuild', () => {
     vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1]), BROKEN_NAME_SECTION]) ?? '';
 
-    const result = decodeShivBuild(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
@@ -116,30 +113,14 @@ describe('decodeShivBuild', () => {
     vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
     const code = encodeBinaryCode(SHIV_FORMAT, [UNKNOWN_SECTION]) ?? '';
 
-    const result = decodeShivBuild(code);
+    const result = readShareCode(code);
 
     expect(result).toEqual(INVALID_RESULT);
   });
 
   it('rejects a string that is not a code', () => {
-    const result = decodeShivBuild(GARBAGE_CODE);
+    const result = readShareCode(GARBAGE_CODE);
 
     expect(result).toEqual(INVALID_RESULT);
-  });
-
-  it('recognises a biosoldier build code', () => {
-    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [perksSection([1])]) ?? '';
-
-    const result = decodeShivBuild(code);
-
-    expect(result).toEqual(BIOSOLDIER_CODE_RESULT);
-  });
-
-  it('recognises a MEC build code', () => {
-    const code = encodeBinaryCode(MEC_FORMAT, [perksSection([1])]) ?? '';
-
-    const result = decodeShivBuild(code);
-
-    expect(result).toEqual(MEC_CODE_RESULT);
   });
 });

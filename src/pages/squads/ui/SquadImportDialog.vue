@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { ClipboardPaste } from '@lucide/vue';
 
-import { createId } from '@shared/lib/id';
 import { Button } from '@shared/ui/button';
 import { Dialog } from '@shared/ui/dialog';
-import { Input } from '@shared/ui/input';
-import { Label } from '@shared/ui/label';
+import { TextField } from '@shared/ui/text-field';
 
 import { useSquadImport } from '../model/squad-import';
 
-const { isOpen, code, error, isInvalid, errorDescribedBy, errorId, clearError, setOpen, importSquadCode } = useSquadImport();
-
-const codeInputId = createId();
+const { isOpen, code, error, setOpen, importSquadCode } = useSquadImport();
 </script>
 
 <template>
@@ -32,31 +28,16 @@ const codeInputId = createId();
         A Squad code becomes a new Squad. Its Builds also appear in their Build calculators.
       </p>
 
-      <Label :class="$style.label" :for="codeInputId">
-        Share code
-      </Label>
-      <div :class="$style.field">
-        <Input
-          :id="codeInputId"
-          v-model="code"
-          placeholder="Paste a Squad code"
-          :aria-invalid="isInvalid"
-          :aria-describedby="errorDescribedBy"
-          @update:model-value="clearError"
-        />
+      <TextField
+        v-model="code"
+        v-model:error="error"
+        label="Share code"
+        placeholder="Paste a Squad code"
+      >
         <Button type="submit">
           <span :class="$style.submitContent">Import</span>
         </Button>
-      </div>
-
-      <p
-        v-if="error"
-        :id="errorId"
-        :class="$style.error"
-        role="alert"
-      >
-        {{ error }}
-      </p>
+      </TextField>
     </form>
   </Dialog>
 </template>

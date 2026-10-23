@@ -6,7 +6,7 @@ A SHIV build in a share code. The layout (header, sections, CRC, base64url), the
 
 ## Format
 
-`SHARE_CODE_FORMAT.SHIV_BUILD` = `2`. A Biosoldier or MEC code given to the SHIV decoder, and a SHIV code given to a soldier one, decode as `other-unit`.
+`SHARE_CODE_FORMAT.SHIV_BUILD` = `2`. `readShareCode` reads a code of this format as a SHIV Unit; the Import of a soldier Build calculator reports it as a code of another unit, and the SHIV one reports a Biosoldier or MEC code the same way.
 
 ## Sections
 
@@ -16,11 +16,11 @@ A SHIV build in a share code. The layout (header, sections, CRC, base64url), the
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | if the name differs from "SHIV" |
 | `LOADOUT` | 3 | `shivType` 8 · `primary` 8 · `secondary` 8 · `utilityCount` 3 · `item` 8 × utilityCount · `moduleCount` 2 · `item` 8 × moduleCount | Unit codes only |
 
-A SHIV Unit code is the SHIV build code plus `LOADOUT`, laid out as in [Unit codes](share-codes.en.md#unit-codes): the first item is the `code` of the SHIV type from `shiv-types.json`, `secondary` and `moduleCount` are always `0`. A Build calculator skips `LOADOUT` as unknown.
+A SHIV Unit code is the SHIV build code plus `LOADOUT`, laid out as in [Unit codes](share-codes.en.md#unit-codes): the first item is the `code` of the SHIV type from `shiv-types.json`, `secondary` and `moduleCount` are always `0`. The SHIV Build calculator takes its Build and leaves the Loadout.
 
 `PERKS` holds the selected perks as a set, without technology levels. On import each perk goes to its level in the current SHIV tree. The code is invalid if a perk is unknown or outside the tree, or two perks share a level.
 
-Code: `entities/shiv` — Build ↔ codes `shivBuildCodes` / `shivBuildFromCodes`: perk codes in level order, a perk on its level by the Build rule of `selectShivBuildPerk`, the placement of perks on technology levels. `features/share-build` — bits only: `config/constants.ts` (`SHIV_BUILD_SECTION`, field widths), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT` and `encodeShivBuild` / `decodeShivBuild`, its `buildCodec`) over the counted code list and `readWholeSection` of `model/section-fields.ts`.
+Code: `entities/shiv` — Build ↔ codes `shivBuildCodes` / `shivBuildFromCodes`: perk codes in level order, a perk on its level by the Build rule of `selectShivBuildPerk`, the placement of perks on technology levels. `features/share-build` — bits only: `config/constants.ts` (`SHIV_BUILD_SECTION`, field widths), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT`, under `shiv` in `BUILD_CODE_LAYOUTS` of `model/build-code.ts`) over the counted code list and `readWholeSection` of `model/section-fields.ts`.
 
 ## Numbering
 

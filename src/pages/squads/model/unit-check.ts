@@ -11,7 +11,7 @@ import {
   UNIT_WORD,
   UNITS_WORD,
 } from '../config/constants';
-import { changeNote } from './loadout-edit';
+import { changeNotes } from './loadout-edit';
 import type { SquadBuild, SquadBuildData } from './squad-build';
 import { squadBuildKey, squadBuildWearer } from './squad-build';
 
@@ -69,8 +69,8 @@ interface BuildChanges {
   buildName: string
   /** Number of the Units of the Build the check changed. */
   unitCount: number
-  /** Sentences about the changes, without repeats, in the order they first appear. */
-  notes: Set<string>
+  /** Changes of the Units of the Build, in Squad order. */
+  changes: LoadoutChange[]
 }
 
 /**
@@ -164,7 +164,7 @@ const unitCountText = (count: number) => `${count} ${count === 1 ? UNIT_WORD : U
 const buildChangesLine = (buildChanges: BuildChanges) => {
   const count = buildChanges.unitCount > 1 ? ` (${unitCountText(buildChanges.unitCount)})` : '';
 
-  return `${buildChanges.buildName}${count}${UNIT_CHECK_BUILD_SEPARATOR}${[...buildChanges.notes].join(' ')}`;
+  return `${buildChanges.buildName}${count}${UNIT_CHECK_BUILD_SEPARATOR}${changeNotes(buildChanges.changes).join(' ')}`;
 };
 
 /**
@@ -178,10 +178,10 @@ export const buildChangeLines = (units: readonly UnitChanges[]): ReadonlyMap<str
   const changesByBuild = units.reduce((acc, unit) => {
     if (!unit.changes.length) return acc;
 
-    const buildChanges = acc.get(unit.buildKey) ?? { buildName: unit.buildName, unitCount: 0, notes: new Set<string>() };
+    const buildChanges = acc.get(unit.buildKey) ?? { buildName: unit.buildName, unitCount: 0, changes: [] };
 
     buildChanges.unitCount += 1;
-    unit.changes.forEach(change => buildChanges.notes.add(changeNote(change)));
+    buildChanges.changes.push(...unit.changes);
     acc.set(unit.buildKey, buildChanges);
 
     return acc;

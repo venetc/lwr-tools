@@ -1,20 +1,24 @@
 import type { MaybeRefOrGetter } from 'vue';
-import { computed, ref, toValue } from 'vue';
+import { ref, toValue } from 'vue';
 
-import { createId } from '@shared/lib/id';
+import type { LoadoutUnitId } from '@entities/loadout';
+import { LOADOUT_UNITS } from '@entities/loadout';
 import { useToastQueue } from '@shared/ui/toast';
 
-import type { BuildCodeKind, BuildDataByKind } from './build-codecs';
-import { decodeBuildImport } from './build-import';
+import { INVALID_CODE_TEXT } from '../config/constants';
+import type { BuildDataByKind } from './build-code';
+import { readShareCode } from './share-code';
+import { isUnitOf } from './unit-code';
 
 /**
- * Share code import form: open state, entered code and its validity; a valid code is passed on and closes the form,
- * a code of another unit or a Squad code is reported with a toast and stays in the open form. The error is linked to the field while shown.
+ * Share code import form: open state, entered code and its error; a valid code is passed on and closes the form, a
+ * code of another unit or a Squad code is reported with a toast and stays in the open form, and an invalid code shows
+ * the error under the field.
  *
  * @param kind kind of build code the form accepts.
  * @param onImport receives the build of a valid code.
  */
-export const useShareCodeImport = <Kind extends BuildCodeKind>(
+export const useShareCodeImport = <Kind extends LoadoutUnitId>(
   kind: MaybeRefOrGetter<Kind>,
   onImport: (build: BuildDataByKind[Kind]) => void,
 ) => {
@@ -24,18 +28,7 @@ export const useShareCodeImport = <Kind extends BuildCodeKind>(
 
   const code = ref('');
 
-  const isInvalid = ref(false);
-
-  const errorId = createId();
-
-  const errorDescribedBy = computed(() => isInvalid.value ? errorId : null);
-
-  /**
-   * Hides the error once the code is edited.
-   */
-  const clearError = () => {
-    isInvalid.value = false;
-  };
+  const error = ref<string | null>(null);
 
   /**
    * Opens or closes the form; closing clears the code and the error.
@@ -48,37 +41,39 @@ export const useShareCodeImport = <Kind extends BuildCodeKind>(
     if (isNextOpen) return;
 
     code.value = '';
-    clearError();
+    error.value = null;
   };
 
   /**
-   * Decodes the entered code: marks an invalid code, reports a code of another unit or a Squad code,
-   * otherwise passes the build on and closes the form.
+   * Reads the entered code: a Build code or a Unit code of the kind passes its build on and closes the form; one of
+   * another unit or a Squad code is reported with a toast; anything else marks the code invalid.
    */
   const submit = () => {
-    const result = decodeBuildImport(toValue(kind), code.value);
+    const result = readShareCode(code.value);
 
     if (result.status === 'invalid') {
-      isInvalid.value = true;
+      error.value = INVALID_CODE_TEXT;
 
       return;
     }
 
-    if (result.status === 'other-unit') {
-      showToast({ title: `This is a ${result.unit} build code`, description: `Import it in the ${result.unit} Build calculator.` });
-
-      return;
-    }
-
-    if (result.status === 'squad-code') {
+    if (result.status === 'squad') {
       showToast({ title: 'This is a Squad code', description: 'Import it in the Squad planner.' });
 
       return;
     }
 
-    onImport(result.build);
+    if (!isUnitOf(result.unit, toValue(kind))) {
+      const unitName = LOADOUT_UNITS.find(unit => unit.id === result.unit.kind)?.name;
+
+      showToast({ title: `This is a ${unitName} build code`, description: `Import it in the ${unitName} Build calculator.` });
+
+      return;
+    }
+
+    onImport(result.unit.build);
     setOpen(false);
   };
 
-  return { isOpen, code, isInvalid, errorId, errorDescribedBy, clearError, setOpen, submit };
+  return { isOpen, code, error, setOpen, submit };
 };

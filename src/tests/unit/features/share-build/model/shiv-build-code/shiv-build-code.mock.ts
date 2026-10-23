@@ -11,10 +11,6 @@ export const NAMED_CODES: ShivBuildCodes = { perks: [1, 4], name: BUILD_NAME };
 
 export const SHIV_FORMAT = 2;
 
-export const BIOSOLDIER_FORMAT = 1;
-
-export const MEC_FORMAT = 3;
-
 export const PERKS_SECTION_ID = 1;
 
 export const NAME_SECTION_ID = 2;
@@ -23,11 +19,7 @@ export const UNKNOWN_SECTION_ID = 20;
 
 export const INVALID_RESULT = { status: 'invalid' };
 
-export const DECODED_RESULT = { status: 'decoded', build: BUILD_STUB };
-
-export const BIOSOLDIER_CODE_RESULT = { status: 'other-unit', unit: 'Biosoldier' };
-
-export const MEC_CODE_RESULT = { status: 'other-unit', unit: 'MEC' };
+export const DECODED_RESULT = { status: 'unit', unit: { kind: 'shiv', build: BUILD_STUB, loadout: null } };
 
 export const GARBAGE_CODE = 'not a code';
 

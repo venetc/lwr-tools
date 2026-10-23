@@ -22,8 +22,6 @@ export interface BiosoldierTierLabel {
   faded: boolean
   /** Tier name. */
   name: string
-  /** Why the officer rank is locked; null for other tiers and open officer ranks. */
-  caption: string | null
 }
 
 /**
@@ -94,15 +92,15 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
 };
 
 /**
- * Label of a tier: the rank icon for the class tree; the medal, faded while locked, and the lock reason under the name
- * for an officer rank; the name alone for a body part or a psi level.
+ * Label of a tier: the rank icon for the class tree; the medal, faded while locked, for an officer rank; the name alone
+ * for a body part or a psi level.
  *
  * @param tier tier of a biosoldier build panel.
  */
 export const tierLabel = (tier: BiosoldierBuildTier): BiosoldierTierLabel => {
   if ('officerRank' in tier) {
-    return { icon: null, image: tier.officerRank.medal, faded: tier.state === 'locked', name: tier.name, caption: tier.lockReason };
+    return { icon: null, image: tier.officerRank.medal, faded: tier.state === 'locked', name: tier.name };
   }
 
-  return { icon: 'rank' in tier ? tier.rank.icon : null, image: null, faded: false, name: tier.name, caption: null };
+  return { icon: 'rank' in tier ? tier.rank.icon : null, image: null, faded: false, name: tier.name };
 };

@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import { abilityCell, addBuild, openBuildPanel } from '../utils/build-panel';
-import { MAGNUM, PAGE_PATH, PANEL_NAME, SHARPSHOOTER } from './class-tree.mock';
+import { LOCK_LABEL, MAGNUM, PAGE_PATH, PANEL_NAME, SHARPSHOOTER } from './class-tree.mock';
 
 /**
  * Opens the Biosoldier Build calculator and returns the panel of the tested build.
@@ -20,18 +20,37 @@ test.describe('Biosoldier Class tree', () => {
     await expect(abilityCell(panel, MAGNUM)).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('clears the ranks above when the selected perk is clicked', async ({ page }) => {
+  test('selects a perk on a rank above empty ones', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await abilityCell(panel, SHARPSHOOTER).click();
+
+    await expect(abilityCell(panel, SHARPSHOOTER)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('keeps the ranks above when the selected perk of a middle rank is clicked', async ({ page }) => {
     const panel = await openPanel(page);
     await abilityCell(panel, MAGNUM).click();
     await abilityCell(panel, SHARPSHOOTER).click();
 
     await abilityCell(panel, MAGNUM).click();
 
-    await expect(abilityCell(panel, SHARPSHOOTER)).toHaveAttribute('aria-pressed', 'false');
+    await expect(abilityCell(panel, SHARPSHOOTER)).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('does not select a perk on a locked rank', async ({ page }) => {
+  test('clears the rank when its selected perk is clicked', async ({ page }) => {
     const panel = await openPanel(page);
+    await abilityCell(panel, MAGNUM).click();
+    await abilityCell(panel, SHARPSHOOTER).click();
+
+    await abilityCell(panel, MAGNUM).click();
+
+    await expect(abilityCell(panel, MAGNUM)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('does not select a perk on an empty rank of a Read-only build', async ({ page }) => {
+    const panel = await openPanel(page);
+    await panel.getByRole('button', { name: LOCK_LABEL }).click();
 
     await abilityCell(panel, SHARPSHOOTER).click({ force: true });
 

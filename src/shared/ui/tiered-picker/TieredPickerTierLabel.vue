@@ -14,8 +14,6 @@ interface Props {
   faded?: boolean
   /** Tier name. */
   name: string
-  /** Line under the name, such as why the tier is locked; null for none. */
-  caption?: string | null
   /** Whether the icon takes the label color instead of the accent. */
   highlighted?: boolean
 }
@@ -24,7 +22,6 @@ const props = withDefaults(defineProps<Props>(), {
   icon: null,
   image: null,
   faded: false,
-  caption: null,
   highlighted: false,
 });
 
@@ -51,7 +48,6 @@ const { iconClass, imageClass } = useTierLabelClasses({
     >
     <span :class="$style.text">
       <span :class="$style.name">{{ props.name }}</span>
-      <span v-if="props.caption" :class="$style.caption">{{ props.caption }}</span>
     </span>
   </span>
 </template>

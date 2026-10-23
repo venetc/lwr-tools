@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { useClassTreeTiers } from '@widgets/build-calculator/model/class-tree-tiers';
 
-import { BASE_PERKS, createBuildMock, PARTIAL_PERKS } from './class-tree-tiers.mock';
+import { BASE_PERKS, createBuildMock, GAPPED_PERKS, PARTIAL_PERKS } from './class-tree-tiers.mock';
 
 vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
   ABILITY_CONTENT: (await import('./class-tree-tiers.mock')).ABILITY_CONTENT_MOCK,
@@ -33,10 +33,22 @@ describe('useClassTreeTiers', () => {
     expect(tiers.value[1].isDisabled).toBe(true);
   });
 
-  it('disables a locked rank', () => {
+  it('enables an empty rank above an empty one', () => {
     const { tiers } = useClassTreeTiers(createBuildMock(BASE_PERKS));
 
-    expect(tiers.value[2].isDisabled).toBe(true);
+    expect(tiers.value[2].isDisabled).toBe(false);
+  });
+
+  it('opens every empty rank of an editable build', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(GAPPED_PERKS));
+
+    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'available', 'completed']);
+  });
+
+  it('locks the empty ranks of a readonly build', () => {
+    const { tiers } = useClassTreeTiers(createBuildMock(GAPPED_PERKS, true));
+
+    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'locked', 'completed']);
   });
 
   it('enables a completed rank that is not granted', () => {
@@ -81,13 +93,13 @@ describe('useClassTreeTiers', () => {
     expect(tiers.value[2].options[0].appearance).toBe('available');
   });
 
-  it('shows a perk of a locked rank as disabled', () => {
+  it('shows a perk of an empty rank above an empty one as available', () => {
     const { tiers } = useClassTreeTiers(createBuildMock(BASE_PERKS));
 
-    expect(tiers.value[2].options[0].appearance).toBe('disabled');
+    expect(tiers.value[2].options[0].appearance).toBe('available');
   });
 
-  it('shows a perk above the completed ranks of a readonly build as disabled', () => {
+  it('shows a perk of an empty rank of a readonly build as disabled', () => {
     const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS, true));
 
     expect(tiers.value[2].options[0].appearance).toBe('disabled');
@@ -103,6 +115,12 @@ describe('useClassTreeTiers', () => {
     const { tiers } = useClassTreeTiers(createBuildMock(PARTIAL_PERKS));
 
     expect(tiers.value[1].options[0].isDisabled).toBe(false);
+  });
+
+  it('features the perk selected on the highest completed rank above an empty one', () => {
+    const { featuredPickerItem } = useClassTreeTiers(createBuildMock(GAPPED_PERKS));
+
+    expect(featuredPickerItem.value?.id).toBe('top');
   });
 
   it('features the perk selected on the last completed rank', () => {

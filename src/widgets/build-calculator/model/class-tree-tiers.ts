@@ -24,9 +24,10 @@ export interface ClassTreeRankTier extends TieredPickerTier {
 /**
  * Class tree of the build as picker tiers, and the item described while the user inspects none.
  *
- * @description A tier is disabled for a readonly build, the rank of the base perk, or a locked rank.
- * Perks of the available rank look available, the perk selected on a completed rank looks selected, and the rest look
- * disabled, as in the game; a disabled-looking perk of a completed rank still replaces the selection.
+ * @description Ranks are taken in any order: an empty rank of an editable build is available, a rank with a perk is
+ * completed, and an empty rank of a readonly build is locked. A tier is disabled for a readonly build or the rank of the
+ * base perk. Perks of an available rank look available, the perk selected on a completed rank looks selected, and the
+ * rest look disabled, as in the game; a disabled-looking perk of a completed rank still replaces the selection.
  * The tree and its picker items are built only when the build class changes; a selection only rebuilds the options.
  *
  * @param build soldier build with its lock.
@@ -42,15 +43,15 @@ export const useClassTreeTiers = (build: MaybeRefOrGetter<ClassTreeBuild>) => {
     const { perks, readonly } = toValue(build);
 
     return tree.value.ranks.map((rank, rankIndex): ClassTreeRankTier => {
-      const state = rankState(perks, rankIndex, readonly);
       const selectedId = perks[rankIndex] ?? null;
+      const state = rankState(selectedId, readonly);
 
       return {
         id: rank.id,
         name: rank.name,
         rank,
         state,
-        isDisabled: readonly || rankIndex === 0 || state === 'locked',
+        isDisabled: readonly || rankIndex === 0,
         selectedId,
         options: (rankPickerItems.value[rankIndex] ?? []).map(item => tierOption(item, state, selectedId)),
       };

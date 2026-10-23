@@ -3,11 +3,12 @@ import type { DeepReadonly } from '@shared/lib/object';
 import { ABILITY_ID_BY_CODE } from '../config/constants/abilities';
 import { ABILITY_CONTENT } from '../config/constants/ability-content';
 import { BIOSOLDIER_CLASS_BY_CODE } from '../config/constants/biosoldier-classes';
-import { BODY_PART_INDEX_BY_GENE_MOD, EMPTY_GENE_MODS } from '../config/constants/body-parts';
+import { GENE_MODS_BY_BODY_PART } from '../config/constants/body-parts';
 import { MEC_CLASS_BY_CODE } from '../config/constants/mec-classes';
+import { OFFICER_PERKS_BY_OFFICER_RANK } from '../config/constants/officer-ranks';
+import { PSIONIC_ABILITIES_BY_PSI_LEVEL } from '../config/constants/psi-levels';
+import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
 import type { AbilityId } from './abilities';
-import { isAbilityId } from './abilities';
-import type { SelectedGeneMods } from './body-parts';
 import type { BiosoldierBuildData, SoldierBuildData } from './build';
 import {
   defaultBiosoldierBuild,
@@ -22,13 +23,28 @@ import { geneModBlockReason, officerPerkBlockReason, perkBlockReason, psionicAbi
 import type { SoldierClass } from './classes';
 
 /**
+ * Selection on a step of a build as stable codes: its place among the variants of the step and its ability.
+ */
+export interface SelectionCode {
+  /** Index of the variant on the step, in tree order. */
+  variantIndex: number
+  /** Code of the ability. */
+  code: number
+}
+
+/**
+ * Selections of the steps of a tree as stable codes: one entry per step, null for an empty step.
+ */
+export type StepCodes = (SelectionCode | null)[];
+
+/**
  * Soldier build as stable codes, in the shape of the build: what a share code of a MEC carries.
  */
 export interface SoldierBuildCodes {
   /** Code of the class. */
   classCode: number
-  /** Codes of the selected perks by rank, from the second rank: the base perk is left out. */
-  perks: number[]
+  /** Selections by rank, from the second rank: the base perk is left out. */
+  perks: StepCodes
   /** Build name; null for the default name, the class name, or a blank one. */
   name: string | null
 }
@@ -37,62 +53,63 @@ export interface SoldierBuildCodes {
  * Biosoldier build as stable codes, in the shape of the build: what a share code of a biosoldier carries.
  */
 export interface BiosoldierBuildCodes extends SoldierBuildCodes {
-  /** Codes of the gene mods by body part, from Brain to Legs; empty body parts are left out. */
-  geneMods: number[]
-  /** Codes of the psionic abilities by psi level, from Awakened. */
-  psionicAbilities: number[]
-  /** Codes of the officer perks by officer rank, from Lieutenant. */
-  officerPerks: number[]
+  /** Selections by body part, from Brain to Legs; empty for a build without gene mods. */
+  geneMods: StepCodes
+  /** Selections by psi level, from Awakened; empty for a build without psionic abilities. */
+  psionicAbilities: StepCodes
+  /** Selections by officer rank, from Lieutenant; empty for a build without officer perks. */
+  officerPerks: StepCodes
 }
+
+/**
+ * Selected ids by step; null for an empty step.
+ */
+type StepIds = readonly (string | null)[];
+
+/**
+ * Ability ids offered on each step of a tree, in tree order: the variants of the steps.
+ */
+type StepVariants = readonly (readonly AbilityId[])[];
 
 /**
  * Selections of a biosoldier build beyond its class, as ids by step.
  */
 interface BiosoldierSelections {
   /** Perk ids by rank, from the second rank. */
-  perks: readonly string[]
-  /** Gene mod ids by body part; null for a body part without one. */
-  geneModsByBodyPart: readonly (string | null)[]
+  perks: StepIds
+  /** Gene mod ids by body part. */
+  geneMods: StepIds
   /** Psionic ability ids by psi level. */
-  psionicAbilities: readonly string[]
+  psionicAbilities: StepIds
   /** Officer perk ids by officer rank. */
-  officerPerks: readonly string[]
+  officerPerks: StepIds
 }
 
 /**
- * Takes a choice on a step of the build with its mutator, unless a Build rule refuses it.
+ * Takes the choices of the steps with the mutator, unless a Build rule refuses one; empty steps are skipped.
  *
  * @param build build; mutated in place.
- * @param stepIndex step index: rank, body part, psi level or officer rank.
- * @param id id of the choice.
- * @param blockReason Build rule check of the step.
- * @param select mutator of the step.
- * @returns whether the choice is taken.
+ * @param stepIds ids by step.
+ * @param blockReason Build rule check of a step.
+ * @param select mutator of a step.
+ * @param firstStepIndex index of the step of the first id.
+ * @returns whether every choice is taken.
  */
-const takeStep = <Build>(
+const takeSteps = <Build>(
   build: Build,
-  stepIndex: number,
-  id: string,
+  stepIds: StepIds,
   blockReason: (build: Build, stepIndex: number, id: string) => BuildBlockReason | null,
   select: (build: Build, stepIndex: number, id: string) => void,
-) => {
-  if (blockReason(build, stepIndex, id)) return false;
+  firstStepIndex: number,
+) => stepIds.every((id, index) => {
+  if (id === null) return true;
 
-  select(build, stepIndex, id);
+  if (blockReason(build, firstStepIndex + index, id)) return false;
+
+  select(build, firstStepIndex + index, id);
 
   return true;
-};
-
-/**
- * Takes the perks rank by rank, from the second rank.
- *
- * @param build soldier build; its perks are mutated in place.
- * @param perkIds perk ids by rank, from the second rank.
- * @returns whether every perk is taken.
- */
-const takePerks = (build: SoldierBuildData, perkIds: readonly string[]) => (
-  perkIds.every((perkId, index) => takeStep(build, index + 1, perkId, perkBlockReason, selectSoldierBuildPerk))
-);
+});
 
 /**
  * Soldier build of the class assembled from its default build with the mutators, perk by perk; null if a Build rule
@@ -102,10 +119,10 @@ const takePerks = (build: SoldierBuildData, perkIds: readonly string[]) => (
  * @param perkIds perk ids by rank, from the second rank.
  * @param name build name.
  */
-const assembleSoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, perkIds: readonly string[], name: string) => {
+const assembleSoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, perkIds: StepIds, name: string) => {
   const build = { ...defaultSoldierBuild(soldierClass), name };
 
-  if (!takePerks(build, perkIds)) return null;
+  if (!takeSteps(build, perkIds, perkBlockReason, selectSoldierBuildPerk, 1)) return null;
 
   return build;
 };
@@ -122,16 +139,10 @@ const assembleSoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, perkIds:
 const assembleBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, selections: BiosoldierSelections, name: string) => {
   const build = { ...defaultBiosoldierBuild(soldierClass), name };
 
-  const isTaken = takePerks(build, selections.perks)
-    && selections.geneModsByBodyPart.every((geneModId, bodyPartIndex) => (
-      geneModId === null || takeStep(build, bodyPartIndex, geneModId, geneModBlockReason, selectBiosoldierBuildGeneMod)
-    ))
-    && selections.psionicAbilities.every((abilityId, levelIndex) => (
-      takeStep(build, levelIndex, abilityId, psionicAbilityBlockReason, selectBiosoldierBuildPsionicAbility)
-    ))
-    && selections.officerPerks.every((perkId, officerRankIndex) => (
-      takeStep(build, officerRankIndex, perkId, officerPerkBlockReason, selectBiosoldierBuildOfficerPerk)
-    ));
+  const isTaken = takeSteps(build, selections.perks, perkBlockReason, selectSoldierBuildPerk, 1)
+    && takeSteps(build, selections.geneMods, geneModBlockReason, selectBiosoldierBuildGeneMod, 0)
+    && takeSteps(build, selections.psionicAbilities, psionicAbilityBlockReason, selectBiosoldierBuildPsionicAbility, 0)
+    && takeSteps(build, selections.officerPerks, (_, officerRankIndex, perkId) => officerPerkBlockReason(officerRankIndex, perkId), selectBiosoldierBuildOfficerPerk, 0);
 
   if (!isTaken) return null;
 
@@ -139,54 +150,94 @@ const assembleBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, selec
 };
 
 /**
- * Ability ids of the codes.
+ * Codes of the selections by step: each one as its variant index on the step and its ability code.
  *
- * @param codes ability codes.
- * @returns the ids in code order; null if a code is unknown.
+ * @param stepIds selected ids by step.
+ * @param variantsByStep variants of each step.
+ * @returns the codes; null if the steps differ in number from the tree, or a selection is not offered on its step.
  */
-const abilityIdsOfCodes = (codes: readonly number[]) => {
-  const abilityIds = codes.map(code => ABILITY_ID_BY_CODE.get(code) ?? null);
+const stepCodes = (stepIds: StepIds, variantsByStep: StepVariants) => {
+  if (stepIds.length !== variantsByStep.length) return null;
 
-  if (!abilityIds.every(abilityId => abilityId !== null)) return null;
+  const codes: StepCodes = [];
 
-  return abilityIds;
-};
+  for (const [stepIndex, id] of stepIds.entries()) {
+    if (id === null) {
+      codes.push(null);
+      continue;
+    }
 
-/**
- * Codes of the abilities.
- *
- * @param abilityIds ability ids.
- * @returns the codes in id order; null if an id is unknown.
- */
-const abilityCodes = (abilityIds: readonly string[]) => {
-  const codes = abilityIds.map(abilityId => (isAbilityId(abilityId) ? ABILITY_CONTENT[abilityId].code : null));
+    const variants = variantsByStep[stepIndex] ?? [];
+    const variantIndex = variants.findIndex(variantId => variantId === id);
+    const abilityId = variants[variantIndex];
 
-  if (!codes.every(code => code !== null)) return null;
+    if (!abilityId) return null;
+
+    codes.push({ variantIndex, code: ABILITY_CONTENT[abilityId].code });
+  }
 
   return codes;
 };
 
 /**
- * Gene mods placed in their body parts, which go from Brain to Legs, each at most once.
+ * Codes of the selections of a branch beyond the class tree, as `stepCodes`, but empty for a branch without any.
  *
- * @param geneModIds gene mod ids in body part order.
- * @returns gene mods by body part; null if an id is not a gene mod, or body parts repeat or go out of order.
+ * @param stepIds selected ids by step.
+ * @param variantsByStep variants of each step.
  */
-const geneModsByBodyPart = (geneModIds: readonly AbilityId[]) => {
-  const geneMods: SelectedGeneMods = [...EMPTY_GENE_MODS];
-  let lastBodyPartIndex = -1;
+const branchCodes = (stepIds: StepIds, variantsByStep: StepVariants) => {
+  if (stepIds.every(id => id === null)) return [];
 
-  for (const geneModId of geneModIds) {
-    const bodyPartIndex = BODY_PART_INDEX_BY_GENE_MOD.get(geneModId) ?? null;
+  return stepCodes(stepIds, variantsByStep);
+};
 
-    if (bodyPartIndex === null || bodyPartIndex <= lastBodyPartIndex) return null;
+/**
+ * Ids of the selections by step: each one is the variant of its step whose ability has the code.
+ *
+ * @param codes selections by step.
+ * @param variantsByStep variants of each step.
+ * @returns the ids; null if the steps differ in number from the tree, or a selection names a variant outside its step
+ * or an ability other than the one the tree has there, unknown ones included.
+ */
+const stepIdsOfCodes = (codes: Readonly<StepCodes>, variantsByStep: StepVariants) => {
+  if (codes.length !== variantsByStep.length) return null;
 
-    geneMods[bodyPartIndex] = geneModId;
-    lastBodyPartIndex = bodyPartIndex;
+  const ids: (AbilityId | null)[] = [];
+
+  for (const [stepIndex, selection] of codes.entries()) {
+    if (!selection) {
+      ids.push(null);
+      continue;
+    }
+
+    const abilityId = variantsByStep[stepIndex]?.[selection.variantIndex] ?? null;
+
+    if (!abilityId || ABILITY_ID_BY_CODE.get(selection.code) !== abilityId) return null;
+
+    ids.push(abilityId);
   }
 
-  return geneMods;
+  return ids;
 };
+
+/**
+ * Ids of the selections of a branch beyond the class tree, as `stepIdsOfCodes`, but every step empty for no codes.
+ *
+ * @param codes selections by step; empty for a branch without any.
+ * @param variantsByStep variants of each step.
+ */
+const branchIdsOfCodes = (codes: Readonly<StepCodes>, variantsByStep: StepVariants) => {
+  if (codes.length === 0) return variantsByStep.map(() => null);
+
+  return stepIdsOfCodes(codes, variantsByStep);
+};
+
+/**
+ * Variants of the ranks of the class, from the second rank.
+ *
+ * @param soldierClass soldier class.
+ */
+const rankVariants = (soldierClass: DeepReadonly<SoldierClass>): StepVariants => SOLDIER_RANKS.slice(1).map(rank => soldierClass.perks[rank.id]);
 
 /**
  * Build name of its code: the default name, the class name, for a missing or blank one.
@@ -223,7 +274,8 @@ const buildClass = (build: Readonly<SoldierBuildData>, classByCode: ReadonlyMap<
  * MEC build as stable codes.
  *
  * @param build MEC build.
- * @returns the codes; null for a class of another kind, an unknown ability or a build that breaks a Build rule.
+ * @returns the codes; null for a class of another kind, an unknown ability, steps that differ in number from the tree,
+ * or a build that breaks a Build rule.
  */
 export const mecBuildCodes = (build: Readonly<SoldierBuildData>): SoldierBuildCodes | null => {
   const soldierClass = buildClass(build, MEC_CLASS_BY_CODE);
@@ -231,7 +283,7 @@ export const mecBuildCodes = (build: Readonly<SoldierBuildData>): SoldierBuildCo
 
   if (!soldierClass || !assembleSoldierBuild(soldierClass, perkIds, build.name)) return null;
 
-  const perks = abilityCodes(perkIds);
+  const perks = stepCodes(perkIds, rankVariants(soldierClass));
 
   if (!perks) return null;
 
@@ -242,11 +294,12 @@ export const mecBuildCodes = (build: Readonly<SoldierBuildData>): SoldierBuildCo
  * MEC build of stable codes, assembled with the mutators by the Build rules.
  *
  * @param codes MEC build codes.
- * @returns the build; null for an unknown code, a class of another kind or a choice a Build rule refuses.
+ * @returns the build; null for an unknown code, a class of another kind, steps or a variant that the tree does not
+ * have, or an ability other than the one the tree has on its place.
  */
 export const mecBuildFromCodes = (codes: Readonly<SoldierBuildCodes>): SoldierBuildData | null => {
   const soldierClass = MEC_CLASS_BY_CODE.get(codes.classCode) ?? null;
-  const perkIds = abilityIdsOfCodes(codes.perks);
+  const perkIds = soldierClass && stepIdsOfCodes(codes.perks, rankVariants(soldierClass));
 
   if (!soldierClass || !perkIds) return null;
 
@@ -257,23 +310,24 @@ export const mecBuildFromCodes = (codes: Readonly<SoldierBuildCodes>): SoldierBu
  * Biosoldier build as stable codes.
  *
  * @param build biosoldier build.
- * @returns the codes; null for a class of another kind, an unknown ability or a build that breaks a Build rule.
+ * @returns the codes; null for a class of another kind, an unknown ability, steps that differ in number from the tree,
+ * or a build that breaks a Build rule.
  */
 export const biosoldierBuildCodes = (build: Readonly<BiosoldierBuildData>): BiosoldierBuildCodes | null => {
   const soldierClass = buildClass(build, BIOSOLDIER_CLASS_BY_CODE);
   const selections: BiosoldierSelections = {
     perks: build.perks.slice(1),
-    geneModsByBodyPart: build.geneMods,
+    geneMods: build.geneMods,
     psionicAbilities: build.psionicAbilities,
     officerPerks: build.officerPerks,
   };
 
   if (!soldierClass || !assembleBiosoldierBuild(soldierClass, selections, build.name)) return null;
 
-  const perks = abilityCodes(selections.perks);
-  const geneMods = abilityCodes(build.geneMods.filter(geneModId => geneModId !== null));
-  const psionicAbilities = abilityCodes(build.psionicAbilities);
-  const officerPerks = abilityCodes(build.officerPerks);
+  const perks = stepCodes(selections.perks, rankVariants(soldierClass));
+  const geneMods = branchCodes(selections.geneMods, GENE_MODS_BY_BODY_PART);
+  const psionicAbilities = branchCodes(selections.psionicAbilities, PSIONIC_ABILITIES_BY_PSI_LEVEL);
+  const officerPerks = branchCodes(selections.officerPerks, OFFICER_PERKS_BY_OFFICER_RANK);
 
   if (!perks || !geneMods || !psionicAbilities || !officerPerks) return null;
 
@@ -288,26 +342,22 @@ export const biosoldierBuildCodes = (build: Readonly<BiosoldierBuildData>): Bios
 };
 
 /**
- * Biosoldier build of stable codes, assembled with the mutators by the Build rules; each gene mod goes to its body part.
+ * Biosoldier build of stable codes, assembled with the mutators by the Build rules.
  *
  * @param codes biosoldier build codes.
- * @returns the build; null for an unknown code, a class of another kind, gene mods whose body parts repeat or go out of
- * order, or a choice a Build rule refuses.
+ * @returns the build; null for an unknown code, a class of another kind, steps or a variant that the tree does not
+ * have, an ability other than the one the tree has on its place, or a choice a Build rule refuses.
  */
 export const biosoldierBuildFromCodes = (codes: Readonly<BiosoldierBuildCodes>): BiosoldierBuildData | null => {
   const soldierClass = BIOSOLDIER_CLASS_BY_CODE.get(codes.classCode) ?? null;
-  const perks = abilityIdsOfCodes(codes.perks);
-  const geneModIds = abilityIdsOfCodes(codes.geneMods);
-  const psionicAbilities = abilityIdsOfCodes(codes.psionicAbilities);
-  const officerPerks = abilityIdsOfCodes(codes.officerPerks);
+  const perks = soldierClass && stepIdsOfCodes(codes.perks, rankVariants(soldierClass));
+  const geneMods = branchIdsOfCodes(codes.geneMods, GENE_MODS_BY_BODY_PART);
+  const psionicAbilities = branchIdsOfCodes(codes.psionicAbilities, PSIONIC_ABILITIES_BY_PSI_LEVEL);
+  const officerPerks = branchIdsOfCodes(codes.officerPerks, OFFICER_PERKS_BY_OFFICER_RANK);
 
-  if (!soldierClass || !perks || !geneModIds || !psionicAbilities || !officerPerks) return null;
+  if (!soldierClass || !perks || !geneMods || !psionicAbilities || !officerPerks) return null;
 
-  const geneMods = geneModsByBodyPart(geneModIds);
-
-  if (!geneMods) return null;
-
-  const selections: BiosoldierSelections = { perks, geneModsByBodyPart: geneMods, psionicAbilities, officerPerks };
+  const selections: BiosoldierSelections = { perks, geneMods, psionicAbilities, officerPerks };
 
   return assembleBiosoldierBuild(soldierClass, selections, nameOfCode(codes.name, soldierClass.name));
 };

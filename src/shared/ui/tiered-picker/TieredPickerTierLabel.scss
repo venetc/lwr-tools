@@ -29,13 +29,6 @@ $compact-max-width: 390px;
   text-box: trim-both cap alphabetic;
 }
 
-.caption {
-  @include typography.caption;
-
-  color: colors.$text-tertiary;
-  text-transform: none;
-}
-
 .icon {
   flex: none;
   width: 26px;

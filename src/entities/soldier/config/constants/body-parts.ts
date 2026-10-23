@@ -19,3 +19,6 @@ export const EMPTY_GENE_MODS: DeepReadonly<SelectedGeneMods> = BODY_PARTS.map(()
 
 /** Neural Damping: the Brain gene mod that excludes psionic abilities. */
 export const NEURAL_DAMPING_ID: AbilityId = 'neural-damping';
+
+/** Gene mods offered on each body part, in body part order: the variants of the steps of Gene mods. */
+export const GENE_MODS_BY_BODY_PART: DeepReadonly<AbilityId[][]> = BODY_PARTS.map(bodyPart => bodyPart.geneMods);

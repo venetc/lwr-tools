@@ -22,6 +22,12 @@ export const COUNTERCHARGE = 'Countercharge';
 
 export const MIND_FRAY = 'Mind Fray';
 
+/** Psionic ability of Empath, the middle psi level. */
+export const FERVOR = 'Fervor';
+
+/** Psionic ability of Master, the last psi level. */
+export const PSI_MASTERY = 'Psi Mastery';
+
 export const NEURAL_DAMPING = 'Neural Damping';
 
 export const IRON_SKIN = 'Iron Skin';

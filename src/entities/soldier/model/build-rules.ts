@@ -8,17 +8,15 @@ import type { BiosoldierBuildData, SoldierBuildData } from './build';
  * Why a Build rule refuses a choice:
  * - `base-perk`: the first rank holds the base perk;
  * - `not-offered`: the ability is not offered on the step, or the step is outside the tree;
- * - `skipped-step`: the step is above the next open rank, psi level or officer rank;
  * - `neural-damping`: a psionic ability while Neural Damping is selected;
- * - `psionic-ability`: Neural Damping while a psionic ability is selected;
- * - `required-rank`: an officer rank whose required rank the class tree has not completed.
+ * - `psionic-ability`: Neural Damping while a psionic ability is selected.
  */
-export type BuildBlockReason = 'base-perk' | 'not-offered' | 'skipped-step' | 'neural-damping' | 'psionic-ability' | 'required-rank';
+export type BuildBlockReason = 'base-perk' | 'not-offered' | 'neural-damping' | 'psionic-ability';
 
 /**
- * Why a perk cannot be selected on the rank: the first rank holds the base perk, ranks are taken in order without gaps,
- * and each perk is offered on its own rank of the class tree; null if it can. Clearing the rank (a null perk) is refused
- * only for the first rank or a skipped one.
+ * Why a perk cannot be selected on the rank: the first rank holds the base perk, and each perk is offered on its own
+ * rank of the class tree; null if it can. Ranks are taken in any order; clearing a rank (a null perk) is refused only
+ * for the first rank.
  *
  * @param build soldier build.
  * @param rankIndex rank index in the tree.
@@ -30,8 +28,6 @@ export const perkBlockReason = (build: Readonly<SoldierBuildData>, rankIndex: nu
   if (!rank) return 'not-offered';
 
   if (rankIndex === 0) return 'base-perk';
-
-  if (rankIndex > build.perks.length) return 'skipped-step';
 
   if (perkId === null) return null;
 
@@ -65,22 +61,22 @@ export const geneModBlockReason = (
 
   if (!offeredIds.includes(geneModId)) return 'not-offered';
 
-  if (geneModId === NEURAL_DAMPING_ID && build.psionicAbilities.length > 0) return 'psionic-ability';
+  if (geneModId === NEURAL_DAMPING_ID && build.psionicAbilities.some(abilityId => abilityId !== null)) return 'psionic-ability';
 
   return null;
 };
 
 /**
- * Why a psionic ability cannot be selected on the psi level: Neural Damping excludes psionic abilities, psi levels are
- * taken in order without gaps, and each ability is offered on its own psi level; null if it can. A null ability asks
- * about the psi level itself: whether it can be cleared.
+ * Why a psionic ability cannot be selected on the psi level: Neural Damping excludes psionic abilities, and each ability
+ * is offered on its own psi level; null if it can. Psi levels are taken in any order; a null ability asks about the psi
+ * level itself: whether it can be cleared.
  *
- * @param build biosoldier build: its gene mods and psionic abilities.
+ * @param build biosoldier build: its gene mods.
  * @param levelIndex psi level index.
  * @param abilityId psionic ability id, or null to clear the psi level.
  */
 export const psionicAbilityBlockReason = (
-  build: Readonly<Pick<BiosoldierBuildData, 'geneMods' | 'psionicAbilities'>>,
+  build: Readonly<Pick<BiosoldierBuildData, 'geneMods'>>,
   levelIndex: number,
   abilityId: string | null,
 ): BuildBlockReason | null => {
@@ -89,8 +85,6 @@ export const psionicAbilityBlockReason = (
   if (!psiLevel) return 'not-offered';
 
   if (build.geneMods.includes(NEURAL_DAMPING_ID)) return 'neural-damping';
-
-  if (levelIndex > build.psionicAbilities.length) return 'skipped-step';
 
   if (abilityId === null) return null;
 
@@ -102,27 +96,17 @@ export const psionicAbilityBlockReason = (
 };
 
 /**
- * Why an officer perk cannot be selected on the officer rank: the officer rank needs its required rank completed in
- * the class tree (a rank is completed once it has a perk), officer ranks are taken in order without gaps, and each
- * officer perk is offered on its own officer rank; null if it can. A null officer perk asks about the officer rank
- * itself: whether it can be cleared.
+ * Why an officer perk cannot be selected on the officer rank: each officer perk is offered on its own officer rank;
+ * null if it can. Officer ranks are taken in any order and at any rank of the class tree; clearing an officer rank
+ * (a null officer perk) is refused only outside the officer tree.
  *
- * @param build biosoldier build: its perks and officer perks.
  * @param officerRankIndex officer rank index.
  * @param perkId officer perk id, or null to clear the officer rank.
  */
-export const officerPerkBlockReason = (
-  build: Readonly<Pick<BiosoldierBuildData, 'perks' | 'officerPerks'>>,
-  officerRankIndex: number,
-  perkId: string | null,
-): BuildBlockReason | null => {
+export const officerPerkBlockReason = (officerRankIndex: number, perkId: string | null): BuildBlockReason | null => {
   const officerRank = OFFICER_RANKS[officerRankIndex];
 
   if (!officerRank) return 'not-offered';
-
-  if (officerRank.requiredRankIndex === null || officerRank.requiredRankIndex >= build.perks.length) return 'required-rank';
-
-  if (officerRankIndex > build.officerPerks.length) return 'skipped-step';
 
   if (perkId === null) return null;
 

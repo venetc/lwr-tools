@@ -18,13 +18,14 @@ export const VALKYRIE = soldierClassMock('valkyrie', 'Valkyrie', 'jet-boots');
 export const GOLIATH = soldierClassMock('goliath', 'Goliath', 'body-shield');
 
 /**
- * Entity of MECs with two classes and a selection that only puts the id at the index.
+ * Entity of MECs with two classes, Default builds of two ranks and a selection that only puts the id at the index.
  */
 export const SOLDIER_ENTITY_MOCK = {
   MEC_CLASSES: [VALKYRIE, GOLIATH],
   BODY_PARTS: [],
   PSI_LEVELS: [],
   OFFICER_RANKS: [],
+  defaultSoldierBuild: (soldierClass: SoldierClass) => ({ soldierClass, perks: [soldierClass.basePerk, null], name: soldierClass.name }),
   selectSoldierBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
     build.perks[index] = id;
   },
@@ -42,21 +43,21 @@ export const DEFAULT_VALKYRIE_ID = 'default-valkyrie';
 export const DEFAULT_VALKYRIE_BUILD = {
   id: 'default-valkyrie',
   soldierClass: VALKYRIE,
-  perks: ['jet-boots'],
+  perks: ['jet-boots', null],
   name: 'Valkyrie',
   readonly: false,
 };
 
 export const DEFAULT_BUILDS = [
   DEFAULT_VALKYRIE_BUILD,
-  { id: 'default-goliath', soldierClass: GOLIATH, perks: ['body-shield'], name: 'Goliath', readonly: false },
+  { id: 'default-goliath', soldierClass: GOLIATH, perks: ['body-shield', null], name: 'Goliath', readonly: false },
 ];
 
-export const PICKED_PERKS = ['picked'];
+export const PICKED_PERKS = ['picked', null];
 
 export const LOCKED_VALKYRIE_BUILD = { ...DEFAULT_VALKYRIE_BUILD, readonly: true };
 
-export const LOCKED_PICKED_BUILD = { ...LOCKED_VALKYRIE_BUILD, perks: ['picked'] };
+export const LOCKED_PICKED_BUILD = { ...LOCKED_VALKYRIE_BUILD, perks: PICKED_PERKS };
 
 export const NEW_GOLIATH_BUILD = { ...DEFAULT_BUILDS[1], id: expect.any(String) };
 

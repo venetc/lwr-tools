@@ -1,3 +1,5 @@
-export const BASE_BUILD = ['granted'];
+export const SELECTED_PERK = 'right';
 
-export const PARTIAL_BUILD = ['granted', 'right'];
+export const GAPPED_STEPS = ['granted', null, 'top', null];
+
+export const EMPTY_STEPS = [null, null];

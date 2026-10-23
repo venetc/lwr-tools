@@ -21,18 +21,18 @@ export const SOLDIER_CLASS_MOCK = {
   basePerk: 'granted',
 } as unknown as SoldierClass;
 
-export const BASE_PERKS = ['granted'];
+export const BASE_PERKS = ['granted', null, null, null];
 
-export const PERKS_TO_THIRD = ['granted', 'right', 'top'];
+export const PERKS_TO_THIRD = ['granted', 'right', 'top', null];
 
 export const ALL_PERKS = ['granted', 'right', 'top', 'bottom'];
 
 /**
  * Fresh build of the mock class with its own perks array.
  *
- * @param perks selected perks by rank.
+ * @param perks selected perks by rank; null for an empty rank.
  */
-export const createBuildMock = (perks: string[]): SoldierBuildData => ({
+export const createBuildMock = (perks: (string | null)[]): SoldierBuildData => ({
   soldierClass: SOLDIER_CLASS_MOCK,
   perks: [...perks],
   name: 'Tester',
@@ -73,21 +73,27 @@ export const NEURAL_DAMPING_GENE_MODS = ['neural-damping', null];
 
 export const FEET_GENE_MODS = [null, 'feet-second'];
 
-export const LOW_AND_MIDDLE_PSIONICS = ['low-left', 'middle'];
+export const NO_PSIONICS = [null, null, null];
+
+export const NO_OFFICER_PERKS = [null, null, null];
+
+export const LOW_AND_MIDDLE_PSIONICS = ['low-left', 'middle', null];
 
 export const ALL_PSIONICS = ['low-left', 'middle', 'high-right'];
+
+export const HIGH_PSIONICS = [null, null, 'high-right'];
 
 /**
  * Fresh biosoldier build of the mock class with its own gene mods and psionic abilities arrays.
  *
  * @param geneMods gene mods by body part.
- * @param psionicAbilities psionic abilities by psi level.
+ * @param psionicAbilities psionic abilities by psi level; null for an empty psi level.
  */
-export const createBiosoldierBuildMock = (geneMods: (string | null)[], psionicAbilities: string[] = []): BiosoldierBuildData => ({
+export const createBiosoldierBuildMock = (geneMods: (string | null)[], psionicAbilities: (string | null)[] = NO_PSIONICS): BiosoldierBuildData => ({
   ...createBuildMock(BASE_PERKS),
   geneMods: [...geneMods] as BiosoldierBuildData['geneMods'],
   psionicAbilities: [...psionicAbilities] as BiosoldierBuildData['psionicAbilities'],
-  officerPerks: [],
+  officerPerks: [...NO_OFFICER_PERKS] as BiosoldierBuildData['officerPerks'],
 });
 
 export const OFFICER_RANK_CONTENT_MOCK: Record<string, OfficerRankContent> = {
@@ -96,17 +102,19 @@ export const OFFICER_RANK_CONTENT_MOCK: Record<string, OfficerRankContent> = {
   gamma: { name: 'Gamma', abbreviation: 'G', requiredRank: 'third', perks: ['gamma-left', 'gamma-right'] },
 };
 
-export const ALPHA_OFFICER_PERKS = ['alpha-left'];
+export const ALPHA_OFFICER_PERKS = ['alpha-left', null, null];
+
+export const GAMMA_OFFICER_PERKS = [null, null, 'gamma-right'];
 
 export const ALL_OFFICER_PERKS = ['alpha-left', 'beta-left', 'gamma-right'];
 
 /**
  * Fresh biosoldier build of the mock class with its own perks and officer perks arrays.
  *
- * @param perks selected perks by rank.
- * @param officerPerks officer perks by officer rank.
+ * @param perks selected perks by rank; null for an empty rank.
+ * @param officerPerks officer perks by officer rank; null for an empty officer rank.
  */
-export const createOfficerBuildMock = (perks: string[], officerPerks: string[] = []): BiosoldierBuildData => ({
+export const createOfficerBuildMock = (perks: (string | null)[], officerPerks: (string | null)[] = NO_OFFICER_PERKS): BiosoldierBuildData => ({
   ...createBiosoldierBuildMock(NO_GENE_MODS),
   perks: [...perks],
   officerPerks: [...officerPerks] as BiosoldierBuildData['officerPerks'],

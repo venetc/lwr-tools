@@ -8,7 +8,6 @@ import {
   OFFICER_RANKS,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
-  selectBiosoldierBuildPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from '@entities/soldier';
@@ -37,7 +36,7 @@ const lastPerksByRank = (soldierClass: DeepReadonly<SoldierClass>) => (
 const fullTreeBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>): BiosoldierBuildData => {
   const build = defaultBiosoldierBuild(soldierClass);
 
-  lastPerksByRank(soldierClass).forEach((perkId, index) => selectBiosoldierBuildPerk(build, index + 1, perkId));
+  lastPerksByRank(soldierClass).forEach((perkId, index) => selectSoldierBuildPerk(build, index + 1, perkId));
 
   return build;
 };
@@ -77,7 +76,7 @@ const selectEveryPsionicAbility = (build: BiosoldierBuildData) => {
 /**
  * Selects the first officer perk of every officer rank with the mutator.
  *
- * @param build biosoldier build with a full class tree; mutated in place.
+ * @param build biosoldier build; mutated in place.
  */
 const selectEveryOfficerPerk = (build: BiosoldierBuildData) => {
   OFFICER_RANKS.forEach((officerRank, officerRankIndex) => selectBiosoldierBuildOfficerPerk(build, officerRankIndex, officerRank.perks[0] ?? null));
@@ -150,6 +149,46 @@ const createFullShivBuild = (name: string | null): ShivBuildData => {
   return build;
 };
 
+/**
+ * Biosoldier build with empty steps between selections: the last rank, a body part, the last psi level and the last
+ * officer rank selected, the rest empty.
+ */
+const createGappedBuild = () => {
+  const build = defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
+  const lastRankIndex = SOLDIER_RANKS.length - 1;
+  const lastLevelIndex = PSI_LEVELS.length - 1;
+  const lastOfficerRankIndex = OFFICER_RANKS.length - 1;
+
+  selectSoldierBuildPerk(build, lastRankIndex, lastPerksByRank(FIRST_BIOSOLDIER_CLASS).at(-1) ?? null);
+  selectBiosoldierBuildGeneMod(build, 1, BODY_PARTS[1]?.geneMods[1] ?? null);
+  selectBiosoldierBuildPsionicAbility(build, lastLevelIndex, PSI_LEVELS[lastLevelIndex]?.abilities[0] ?? null);
+  selectBiosoldierBuildOfficerPerk(build, lastOfficerRankIndex, OFFICER_RANKS[lastOfficerRankIndex]?.perks[1] ?? null);
+
+  return build;
+};
+
+/**
+ * Biosoldier build with an officer perk on every officer rank and only the base perk in the class tree.
+ */
+const createRookieOfficerBuild = () => {
+  const build = defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
+
+  selectEveryOfficerPerk(build);
+
+  return build;
+};
+
+/**
+ * MEC build with only the last rank selected.
+ */
+const createGappedMecBuild = () => {
+  const build = defaultSoldierBuild(FIRST_MEC_CLASS);
+
+  selectSoldierBuildPerk(build, SOLDIER_RANKS.length - 1, lastPerksByRank(FIRST_MEC_CLASS).at(-1) ?? null);
+
+  return build;
+};
+
 export const FULL_TREE_BIOSOLDIER_BUILDS = BIOSOLDIER_CLASSES.map(soldierClass => [soldierClass.name, fullTreeBiosoldierBuild(soldierClass)] as const);
 
 export const FULL_TREE_MEC_BUILDS = MEC_CLASSES.map(soldierClass => [soldierClass.name, fullTreeMecBuild(soldierClass)] as const);
@@ -160,11 +199,14 @@ export const BIOSOLDIER_BUILDS = [
   ['every psi level', createPsionicBuild()],
   ['every officer rank', createOfficerBuild()],
   ['super soldier with its own name', createSuperSoldierBuild()],
+  ['empty steps between selections', createGappedBuild()],
+  ['every officer rank with only the base perk', createRookieOfficerBuild()],
 ] as const;
 
 export const MEC_BUILDS = [
   ['default', defaultSoldierBuild(FIRST_MEC_CLASS)],
   ['with its own name', { ...fullTreeMecBuild(FIRST_MEC_CLASS), name: BUILD_NAME }],
+  ['empty ranks below a selection', createGappedMecBuild()],
 ] as const;
 
 export const SHIV_BUILDS = [

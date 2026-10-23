@@ -29,7 +29,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 - `{ status: 'unit', unit }` — код Build или код Unit: `unit` — `{ kind, build, loadout }`, у кода Build `loadout: null`. Вид Unit — по формату его раскладки (`1` Biosoldier, `2` SHIV, `3` MEC).
 - `{ status: 'squad', squad }` — [код Squad](squad-share-codes.ru.md).
-- `{ status: 'invalid' }` — всё остальное: битая часть, неизвестный формат, несколько частей без заголовка Squad, отсутствующая или битая секция, неизвестный код, класс другого формата или Build, нарушающий Build rule. Правила: каждый перк на своём ранге дерева класса, ранги, Psi levels и Officer ranks по порядку без пропусков, каждый Gene mod в своей Body part (в `GENE_MODS` Body parts идут от Brain к Legs, каждая один раз), Neural Damping против Psionic abilities, Officer rank — только когда дерево класса завершает его нужный Rank.
+- `{ status: 'invalid' }` — всё остальное: битая часть, неизвестный формат, несколько частей без заголовка Squad, отсутствующая или битая секция, неизвестный код, класс другого формата, число шагов или индекс варианта, которых нет в текущем дереве, выбор, чья абилка не та, что стоит в дереве на его месте, или Build, нарушающий Build rule. Правила: базовый перк на первом ранге, один выбор на шаг, Neural Damping против Psionic abilities. Ранги, Psi levels и Officer ranks берутся в любом порядке и могут оставаться пустыми; Officer rank не требует своего Rank.
 
 Каждое место проверяет результат одним условием. Import калькулятора берёт `unit` своего вида и оставляет его Build; `unit` другого вида показывает тост «This is a <unit> build code» с именем вида Unit из `entities/loadout`, `squad` — тост «This is a Squad code. Import it in the Squad planner.», оба оставляют форму открытой; `invalid` показывает «Invalid code» под полем. Места Squad planner — в [кодах Squad](squad-share-codes.ru.md#декодирование).
 
@@ -39,28 +39,26 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Код:
 
-- `entities/soldier` — Build ↔ коды: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. Entity переводит Build в стабильные коды и обратно и отдаёт null на неизвестный код, класс другого вида или Build, нарушающий Build rule. Из кодов она собирает Build от Default build по шагам мутаторами калькулятора; Build кодируется, только если его собирает тот же проход.
+- `entities/soldier` — Build ↔ коды: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. Entity переводит Build в стабильные коды и обратно: каждый выбор — индекс варианта на шаге и `code` его абилки. Она отдаёт null на неизвестный код, класс другого вида, шаги или вариант, которых нет в дереве, абилку не на своём месте или Build, нарушающий Build rule. Из кодов она собирает Build от Default build по шагам мутаторами калькулятора; Build кодируется, только если его собирает тот же проход.
 - `shared/lib/binary-code` — заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`.
-- `features/share-build` — только биты. Публичный API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `storedBuildCodec(kind)`, компоненты `ShareCodeImport` и `ShareCodeExport` и типы. Внутри: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/share-code.ts` (`readShareCode` и его результат), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — формат, секции билда и их чтение, — `BUILD_CODE_LAYOUTS` по видам Unit из `LoadoutUnitId`, так что вид без раскладки не компилируется, и `encodeBuild`), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList`, секция `NAME` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения), `model/unit-code.ts` (коды Unit), `model/squad-code.ts` (коды Squad), `model/stored-build.ts` (записи хранилища поверх share-кода). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
+- `features/share-build` — только биты. Публичный API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `storedBuildCodec(kind)`, компоненты `ShareCodeImport` и `ShareCodeExport` и типы. Внутри: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/share-code.ts` (`readShareCode` и его результат), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — формат, секции билда и их чтение, — `BUILD_CODE_LAYOUTS` по видам Unit из `LoadoutUnitId`, так что вид без раскладки не компилируется, и `encodeBuild`), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList`, список шагов `writeStepList` / `readStepList`, секция `NAME` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения), `model/unit-code.ts` (коды Unit), `model/squad-code.ts` (коды Squad), `model/stored-build.ts` (записи хранилища поверх share-кода). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки.
 
 ## Секции
 
 | Секция | id | Поля | Пишется |
 |---|---|---|---|
-| `PERKS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | всегда |
+| `PERKS` | 1 | `class` 5 · шаги, `variant` 2 | всегда |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | если имя отличается от названия класса |
-| `GENE_MODS` | 3 | `count` 3 · `ability` 8 × count | только у биосолдат, если у билда есть Gene mods |
-| `PSIONIC` | 4 | `count` 3 · `ability` 8 × count | только у биосолдат, если у билда есть Psionic abilities |
-| `OFFICER` | 5 | `count` 3 · `ability` 8 × count | только у биосолдат, если у билда есть Officer perks |
+| `GENE_MODS` | 3 | шаги, `variant` 1 | только у биосолдат, если у билда есть Gene mod |
+| `PSIONIC` | 4 | шаги, `variant` 2 | только у биосолдат, если у билда есть Psionic ability |
+| `OFFICER` | 5 | шаги, `variant` 1 | только у биосолдат, если у билда есть Officer perk |
 | `LOADOUT` | 6 | `armor` 8 · `primary` 8 · `secondary` 8 · `utilityCount` 3 · `item` 8 × utilityCount · `moduleCount` 2 · `item` 8 × moduleCount | только в кодах Unit |
 
-В `PERKS` `count` — число перков, выбранных сверх базового; абилки идут по рангам снизу вверх. Базовый перк при импорте берётся из текущего дерева.
+Шаги — список всех шагов дерева: `count` 3, затем на каждый шаг `selected` 1 и, при выборе, `variant` (его индекс среди вариантов шага, в порядке дерева) и `ability` 8. Пустые шаги сохраняют своё место, поэтому Build с пропусками возвращается таким, каким был.
 
-В `GENE_MODS` Gene mods идут по Body part от Brain к Legs; Body part каждого Gene mod берётся из данных, позиции не хранятся.
+В `PERKS` шаги — ранги снизу вверх, со второго: базовый перк при импорте берётся из текущего дерева. В `GENE_MODS` — Body parts от Brain к Legs, в `PSIONIC` — Psi levels от Awakened к Master, в `OFFICER` — Officer ranks от Lieutenant к Field Commander. Код без одной из этих секций даёт там пустые шаги; в имеющейся секции шаги есть всегда.
 
-В `PSIONIC` Psionic abilities идут по Psi level от Awakened к Master, без пропусков; уровень абилки — её позиция.
-
-В `OFFICER` Officer perks идут по Officer rank от Lieutenant к Field Commander, без пропусков; Officer rank перка — его позиция. Код без `OFFICER` даёт пустое Officer tree.
+Абилка выбора должна быть той, что стоит в текущем дереве на её шаге и варианте, а число шагов — как в дереве; иначе код невалиден.
 
 Коды MEC не пишут `GENE_MODS`, `PSIONIC` и `OFFICER`, декодер MEC пропускает их как неизвестные.
 
@@ -68,7 +66,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Код Unit — код Build своего формата плюс секция `LOADOUT` с Loadout этого Unit; своих номеров форматов у Unit нет. Секция берёт следующий id формата: `6` у форматов солдат, `3` у формата SHIV.
 
-- Отметки Officer нет: Unit — Officer, если в секции `OFFICER` его Build есть Officer perks.
+- Отметки Officer нет: Unit — Officer, если в секции `OFFICER` его Build есть Officer perk.
 - Предметы — номера `code` каталогов Loadout из `entities/loadout`: броня и MEC exoskeletons из `armors.json` (в коде SHIV — его SHIV type из `shiv-types.json`), оружие из `weapons.json`, Equipment и Modules из `equipment.json`. `0` — пустой слот, в том числе Secondary.
 - Utility slots идут по позициям, Gear Slots и Psi Slots последними; Module slots — по позициям.
 - Декодер не сверяет Loadout с Build: неизвестный код предмета оставляет слот пустым, Seraph Armor без Officer perks — не `invalid`. Squad planner при импорте приводит Loadout к правилам проверкой Unit и сообщает тостом, что снято.
@@ -79,7 +77,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 ## Нумерация
 
-Коды хранят номера `code` абилок и классов, а не позиции в дереве, поэтому деревья можно менять свободно.
+Коды хранят классы по `code`, а каждый выбор — по его месту в дереве, шагу и индексу варианта, вместе с `code` его абилки. Поэтому число рангов, перков на каждом ранге класса и вариантов на каждой Body part, Psi level и Officer rank между версиями мода не меняется.
 
 - Новая запись: максимальный `code` + 1. Коды классов уникальны по обоим спискам, биосолдат и MEC: новый класс любого вида получает максимальный `code` классов обоих списков + 1.
 - Существующий `code` не менять.
@@ -97,7 +95,7 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 ## Безопасные правки
 
-Добавлять абилки в деревья; переставлять абилки внутри ранга; менять названия, описания, иконки; переименовывать id (с прежним `code`); добавлять классы; менять местами два Gene mod одной Body part; переименовывать Body part; переставлять Psionic abilities внутри Psi level; переименовывать Psi level; менять местами два Officer perk одного Officer rank; переименовывать Officer ranks; менять `abbreviation` у Officer rank; понижать `requiredRank` у Officer rank.
+Менять названия, описания, иконки; переименовывать id (с прежним `code`); добавлять классы; переименовывать Body parts, Psi levels и Officer ranks; менять `abbreviation` и `requiredRank` у Officer rank — последний только подсказка.
 
 ## Ломающие правки
 
@@ -106,11 +104,10 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 | сменить или переиспользовать `code` | покажут не ту абилку |
 | сменить или переиспользовать `code` каталога Loadout | коды Unit покажут не тот предмет |
 | удалить запись | «Invalid code» |
-| перенести абилку на другой ранг, убрать из дерева или заменить другой | коды, где она выбрана: «Invalid code» |
-| переставить Body part, перенести Gene mod в другую Body part или удалить его | коды с ним: «Invalid code» или Gene mod не в той Body part |
-| переставить Psi level, перенести Psionic ability на другой Psi level или удалить её | коды с ней: «Invalid code» |
-| переставить Officer ranks, перенести Officer perk на другой Officer rank или удалить его | коды с ним: «Invalid code» |
-| повысить `requiredRank` у Officer rank | коды, где дерево класса не доходит до нового Rank: «Invalid code» |
+| перенести абилку на другой шаг или вариант, убрать из дерева или заменить другой | коды, где она выбрана: «Invalid code» |
+| переставить Body parts, Psi levels или Officer ranks | коды с выбором там: «Invalid code» |
+| изменить число рангов, Body parts, Psi levels или Officer ranks | коды этого дерева: «Invalid code» |
+| убрать вариант с шага | коды, где выбран вариант за новым концом шага: «Invalid code» |
 | изменить поля секции или их ширины | «Invalid code» или неверные данные |
 | изменить разметку секций, CRC или base64url | недействительны все коды |
 
@@ -133,13 +130,13 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 1. Добавить часть в коды билда в `entities/soldier`: `SoldierBuildCodes` для любого солдата, `BiosoldierBuildCodes` для биосолдат. Build → коды пишет её коды; коды → Build берёт их по шагам мутаторами, поэтому их проверяют Build rules.
 2. Добавить в `SOLDIER_BUILD_SECTION` следующий id.
-3. Написать секцию в `soldier-build-code.ts`. Часть любого солдата идёт в `writeBuild` / `readBuild` из `soldierBuildLayout`, часть одного формата — в его расширение (`BIOSOLDIER_BUILD_EXTENSION` у биосолдат): `write` отдаёт секцию, только если в кодах есть эта часть, `read` читает её через `readWholeSection`; список кодов пишется и читается через `writeCodeList` / `readCodeList`. Без секции часть пустая.
+3. Написать секцию в `soldier-build-code.ts`. Часть любого солдата идёт в `writeBuild` / `readBuild` из `soldierBuildLayout`, часть одного формата — в его расширение (`BIOSOLDIER_BUILD_EXTENSION` у биосолдат): `write` отдаёт секцию, только если в кодах есть эта часть, `read` читает её через `readWholeSection`; список кодов пишется и читается через `writeCodeList` / `readCodeList`, список шагов — через `writeStepList` / `readStepList`. Без секции часть пустая.
 
 Пример: Officer perks (только биосолдаты), максимальный id секции был 4.
 
-1. `BiosoldierBuildCodes`: `officerPerks` — коды по Officer ranks; коды → Build берёт их после Psionic abilities.
+1. `BiosoldierBuildCodes`: `officerPerks` — выборы по Officer ranks; коды → Build берёт их после Psionic abilities.
 2. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
-3. `BIOSOLDIER_BUILD_EXTENSION`: `write` отдаёт `OFFICER` (`count` 3 · `ability` 8 × count) только для кодов с Officer perks; `read` отдаёт её коды, без секции — пустой список.
+3. `BIOSOLDIER_BUILD_EXTENSION`: `write` отдаёт `OFFICER` (шаги с `OFFICER_RANK_STEP_BITS`) только для кодов с Officer perk; `read` отдаёт её шаги, без секции — пустой список.
 
 ## Проверки
 

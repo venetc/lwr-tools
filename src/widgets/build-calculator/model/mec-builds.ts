@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
 import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
-import { MEC_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
+import { defaultSoldierBuild, MEC_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
 import { storedBuildCodec } from '@features/share-build';
 import type { LockableItem } from '@shared/lib/stored-list';
@@ -14,21 +14,10 @@ import { DEFAULT_BUILD_ID_PREFIX, MEC_BUILD_KEY_PREFIX, MEC_BUILD_ORDER_KEY } fr
 export type MecBuild = LockableItem<SoldierBuildData>;
 
 /**
- * Data of a new build of the class with only the base perk selected.
- *
- * @param soldierClass MEC class.
- */
-const newMecBuildData = (soldierClass: SoldierClass): SoldierBuildData => ({
-  soldierClass,
-  perks: [soldierClass.basePerk],
-  name: soldierClass.name,
-});
-
-/**
  * Default builds: one per class with only the base perk selected, with fixed ids.
  */
 const createDefaultBuilds = () => MEC_CLASSES.map((soldierClass): MecBuild => ({
-  ...newMecBuildData(soldierClass),
+  ...defaultSoldierBuild(soldierClass),
   id: `${DEFAULT_BUILD_ID_PREFIX}${soldierClass.id}`,
   readonly: false,
 }));
@@ -42,11 +31,11 @@ export const useMecBuildsStore = defineStore('build-calculator-mec-builds', () =
     itemKeyPrefix: MEC_BUILD_KEY_PREFIX,
     ...storedBuildCodec('mec'),
     defaultItems: createDefaultBuilds,
-    newData: build => newMecBuildData(build.soldierClass),
+    newData: build => defaultSoldierBuild(build.soldierClass),
   });
 
   /**
-   * Selects a perk on the rank of an editable build by the tree rules.
+   * Selects a perk on the rank of an editable build by the tree rules, or clears the rank.
    *
    * @param buildId build id.
    * @param rankIndex rank index in the tree.
@@ -61,7 +50,7 @@ export const useMecBuildsStore = defineStore('build-calculator-mec-builds', () =
    *
    * @returns id of the new build.
    */
-  const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(newMecBuildData(soldierClass));
+  const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(defaultSoldierBuild(soldierClass));
 
   return {
     builds: buildList.builds,

@@ -16,8 +16,6 @@ import {
   OFFICER_TAB,
   PAGE_PATH,
   PANEL_NAME,
-  RANGER,
-  SHARPSHOOTER,
   STRENGTH_IN_NUMBERS,
 } from './officer-rank-badge.mock';
 
@@ -50,7 +48,6 @@ const headerBadge = (panel: Locator, officerRankName: string | RegExp) => panel.
 test.describe('Officer rank badge', () => {
   test('shows Lieutenant in the panel header once an officer perk is selected', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
 
@@ -59,7 +56,6 @@ test.describe('Officer rank badge', () => {
 
   test('shows Lieutenant in the build navigation once an officer perk is selected', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
 
@@ -68,7 +64,6 @@ test.describe('Officer rank badge', () => {
 
   test('shows the senior officer rank', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
 
     await abilityCell(panel, COVER_TACTICS).click();
@@ -76,13 +71,29 @@ test.describe('Officer rank badge', () => {
     await expect(headerBadge(panel, CAPTAIN)).toHaveText(CAPTAIN_ABBREVIATION);
   });
 
-  test('falls back to Lieutenant once the rank Captain requires is cleared in the Class tree', async ({ page }) => {
+  test('shows the senior officer rank above an empty one', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
-    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+
+    await selectAbility(panel, OFFICER_TAB, COVER_TACTICS);
+
+    await expect(headerBadge(panel, CAPTAIN)).toHaveText(CAPTAIN_ABBREVIATION);
+  });
+
+  test('falls back to Lieutenant once Captain is cleared', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectAbilities(panel, OFFICER_TAB, [STRENGTH_IN_NUMBERS, COVER_TACTICS]);
+
     await abilityCell(panel, COVER_TACTICS).click();
 
-    await selectAbility(panel, CLASS_TREE_TAB, RANGER);
+    await expect(headerBadge(panel, LIEUTENANT)).toHaveText(LIEUTENANT_ABBREVIATION);
+  });
+
+  test('keeps Lieutenant once a rank is cleared in the Class tree', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectAbility(panel, CLASS_TREE_TAB, MAGNUM);
+    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+
+    await selectAbility(panel, CLASS_TREE_TAB, MAGNUM);
 
     await expect(headerBadge(panel, LIEUTENANT)).toHaveText(LIEUTENANT_ABBREVIATION);
   });
@@ -90,24 +101,22 @@ test.describe('Officer rank badge', () => {
   test('is absent from a build without officer perks', async ({ page }) => {
     const panel = await openPanel(page);
 
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
+    await selectAbility(panel, CLASS_TREE_TAB, MAGNUM);
 
     await expect(headerBadge(panel, ANY_OFFICER_RANK)).toHaveCount(0);
   });
 
-  test('is absent once the rank Lieutenant requires is cleared in the Class tree', async ({ page }) => {
+  test('is absent once the last officer perk is cleared', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
 
-    await selectAbility(panel, CLASS_TREE_TAB, SHARPSHOOTER);
+    await abilityCell(panel, STRENGTH_IN_NUMBERS).click();
 
     await expect(navEntry(page).getByRole('img', { name: ANY_OFFICER_RANK })).toHaveCount(0);
   });
 
   test('keeps the colour of the class icon', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
     const plainColor = await textColor(navEntry(page).locator('svg').first());
 
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);

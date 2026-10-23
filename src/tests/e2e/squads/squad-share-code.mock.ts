@@ -4,13 +4,13 @@ export const BIOSOLDIER_PATH = '/builds/biosoldier';
  * Squad code of `Alpha`: two Units of the Sniper build `Field Sniper` with Strength in Numbers and Seraph Armor, a Unit
  * of the Sniper build `Seraph Sniper` with Seraph Armor and no officer perks, and a Unit of a SHIV build code.
  */
-export const SQUAD_CODE = 'BAi0qC2ODQwghg.AQhgKIzsRlYjNLK2MhAptzS4MrkUFlwMPQoJDYFgAAAAANU.AQhgKIzsRlYjNLK2MhAptzS4MrkUFlwMPQoJDYFgAAAAANU.AQggIEbWqbK5MLg0ECm3NLgyuRh6FBIbAsAAAAAAfw.AggMAIE';
+export const SQUAD_CODE = 'BAi0qC2ODQwghg.AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw.AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw.AQg4OAEbWqbK5MLg0ECm3NLgyuRh6FBIbAsAAAAA-A.AggMAIE';
 
 /** `SQUAD_CODE` with the last character of its last part changed. */
-export const BROKEN_SQUAD_CODE = 'BAi0qC2ODQwghg.AQhgKIzsRlYjNLK2MhAptzS4MrkUFlwMPQoJDYFgAAAAANU.AQhgKIzsRlYjNLK2MhAptzS4MrkUFlwMPQoJDYFgAAAAANU.AQggIEbWqbK5MLg0ECm3NLgyuRh6FBIbAsAAAAAAfw.AggMAIA';
+export const BROKEN_SQUAD_CODE = 'BAi0qC2ODQwghg.AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw.AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw.AQg4OAEbWqbK5MLg0ECm3NLgyuRh6FBIbAsAAAAA-A.AggMAIA';
 
 /** Unit code of the Sniper build `Field Sniper`. */
-export const UNIT_CODE = 'AQhgKIzsRlYjNLK2MhAptzS4MrkUFlwMPQoJDYFgAAAAANU';
+export const UNIT_CODE = 'AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw';
 
 export const SQUAD_NAME = 'Alpha';
 

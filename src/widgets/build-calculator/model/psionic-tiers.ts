@@ -2,7 +2,7 @@ import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
 import type { BiosoldierBuildData, BuildBlockReason, PsiLevel, RankState } from '@entities/soldier';
-import { PSI_LEVELS, psiLevelState, psionicAbilityBlockReason } from '@entities/soldier';
+import { highestSelectedStepIndex, PSI_LEVELS, psiLevelState, psionicAbilityBlockReason } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
@@ -66,8 +66,8 @@ const psionicOption = (
  * Psionic abilities of the build as picker tiers by psi level, and the item described while the user inspects none:
  * the psionic ability of the highest trained level, otherwise the first ability of the first level.
  *
- * @description Psi levels are trained in order like ranks: trained levels are completed, the next one is available,
- * and the ones above are locked and unclickable. Neural Damping locks every level and blocks every ability with a note.
+ * @description Psi levels are taken in any order like ranks: trained levels are completed, and empty ones are available,
+ * or locked and unclickable in a readonly build. Neural Damping locks every level and blocks every ability with a note.
  * A readonly build makes every level unclickable. Picker items come from constants; a selection only rebuilds the options.
  *
  * @param build biosoldier build with its lock.
@@ -79,8 +79,8 @@ export const usePsionicTiers = (build: MaybeRefOrGetter<PsionicTreeBuild>) => {
 
     return PSI_LEVELS.map((psiLevel, levelIndex): PsiLevelTier => {
       const blockReason = psionicAbilityBlockReason(psionicTreeBuild, levelIndex, null);
-      const state = psiLevelState(psionicAbilities, levelIndex, readonly, blockReason !== null);
       const selectedId = psionicAbilities[levelIndex] ?? null;
+      const state = psiLevelState(selectedId, readonly, blockReason !== null);
 
       return {
         id: psiLevel.id,
@@ -96,7 +96,7 @@ export const usePsionicTiers = (build: MaybeRefOrGetter<PsionicTreeBuild>) => {
 
   const featuredPickerItem = computed(() => {
     const { psionicAbilities } = toValue(build);
-    const levelIndex = psionicAbilities.length - 1;
+    const levelIndex = highestSelectedStepIndex(psionicAbilities);
     const selectedPickerItem = PSI_LEVEL_PICKER_ITEMS[levelIndex]?.find(item => item.id === psionicAbilities[levelIndex]);
 
     return selectedPickerItem ?? PSI_LEVEL_PICKER_ITEMS[0]?.[0] ?? null;

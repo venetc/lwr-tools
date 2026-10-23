@@ -10,16 +10,8 @@ export const OFFICER_TAB_WITH_ONE = 'Officer, 1 of 5';
 
 export const LOCK_LABEL = 'Lock build';
 
-/** Perk of Lance Corporal, the rank open in a default build. */
+/** Perk of Lance Corporal. */
 export const MAGNUM = 'Magnum';
-
-/** Perk of Corporal, the rank Lieutenant requires. */
-export const SHARPSHOOTER = 'Sharpshooter';
-
-/** Perk of Sergeant, the rank Captain requires. */
-export const RANGER = 'Ranger';
-
-export const LIEUTENANT = 'Lieutenant';
 
 export const CAPTAIN = 'Captain';
 
@@ -29,10 +21,13 @@ export const STAY_FROSTY = 'Stay Frosty';
 
 export const COVER_TACTICS = 'Cover Tactics';
 
+/** Officer perk of Major. */
+export const SHOW_EM_THE_ROPES = 'Show \'Em the Ropes';
+
 export const COMMANDING_OFFICER = 'Commanding Officer';
 
-export const REQUIRES_CORPORAL = 'Requires Corporal';
+/** Hint in the info of a Lieutenant perk: the rank the game requires. */
+export const REQUIRES_CORPORAL_IN_GAME = 'Requires Corporal in game';
 
-export const REQUIRES_SERGEANT = 'Requires Sergeant';
-
-export const REQUIRES_LIEUTENANT = 'Requires Lieutenant';
+/** Start of a lock reason under an officer rank name, which officer ranks no longer have. */
+export const LOCK_REASON = /^Requires /;

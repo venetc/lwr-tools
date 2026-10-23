@@ -7,7 +7,7 @@ import {
   MEC_CLASSES,
   OFFICER_RANKS,
   selectBiosoldierBuildOfficerPerk,
-  selectBiosoldierBuildPerk,
+  selectSoldierBuildPerk,
 } from '@entities/soldier';
 import { SOLDIER_RANKS } from '@entities/soldier/config/constants/soldier-ranks';
 import { defaultBiosoldierBuild, defaultSoldierBuild } from '@entities/soldier/model/build';
@@ -26,7 +26,7 @@ const [FIRST_MEC_CLASS] = MEC_CLASSES;
 const fullTreeBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>): BiosoldierBuildData => {
   const build = defaultBiosoldierBuild(soldierClass);
 
-  SOLDIER_RANKS.slice(1).forEach((rank, index) => selectBiosoldierBuildPerk(build, index + 1, soldierClass.perks[rank.id].at(-1) ?? null));
+  SOLDIER_RANKS.slice(1).forEach((rank, index) => selectSoldierBuildPerk(build, index + 1, soldierClass.perks[rank.id].at(-1) ?? null));
 
   return build;
 };
@@ -127,7 +127,10 @@ export const SERAPH_LOADOUT_SECTION = loadoutSection(SERAPH_LOADOUT_CODES);
 /** Codes of `PLAIN_BIOSOLDIER_BUILD`: its class and base perk, no name of its own and no other parts. */
 const PLAIN_BUILD_CODES = biosoldierBuildCodes(PLAIN_BIOSOLDIER_BUILD);
 
-/** `PERKS` section of `PLAIN_BIOSOLDIER_BUILD` with raw numbers: class 5 bits, perk count 3 bits, ability numbers 8 bits each. */
+/**
+ * `PERKS` section of `PLAIN_BIOSOLDIER_BUILD` with raw numbers: class 5 bits, rank count 3 bits, then per rank a bit
+ * for a selection and, for a selection, its variant index 2 bits and its ability number 8 bits.
+ */
 export const PLAIN_PERKS_SECTION: BinaryCodeSection = {
   id: SOLDIER_PERKS_SECTION_ID,
   write: (writer: BitWriter) => {
@@ -135,7 +138,14 @@ export const PLAIN_PERKS_SECTION: BinaryCodeSection = {
 
     writer.writeUint(PLAIN_BUILD_CODES?.classCode ?? 0, 5);
     writer.writeUint(perks.length, 3);
-    perks.forEach(code => writer.writeUint(code, 8));
+    perks.forEach((step) => {
+      writer.writeUint(step ? 1 : 0, 1);
+
+      if (!step) return;
+
+      writer.writeUint(step.variantIndex, 2);
+      writer.writeUint(step.code, 8);
+    });
   },
 };
 

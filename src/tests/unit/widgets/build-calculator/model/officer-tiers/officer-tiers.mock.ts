@@ -32,40 +32,35 @@ export const OFFICER_RANK_CONTENT_MOCK: Record<string, OfficerRankContent> = {
 };
 
 /**
- * Build with the perks and officer perks.
+ * Build with the officer perks.
  *
- * @param perks selected perks by rank.
- * @param officerPerks officer perks by officer rank.
+ * @param officerPerks officer perks by officer rank; null for an empty officer rank.
  * @param readonly whether the build is readonly.
  */
-export const createBuildMock = (perks: string[], officerPerks: string[], readonly = false): OfficerTreeBuild => ({
-  perks,
+export const createBuildMock = (officerPerks: (string | null)[], readonly = false): OfficerTreeBuild => ({
   officerPerks: officerPerks as OfficerTreeBuild['officerPerks'],
   readonly,
 });
 
 /**
- * Build with Neural Damping and a psionic ability besides the perks and officer perks.
+ * Build with Neural Damping and a psionic ability besides the officer perks.
  *
- * @param perks selected perks by rank.
- * @param officerPerks officer perks by officer rank.
+ * @param officerPerks officer perks by officer rank; null for an empty officer rank.
  */
-export const createSuperSoldierBuildMock = (perks: string[], officerPerks: string[]): OfficerTreeBuild => ({
-  ...createBuildMock(perks, officerPerks),
+export const createSuperSoldierBuildMock = (officerPerks: (string | null)[]): OfficerTreeBuild => ({
+  ...createBuildMock(officerPerks),
   geneMods: ['neural-damping'],
   psionicAbilities: ['mind-fray'],
 } as OfficerTreeBuild);
 
-export const BASE_PERKS = ['granted'];
+export const NO_OFFICER_PERKS = [null, null, null];
 
-export const SECOND_RANK_PERKS = ['granted', 'left'];
+export const ALPHA_OFFICER_PERKS = ['alpha-left', null, null];
 
-export const FULL_PERKS = ['granted', 'left', 'top'];
+export const GAMMA_OFFICER_PERKS = [null, null, 'gamma-left'];
 
-export const NO_OFFICER_PERKS = [];
+export const ALPHA_AND_BETA_OFFICER_PERKS = ['alpha-left', 'beta-right', null];
 
-export const ALPHA_OFFICER_PERKS = ['alpha-left'];
-
-export const ALPHA_AND_BETA_OFFICER_PERKS = ['alpha-left', 'beta-right'];
+export const ALPHA_AND_GAMMA_OFFICER_PERKS = ['alpha-left', null, 'gamma-right'];
 
 export const ALL_OFFICER_PERKS = ['alpha-left', 'beta-right', 'gamma-left'];

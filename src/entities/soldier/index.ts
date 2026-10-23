@@ -9,24 +9,24 @@ export { bodyPartState } from './model/body-parts';
 export type { BodyPart, SelectedGeneMods } from './model/body-parts';
 export {
   biosoldierBuildBranchSet,
+  defaultBiosoldierBuild,
+  defaultSoldierBuild,
   isOfficerBuild,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
-  selectBiosoldierBuildPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from './model/build';
 export type { BiosoldierBranchSet, BiosoldierBuildData, SoldierBuildData } from './model/build';
 export { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from './model/build-codes';
-export type { BiosoldierBuildCodes, SoldierBuildCodes } from './model/build-codes';
+export type { BiosoldierBuildCodes, SelectionCode, SoldierBuildCodes, StepCodes } from './model/build-codes';
 export { geneModBlockReason, officerPerkBlockReason, psionicAbilityBlockReason } from './model/build-rules';
 export type { BuildBlockReason } from './model/build-rules';
 export { classTree, featuredPerk } from './model/class-tree';
 export type { ClassTreeRank } from './model/class-tree';
 export type { SoldierClass } from './model/classes';
-export { officerRankState } from './model/officer-ranks';
 export type { OfficerRank, SelectedOfficerPerks } from './model/officer-ranks';
 export { psiLevelState } from './model/psi-levels';
 export type { PsiLevel, SelectedPsionicAbilities } from './model/psi-levels';
-export { rankState } from './model/ranks';
+export { highestSelectedStepIndex, rankState } from './model/ranks';
 export type { RankState } from './model/ranks';

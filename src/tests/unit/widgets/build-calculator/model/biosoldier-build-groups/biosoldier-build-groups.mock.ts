@@ -24,7 +24,7 @@ export const BRANCHES_MOCK = [
  * first tier.
  */
 export const BRANCH_SELECTIONS = [
-  { branch: 'class-tree', field: 'perks', selected: ['picked'] },
+  { branch: 'class-tree', field: 'perks', selected: ['picked', null] },
   { branch: 'gene-mods', field: 'geneMods', selected: ['picked', null] },
   { branch: 'psionic', field: 'psionicAbilities', selected: ['picked'] },
   { branch: 'officer', field: 'officerPerks', selected: ['picked'] },

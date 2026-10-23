@@ -29,7 +29,7 @@ Every place that takes a code reads it with `readShareCode(code)`. It opens the 
 
 - `{ status: 'unit', unit }` — a build code or a Unit code: `unit` is `{ kind, build, loadout }`, with `loadout: null` for a build code. The unit type comes from the format of its build layout (`1` Biosoldier, `2` SHIV, `3` MEC).
 - `{ status: 'squad', squad }` — a [Squad code](squad-share-codes.en.md).
-- `{ status: 'invalid' }` — everything else: a broken part, an unknown format, several parts without a Squad header, a missing or broken section, an unknown code, a class of another format, or a Build that breaks a Build rule. The rules: each perk on its own rank of the class tree, ranks, Psi levels and Officer ranks in order without gaps, each Gene mod in its own Body part (in `GENE_MODS` Body parts go Brain to Legs, each once), Neural Damping against Psionic abilities, each Officer rank only once the class tree completes its required Rank.
+- `{ status: 'invalid' }` — everything else: a broken part, an unknown format, several parts without a Squad header, a missing or broken section, an unknown code, a class of another format, a step count or a variant index the current tree does not have, a selection whose ability is not the one the tree has at its place, or a Build that breaks a Build rule. The rules: the base perk on the first rank, one selection per step, Neural Damping against Psionic abilities. Ranks, Psi levels and Officer ranks are taken in any order and may stay empty; an Officer rank does not need its Rank.
 
 Each place checks the result with one condition. The Import of a Build calculator takes a `unit` of its own kind and keeps its Build; a `unit` of another kind shows a toast "This is a <unit> build code" with the unit type name of `entities/loadout`, a `squad` shows a toast "This is a Squad code. Import it in the Squad planner.", both keeping the form open; `invalid` shows "Invalid code" under the field. The Squad planner places are in [Squad codes](squad-share-codes.en.md#decoding).
 
@@ -39,28 +39,26 @@ A stored build is read the same way: a record whose code is no build of the kind
 
 Code:
 
-- `entities/soldier` — Build ↔ codes: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. The entity turns a Build into stable codes and back and gives null for an unknown code, a class of another kind or a Build that breaks a Build rule. From codes it assembles the Build from the Default build step by step with the mutators of the Build calculator; a Build is encoded only if the same pass assembles it.
+- `entities/soldier` — Build ↔ codes: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. The entity turns a Build into stable codes and back: each selection as its variant index on the step and the `code` of its ability. It gives null for an unknown code, a class of another kind, steps or a variant the tree does not have, an ability off its place or a Build that breaks a Build rule. From codes it assembles the Build from the Default build step by step with the mutators of the Build calculator; a Build is encoded only if the same pass assembles it.
 - `shared/lib/binary-code` — header, sections, CRC; built on `shared/lib/bit-stream`, `base64-url` and `crc8`.
-- `features/share-build` — bits only. Public API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `storedBuildCodec(kind)`, the `ShareCodeImport` and `ShareCodeExport` components and the types. Inside: `config/constants.ts` (format numbers, section ids, field widths), `model/share-code.ts` (`readShareCode` and its result), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — the format, the sections of a build and reading them back — `BUILD_CODE_LAYOUTS` by unit type of `LoadoutUnitId`, so a unit type without a layout does not compile, and `encodeBuild`), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList`, the `NAME` section and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildLayout` builds the layout of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`: `BIOSOLDIER_BUILD_LAYOUT` is format 1 with the Gene mods, Psionic abilities and Officer perks extension, `MEC_BUILD_LAYOUT` format 3 without one), `model/unit-code.ts` (Unit codes), `model/squad-code.ts` (Squad codes), `model/stored-build.ts` (stored build records over a share code). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
+- `features/share-build` — bits only. Public API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `storedBuildCodec(kind)`, the `ShareCodeImport` and `ShareCodeExport` components and the types. Inside: `config/constants.ts` (format numbers, section ids, field widths), `model/share-code.ts` (`readShareCode` and its result), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — the format, the sections of a build and reading them back — `BUILD_CODE_LAYOUTS` by unit type of `LoadoutUnitId`, so a unit type without a layout does not compile, and `encodeBuild`), `model/section-fields.ts` (a counted code list `writeCodeList` / `readCodeList`, a step list `writeStepList` / `readStepList`, the `NAME` section and `readWholeSection`, which gives null for a section not read exactly to its end), `model/soldier-build-code.ts` and `model/shiv-build-code.ts` (sections over the build codes; `soldierBuildLayout` builds the layout of a soldier format from the Build ↔ codes pair and its extension, the sections beyond `PERKS` and `NAME`: `BIOSOLDIER_BUILD_LAYOUT` is format 1 with the Gene mods, Psionic abilities and Officer perks extension, `MEC_BUILD_LAYOUT` format 3 without one), `model/unit-code.ts` (Unit codes), `model/squad-code.ts` (Squad codes), `model/stored-build.ts` (stored build records over a share code). The feature serves every Build calculator page and stays a separate slice: the format changes for its own reasons and has its own tests and docs.
 
 ## Sections
 
 | Section | id | Fields | Written |
 |---|---|---|---|
-| `PERKS` | 1 | `class` 5 · `count` 3 · `ability` 8 × count | always |
+| `PERKS` | 1 | `class` 5 · steps, `variant` 2 | always |
 | `NAME` | 2 | `nameLength` 5 · UTF-8 | if the name differs from the class name |
-| `GENE_MODS` | 3 | `count` 3 · `ability` 8 × count | Biosoldier only, if the build has Gene mods |
-| `PSIONIC` | 4 | `count` 3 · `ability` 8 × count | Biosoldier only, if the build has Psionic abilities |
-| `OFFICER` | 5 | `count` 3 · `ability` 8 × count | Biosoldier only, if the build has Officer perks |
+| `GENE_MODS` | 3 | steps, `variant` 1 | Biosoldier only, if the build has a Gene mod |
+| `PSIONIC` | 4 | steps, `variant` 2 | Biosoldier only, if the build has a Psionic ability |
+| `OFFICER` | 5 | steps, `variant` 1 | Biosoldier only, if the build has an Officer perk |
 | `LOADOUT` | 6 | `armor` 8 · `primary` 8 · `secondary` 8 · `utilityCount` 3 · `item` 8 × utilityCount · `moduleCount` 2 · `item` 8 × moduleCount | Unit codes only |
 
-In `PERKS`, `count` is the number of perks selected beyond the base perk; abilities go by rank, bottom to top. The base perk is taken from the current tree on import.
+Steps are a list of every step of the tree: `count` 3, then per step `selected` 1 and, for a selection, `variant` (its index among the variants of the step, in tree order) and `ability` 8. Empty steps keep their place, so a Build with gaps comes back as it was.
 
-In `GENE_MODS`, Gene mods go by Body part, Brain to Legs; the Body part of each Gene mod comes from the data, positions are not stored.
+In `PERKS`, the steps are the ranks bottom to top, from the second one: the base perk is taken from the current tree on import. In `GENE_MODS`, the Body parts Brain to Legs; in `PSIONIC`, the Psi levels Awakened to Master; in `OFFICER`, the Officer ranks Lieutenant to Field Commander. A code without one of these sections gives empty steps there; a present one always has steps.
 
-In `PSIONIC`, Psionic abilities go by Psi level, Awakened to Master, without gaps; the level of each ability is its position.
-
-In `OFFICER`, Officer perks go by Officer rank, Lieutenant to Field Commander, without gaps; the Officer rank of each perk is its position. A code without `OFFICER` gives an empty Officer tree.
+The ability of a selection must be the one the current tree has at its step and variant, and the step count must be the one of the tree; otherwise the code is invalid.
 
 MEC codes never carry `GENE_MODS`, `PSIONIC` or `OFFICER`, and the MEC decoder skips them as unknown.
 
@@ -68,7 +66,7 @@ MEC codes never carry `GENE_MODS`, `PSIONIC` or `OFFICER`, and the MEC decoder s
 
 A Unit code is the build code of its format plus the `LOADOUT` section with the Loadout of the Unit; Units have no format numbers of their own. The section takes the next id of the format: `6` in the soldier formats, `3` in the SHIV format.
 
-- There is no Officer flag: a Unit is an Officer when the `OFFICER` section of its Build has Officer perks.
+- There is no Officer flag: a Unit is an Officer when the `OFFICER` section of its Build has an Officer perk.
 - Items are the `code` numbers of the Loadout catalogs of `entities/loadout`: armor and MEC exoskeletons from `armors.json` (a SHIV code: its SHIV type from `shiv-types.json`), weapons from `weapons.json`, Equipment and Modules from `equipment.json`. `0` is an empty slot, also of the secondary weapon.
 - Utility slots go by position, Gear Slots and Psi Slots last; Module slots by position.
 - The decoder does not check the Loadout against the Build: an unknown item code leaves its slot empty, and Seraph Armor without Officer perks is not invalid. The Squad planner brings the Loadout to the rules with the Unit check on import and tells in a toast what it took off.
@@ -79,7 +77,7 @@ Code: `model/unit-code.ts` — `encodeUnit` writes the sections of the layout of
 
 ## Numbering
 
-Codes store the `code` numbers of abilities and classes, not tree positions, so trees can change freely.
+Codes store classes by their `code` and each selection by its place in the tree, the step and the variant index, with the `code` of its ability. So the number of ranks, of perks on each rank of a class and of variants on each Body part, Psi level and Officer rank stays the same between mod versions.
 
 - New record: max `code` + 1. Class codes are unique across the Biosoldier and MEC class lists: a new class of either kind gets the max class `code` of both + 1.
 - Never change an existing `code`.
@@ -97,7 +95,7 @@ Example: new ability, max `code` is N.
 
 ## Safe edits
 
-Add abilities to trees; reorder abilities within a rank; edit names, descriptions, icons; rename ids (keep `code`); add classes; swap the two Gene mods of a Body part; rename Body parts; reorder Psionic abilities within a Psi level; rename Psi levels; swap the two Officer perks of an Officer rank; rename Officer ranks; change an Officer rank's `abbreviation`; lower an Officer rank's `requiredRank`.
+Edit names, descriptions, icons; rename ids (keep `code`); add classes; rename Body parts, Psi levels and Officer ranks; change an Officer rank's `abbreviation` or `requiredRank`, which is only a hint.
 
 ## Breaking edits
 
@@ -106,11 +104,10 @@ Add abilities to trees; reorder abilities within a rank; edit names, description
 | change or reuse a `code` | show the wrong ability |
 | change or reuse a `code` of a Loadout catalog | Unit codes show the wrong item |
 | delete a record | "Invalid code" |
-| move an ability to another rank, remove it from a tree or replace it | codes that select it: "Invalid code" |
-| reorder Body parts, move a Gene mod to another Body part or remove it | codes with it: "Invalid code" or the Gene mod in the wrong Body part |
-| reorder Psi levels, move a Psionic ability to another Psi level or remove it | codes with it: "Invalid code" |
-| reorder Officer ranks, move an Officer perk to another Officer rank or remove it | codes with it: "Invalid code" |
-| raise an Officer rank's `requiredRank` | codes whose class tree does not reach the new Rank: "Invalid code" |
+| move an ability to another step or variant, remove it from a tree or replace it | codes that select it: "Invalid code" |
+| reorder Body parts, Psi levels or Officer ranks | codes with a selection there: "Invalid code" |
+| change the number of ranks, Body parts, Psi levels or Officer ranks | codes of that tree: "Invalid code" |
+| remove a variant from a step | codes that select a variant past the new end of the step: "Invalid code" |
 | change a section's fields or their widths | "Invalid code" or wrong data |
 | change the section layout, CRC or base64url | every code is invalid |
 
@@ -133,13 +130,13 @@ Example: `PERKS` gets a new field, max section id is 6.
 
 1. Add the part to the build codes of `entities/soldier`: `SoldierBuildCodes` for every soldier, `BiosoldierBuildCodes` for Biosoldiers. Build → codes writes its codes; codes → Build takes them step by step with the mutators, so the Build rules check them.
 2. Add the next id to `SOLDIER_BUILD_SECTION`.
-3. Write the section in `soldier-build-code.ts`. A part of every soldier goes into `writeBuild` / `readBuild` of `soldierBuildLayout`; a part of one format goes into its extension (`BIOSOLDIER_BUILD_EXTENSION` for Biosoldiers): `write` gives the section only when the codes have the part, `read` reads it with `readWholeSection`; a list of codes is written and read with `writeCodeList` / `readCodeList`. Without the section the part is empty.
+3. Write the section in `soldier-build-code.ts`. A part of every soldier goes into `writeBuild` / `readBuild` of `soldierBuildLayout`; a part of one format goes into its extension (`BIOSOLDIER_BUILD_EXTENSION` for Biosoldiers): `write` gives the section only when the codes have the part, `read` reads it with `readWholeSection`; a list of codes is written and read with `writeCodeList` / `readCodeList`, a list of steps with `writeStepList` / `readStepList`. Without the section the part is empty.
 
 Example: Officer perks (Biosoldier only), max section id was 4.
 
-1. `BiosoldierBuildCodes`: `officerPerks`, the codes by Officer rank; codes → Build takes them after Psionic abilities.
+1. `BiosoldierBuildCodes`: `officerPerks`, the selections by Officer rank; codes → Build takes them after Psionic abilities.
 2. `SOLDIER_BUILD_SECTION`: `OFFICER: 5`.
-3. `BIOSOLDIER_BUILD_EXTENSION`: `write` gives `OFFICER` (`count` 3 · `ability` 8 × count) only for codes with Officer perks; `read` gives its codes, an empty list without the section.
+3. `BIOSOLDIER_BUILD_EXTENSION`: `write` gives `OFFICER` (steps with `OFFICER_RANK_STEP_BITS`) only for codes with an Officer perk; `read` gives its steps, an empty list without the section.
 
 ## Checks
 

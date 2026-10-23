@@ -1,19 +1,19 @@
-import type { BiosoldierBuildCodes, BiosoldierBuildData, SoldierBuildCodes, SoldierBuildData } from '@entities/soldier';
+import type { BiosoldierBuildCodes, BiosoldierBuildData, SoldierBuildCodes, SoldierBuildData, StepCodes } from '@entities/soldier';
 import { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 
 import {
-  ABILITY_CODE_BITS,
+  BODY_PART_STEP_BITS,
   CLASS_CODE_BITS,
-  GENE_MOD_COUNT_BITS,
-  OFFICER_PERK_COUNT_BITS,
-  PERK_COUNT_BITS,
-  PSIONIC_ABILITY_COUNT_BITS,
+  OFFICER_RANK_STEP_BITS,
+  PSI_LEVEL_STEP_BITS,
+  RANK_STEP_BITS,
   SHARE_CODE_FORMAT,
   SOLDIER_BUILD_SECTION,
 } from '../config/constants';
 import type { BuildCodeLayout } from './build-code';
-import { nameSection, readCodeList, readNameSection, readWholeSection, writeCodeList } from './section-fields';
+import type { StepListBits } from './section-fields';
+import { nameSection, readNameSection, readStepList, readWholeSection, writeStepList } from './section-fields';
 
 /**
  * Parts a soldier format carries beyond the class, perks and name: their sections and how they are read.
@@ -56,7 +56,7 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
       id: SOLDIER_BUILD_SECTION.PERKS,
       write: (writer) => {
         writer.writeUint(codes.classCode, CLASS_CODE_BITS);
-        writeCodeList(writer, codes.perks, PERK_COUNT_BITS, ABILITY_CODE_BITS);
+        writeStepList(writer, codes.perks, RANK_STEP_BITS);
       },
     }];
 
@@ -77,7 +77,7 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
     const perksReader = sections.get(SOLDIER_BUILD_SECTION.PERKS) ?? null;
     const perks = perksReader && readWholeSection(perksReader, reader => ({
       classCode: reader.readUint(CLASS_CODE_BITS),
-      perks: readCodeList(reader, PERK_COUNT_BITS, ABILITY_CODE_BITS),
+      perks: readStepList(reader, RANK_STEP_BITS),
     }));
     const nameField = readNameSection(sections.get(SOLDIER_BUILD_SECTION.NAME) ?? null);
 
@@ -92,32 +92,36 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
 };
 
 /**
- * Section of an ability code list; none for an empty list.
+ * Section of the steps of a branch; none for a branch without selections, whose steps are empty.
  *
  * @param id section id.
- * @param codes ability codes in list order.
- * @param countBits width of the count.
+ * @param steps selections by step; empty for a branch without any.
+ * @param bits widths of the step list fields.
  */
-const abilityListSections = (id: number, codes: readonly number[], countBits: number): BinaryCodeSection[] => {
-  if (codes.length === 0) return [];
+const branchSections = (id: number, steps: Readonly<StepCodes>, bits: StepListBits): BinaryCodeSection[] => {
+  if (steps.length === 0) return [];
 
-  return [{ id, write: writer => writeCodeList(writer, codes, countBits, ABILITY_CODE_BITS) }];
+  return [{ id, write: writer => writeStepList(writer, steps, bits) }];
 };
 
 /**
- * Ability codes of a list section read in whole.
+ * Steps of a branch section read in whole.
  *
  * @param sections code sections by id.
  * @param id section id.
- * @param countBits width of the count.
- * @returns the codes; an empty list without the section; null if the section is broken.
+ * @param bits widths of the step list fields.
+ * @returns the selections by step; an empty list without the section; null if the section is broken or has no steps.
  */
-const readAbilityListSection = (sections: ReadonlyMap<number, BitReader>, id: number, countBits: number) => {
+const readBranchSection = (sections: ReadonlyMap<number, BitReader>, id: number, bits: StepListBits) => {
   const reader = sections.get(id) ?? null;
 
   if (!reader) return [];
 
-  return readWholeSection(reader, sectionReader => readCodeList(sectionReader, countBits, ABILITY_CODE_BITS));
+  const steps = readWholeSection(reader, sectionReader => readStepList(sectionReader, bits));
+
+  if (!steps?.length) return null;
+
+  return steps;
 };
 
 /** Soldier format without extra parts: the codes are the soldier codes. */
@@ -127,19 +131,19 @@ const SOLDIER_BUILD_EXTENSION: SoldierBuildExtension<SoldierBuildCodes> = {
 };
 
 /**
- * Biosoldier format: the soldier codes with the gene mods in the `GENE_MODS` section, the psionic abilities in the
- * `PSIONIC` section and the officer perks in the `OFFICER` section, each written only when the build has some.
+ * Biosoldier format: the soldier codes with the body parts in the `GENE_MODS` section, the psi levels in the `PSIONIC`
+ * section and the officer ranks in the `OFFICER` section, each written only when the build has a selection there.
  */
 const BIOSOLDIER_BUILD_EXTENSION: SoldierBuildExtension<BiosoldierBuildCodes> = {
   write: codes => [
-    ...abilityListSections(SOLDIER_BUILD_SECTION.GENE_MODS, codes.geneMods, GENE_MOD_COUNT_BITS),
-    ...abilityListSections(SOLDIER_BUILD_SECTION.PSIONIC, codes.psionicAbilities, PSIONIC_ABILITY_COUNT_BITS),
-    ...abilityListSections(SOLDIER_BUILD_SECTION.OFFICER, codes.officerPerks, OFFICER_PERK_COUNT_BITS),
+    ...branchSections(SOLDIER_BUILD_SECTION.GENE_MODS, codes.geneMods, BODY_PART_STEP_BITS),
+    ...branchSections(SOLDIER_BUILD_SECTION.PSIONIC, codes.psionicAbilities, PSI_LEVEL_STEP_BITS),
+    ...branchSections(SOLDIER_BUILD_SECTION.OFFICER, codes.officerPerks, OFFICER_RANK_STEP_BITS),
   ],
   read: (codes, sections) => {
-    const geneMods = readAbilityListSection(sections, SOLDIER_BUILD_SECTION.GENE_MODS, GENE_MOD_COUNT_BITS);
-    const psionicAbilities = readAbilityListSection(sections, SOLDIER_BUILD_SECTION.PSIONIC, PSIONIC_ABILITY_COUNT_BITS);
-    const officerPerks = readAbilityListSection(sections, SOLDIER_BUILD_SECTION.OFFICER, OFFICER_PERK_COUNT_BITS);
+    const geneMods = readBranchSection(sections, SOLDIER_BUILD_SECTION.GENE_MODS, BODY_PART_STEP_BITS);
+    const psionicAbilities = readBranchSection(sections, SOLDIER_BUILD_SECTION.PSIONIC, PSI_LEVEL_STEP_BITS);
+    const officerPerks = readBranchSection(sections, SOLDIER_BUILD_SECTION.OFFICER, OFFICER_RANK_STEP_BITS);
 
     if (!geneMods || !psionicAbilities || !officerPerks) return null;
 

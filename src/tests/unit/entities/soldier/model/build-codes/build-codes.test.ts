@@ -11,6 +11,10 @@ import {
   createCodesMock,
   FEET_GENE_MOD_BUILD,
   FEET_GENE_MOD_CODES,
+  GAPPED_BUILD,
+  GAPPED_CODES,
+  LONG_PERK_CODES,
+  LOW_PSIONIC_CODES,
   MEC_BUILD,
   MEC_CLASS_BIOSOLDIER_BUILD,
   MEC_CLASS_BIOSOLDIER_CODES,
@@ -21,9 +25,19 @@ import {
   NAMED_MEC_CODES,
   NEURAL_DAMPING_BUILD,
   NEURAL_DAMPING_CODES,
+  NEURAL_DAMPING_ONLY_CODES,
+  OTHER_ABILITY_GENE_MOD_CODES,
+  OTHER_LEVEL_PSIONIC_CODES,
+  OTHER_RANK_OFFICER_CODES,
+  OTHER_RANK_PERK_CODES,
+  OUT_OF_TREE_VARIANT_PERK_CODES,
+  ROOKIE_OFFICER_BUILD,
+  ROOKIE_OFFICER_CODES,
+  SHORT_GENE_MOD_CODES,
+  SHORT_PERK_CODES,
   SUPER_SOLDIER_BUILD,
   SUPER_SOLDIER_CODES,
-  UNKNOWN_ABILITY_CODE,
+  UNKNOWN_ABILITY_PERK_CODES,
   UNKNOWN_CLASS_CODE,
 } from './build-codes.mock';
 
@@ -72,6 +86,18 @@ describe('biosoldierBuildCodes', () => {
     expect(codes).toEqual(SUPER_SOLDIER_CODES);
   });
 
+  it('gives the codes of a build with empty steps', () => {
+    const codes = biosoldierBuildCodes(GAPPED_BUILD);
+
+    expect(codes).toEqual(GAPPED_CODES);
+  });
+
+  it('gives the codes of a build with an officer perk and only the base perk', () => {
+    const codes = biosoldierBuildCodes(ROOKIE_OFFICER_BUILD);
+
+    expect(codes).toEqual(ROOKIE_OFFICER_CODES);
+  });
+
   it('gives the name of a build with its own name', () => {
     const codes = biosoldierBuildCodes(NAMED_BUILD);
 
@@ -90,7 +116,7 @@ describe('biosoldierBuildCodes', () => {
     expect(codes?.perks).toEqual(SUPER_SOLDIER_CODES.perks);
   });
 
-  it('leaves empty body parts out of the gene mod codes', () => {
+  it('gives empty body parts as empty steps', () => {
     const codes = biosoldierBuildCodes(FEET_GENE_MOD_BUILD);
 
     expect(codes).toEqual(FEET_GENE_MOD_CODES);
@@ -103,13 +129,13 @@ describe('biosoldierBuildCodes', () => {
   });
 
   it('gives null for an unknown perk', () => {
-    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['granted', 'missing'] }));
+    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['granted', 'missing', null] }));
 
     expect(codes).toBeNull();
   });
 
   it('gives null for a perk of another rank', () => {
-    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['granted', 'top'] }));
+    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['granted', 'top', null] }));
 
     expect(codes).toBeNull();
   });
@@ -120,8 +146,14 @@ describe('biosoldierBuildCodes', () => {
     expect(codes).toBeNull();
   });
 
+  it('gives null for fewer ranks than the class tree has', () => {
+    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['granted', 'right'] }));
+
+    expect(codes).toBeNull();
+  });
+
   it('gives null for a first rank without the base perk', () => {
-    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['left', 'right'] }));
+    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['left', 'right', null] }));
 
     expect(codes).toBeNull();
   });
@@ -133,25 +165,19 @@ describe('biosoldierBuildCodes', () => {
   });
 
   it('gives null for a psionic ability outside its psi level', () => {
-    const codes = biosoldierBuildCodes(createBuildMock({ psionicAbilities: ['high'] }));
+    const codes = biosoldierBuildCodes(createBuildMock({ psionicAbilities: ['high', null] }));
 
     expect(codes).toBeNull();
   });
 
   it('gives null for Neural Damping with psionic abilities', () => {
-    const codes = biosoldierBuildCodes(createBuildMock({ geneMods: ['neural-damping', null], psionicAbilities: ['low-left'] }));
+    const codes = biosoldierBuildCodes(createBuildMock({ geneMods: ['neural-damping', null], psionicAbilities: [null, 'high'] }));
 
     expect(codes).toBeNull();
   });
 
   it('gives null for an officer perk outside its officer rank', () => {
-    const codes = biosoldierBuildCodes(createBuildMock({ officerPerks: ['beta-left'] }));
-
-    expect(codes).toBeNull();
-  });
-
-  it('gives null for an officer rank whose required rank is not completed', () => {
-    const codes = biosoldierBuildCodes(createBuildMock({ perks: ['granted', 'right'], officerPerks: ['alpha-left', 'beta-left'] }));
+    const codes = biosoldierBuildCodes(createBuildMock({ officerPerks: ['beta-left', null] }));
 
     expect(codes).toBeNull();
   });
@@ -164,7 +190,19 @@ describe('biosoldierBuildFromCodes', () => {
     expect(build).toEqual(SUPER_SOLDIER_BUILD);
   });
 
-  it('restores a build with its own name', () => {
+  it('restores a build with empty steps', () => {
+    const build = biosoldierBuildFromCodes(GAPPED_CODES);
+
+    expect(build).toEqual(GAPPED_BUILD);
+  });
+
+  it('restores an officer perk with only the base perk', () => {
+    const build = biosoldierBuildFromCodes(ROOKIE_OFFICER_CODES);
+
+    expect(build).toEqual(ROOKIE_OFFICER_BUILD);
+  });
+
+  it('restores a build with its own name and empty branches', () => {
     const build = biosoldierBuildFromCodes(NAMED_CODES);
 
     expect(build).toEqual(NAMED_BUILD);
@@ -201,61 +239,61 @@ describe('biosoldierBuildFromCodes', () => {
   });
 
   it('gives null for an unknown ability', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ perks: [UNKNOWN_ABILITY_CODE] }));
+    const build = biosoldierBuildFromCodes(createCodesMock({ perks: UNKNOWN_ABILITY_PERK_CODES }));
 
     expect(build).toBeNull();
   });
 
   it('gives null for a perk of another rank', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ perks: [13] }));
+    const build = biosoldierBuildFromCodes(createCodesMock({ perks: OTHER_RANK_PERK_CODES }));
 
     expect(build).toBeNull();
   });
 
-  it('gives null for more perks than ranks', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ perks: [11, 13, 13] }));
+  it('gives null for a variant index outside the rank', () => {
+    const build = biosoldierBuildFromCodes(createCodesMock({ perks: OUT_OF_TREE_VARIANT_PERK_CODES }));
 
     expect(build).toBeNull();
   });
 
-  it('gives null for two gene mods of one body part', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: [20, 21] }));
+  it('gives null for fewer ranks than the class tree has', () => {
+    const build = biosoldierBuildFromCodes(createCodesMock({ perks: SHORT_PERK_CODES }));
 
     expect(build).toBeNull();
   });
 
-  it('gives null for gene mods out of body part order', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: [22, 20] }));
+  it('gives null for more ranks than the class tree has', () => {
+    const build = biosoldierBuildFromCodes(createCodesMock({ perks: LONG_PERK_CODES }));
+
+    expect(build).toBeNull();
+  });
+
+  it('gives null for fewer body parts than the build has', () => {
+    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: SHORT_GENE_MOD_CODES }));
 
     expect(build).toBeNull();
   });
 
   it('gives null for a gene mod code of another ability', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: [12] }));
+    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: OTHER_ABILITY_GENE_MOD_CODES }));
 
     expect(build).toBeNull();
   });
 
   it('gives null for a psionic ability outside its psi level', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ psionicAbilities: [32] }));
+    const build = biosoldierBuildFromCodes(createCodesMock({ psionicAbilities: OTHER_LEVEL_PSIONIC_CODES }));
 
     expect(build).toBeNull();
   });
 
   it('gives null for Neural Damping with psionic abilities', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: [20], psionicAbilities: [30] }));
+    const build = biosoldierBuildFromCodes(createCodesMock({ geneMods: NEURAL_DAMPING_ONLY_CODES, psionicAbilities: LOW_PSIONIC_CODES }));
 
     expect(build).toBeNull();
   });
 
   it('gives null for an officer perk outside its officer rank', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ officerPerks: [42] }));
-
-    expect(build).toBeNull();
-  });
-
-  it('gives null for an officer rank whose required rank is not completed', () => {
-    const build = biosoldierBuildFromCodes(createCodesMock({ perks: [12], officerPerks: [40, 42] }));
+    const build = biosoldierBuildFromCodes(createCodesMock({ officerPerks: OTHER_RANK_OFFICER_CODES }));
 
     expect(build).toBeNull();
   });
@@ -281,7 +319,7 @@ describe('mecBuildCodes', () => {
   });
 
   it('gives null for a perk of another rank', () => {
-    const codes = mecBuildCodes({ ...MEC_BUILD, perks: ['granted', 'top'] });
+    const codes = mecBuildCodes({ ...MEC_BUILD, perks: ['granted', 'top', null] });
 
     expect(codes).toBeNull();
   });
@@ -307,7 +345,7 @@ describe('mecBuildFromCodes', () => {
   });
 
   it('gives null for a perk of another rank', () => {
-    const build = mecBuildFromCodes({ ...MEC_CODES, perks: [13] });
+    const build = mecBuildFromCodes({ ...MEC_CODES, perks: OTHER_RANK_PERK_CODES });
 
     expect(build).toBeNull();
   });

@@ -7,18 +7,15 @@ import {
   CLASS_TREE_TAB,
   COMMANDING_OFFICER,
   COVER_TACTICS,
-  LIEUTENANT,
   LOCK_LABEL,
+  LOCK_REASON,
   MAGNUM,
   OFFICER_TAB,
   OFFICER_TAB_WITH_ONE,
   PAGE_PATH,
   PANEL_NAME,
-  RANGER,
-  REQUIRES_CORPORAL,
-  REQUIRES_LIEUTENANT,
-  REQUIRES_SERGEANT,
-  SHARPSHOOTER,
+  REQUIRES_CORPORAL_IN_GAME,
+  SHOW_EM_THE_ROPES,
   STAY_FROSTY,
   STRENGTH_IN_NUMBERS,
 } from './officer-tab.mock';
@@ -41,44 +38,41 @@ const officerRankRow = (panel: Locator, officerRankName: string) => (
 );
 
 test.describe('Officer tab', () => {
-  test('locks Lieutenant of a default build until Corporal', async ({ page }) => {
+  test('selects an officer perk with only the base perk in the Class tree', async ({ page }) => {
     const panel = await openPanel(page);
 
-    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
+    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
 
-    await expect(officerRankRow(panel, LIEUTENANT).getByText(REQUIRES_CORPORAL)).toBeVisible();
+    await expect(abilityCell(panel, STRENGTH_IN_NUMBERS)).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('opens Lieutenant once a perk is selected on Corporal', async ({ page }) => {
+  test('selects an officer perk on Captain with Lieutenant empty', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
-    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
+    await selectAbility(panel, OFFICER_TAB, COVER_TACTICS);
 
-    await expect(abilityCell(panel, STRENGTH_IN_NUMBERS)).not.toHaveAttribute('aria-disabled', 'true');
+    await expect(abilityCell(panel, COVER_TACTICS)).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('locks Captain until Sergeant', async ({ page }) => {
+  test('shows no lock reason under an officer rank', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 
-    await expect(officerRankRow(panel, CAPTAIN).getByText(REQUIRES_SERGEANT)).toBeVisible();
+    await expect(officerRankRow(panel, CAPTAIN).getByText(LOCK_REASON)).toHaveCount(0);
   });
 
-  test('locks Captain until Lieutenant once Sergeant is completed', async ({ page }) => {
+  test('describes the rank the game requires for a Lieutenant perk', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
-
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 
-    await expect(officerRankRow(panel, CAPTAIN).getByText(REQUIRES_LIEUTENANT)).toBeVisible();
+    await abilityCell(panel, STRENGTH_IN_NUMBERS).focus();
+
+    await expect(description(panel).getByText(REQUIRES_CORPORAL_IN_GAME)).toBeVisible();
   });
 
   test('counts a selected officer perk on the Officer tab', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
 
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
 
@@ -87,7 +81,6 @@ test.describe('Officer tab', () => {
 
   test('keeps the officer ranks above when the officer perk of a completed one is replaced', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
     await abilityCell(panel, COVER_TACTICS).click();
 
@@ -96,27 +89,23 @@ test.describe('Officer tab', () => {
     await expect(abilityCell(panel, COVER_TACTICS)).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('clears the officer perks of the officer ranks whose required rank is cleared in the Class tree', async ({ page }) => {
+  test('keeps the officer ranks above when a middle officer rank is cleared', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
-    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
+    await selectAbilities(panel, OFFICER_TAB, [STRENGTH_IN_NUMBERS, COVER_TACTICS, SHOW_EM_THE_ROPES]);
+
     await abilityCell(panel, COVER_TACTICS).click();
 
-    await selectAbility(panel, CLASS_TREE_TAB, RANGER);
-
-    await expect(panel.getByRole('tab', { name: OFFICER_TAB_WITH_ONE })).toBeVisible();
+    await expect(abilityCell(panel, SHOW_EM_THE_ROPES)).toHaveAttribute('aria-pressed', 'true');
   });
 
-  test('keeps the officer perk of an officer rank whose required rank stays completed in the Class tree', async ({ page }) => {
+  test('keeps the officer perks when a rank is cleared in the Class tree', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER, RANGER]);
+    await selectAbility(panel, CLASS_TREE_TAB, MAGNUM);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
-    await abilityCell(panel, COVER_TACTICS).click();
-    await selectAbility(panel, CLASS_TREE_TAB, RANGER);
 
-    await panel.getByRole('tab', { name: OFFICER_TAB }).click();
+    await selectAbility(panel, CLASS_TREE_TAB, MAGNUM);
 
-    await expect(abilityCell(panel, STRENGTH_IN_NUMBERS)).toHaveAttribute('aria-pressed', 'true');
+    await expect(panel.getByRole('tab', { name: OFFICER_TAB_WITH_ONE })).toBeVisible();
   });
 
   test('describes Commanding Officer under a Lieutenant perk', async ({ page }) => {
@@ -130,7 +119,6 @@ test.describe('Officer tab', () => {
 
   test('does not select an officer perk in a Read-only build', async ({ page }) => {
     const panel = await openPanel(page);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
     await panel.getByRole('button', { name: LOCK_LABEL }).click();
     await panel.getByRole('tab', { name: OFFICER_TAB }).click();
 

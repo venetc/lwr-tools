@@ -1,10 +1,11 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { abilityCell, description, openBuildPanel, selectAbility } from '../utils/build-panel';
+import { abilityCell, description, openBuildPanel, selectAbilities, selectAbility } from '../utils/build-panel';
 import { textColor } from '../utils/css-color';
 import {
   COUNTERCHARGE,
+  FERVOR,
   GENE_MODS_TAB,
   GENE_MODS_TAB_WITH_ONE,
   IRON_SKIN,
@@ -13,6 +14,7 @@ import {
   NEURAL_DAMPING_NOTE,
   PAGE_PATH,
   PANEL_NAME,
+  PSI_MASTERY,
   PSIONIC_COUNTER_WITH_ONE,
   PSIONIC_NOTE,
   PSIONIC_TAB,
@@ -43,6 +45,32 @@ test.describe('Psionic tab', () => {
     await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
 
     await expect(panel.getByRole('tab', { name: PSIONIC_TAB_WITH_ONE })).toBeVisible();
+  });
+
+  test('selects a psionic ability on a psi level above empty ones', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await selectAbility(panel, PSIONIC_TAB, PSI_MASTERY);
+
+    await expect(abilityCell(panel, PSI_MASTERY)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('keeps the psi levels above when a middle psi level is cleared', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectAbilities(panel, PSIONIC_TAB, [COUNTERCHARGE, FERVOR, PSI_MASTERY]);
+
+    await abilityCell(panel, FERVOR).click();
+
+    await expect(abilityCell(panel, PSI_MASTERY)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('clears a middle psi level when its psionic ability is clicked', async ({ page }) => {
+    const panel = await openPanel(page);
+    await selectAbilities(panel, PSIONIC_TAB, [COUNTERCHARGE, FERVOR, PSI_MASTERY]);
+
+    await abilityCell(panel, FERVOR).click();
+
+    await expect(abilityCell(panel, FERVOR)).toHaveAttribute('aria-pressed', 'false');
   });
 
   test('colours a psionic ability name in the description like the Psionic counter', async ({ page }) => {

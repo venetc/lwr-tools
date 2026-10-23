@@ -12,6 +12,7 @@ import {
   BROKEN_NAME_SECTION,
   BUILD_NAME,
   FULL_CODES,
+  GAPPED_CODES,
   GARBAGE_CODE,
   geneModsSection,
   INVALID_RESULT,
@@ -31,6 +32,9 @@ import {
   PLAIN_CODES,
   PLAIN_PERKS_SECTION,
   psionicSection,
+  SINGLE_GENE_MOD_STEPS,
+  SINGLE_OFFICER_STEPS,
+  SINGLE_PSIONIC_STEPS,
   UNKNOWN_FORMAT,
   UNKNOWN_SECTION,
 } from './soldier-build-code.mock';
@@ -41,6 +45,13 @@ vi.mock('@entities/soldier', () => ({
   mecBuildCodes: vi.fn(),
   mecBuildFromCodes: vi.fn(),
 }));
+
+const GAPPED_SECTIONS = [
+  perksSection(GAPPED_CODES.classCode, GAPPED_CODES.perks),
+  geneModsSection(GAPPED_CODES.geneMods),
+  psionicSection(GAPPED_CODES.psionicAbilities),
+  officerSection(GAPPED_CODES.officerPerks),
+];
 
 const FULL_SECTIONS = [
   PLAIN_PERKS_SECTION,
@@ -98,6 +109,14 @@ describe('encodeBuild of a biosoldier build', () => {
     expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [FULL_SECTIONS[0], FULL_SECTIONS[1], FULL_SECTIONS[2]]));
   });
 
+  it('writes empty steps between selections', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(GAPPED_CODES);
+
+    const code = encodeBuild('biosoldier', BIOSOLDIER_BUILD_STUB);
+
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, GAPPED_SECTIONS));
+  });
+
   it('gives null for a build without codes', () => {
     vi.mocked(biosoldierBuildCodes).mockReturnValue(null);
 
@@ -123,6 +142,14 @@ describe('readShareCode of a biosoldier build code', () => {
     readShareCode(code);
 
     expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(FULL_CODES);
+  });
+
+  it('reads empty steps between selections', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, GAPPED_SECTIONS) ?? '';
+
+    readShareCode(code);
+
+    expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(GAPPED_CODES);
   });
 
   it('reads empty parts and no name without their sections', () => {
@@ -161,10 +188,23 @@ describe('readShareCode of a biosoldier build code', () => {
   it.each([
     ['perks', [perksSection(PLAIN_CODES.classCode, PLAIN_CODES.perks, 1)]],
     ['name', [PLAIN_PERKS_SECTION, BROKEN_NAME_SECTION]],
-    ['gene mods', [PLAIN_PERKS_SECTION, geneModsSection([21], 1)]],
-    ['psionic', [PLAIN_PERKS_SECTION, psionicSection([31], 1)]],
-    ['officer', [PLAIN_PERKS_SECTION, officerSection([41], 1)]],
+    ['gene mods', [PLAIN_PERKS_SECTION, geneModsSection(SINGLE_GENE_MOD_STEPS, 1)]],
+    ['psionic', [PLAIN_PERKS_SECTION, psionicSection(SINGLE_PSIONIC_STEPS, 1)]],
+    ['officer', [PLAIN_PERKS_SECTION, officerSection(SINGLE_OFFICER_STEPS, 1)]],
   ])('rejects a broken %s section', (_, sections) => {
+    vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, sections) ?? '';
+
+    const result = readShareCode(code);
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it.each([
+    ['gene mods', [PLAIN_PERKS_SECTION, geneModsSection([])]],
+    ['psionic', [PLAIN_PERKS_SECTION, psionicSection([])]],
+    ['officer', [PLAIN_PERKS_SECTION, officerSection([])]],
+  ])('rejects a %s section without steps', (_, sections) => {
     vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_STUB);
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, sections) ?? '';
 
@@ -226,7 +266,7 @@ describe('readShareCode of a MEC build code', () => {
   });
 
   it('skips the sections of biosoldier parts', () => {
-    const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION, geneModsSection([20]), psionicSection([30]), officerSection([40])]) ?? '';
+    const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION, geneModsSection(SINGLE_GENE_MOD_STEPS), psionicSection(SINGLE_PSIONIC_STEPS), officerSection(SINGLE_OFFICER_STEPS)]) ?? '';
 
     readShareCode(code);
 

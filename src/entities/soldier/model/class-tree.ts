@@ -3,6 +3,7 @@ import type { TreeAbility } from './abilities';
 import { treeAbility } from './abilities';
 import type { SoldierClass } from './classes';
 import type { SoldierRank } from './ranks';
+import { highestSelectedStepIndex } from './ranks';
 
 export interface ClassTreeRank extends SoldierRank {
   /** Perks to choose from on the rank. */
@@ -17,19 +18,19 @@ export interface ClassTree {
 }
 
 /**
- * Selected perk ids by rank, from the lowest rank.
+ * Selected perk ids by rank, from the lowest rank: one entry per rank, null for an empty one.
  */
-export type SelectedPerks = TreeAbility['id'][];
+export type SelectedPerks = (TreeAbility['id'] | null)[];
 
 /**
- * Perk to show when the user inspects none: the one selected on the last completed rank,
+ * Perk to show when the user inspects none: the one selected on the highest completed rank,
  * otherwise the first perk of the first rank; null for an empty tree.
  *
  * @param tree class tree.
  * @param perks selected perks by rank.
  */
-export const featuredPerk = (tree: ClassTree, perks: SelectedPerks): TreeAbility | null => {
-  const lastRankIndex = perks.length - 1;
+export const featuredPerk = (tree: ClassTree, perks: Readonly<SelectedPerks>): TreeAbility | null => {
+  const lastRankIndex = highestSelectedStepIndex(perks);
   const lastRankPerks = tree.ranks[lastRankIndex]?.perks ?? [];
   const lastSelectedPerk = lastRankPerks.find(perk => perk.id === perks[lastRankIndex]);
 

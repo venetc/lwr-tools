@@ -1,7 +1,7 @@
 import type { AbilityContent } from '@entities/soldier/model/abilities';
 import type { BodyPartContent } from '@entities/soldier/model/body-parts';
 import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier/model/build';
-import type { BiosoldierBuildCodes, SoldierBuildCodes } from '@entities/soldier/model/build-codes';
+import type { BiosoldierBuildCodes, SelectionCode, SoldierBuildCodes } from '@entities/soldier/model/build-codes';
 import type { SoldierClass, SoldierClassContent } from '@entities/soldier/model/classes';
 import type { OfficerRankContent } from '@entities/soldier/model/officer-ranks';
 import type { PsiLevelContent } from '@entities/soldier/model/psi-levels';
@@ -62,15 +62,23 @@ const MEC_CLASS_MOCK = { id: 'walker', code: 5, name: 'Walker', perks: CLASS_PER
 
 export const UNKNOWN_CLASS_CODE = 30;
 
-export const UNKNOWN_ABILITY_CODE = 99;
+const UNKNOWN_ABILITY_CODE = 99;
+
+/**
+ * Selection code of a step.
+ *
+ * @param variantIndex index of the variant on the step.
+ * @param code ability code.
+ */
+const selection = (variantIndex: number, code: number): SelectionCode => ({ variantIndex, code });
 
 const PLAIN_BUILD: BiosoldierBuildData = {
   soldierClass: BIOSOLDIER_CLASS_MOCK,
   perks: ['granted', 'right', 'top'],
   name: 'Tester',
   geneMods: [null, null],
-  psionicAbilities: [],
-  officerPerks: [],
+  psionicAbilities: [null, null],
+  officerPerks: [null, null],
 };
 
 export const SUPER_SOLDIER_BUILD = {
@@ -82,12 +90,36 @@ export const SUPER_SOLDIER_BUILD = {
 
 export const SUPER_SOLDIER_CODES: BiosoldierBuildCodes = {
   classCode: 3,
-  perks: [12, 13],
+  perks: [selection(1, 12), selection(0, 13)],
   name: null,
-  geneMods: [21, 22],
-  psionicAbilities: [31, 32],
-  officerPerks: [41, 42],
+  geneMods: [selection(1, 21), selection(0, 22)],
+  psionicAbilities: [selection(1, 31), selection(0, 32)],
+  officerPerks: [selection(1, 41), selection(0, 42)],
 };
+
+export const GAPPED_BUILD = {
+  ...PLAIN_BUILD,
+  perks: ['granted', null, 'top'],
+  psionicAbilities: [null, 'high'],
+  officerPerks: [null, 'beta-right'],
+} as unknown as BiosoldierBuildData;
+
+export const GAPPED_CODES: BiosoldierBuildCodes = {
+  classCode: 3,
+  perks: [null, selection(0, 13)],
+  name: null,
+  geneMods: [],
+  psionicAbilities: [null, selection(0, 32)],
+  officerPerks: [null, selection(1, 43)],
+};
+
+export const ROOKIE_OFFICER_BUILD = {
+  ...PLAIN_BUILD,
+  perks: ['granted', null, null],
+  officerPerks: [null, 'beta-right'],
+} as unknown as BiosoldierBuildData;
+
+export const ROOKIE_OFFICER_CODES: BiosoldierBuildCodes = { ...GAPPED_CODES, perks: [null, null], psionicAbilities: [] };
 
 export const NAMED_BUILD = { ...PLAIN_BUILD, name: 'Overwatch' };
 
@@ -99,15 +131,15 @@ export const BLANK_NAME_CODES: BiosoldierBuildCodes = { ...NAMED_CODES, name: ' 
 
 export const FEET_GENE_MOD_BUILD = { ...PLAIN_BUILD, geneMods: [null, 'feet-second'] } as unknown as BiosoldierBuildData;
 
-export const FEET_GENE_MOD_CODES: BiosoldierBuildCodes = { ...NAMED_CODES, name: null, geneMods: [23] };
+export const FEET_GENE_MOD_CODES: BiosoldierBuildCodes = { ...NAMED_CODES, name: null, geneMods: [null, selection(1, 23)] };
 
 export const NEURAL_DAMPING_BUILD = { ...PLAIN_BUILD, geneMods: ['neural-damping', 'feet-first'] } as unknown as BiosoldierBuildData;
 
-export const NEURAL_DAMPING_CODES: BiosoldierBuildCodes = { ...FEET_GENE_MOD_CODES, geneMods: [20, 22] };
+export const NEURAL_DAMPING_CODES: BiosoldierBuildCodes = { ...FEET_GENE_MOD_CODES, geneMods: [selection(0, 20), selection(0, 22)] };
 
-export const MEC_BUILD: SoldierBuildData = { soldierClass: MEC_CLASS_MOCK, perks: ['granted', 'left'], name: 'Walker' };
+export const MEC_BUILD: SoldierBuildData = { soldierClass: MEC_CLASS_MOCK, perks: ['granted', 'left', null], name: 'Walker' };
 
-export const MEC_CODES: SoldierBuildCodes = { classCode: 5, perks: [11], name: null };
+export const MEC_CODES: SoldierBuildCodes = { classCode: 5, perks: [selection(0, 11), null], name: null };
 
 export const NAMED_MEC_BUILD: SoldierBuildData = { ...MEC_BUILD, name: 'Juggernaut' };
 
@@ -120,6 +152,28 @@ export const MEC_CLASS_BIOSOLDIER_CODES: BiosoldierBuildCodes = { ...NAMED_CODES
 export const BIOSOLDIER_CLASS_MEC_BUILD: SoldierBuildData = { ...MEC_BUILD, soldierClass: BIOSOLDIER_CLASS_MOCK };
 
 export const BIOSOLDIER_CLASS_MEC_CODES: SoldierBuildCodes = { ...MEC_CODES, classCode: 3 };
+
+export const UNKNOWN_ABILITY_PERK_CODES = [selection(0, UNKNOWN_ABILITY_CODE), null];
+
+export const OTHER_RANK_PERK_CODES = [selection(0, 13), null];
+
+export const OUT_OF_TREE_VARIANT_PERK_CODES = [selection(2, 12), null];
+
+export const SHORT_PERK_CODES = [selection(0, 11)];
+
+export const LONG_PERK_CODES = [selection(0, 11), selection(0, 13), null];
+
+export const SHORT_GENE_MOD_CODES = [selection(0, 20)];
+
+export const OTHER_ABILITY_GENE_MOD_CODES = [selection(0, 12), null];
+
+export const OTHER_LEVEL_PSIONIC_CODES = [selection(0, 32), null];
+
+export const NEURAL_DAMPING_ONLY_CODES = [selection(0, 20), null];
+
+export const LOW_PSIONIC_CODES = [selection(0, 30), null];
+
+export const OTHER_RANK_OFFICER_CODES = [selection(0, 42), null];
 
 /**
  * Biosoldier build of the mock class with the given choices, the rest as in a plain build.

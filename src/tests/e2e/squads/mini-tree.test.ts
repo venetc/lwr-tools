@@ -1,16 +1,17 @@
 import { expect, test } from '@playwright/test';
 
-import { abilityCell, openBuildPanel, selectAbilities, selectAbility } from '../utils/build-panel';
+import { abilityCell, openBuildPanel, selectAbility } from '../utils/build-panel';
 import { addSavedUnit, miniTreeStep, openBuildDialog, openSquads, unitCards } from '../utils/squads';
 import {
   BIOSOLDIER_BUILDS,
   BIOSOLDIER_PATH,
-  CLASS_TREE_TAB,
   JAEGER,
+  LOCK_LABEL,
   LOCKED_RANK_STEP,
   MAGNUM,
   MAGNUM_STEP,
   MEC_BUILDS,
+  MEC_PATH,
   MEC_ROW,
   MINI_TREE_ROWS,
   OFFICER_CAPTIONS,
@@ -18,7 +19,6 @@ import {
   OFFICER_TAB,
   OPEN_LIEUTENANT_STEP,
   OPEN_RANK_STEP,
-  SHARPSHOOTER,
   SHIV,
   SHIV_BUILDS,
   SHIV_ROW,
@@ -71,13 +71,16 @@ test.describe('Mini-tree of a Unit card', () => {
   });
 
   test('colours an open step apart from a locked one', async ({ page }) => {
+    const panel = await openBuildPanel(page, MEC_PATH, JAEGER);
+    await panel.getByRole('button', { name: LOCK_LABEL }).click();
     await openSquads(page);
     await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
-    const card = unitCards(page, SNIPER);
+    await addSavedUnit(page, MEC_BUILDS, JAEGER);
 
-    const [openColor, lockedColor] = await Promise.all([OPEN_RANK_STEP, LOCKED_RANK_STEP].map(label => (
-      miniTreeStep(card, label).locator('span').first().evaluate(element => getComputedStyle(element).borderTopColor)
-    )));
+    const [openColor, lockedColor] = await Promise.all([
+      miniTreeStep(unitCards(page, SNIPER), OPEN_RANK_STEP),
+      miniTreeStep(unitCards(page, JAEGER), LOCKED_RANK_STEP),
+    ].map(step => step.locator('span').first().evaluate(element => getComputedStyle(element).borderTopColor)));
 
     expect(openColor).not.toBe(lockedColor);
   });
@@ -101,9 +104,7 @@ test.describe('Mini-tree of a Unit card', () => {
     await expect(unitCards(page, SNIPER).getByRole('list', { name: OFFICER_ROW, exact: true }).getByRole('listitem')).toHaveText(OFFICER_CAPTIONS);
   });
 
-  test('opens Lieutenant once the Class tree completes Corporal', async ({ page }) => {
-    const panel = await openBuildPanel(page, BIOSOLDIER_PATH, SNIPER);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
+  test('opens Lieutenant with only the base perk in the Class tree', async ({ page }) => {
     await openSquads(page);
 
     await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
@@ -113,7 +114,6 @@ test.describe('Mini-tree of a Unit card', () => {
 
   test('shows the selected officer perk of an officer rank', async ({ page }) => {
     const panel = await openBuildPanel(page, BIOSOLDIER_PATH, SNIPER);
-    await selectAbilities(panel, CLASS_TREE_TAB, [MAGNUM, SHARPSHOOTER]);
     await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
     await openSquads(page);
 

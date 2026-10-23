@@ -27,16 +27,18 @@ const SOLDIER_CLASS_MOCK = {
 /**
  * Build of the mock class.
  *
- * @param perks selected perks by rank.
+ * @param perks selected perks by rank; null for an empty rank.
  * @param readonly whether the build is readonly.
  */
-export const createBuildMock = (perks: string[], readonly = false): ClassTreeBuild => ({
+export const createBuildMock = (perks: (string | null)[], readonly = false): ClassTreeBuild => ({
   soldierClass: SOLDIER_CLASS_MOCK,
   perks,
   name: 'Tester',
   readonly,
 });
 
-export const BASE_PERKS = ['granted'];
+export const BASE_PERKS = ['granted', null, null];
 
-export const PARTIAL_PERKS = ['granted', 'right'];
+export const PARTIAL_PERKS = ['granted', 'right', null];
+
+export const GAPPED_PERKS = ['granted', null, 'top'];

@@ -18,15 +18,23 @@ export const ASSAULT = soldierClassMock('assault', 'Assault', 'run-and-gun');
 export const SNIPER = soldierClassMock('sniper', 'Sniper', 'squadsight');
 
 /**
- * Entity of biosoldiers with two classes and selections that only put the id at the index.
+ * Entity of biosoldiers with two classes, Default builds of two ranks and one step in every other branch, and selections
+ * that only put the id at the index.
  */
 export const SOLDIER_ENTITY_MOCK = {
   BIOSOLDIER_CLASSES: [ASSAULT, SNIPER],
-  EMPTY_GENE_MODS: [null, null],
   BODY_PARTS: [],
   PSI_LEVELS: [],
   OFFICER_RANKS: [],
-  selectBiosoldierBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
+  defaultBiosoldierBuild: (soldierClass: SoldierClass) => ({
+    soldierClass,
+    perks: [soldierClass.basePerk, null],
+    geneMods: [null, null],
+    psionicAbilities: [null],
+    officerPerks: [null],
+    name: soldierClass.name,
+  }),
+  selectSoldierBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
     build.perks[index] = id;
   },
   selectBiosoldierBuildGeneMod: (build: { geneMods: (string | null)[] }, index: number, id: string | null) => {
@@ -52,22 +60,22 @@ export const DEFAULT_ASSAULT_ID = 'default-assault';
 export const DEFAULT_ASSAULT_BUILD = {
   id: 'default-assault',
   soldierClass: ASSAULT,
-  perks: ['run-and-gun'],
+  perks: ['run-and-gun', null],
   geneMods: [null, null],
-  psionicAbilities: [],
-  officerPerks: [],
+  psionicAbilities: [null],
+  officerPerks: [null],
   name: 'Assault',
   readonly: false,
 };
 
 export const DEFAULT_BUILDS = [
   DEFAULT_ASSAULT_BUILD,
-  { ...DEFAULT_ASSAULT_BUILD, id: 'default-sniper', soldierClass: SNIPER, perks: ['squadsight'], name: 'Sniper' },
+  { ...DEFAULT_ASSAULT_BUILD, id: 'default-sniper', soldierClass: SNIPER, perks: ['squadsight', null], name: 'Sniper' },
 ];
 
 export const LOCKED_ASSAULT_BUILD = { ...DEFAULT_ASSAULT_BUILD, readonly: true };
 
-export const LOCKED_PICKED_BUILD = { ...LOCKED_ASSAULT_BUILD, perks: ['picked'] };
+export const LOCKED_PICKED_BUILD = { ...LOCKED_ASSAULT_BUILD, perks: ['picked', null] };
 
 export const NEW_SNIPER_BUILD = { ...DEFAULT_BUILDS[1], id: expect.any(String) };
 
@@ -98,7 +106,7 @@ export const storedBuild = (page: PageMock, id: string): unknown => {
  * the first tier.
  */
 export const SELECTIONS = [
-  { action: 'selectBuildPerk', field: 'perks', selected: ['picked'] },
+  { action: 'selectBuildPerk', field: 'perks', selected: ['picked', null] },
   { action: 'selectBuildGeneMod', field: 'geneMods', selected: ['picked', null] },
   { action: 'selectBuildPsionicAbility', field: 'psionicAbilities', selected: ['picked'] },
   { action: 'selectBuildOfficerPerk', field: 'officerPerks', selected: ['picked'] },

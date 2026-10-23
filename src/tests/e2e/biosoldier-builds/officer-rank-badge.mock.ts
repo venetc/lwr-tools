@@ -8,14 +8,8 @@ export const CLASS_TREE_TAB = /^Class tree, /;
 
 export const OFFICER_TAB = /^Officer, /;
 
-/** Perk of Lance Corporal, the rank open in a default build. */
+/** Perk of Lance Corporal. */
 export const MAGNUM = 'Magnum';
-
-/** Perk of Corporal, the rank Lieutenant requires. */
-export const SHARPSHOOTER = 'Sharpshooter';
-
-/** Perk of Sergeant, the rank Captain requires. */
-export const RANGER = 'Ranger';
 
 export const STRENGTH_IN_NUMBERS = 'Strength in Numbers';
 

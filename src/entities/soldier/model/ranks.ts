@@ -24,15 +24,24 @@ export interface SoldierRank {
 export type RankState = 'completed' | 'available' | 'locked';
 
 /**
- * State of a rank, or of any step taken in order like ranks: the steps with a selection are completed,
- * the next one is available, and the ones above are locked.
+ * State of a rank or an officer rank in a build. Steps are taken in any order, so any step is open in an editable build;
+ * a step with a selection is completed even in a readonly build, where empty steps are locked.
  *
- * @param selectedIds ids selected by step, from the lowest, without gaps.
- * @param rankIndex step index.
- * @param readonly readonly build: no step is available for selection.
+ * @param selectedId id selected on the step, or null.
+ * @param isReadonly whether the build is readonly.
  */
-export const rankState = (selectedIds: readonly string[], rankIndex: number, readonly: boolean): RankState => {
-  if (rankIndex < selectedIds.length) return 'completed';
-  if (rankIndex === selectedIds.length && !readonly) return 'available';
-  return 'locked';
+export const rankState = (selectedId: string | null, isReadonly: boolean): RankState => {
+  if (selectedId !== null) return 'completed';
+  if (isReadonly) return 'locked';
+  return 'available';
 };
+
+/**
+ * Index of the highest step with a selection: ranks, psi levels or officer ranks are taken in any order.
+ *
+ * @param selectedIds ids by step; null for an empty step.
+ * @returns the step index; -1 without any selection.
+ */
+export const highestSelectedStepIndex = (selectedIds: readonly (string | null)[]) => (
+  selectedIds.reduce((highestIndex, id, index) => (id === null ? highestIndex : index), -1)
+);

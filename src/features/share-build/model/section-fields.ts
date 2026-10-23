@@ -29,6 +29,64 @@ export const readCodeList = (reader: BitReader, countBits: number, codeBits: num
 };
 
 /**
+ * Selection on a step of a step list: its variant index and its code.
+ */
+export interface StepSelectionField {
+  /** Index of the variant on the step. */
+  variantIndex: number
+  /** Code of the selection. */
+  code: number
+}
+
+/**
+ * Widths of the fields of a step list.
+ */
+export interface StepListBits {
+  /** Width of the step count. */
+  count: number
+  /** Width of the variant index of a selection. */
+  variant: number
+  /** Width of the ability code of a selection. */
+  code: number
+}
+
+/**
+ * Writes a step list: the number of steps, then for each step a bit for a selection and, for a selection, its variant
+ * index and its ability code.
+ *
+ * @param writer section writer.
+ * @param steps selections by step; null for an empty step.
+ * @param bits widths of the fields.
+ */
+export const writeStepList = (writer: BitWriter, steps: readonly (StepSelectionField | null)[], bits: StepListBits) => {
+  writer.writeUint(steps.length, bits.count);
+  steps.forEach((step) => {
+    writer.writeUint(step ? 1 : 0, 1);
+
+    if (!step) return;
+
+    writer.writeUint(step.variantIndex, bits.variant);
+    writer.writeUint(step.code, bits.code);
+  });
+};
+
+/**
+ * Reads a step list written by `writeStepList`.
+ *
+ * @param reader section reader.
+ * @param bits widths of the fields.
+ */
+export const readStepList = (reader: BitReader, bits: StepListBits): (StepSelectionField | null)[] => {
+  const count = reader.readUint(bits.count);
+
+  return Array.from({ length: count }, (): StepSelectionField | null => {
+    if (!reader.readUint(1)) return null;
+
+    return { variantIndex: reader.readUint(bits.variant), code: reader.readUint(bits.code) };
+  });
+};
+
+/**
  * Fields of a section read in whole; null if the fields leave bits unread or run past the section end.
  *
  * @param reader section reader.

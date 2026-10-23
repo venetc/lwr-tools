@@ -26,26 +26,20 @@ export interface PsiLevel {
 }
 
 /**
- * Psionic abilities of a build by psi level, from Awakened: one per trained level, without gaps.
+ * Psionic abilities of a build by psi level, from Awakened: one entry per psi level, null for an empty one.
  */
-export type SelectedPsionicAbilities = AbilityId[];
+export type SelectedPsionicAbilities = (AbilityId | null)[];
 
 /**
- * Psi level state in a build: levels are trained in order like ranks, and a level a Build rule blocks is locked.
+ * Psi level state in a build: like a rank, and a level a Build rule blocks is locked.
  *
- * @param psionicAbilities psionic abilities of the build by psi level.
- * @param levelIndex psi level index.
+ * @param selectedId id of the psionic ability of the psi level, or null.
  * @param isReadonly whether the build is readonly.
  * @param isBlocked whether a Build rule blocks the level, such as Neural Damping.
  */
-export const psiLevelState = (
-  psionicAbilities: SelectedPsionicAbilities,
-  levelIndex: number,
-  isReadonly: boolean,
-  isBlocked: boolean,
-): RankState => {
+export const psiLevelState = (selectedId: string | null, isReadonly: boolean, isBlocked: boolean): RankState => {
   if (isBlocked) return 'locked';
-  return rankState(psionicAbilities, levelIndex, isReadonly);
+  return rankState(selectedId, isReadonly);
 };
 
 /**

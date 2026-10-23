@@ -3,8 +3,6 @@ import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
 import type officerRanksJson from '../config/data/officer-ranks.json';
 import type { AbilityId } from './abilities';
 import { isAbilityId } from './abilities';
-import type { RankState } from './ranks';
-import { rankState } from './ranks';
 
 export type OfficerRankId = keyof typeof officerRanksJson;
 
@@ -16,7 +14,7 @@ export interface OfficerRankContent {
   name: string
   /** Short officer rank name from the game, such as `LT`. */
   abbreviation: string
-  /** Id of the rank the class tree must complete to open the officer rank. */
+  /** Id of the rank the game requires for the officer rank. */
   requiredRank: string
   /** Officer perk ids of the officer rank: left, then right. */
   perks: readonly string[]
@@ -29,9 +27,7 @@ export interface OfficerRank {
   name: string
   /** Short officer rank name from the game, such as `LT`. */
   abbreviation: string
-  /** Index of the rank the class tree must complete to open the officer rank; null for an unknown rank, which never opens it. */
-  requiredRankIndex: number | null
-  /** Name of the rank the class tree must complete to open the officer rank. */
+  /** Name of the rank the game requires for the officer rank: a hint only, a Build takes officer ranks at any rank. */
   requiredRankName: string
   /** Officer perks to choose from: left, then right. */
   perks: AbilityId[]
@@ -40,28 +36,9 @@ export interface OfficerRank {
 }
 
 /**
- * Officer perks of a build by officer rank, from Lieutenant: one per trained officer rank, without gaps.
+ * Officer perks of a build by officer rank, from Lieutenant: one entry per officer rank, null for an empty one.
  */
-export type SelectedOfficerPerks = AbilityId[];
-
-/**
- * Officer rank state in a build: officer ranks are trained in order like ranks, an officer rank a Build rule blocks
- * is locked, and a readonly build locks every officer rank.
- *
- * @param officerPerks officer perks of the build by officer rank.
- * @param officerRankIndex officer rank index.
- * @param isReadonly whether the build is readonly.
- * @param isBlocked whether a Build rule blocks the officer rank, such as its required rank.
- */
-export const officerRankState = (
-  officerPerks: Readonly<SelectedOfficerPerks>,
-  officerRankIndex: number,
-  isReadonly: boolean,
-  isBlocked: boolean,
-): RankState => {
-  if (isReadonly || isBlocked) return 'locked';
-  return rankState(officerPerks, officerRankIndex, false);
-};
+export type SelectedOfficerPerks = (AbilityId | null)[];
 
 /**
  * Officer rank of its record with its medal; unknown ability ids are skipped.
@@ -70,14 +47,13 @@ export const officerRankState = (
  * @param content officer rank record.
  */
 export const createOfficerRank = (id: OfficerRankId, content: OfficerRankContent): OfficerRank => {
-  const requiredRankIndex = SOLDIER_RANKS.findIndex(rank => rank.id === content.requiredRank);
+  const requiredRank = SOLDIER_RANKS.find(rank => rank.id === content.requiredRank);
 
   return {
     id,
     name: content.name,
     abbreviation: content.abbreviation,
-    requiredRankIndex: requiredRankIndex < 0 ? null : requiredRankIndex,
-    requiredRankName: SOLDIER_RANKS[requiredRankIndex]?.name ?? content.requiredRank,
+    requiredRankName: requiredRank?.name ?? content.requiredRank,
     perks: content.perks.filter(isAbilityId),
     medal: OFFICER_RANK_MEDAL[id],
   };

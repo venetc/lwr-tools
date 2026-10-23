@@ -27,10 +27,10 @@ export const PSI_LEVEL_CONTENT_MOCK: Record<string, PsiLevelContent> = {
  * Build with the gene mods and psionic abilities.
  *
  * @param geneMods gene mods by body part.
- * @param psionicAbilities psionic abilities by psi level.
+ * @param psionicAbilities psionic abilities by psi level; null for an empty psi level.
  * @param readonly whether the build is readonly.
  */
-export const createBuildMock = (geneMods: (string | null)[], psionicAbilities: string[], readonly = false): PsionicTreeBuild => ({
+export const createBuildMock = (geneMods: (string | null)[], psionicAbilities: (string | null)[], readonly = false): PsionicTreeBuild => ({
   geneMods: geneMods as PsionicTreeBuild['geneMods'],
   psionicAbilities: psionicAbilities as PsionicTreeBuild['psionicAbilities'],
   readonly,
@@ -40,9 +40,11 @@ export const NO_GENE_MODS = [null];
 
 export const NEURAL_DAMPING_GENE_MODS = ['neural-damping'];
 
-export const NO_PSIONICS = [];
+export const NO_PSIONICS = [null, null, null];
 
-export const LOW_PSIONICS = ['low-right'];
+export const LOW_PSIONICS = ['low-right', null, null];
+
+export const LOW_AND_HIGH_PSIONICS = ['low-right', null, 'high-left'];
 
 const UNAVAILABLE_NOTE = 'Unavailable with Neural Damping';
 

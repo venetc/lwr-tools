@@ -36,4 +36,8 @@ export const EMPTY_TREE_MOCK = {
   ranks: [],
 } as unknown as ClassTree;
 
-export const PARTIAL_BUILD = ['granted', 'right'];
+export const PARTIAL_BUILD = ['granted', 'right', null];
+
+export const GAPPED_BUILD = ['granted', null, 'top'];
+
+export const BASE_BUILD = ['granted', null, null];

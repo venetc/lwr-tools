@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import type { StepListBits } from '../model/section-fields';
 import type { ShareCodeReadResult } from '../model/share-code';
 
 /**
@@ -29,20 +30,39 @@ export const SOLDIER_BUILD_SECTION = {
 /** Width of the class number; part of the `PERKS` section, a change means a new section id. */
 export const CLASS_CODE_BITS = 5;
 
-/** Width of the selected perk count; part of the `PERKS` section, a change means a new section id. */
-export const PERK_COUNT_BITS = 3;
-
-/** Width of the ability number; part of the `PERKS` section, a change means a new section id. */
+/**
+ * Width of the ability number of a selection; part of the `PERKS`, `GENE_MODS`, `PSIONIC` and `OFFICER` sections, a
+ * change means new section ids.
+ */
 export const ABILITY_CODE_BITS = 8;
 
-/** Width of the gene mod count; part of the `GENE_MODS` section, a change means a new section id. */
-export const GENE_MOD_COUNT_BITS = 3;
+/** Fields of the ranks in the `PERKS` section, from the second rank; a change means a new section id. */
+export const RANK_STEP_BITS = {
+  count: 3,
+  variant: 2,
+  code: ABILITY_CODE_BITS,
+} as const satisfies StepListBits;
 
-/** Width of the psionic ability count; part of the `PSIONIC` section, a change means a new section id. */
-export const PSIONIC_ABILITY_COUNT_BITS = 3;
+/** Fields of the body parts in the `GENE_MODS` section; a change means a new section id. */
+export const BODY_PART_STEP_BITS = {
+  count: 3,
+  variant: 1,
+  code: ABILITY_CODE_BITS,
+} as const satisfies StepListBits;
 
-/** Width of the officer perk count; part of the `OFFICER` section, a change means a new section id. */
-export const OFFICER_PERK_COUNT_BITS = 3;
+/** Fields of the psi levels in the `PSIONIC` section; a change means a new section id. */
+export const PSI_LEVEL_STEP_BITS = {
+  count: 3,
+  variant: 2,
+  code: ABILITY_CODE_BITS,
+} as const satisfies StepListBits;
+
+/** Fields of the officer ranks in the `OFFICER` section; a change means a new section id. */
+export const OFFICER_RANK_STEP_BITS = {
+  count: 3,
+  variant: 1,
+  code: ABILITY_CODE_BITS,
+} as const satisfies StepListBits;
 
 /** Width of the name byte length; part of the `NAME` section, a change means a new section id. */
 export const NAME_LENGTH_BITS = 5;

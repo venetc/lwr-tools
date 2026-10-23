@@ -120,7 +120,8 @@ export const useAddUnit = () => {
   const addNewBuild = (option: NewBuildOption) => {
     if (!openSquad.value) return;
 
-    const squadBuild = findSquadBuild(addDefaultBuild(option));
+    const build = addDefaultBuild(option);
+    const squadBuild = build ? findSquadBuild(build) : null;
     const squadName = squadBuild ? addUnit(squadBuild) : null;
 
     if (!squadName) return;

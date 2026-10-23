@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Dialog } from '@shared/ui/dialog';
-import { BiosoldierBuildTree, BiosoldierMiniTree, MecBuildTree, MecMiniTree, ShivBuildTree, ShivMiniTree } from '@widgets/build-calculator';
 
 import type { SquadBuild } from '../model/squad-build';
 import { useUnitBuild } from '../model/unit-build';
@@ -23,7 +22,7 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
-const { biosoldierBuild, mecBuild, shivBuild, isOpen, openBuild, closeNoteAnnouncement } = useUnitBuild(
+const { miniTree, buildTree, isOpen, openBuild, closeNoteAnnouncement } = useUnitBuild(
   () => props.squadBuild,
   () => props.closeNote,
   () => emit('close'),
@@ -32,9 +31,7 @@ const { biosoldierBuild, mecBuild, shivBuild, isOpen, openBuild, closeNoteAnnoun
 
 <template>
   <div :class="$style.miniTree">
-    <BiosoldierMiniTree v-if="biosoldierBuild" :build="biosoldierBuild" />
-    <MecMiniTree v-else-if="mecBuild" :build="mecBuild" />
-    <ShivMiniTree v-else-if="shivBuild" :build="shivBuild" />
+    <component :is="miniTree" :build="props.squadBuild.build" />
 
     <button
       :class="$style.edit"
@@ -47,19 +44,9 @@ const { biosoldierBuild, mecBuild, shivBuild, isOpen, openBuild, closeNoteAnnoun
 
   <Dialog v-model:open="isOpen" title="Build">
     <div :class="$style.panel">
-      <BiosoldierBuildTree
-        v-if="biosoldierBuild"
-        :build="biosoldierBuild"
-        @change="emit('change')"
-      />
-      <MecBuildTree
-        v-else-if="mecBuild"
-        :build="mecBuild"
-        @change="emit('change')"
-      />
-      <ShivBuildTree
-        v-else-if="shivBuild"
-        :build="shivBuild"
+      <component
+        :is="buildTree"
+        :build="props.squadBuild.build"
         @change="emit('change')"
       />
     </div>

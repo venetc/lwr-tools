@@ -10,45 +10,38 @@ import {
   selectBiosoldierBuildPsionicAbility,
 } from '@entities/soldier';
 import { useBuildList } from '@features/manage-builds';
-import type { StoredBuild } from '@features/share-build';
 import { decodeBiosoldierBuild, encodeBiosoldierBuild, storedBuildCodec } from '@features/share-build';
-import { createId } from '@shared/lib/id';
+import type { LockableItem } from '@shared/lib/stored-list';
 
 import { BIOSOLDIER_BUILD_KEY_PREFIX, BIOSOLDIER_BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
-
-/** Id of a biosoldier build, unique in the build list. */
-export type BiosoldierBuildId = string;
 
 /**
  * Saved biosoldier build: build data with its id and lock.
  */
-export type BiosoldierBuild = StoredBuild<BiosoldierBuildData>;
+export type BiosoldierBuild = LockableItem<BiosoldierBuildData>;
 
 /**
- * New editable build of the class with only the base perk selected, no gene mods, psionic abilities or officer perks.
+ * Data of a new build of the class with only the base perk selected, no gene mods, psionic abilities or officer perks.
  *
  * @param soldierClass biosoldier class.
- * @param id build id; random by default.
  */
-const createBiosoldierBuild = (soldierClass: SoldierClass, id: BiosoldierBuildId = createId()): BiosoldierBuild => {
-  return {
-    id,
-    soldierClass,
-    perks: [soldierClass.basePerk],
-    geneMods: [...EMPTY_GENE_MODS],
-    psionicAbilities: [],
-    officerPerks: [],
-    name: soldierClass.name,
-    readonly: false,
-  };
-};
+const newBiosoldierBuildData = (soldierClass: SoldierClass): BiosoldierBuildData => ({
+  soldierClass,
+  perks: [soldierClass.basePerk],
+  geneMods: [...EMPTY_GENE_MODS],
+  psionicAbilities: [],
+  officerPerks: [],
+  name: soldierClass.name,
+});
 
 /**
  * Default builds: one per class with only the base perk selected, with fixed ids.
  */
-const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map(soldierClass => (
-  createBiosoldierBuild(soldierClass, `${DEFAULT_BUILD_ID_PREFIX}${soldierClass.id}`)
-));
+const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map((soldierClass): BiosoldierBuild => ({
+  ...newBiosoldierBuildData(soldierClass),
+  id: `${DEFAULT_BUILD_ID_PREFIX}${soldierClass.id}`,
+  readonly: false,
+}));
 
 /**
  * Saved biosoldier builds, kept in the local storage and synced between tabs.
@@ -59,6 +52,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
     itemKeyPrefix: BIOSOLDIER_BUILD_KEY_PREFIX,
     ...storedBuildCodec(encodeBiosoldierBuild, decodeBiosoldierBuild),
     defaultItems: createDefaultBuilds,
+    newData: build => newBiosoldierBuildData(build.soldierClass),
   });
 
   /**
@@ -68,14 +62,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
    * @param rankIndex rank index in the tree.
    * @param perkId selected perk id, or null to clear the rank selection.
    */
-  const selectBuildPerk = (buildId: BiosoldierBuildId, rankIndex: number, perkId: string | null) => {
-    const build = buildList.findEditableBuild(buildId);
-
-    if (!build) return;
-
-    selectBiosoldierBuildPerk(build, rankIndex, perkId);
-    buildList.markBuildChanged(buildId);
-  };
+  const selectBuildPerk = (buildId: string, rankIndex: number, perkId: string | null) => buildList.editBuild(buildId, build => selectBiosoldierBuildPerk(build, rankIndex, perkId));
 
   /**
    * Selects a gene mod of the body part of an editable build, or clears the body part.
@@ -84,14 +71,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
    * @param bodyPartIndex body part index.
    * @param geneModId selected gene mod id, or null to clear the body part.
    */
-  const selectBuildGeneMod = (buildId: BiosoldierBuildId, bodyPartIndex: number, geneModId: string | null) => {
-    const build = buildList.findEditableBuild(buildId);
-
-    if (!build) return;
-
-    selectBiosoldierBuildGeneMod(build, bodyPartIndex, geneModId);
-    buildList.markBuildChanged(buildId);
-  };
+  const selectBuildGeneMod = (buildId: string, bodyPartIndex: number, geneModId: string | null) => buildList.editBuild(buildId, build => selectBiosoldierBuildGeneMod(build, bodyPartIndex, geneModId));
 
   /**
    * Selects a psionic ability on the psi level of an editable build, or clears the level and all levels above.
@@ -100,14 +80,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
    * @param levelIndex psi level index.
    * @param abilityId selected psionic ability id, or null to clear the level.
    */
-  const selectBuildPsionicAbility = (buildId: BiosoldierBuildId, levelIndex: number, abilityId: string | null) => {
-    const build = buildList.findEditableBuild(buildId);
-
-    if (!build) return;
-
-    selectBiosoldierBuildPsionicAbility(build, levelIndex, abilityId);
-    buildList.markBuildChanged(buildId);
-  };
+  const selectBuildPsionicAbility = (buildId: string, levelIndex: number, abilityId: string | null) => buildList.editBuild(buildId, build => selectBiosoldierBuildPsionicAbility(build, levelIndex, abilityId));
 
   /**
    * Selects an officer perk on the officer rank of an editable build, or clears the officer rank and all officer ranks
@@ -117,14 +90,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
    * @param officerRankIndex officer rank index.
    * @param perkId selected officer perk id, or null to clear the officer rank.
    */
-  const selectBuildOfficerPerk = (buildId: BiosoldierBuildId, officerRankIndex: number, perkId: string | null) => {
-    const build = buildList.findEditableBuild(buildId);
-
-    if (!build) return;
-
-    selectBiosoldierBuildOfficerPerk(build, officerRankIndex, perkId);
-    buildList.markBuildChanged(buildId);
-  };
+  const selectBuildOfficerPerk = (buildId: string, officerRankIndex: number, perkId: string | null) => buildList.editBuild(buildId, build => selectBiosoldierBuildOfficerPerk(build, officerRankIndex, perkId));
 
   /**
    * Adds a new build of the class with only the base perk selected.
@@ -133,26 +99,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
    *
    * @returns id of the new build.
    */
-  const addBuild = (soldierClass: SoldierClass) => {
-    const build = createBiosoldierBuild(soldierClass);
-
-    buildList.addBuild(build);
-
-    return build.id;
-  };
-
-  /**
-   * Resets an editable build to a new build of its class: only the base perk, no gene mods, psionic abilities or officer perks; the name stays.
-   *
-   * @param buildId build id.
-   */
-  const resetBuild = (buildId: BiosoldierBuildId) => {
-    const build = buildList.findEditableBuild(buildId);
-
-    if (!build) return;
-
-    buildList.replaceBuild(buildId, { ...createBiosoldierBuild(build.soldierClass), name: build.name });
-  };
+  const addBuild = (soldierClass: SoldierClass) => buildList.addBuild(newBiosoldierBuildData(soldierClass));
 
   return {
     builds: buildList.builds,
@@ -163,9 +110,9 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
     setName: buildList.setName,
     setReadonly: buildList.setReadonly,
     addBuild,
-    importBuild: buildList.importBuild,
+    importBuild: buildList.addBuild,
     replaceBuild: buildList.replaceBuild,
-    resetBuild,
+    resetBuild: buildList.resetBuild,
     removeBuild: buildList.removeBuild,
   };
 });

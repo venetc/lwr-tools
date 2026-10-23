@@ -1,6 +1,5 @@
 import type { DecodedLoadout, Loadout, LoadoutChange, LoadoutWearer } from '@entities/loadout';
 import { defaultLoadout, fitLoadout } from '@entities/loadout';
-import { biosoldierBuildBranchSet, isOfficerBuild } from '@entities/soldier';
 import type { SquadUnit } from '@features/manage-squads';
 import type { ToastContent } from '@shared/ui/toast';
 
@@ -14,7 +13,7 @@ import {
 } from '../config/constants';
 import { changeNote } from './loadout-edit';
 import type { SquadBuild } from './squad-build';
-import { squadBuildKey } from './squad-build';
+import { squadBuildKey, squadBuildWearer } from './squad-build';
 
 /**
  * Unit brought to the rules of its Build.
@@ -63,30 +62,6 @@ interface BuildChanges {
 }
 
 /**
- * What the Loadout rules need to know about a Unit of the build: the class of a biosoldier with its gene mods,
- * psionic abilities and whether it is an Officer; the MEC class of a MEC; nothing of a SHIV.
- *
- * @param squadBuild build of the Unit.
- */
-const unitWearer = (squadBuild: SquadBuild): LoadoutWearer => {
-  if (squadBuild.kind === 'biosoldier') {
-    const branchSet = biosoldierBuildBranchSet(squadBuild.build);
-
-    return {
-      unit: 'biosoldier',
-      classId: squadBuild.build.soldierClass.id,
-      hasGeneMod: branchSet === 'gene-mods' || branchSet === 'both',
-      hasPsionicAbility: branchSet === 'psionic' || branchSet === 'both',
-      isOfficer: isOfficerBuild(squadBuild.build),
-    };
-  }
-
-  const classId = squadBuild.kind === 'mec' ? squadBuild.build.soldierClass.id : null;
-
-  return { unit: squadBuild.kind, classId, hasGeneMod: false, hasPsionicAbility: false, isOfficer: false };
-};
-
-/**
  * Unit check of one Unit: its Loadout brought to the rules of its Build. A new Unit gets the Default Loadout; armor
  * or a primary weapon of an unknown code silently becomes the default one, and anything else that no longer fits is
  * taken off or replaced with the default.
@@ -96,7 +71,7 @@ const unitWearer = (squadBuild: SquadBuild): LoadoutWearer => {
  * @returns the checked Unit; null if no armor or primary weapon fits the Unit.
  */
 export const checkUnit = (loadout: Readonly<DecodedLoadout> | null, squadBuild: SquadBuild): CheckedUnit | null => {
-  const wearer = unitWearer(squadBuild);
+  const wearer = squadBuildWearer(squadBuild);
   const defaults = defaultLoadout(wearer);
 
   if (!defaults) return null;

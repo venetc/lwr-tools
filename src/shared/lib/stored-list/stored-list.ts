@@ -12,6 +12,14 @@ export interface StoredListItem {
   id: string
 }
 
+/**
+ * List item of the data that can be locked against editing.
+ */
+export type LockableItem<Data> = Data & StoredListItem & {
+  /** Whether the item is locked against editing. */
+  readonly: boolean
+};
+
 export interface StoredListOptions<Item extends StoredListItem> {
   /** Key of the stored order: a JSON array of item ids; its absence means nothing has been saved yet. */
   orderKey: string

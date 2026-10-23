@@ -1,7 +1,9 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { toValue } from 'vue';
 
-import type { ListedBuild, NamedBuildData } from './build-list';
+import type { LockableItem } from '@shared/lib/stored-list';
+
+import type { NamedBuildData } from './build-list';
 
 /**
  * Store actions a build editor works through.
@@ -24,7 +26,7 @@ export interface BuildEditorActions<Data> {
  * @param build build to edit.
  * @param actions store actions.
  */
-export const useBuildEditor = <Data>(build: MaybeRefOrGetter<Readonly<ListedBuild<NamedBuildData>>>, actions: BuildEditorActions<Data>) => {
+export const useBuildEditor = <Data>(build: MaybeRefOrGetter<Readonly<LockableItem<NamedBuildData>>>, actions: BuildEditorActions<Data>) => {
   /**
    * Renames the build.
    *

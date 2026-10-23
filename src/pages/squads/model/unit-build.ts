@@ -3,36 +3,31 @@ import { computed, ref, toValue } from 'vue';
 
 import { CLOSE_NOTE_TOAST_TITLE } from '../config/constants';
 import type { SquadBuild } from './squad-build';
+import { squadBuildClassIcon } from './squad-build';
+import { SQUAD_BUILD_KINDS } from './squad-build-kinds';
 
 /**
- * Build of a Unit by its kind: the build of the kind it is, null for the other kinds.
+ * How a Unit card shows the build of its kind: the mini-tree, the tree of the Build dialog, the class icon and the
+ * officer rank badge.
  *
  * @param squadBuild build of the Unit.
  */
-export const useKindBuilds = (squadBuild: MaybeRefOrGetter<SquadBuild>) => {
-  const biosoldierBuild = computed(() => {
-    const value = toValue(squadBuild);
+export const useSquadBuildViews = (squadBuild: MaybeRefOrGetter<SquadBuild>) => {
+  const miniTree = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].miniTree);
 
-    return value.kind === 'biosoldier' ? value.build : null;
-  });
+  const buildTree = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].buildTree);
 
-  const mecBuild = computed(() => {
-    const value = toValue(squadBuild);
+  const buildIcon = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].buildIcon);
 
-    return value.kind === 'mec' ? value.build : null;
-  });
+  const classIcon = computed(() => squadBuildClassIcon(toValue(squadBuild)));
 
-  const shivBuild = computed(() => {
-    const value = toValue(squadBuild);
+  const officerRankBadge = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].officerRankBadge);
 
-    return value.kind === 'shiv' ? value.build : null;
-  });
-
-  return { biosoldierBuild, mecBuild, shivBuild };
+  return { miniTree, buildTree, buildIcon, classIcon, officerRankBadge };
 };
 
 /**
- * Build of a Unit card: the build of its kind for the mini-tree and the Build dialog, whether the dialog is open, and
+ * Build of a Unit card: the mini-tree and the tree of the Build dialog of its kind, whether the dialog is open, and
  * what closing it takes off as screen readers announce it.
  *
  * @param squadBuild build of the Unit.
@@ -40,7 +35,7 @@ export const useKindBuilds = (squadBuild: MaybeRefOrGetter<SquadBuild>) => {
  * @param onClose tells that the Build dialog closed.
  */
 export const useUnitBuild = (squadBuild: MaybeRefOrGetter<SquadBuild>, closeNote: MaybeRefOrGetter<string | null>, onClose: () => void) => {
-  const { biosoldierBuild, mecBuild, shivBuild } = useKindBuilds(squadBuild);
+  const { miniTree, buildTree } = useSquadBuildViews(squadBuild);
 
   const isDialogOpen = ref(false);
 
@@ -70,5 +65,5 @@ export const useUnitBuild = (squadBuild: MaybeRefOrGetter<SquadBuild>, closeNote
     isOpen.value = true;
   };
 
-  return { biosoldierBuild, mecBuild, shivBuild, isOpen, openBuild, closeNoteAnnouncement };
+  return { miniTree, buildTree, isOpen, openBuild, closeNoteAnnouncement };
 };

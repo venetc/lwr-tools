@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { OfficerRankBadge } from '@widgets/build-calculator';
-
 import type { SquadBuild } from '../model/squad-build';
-import { useKindBuilds } from '../model/unit-build';
+import { useSquadBuildViews } from '../model/unit-build';
 
 interface Props {
   /** Build whose senior officer rank is shown; only a biosoldier build has one. */
@@ -11,9 +9,13 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { biosoldierBuild } = useKindBuilds(() => props.squadBuild);
+const { officerRankBadge } = useSquadBuildViews(() => props.squadBuild);
 </script>
 
 <template>
-  <OfficerRankBadge v-if="biosoldierBuild" :build="biosoldierBuild" />
+  <component
+    :is="officerRankBadge"
+    v-if="officerRankBadge"
+    :build="props.squadBuild.build"
+  />
 </template>

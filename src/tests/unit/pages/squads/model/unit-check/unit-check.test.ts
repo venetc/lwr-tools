@@ -104,6 +104,18 @@ describe('checkUnit', () => {
     expect(unit?.wearer.hasPsionicAbility).toBe(true);
   });
 
+  it('counts a gene mod of a biosoldier Build with a psionic ability', () => {
+    const unit = checkUnit(null, createBiosoldierBuildMock({ geneMods: GENE_MODS, psionicAbilities: PSIONIC_ABILITIES }));
+
+    expect(unit?.wearer.hasGeneMod).toBe(true);
+  });
+
+  it('counts a psionic ability of a biosoldier Build with a gene mod', () => {
+    const unit = checkUnit(null, createBiosoldierBuildMock({ geneMods: GENE_MODS, psionicAbilities: PSIONIC_ABILITIES }));
+
+    expect(unit?.wearer.hasPsionicAbility).toBe(true);
+  });
+
   it('makes a biosoldier with an officer perk an Officer', () => {
     const unit = checkUnit(null, createBiosoldierBuildMock({ officerPerks: OFFICER_PERKS }));
 

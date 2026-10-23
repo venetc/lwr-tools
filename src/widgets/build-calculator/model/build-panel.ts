@@ -1,7 +1,8 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { ListedBuild, NamedBuildData } from '@features/manage-builds';
+import type { NamedBuildData } from '@features/manage-builds';
+import type { LockableItem } from '@shared/lib/stored-list';
 import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 
 /**
@@ -23,7 +24,7 @@ export interface BuildPanelRequests {
  * @param build build of the panel.
  * @param requests requests to the panel owner.
  */
-export const useBuildPanel = (build: MaybeRefOrGetter<Readonly<ListedBuild<NamedBuildData>>>, requests: BuildPanelRequests) => {
+export const useBuildPanel = (build: MaybeRefOrGetter<Readonly<LockableItem<NamedBuildData>>>, requests: BuildPanelRequests) => {
   const name = computed({
     get: () => toValue(build).name,
     set: requests.onRename,

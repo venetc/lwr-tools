@@ -3,30 +3,22 @@ import { defineStore } from 'pinia';
 import type { ShivBuildData } from '@entities/shiv';
 import { selectShivBuildPerk, SHIV_BUILD_NAME, TECHNOLOGY_LEVELS } from '@entities/shiv';
 import { useBuildList } from '@features/manage-builds';
-import type { StoredBuild } from '@features/share-build';
 import { decodeShivBuild, encodeShivBuild, storedBuildCodec } from '@features/share-build';
-import { createId } from '@shared/lib/id';
+import type { LockableItem } from '@shared/lib/stored-list';
 
 import { DEFAULT_SHIV_BUILD_ID, SHIV_BUILD_KEY_PREFIX, SHIV_BUILD_ORDER_KEY } from '../config/constants';
-
-/** Id of a SHIV build, unique in the build list. */
-export type ShivBuildId = string;
 
 /**
  * Saved SHIV build: build data with its id and lock.
  */
-export type ShivBuild = StoredBuild<ShivBuildData>;
+export type ShivBuild = LockableItem<ShivBuildData>;
 
 /**
- * New editable build with no perk selected.
- *
- * @param id build id; random by default.
+ * Data of a new build with no perk selected.
  */
-const createShivBuild = (id: ShivBuildId = createId()): ShivBuild => ({
-  id,
+const newShivBuildData = (): ShivBuildData => ({
   perks: TECHNOLOGY_LEVELS.map(() => null),
   name: SHIV_BUILD_NAME,
-  readonly: false,
 });
 
 /**
@@ -37,7 +29,8 @@ export const useShivBuildsStore = defineStore('build-calculator-shiv-builds', ()
     orderKey: SHIV_BUILD_ORDER_KEY,
     itemKeyPrefix: SHIV_BUILD_KEY_PREFIX,
     ...storedBuildCodec(encodeShivBuild, decodeShivBuild),
-    defaultItems: () => [createShivBuild(DEFAULT_SHIV_BUILD_ID)],
+    defaultItems: () => [{ ...newShivBuildData(), id: DEFAULT_SHIV_BUILD_ID, readonly: false }],
+    newData: newShivBuildData,
   });
 
   /**
@@ -47,40 +40,14 @@ export const useShivBuildsStore = defineStore('build-calculator-shiv-builds', ()
    * @param levelIndex technology level index in the tree.
    * @param perkId selected perk id, or null to clear the level.
    */
-  const selectBuildPerk = (buildId: ShivBuildId, levelIndex: number, perkId: string | null) => {
-    const build = buildList.findEditableBuild(buildId);
-
-    if (!build) return;
-
-    selectShivBuildPerk(build, levelIndex, perkId);
-    buildList.markBuildChanged(buildId);
-  };
+  const selectBuildPerk = (buildId: string, levelIndex: number, perkId: string | null) => buildList.editBuild(buildId, build => selectShivBuildPerk(build, levelIndex, perkId));
 
   /**
    * Adds a new build with no perk selected.
    *
    * @returns id of the new build.
    */
-  const addBuild = () => {
-    const build = createShivBuild();
-
-    buildList.addBuild(build);
-
-    return build.id;
-  };
-
-  /**
-   * Resets an editable build to a new build with no perk selected; the name stays.
-   *
-   * @param buildId build id.
-   */
-  const resetBuild = (buildId: ShivBuildId) => {
-    const build = buildList.findEditableBuild(buildId);
-
-    if (!build) return;
-
-    buildList.replaceBuild(buildId, { ...createShivBuild(), name: build.name });
-  };
+  const addBuild = () => buildList.addBuild(newShivBuildData());
 
   return {
     builds: buildList.builds,
@@ -88,9 +55,9 @@ export const useShivBuildsStore = defineStore('build-calculator-shiv-builds', ()
     setName: buildList.setName,
     setReadonly: buildList.setReadonly,
     addBuild,
-    importBuild: buildList.importBuild,
+    importBuild: buildList.addBuild,
     replaceBuild: buildList.replaceBuild,
-    resetBuild,
+    resetBuild: buildList.resetBuild,
     removeBuild: buildList.removeBuild,
   };
 });

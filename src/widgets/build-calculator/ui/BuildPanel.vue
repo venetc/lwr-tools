@@ -2,9 +2,9 @@
 import { ClipboardPaste, RotateCcw, Share2 } from '@lucide/vue';
 import type { VNode } from 'vue';
 
-import type { ListedBuild } from '@features/manage-builds';
 import type { BuildCodeKind, BuildDataByKind } from '@features/share-build';
 import { ShareCodeExport, ShareCodeImport } from '@features/share-build';
+import type { LockableItem } from '@shared/lib/stored-list';
 import { ActionBar } from '@shared/ui/action-bar';
 import { EditableTitle } from '@shared/ui/editable-title';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
@@ -16,7 +16,7 @@ interface Props {
   /** Kind of build code, for sharing and importing the build. */
   kind: Kind
   /** Build to render. */
-  build: ListedBuild<BuildDataByKind[Kind]>
+  build: LockableItem<BuildDataByKind[Kind]>
   /** Accessible name of the build tree. */
   label: string
   /** Name restored when the build name is left blank. */

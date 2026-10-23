@@ -47,6 +47,8 @@ Call it inside a component setup or a setup store: it listens to window and docu
 | `removeItem(id)` | removes it and its record |
 | `markItemChanged(id)` | saves an item after it was mutated in place |
 
+`LockableItem<Data>` is the data with `id` and `readonly`: the shape of an item a user can lock against editing. The list does not read `readonly`; the caller checks it before editing.
+
 ## Behavior
 
 - Loading: ids from the order first, then records missing from it in storage order. Ids without a record are skipped; a record that is not JSON or that `parse` rejects is skipped and left in the storage; an invalid order counts as `[]`.

@@ -1,15 +1,7 @@
+import type { LockableItem } from '@shared/lib/stored-list';
+
 import { STORED_BUILD_SCHEMA } from '../config/constants';
 import type { ShareCodeDecodeResult } from './share-code';
-
-/**
- * Build with its list identity and lock, as kept in a stored list.
- */
-export type StoredBuild<Data> = Data & {
-  /** Stable build id. */
-  id: string
-  /** Whether the build is locked against editing. */
-  readonly: boolean
-};
 
 /**
  * Stored records of builds through their share codes: `{ code, readonly }`. The code format already keeps old codes
@@ -27,7 +19,7 @@ export const storedBuildCodec = <Data>(
    *
    * @param build stored build.
    */
-  const serialize = (build: Readonly<StoredBuild<Data>>) => {
+  const serialize = (build: Readonly<LockableItem<Data>>) => {
     const code = encode(build);
 
     if (code === null) return null;
@@ -41,7 +33,7 @@ export const storedBuildCodec = <Data>(
    * @param id build id.
    * @param record stored record.
    */
-  const parse = (id: string, record: unknown): StoredBuild<Data> | null => {
+  const parse = (id: string, record: unknown): LockableItem<Data> | null => {
     const storedBuild = STORED_BUILD_SCHEMA.safeParse(record);
 
     if (!storedBuild.success) return null;

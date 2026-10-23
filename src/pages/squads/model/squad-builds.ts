@@ -1,24 +1,30 @@
 import { computed } from 'vue';
 
+import type { LoadoutUnitId } from '@entities/loadout';
 import type { SquadUnitBuild } from '@features/manage-squads';
-import { useBiosoldierBuildsStore, useMecBuildsStore, useShivBuildsStore } from '@widgets/build-calculator';
 
 import type { NewBuildOption } from './new-build';
-import type { SquadBuild } from './squad-build';
+import type { SquadBuild, SquadBuildOf } from './squad-build';
 import { squadBuildKey } from './squad-build';
+import { SQUAD_BUILD_KINDS } from './squad-build-kinds';
+
+/**
+ * Saved builds of the Build calculator of the kind, with their kind.
+ *
+ * @param kind kind of the builds.
+ */
+const kindSquadBuilds = <Kind extends LoadoutUnitId>(kind: Kind) => {
+  return SQUAD_BUILD_KINDS[kind].builds().map((build): SquadBuildOf<Kind> => ({ kind, build }));
+};
 
 /**
  * Saved builds of all three Build calculators, as Units refer to them: as a list and by `squadBuildKey`.
  */
 export const useSquadBuilds = () => {
-  const biosoldierBuildsStore = useBiosoldierBuildsStore();
-  const mecBuildsStore = useMecBuildsStore();
-  const shivBuildsStore = useShivBuildsStore();
-
   const squadBuilds = computed<SquadBuild[]>(() => [
-    ...biosoldierBuildsStore.builds.map((build): SquadBuild => ({ kind: 'biosoldier', build })),
-    ...mecBuildsStore.builds.map((build): SquadBuild => ({ kind: 'mec', build })),
-    ...shivBuildsStore.builds.map((build): SquadBuild => ({ kind: 'shiv', build })),
+    ...kindSquadBuilds('biosoldier'),
+    ...kindSquadBuilds('mec'),
+    ...kindSquadBuilds('shiv'),
   ]);
 
   const squadBuildsByKey = computed<ReadonlyMap<string, SquadBuild>>(() => new Map(
@@ -39,14 +45,12 @@ export const useSquadBuilds = () => {
    * Adds a Default build of the option to its Build calculator.
    *
    * @param option class of a biosoldier or MEC, or a SHIV.
-   * @returns kind and id of the new build.
+   * @returns kind and id of the new build; null if the option has no class its Build calculator needs.
    */
-  const addDefaultBuild = (option: NewBuildOption): SquadUnitBuild => {
-    if (option.kind === 'shiv') return { kind: 'shiv', id: shivBuildsStore.addBuild() };
+  const addDefaultBuild = (option: NewBuildOption): SquadUnitBuild | null => {
+    const id = SQUAD_BUILD_KINDS[option.kind].addDefaultBuild(option.soldierClass);
 
-    if (option.kind === 'mec') return { kind: 'mec', id: mecBuildsStore.addBuild(option.soldierClass) };
-
-    return { kind: 'biosoldier', id: biosoldierBuildsStore.addBuild(option.soldierClass) };
+    return id ? { kind: option.kind, id } : null;
   };
 
   return { squadBuilds, squadBuildsByKey, findSquadBuild, addDefaultBuild };

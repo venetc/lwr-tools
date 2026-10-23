@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { BiosoldierClassIcon } from '@widgets/build-calculator';
-
 import type { SquadBuild } from '../model/squad-build';
-import { useUnitBuildIcon } from '../model/unit-build-icon';
+import { useSquadBuildViews } from '../model/unit-build';
 
 interface Props {
   /** Build whose class icon is shown. */
@@ -11,11 +9,15 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { biosoldierBuild, classIcon } = useUnitBuildIcon(() => props.squadBuild);
+const { buildIcon, classIcon } = useSquadBuildViews(() => props.squadBuild);
 </script>
 
 <template>
-  <BiosoldierClassIcon v-if="biosoldierBuild" :build="biosoldierBuild" />
+  <component
+    :is="buildIcon"
+    v-if="buildIcon"
+    :build="props.squadBuild.build"
+  />
   <component
     :is="classIcon"
     v-else-if="classIcon"

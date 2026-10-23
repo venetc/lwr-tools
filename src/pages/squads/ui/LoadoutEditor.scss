@@ -355,6 +355,10 @@ $row-image-width: 64px;
   gap: 8px;
 }
 
+.buttonContent {
+  padding: 6px 12px;
+}
+
 .detailsEmpty {
   @include typography.body-2;
   margin: 0;

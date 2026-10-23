@@ -227,14 +227,14 @@ const lockerHeadingId = createId();
               :disabled="isEquipDisabled"
               @click="equipPicked"
             >
-              Equip
+              <span :class="$style.buttonContent">Equip</span>
             </Button>
             <Button
               v-if="isRemoveShown"
               variant="danger"
               @click="removePicked"
             >
-              Remove
+              <span :class="$style.buttonContent">Remove</span>
             </Button>
           </div>
         </template>

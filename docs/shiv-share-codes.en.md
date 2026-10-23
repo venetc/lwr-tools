@@ -18,9 +18,16 @@ A SHIV build in a share code. The layout (header, sections, CRC, base64url), the
 
 A SHIV Unit code is the SHIV build code plus `LOADOUT`, laid out as in [Unit codes](share-codes.en.md#unit-codes): the first item is the `code` of the SHIV type from `shiv-types.json`, `secondary` and `moduleCount` are always `0`. The SHIV Build calculator takes its Build and leaves the Loadout.
 
-`PERKS` holds the selected perks as a set, without technology levels. On import each perk goes to its level in the current SHIV tree. The code is invalid if a perk is unknown or outside the tree, or two perks share a level.
+`PERKS` holds the selected perks as a set, without technology levels. On import each perk goes to its level in the current SHIV tree. Outdated selections stay out of the Build; the "Outdated selections" dialog shows each one as a card:
 
-Code: `entities/shiv` — Build ↔ codes `shivBuildCodes` / `shivBuildFromCodes`: perk codes in level order, a perk on its level by the Build rule of `selectShivBuildPerk`, the placement of perks on technology levels. `features/share-build` — bits only: `config/constants.ts` (`SHIV_BUILD_SECTION`, field widths), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT`, under `shiv` in `BUILD_CODE_LAYOUTS` of `model/build-code.ts`) over the counted code list and `readWholeSection` of `model/section-fields.ts`.
+| Outdated selection | Card |
+|---|---|
+| `removed` — a perk the tree no longer has | "Removed from the SHIV tree" |
+| `collision` — perks that share a level now | "Both on <Technology level> now" |
+
+The code is invalid if a perk is unknown or given twice.
+
+Code: `entities/shiv` — Build ↔ codes `shivBuildCodes` / `shivBuildFromCodes`: perk codes in level order, a perk on its level by the Build rule of `selectShivBuildPerk`, the placement of perks on technology levels and the `ShivOutdatedSelection` list. `features/share-build` — bits only: `config/constants.ts` (`SHIV_BUILD_SECTION`, field widths), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT`, under `shiv` in `BUILD_CODE_LAYOUTS` of `model/build-code.ts`) over the counted code list and `readWholeSection` of `model/section-fields.ts`.
 
 ## Numbering
 
@@ -41,9 +48,10 @@ Move or reorder perks within the tree; rename ids (keep `code`); edit names, des
 | Edit | Old codes |
 |---|---|
 | change or reuse a `code` | show the wrong perk |
-| delete a perk | "Invalid code" |
+| delete a perk record | "Invalid code" |
+| take a perk out of the tree | the perk is an Outdated selection |
 | put one perk on two levels | the test schema rejects it: a perk must have one level |
-| move two selected perks onto one level | "Invalid code" for codes with both |
+| move two selected perks onto one level | both are Outdated selections |
 | change a section's fields or their widths | "Invalid code" or wrong data |
 
 Section fields change only in a new section with a version suffix, as for Soldier codes.

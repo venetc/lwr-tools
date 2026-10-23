@@ -1,4 +1,4 @@
-import type { ShivBuildData } from '@entities/shiv';
+import type { ShivBuildData, ShivOutdatedSelection } from '@entities/shiv';
 import { shivBuildCodes, shivBuildFromCodes } from '@entities/shiv';
 import type { BinaryCodeSection } from '@shared/lib/binary-code';
 
@@ -9,9 +9,9 @@ import { nameSection, readCodeList, readNameSection, readWholeSection, writeCode
 /**
  * Layout of SHIV build codes: format 2 with the `PERKS` section of the selected perks and the `NAME` section if the
  * build has its own name; unknown sections are skipped. A code without the `PERKS` section, with a broken section or
- * with codes that make no build reads no build.
+ * with codes that make no build reads no build; perks the SHIV tree has no level for are read as Outdated selections.
  */
-export const SHIV_BUILD_LAYOUT: BuildCodeLayout<ShivBuildData> = {
+export const SHIV_BUILD_LAYOUT: BuildCodeLayout<ShivBuildData, ShivOutdatedSelection> = {
   format: SHARE_CODE_FORMAT.SHIV_BUILD,
   loadoutSection: SHIV_BUILD_SECTION.LOADOUT,
   writeBuild: (build) => {

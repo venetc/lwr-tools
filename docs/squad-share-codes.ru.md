@@ -26,8 +26,8 @@
 `readShareCode` узнаёт код Squad по формату `4` первой части и отдаёт `{ status: 'squad', squad }`; код Unit или код Build даёт `{ status: 'unit', unit }`, всё остальное — `{ status: 'invalid' }` (см. [Результат декодирования](share-codes.ru.md#результат-декодирования)).
 
 - У каждой части свой CRC. Любая битая часть — заголовок, Unit, пустая часть — делает невалидным весь код: частичного импорта нет.
-- В `squad` — `name`, `builds` и `units` в порядке Squad; Unit ссылается на свой Build через `buildIndex` и несёт Loadout, null у части с кодом Build.
-- Units с одинаковыми секциями Build — вид и данные, включая имя и `OFFICER`, — делят один Build. Одинаковый Class tree с другими Officer perks — два Builds.
+- В `squad` — `name`, `builds` и `units` в порядке Squad. Build — `{ kind, build, outdated }`, `outdated` — как в коде Unit. Unit ссылается на свой Build через `buildIndex` и несёт Loadout, null у части с кодом Build.
+- Units с одинаковыми секциями Build — вид и данные, включая имя и `OFFICER`, — и одинаковыми Outdated selection делят один Build. Одинаковый Class tree с другими Officer perks — два Builds.
 - Loadout с Build не сверяется, как и в коде Unit.
 
 ## Где какой код принимается

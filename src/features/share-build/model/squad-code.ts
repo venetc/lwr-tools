@@ -3,7 +3,7 @@ import type { BitReader, OpenedBinaryCode } from '@shared/lib/binary-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 
 import { SHARE_CODE_FORMAT, SQUAD_CODE_SEPARATOR, SQUAD_SECTION } from '../config/constants';
-import type { BuildDataByKind } from './build-code';
+import type { BuildDataByKind, OutdatedSelectionByKind } from './build-code';
 import { encodeBuild } from './build-code';
 import { nameSection, readNameSection } from './section-fields';
 import type { DecodedUnit, DecodedUnitOf, UnitCodeData } from './unit-code';
@@ -25,8 +25,10 @@ export interface SquadCodeData {
 export interface DecodedSquadBuildOf<Kind extends LoadoutUnitId> {
   /** Kind of the build: the Build calculator it belongs to. */
   kind: Kind
-  /** Build data. */
+  /** Build data, without the Outdated selections. */
   build: BuildDataByKind[Kind]
+  /** Selections of the code left out of the build; empty if the code fits the current trees. */
+  outdated: OutdatedSelectionByKind[Kind][]
 }
 
 /**
@@ -57,12 +59,17 @@ export interface DecodedSquad {
 }
 
 /**
- * Key of the build sections of the Unit: Units with equal keys have the same build, name and officer perks included;
- * null for a build without codes, which shares its build with no other Unit.
+ * Key of the build sections of the Unit: Units with equal keys have the same build, name and officer perks included,
+ * and the same Outdated selections, which the build no longer shows; null for a build without codes, which shares its
+ * build with no other Unit.
  *
  * @param unit Unit of a Squad code.
  */
-const buildSectionsKey = <Kind extends LoadoutUnitId>(unit: DecodedUnitOf<Kind>) => encodeBuild(unit.kind, unit.build);
+const buildSectionsKey = <Kind extends LoadoutUnitId>(unit: DecodedUnitOf<Kind>) => {
+  const code = encodeBuild(unit.kind, unit.build);
+
+  return code && [code, ...unit.outdated.map(selection => JSON.stringify(selection))].join(' ');
+};
 
 /**
  * Build of the Unit without its Loadout.

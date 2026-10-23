@@ -71,7 +71,8 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
    * Build of the code sections. Absent sections of the extra parts give empty parts; unknown sections are skipped.
    *
    * @param sections code sections by id.
-   * @returns the build; null if there is no `PERKS` section, a section is broken, or the codes make no build.
+   * @returns the build without Outdated selections; null if there is no `PERKS` section, a section is broken, or the
+   * codes make no build.
    */
   const readBuild = (sections: ReadonlyMap<number, BitReader>) => {
     const perksReader = sections.get(SOLDIER_BUILD_SECTION.PERKS) ?? null;
@@ -85,7 +86,9 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
 
     const codes = extension.read({ ...perks, name: nameField.name }, sections);
 
-    return codes && buildFromCodes(codes);
+    const build = codes && buildFromCodes(codes);
+
+    return build && { build, outdated: [] };
   };
 
   return { format, loadoutSection: SOLDIER_BUILD_SECTION.LOADOUT, writeBuild, readBuild };

@@ -16,13 +16,13 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 - `order` is the display order. No `order` means nothing has been saved yet, and the page shows the default builds; `[]` means the user removed them all.
 - `lwr-tools.` is required: on GitHub Pages every `<user>.github.io` project shares one storage.
 
-Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `features/manage-builds` (build list operations: rename, lock, import, replace, remove); `features/share-build`: `config/constants.ts` (record schema) and `model/stored-build.ts` (build record ↔ build through the share code); the `widgets/build-calculator` widget: `config/constants.ts` (keys) and the stores `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (default builds, tree rules). The stores are read by several pages, which do not import each other, and need both features, which do not import each other either: the widget is the lowest layer that fits.
+Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `features/manage-builds` (build list operations: rename, lock, import, replace, remove); `features/share-build`: `config/constants.ts` (record schema) and `model/stored-build.ts` (build record ↔ build through the share code; a code with Outdated selections reads no record); the `widgets/build-calculator` widget: `config/constants.ts` (keys) and the stores `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (default builds, tree rules). The stores are read by several pages, which do not import each other, and need both features, which do not import each other either: the widget is the lowest layer that fits.
 
 ## Loading
 
 - Ids from `order` first, then build records missing from it — last, in storage order. Such records appear when two tabs add builds at once.
 - Ids from `order` without a record are skipped.
-- A record that fails to parse (JSON, shape, share code) is skipped and stays in the storage: a newer app version may read it.
+- A record that fails to parse (JSON, shape, share code) or whose code has [Outdated selections](share-codes.en.md#decoding-result) is skipped and stays in the storage: a newer app version may read it.
 - An invalid `order` counts as `[]`: records are still restored.
 - Default builds have fixed ids (`default-<classId>` for Biosoldiers and MECs, `default-shiv` for SHIVs) and are saved right away, so tabs opened for the first time at once write the same records.
 

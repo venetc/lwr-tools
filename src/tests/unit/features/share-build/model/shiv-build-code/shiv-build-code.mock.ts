@@ -19,7 +19,9 @@ export const UNKNOWN_SECTION_ID = 20;
 
 export const INVALID_RESULT = { status: 'invalid' };
 
-export const DECODED_RESULT = { status: 'unit', unit: { kind: 'shiv', build: BUILD_STUB, loadout: null } };
+export const DECODED_BUILD = { build: BUILD_STUB, outdated: [] };
+
+export const DECODED_RESULT = { status: 'unit', unit: { kind: 'shiv', build: BUILD_STUB, outdated: [], loadout: null } };
 
 export const GARBAGE_CODE = 'not a code';
 

@@ -1,0 +1,124 @@
+@use 'styles/colors';
+@use 'styles/media';
+@use 'styles/typography';
+
+.intro {
+  @include typography.body-2;
+  margin: 0;
+  color: colors.$text-secondary;
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.groupName {
+  @include typography.label-2;
+  margin: 0;
+  color: colors.$text-accent;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid colors.$border;
+  border-radius: 3px;
+  background: colors.$surface-2;
+
+  @include media.wider-than-phone {
+    grid-template-columns: minmax(120px, 1fr) auto;
+  }
+}
+
+.step {
+  @include typography.body-2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: colors.$text-primary;
+}
+
+.stepIcon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: colors.$accent;
+}
+
+.stepText {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  @include typography.caption;
+  color: colors.$text-tertiary;
+}
+
+.change {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  inline-size: 84px;
+  margin: 0;
+}
+
+.icon {
+  width: 44px;
+  height: 44px;
+}
+
+.emptyCell {
+  width: 44px;
+  height: 44px;
+  border: 1px dashed colors.$border-strong;
+}
+
+.caption {
+  @include typography.caption;
+  color: colors.$text-secondary;
+  text-align: center;
+}
+
+.arrow {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: colors.$text-tertiary;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.buttonContent {
+  padding: 6px 12px;
+}

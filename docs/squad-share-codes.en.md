@@ -26,8 +26,8 @@ The name is cut to 31 bytes. A header without `NAME` is invalid; unknown section
 `readShareCode` tells a Squad code by the format `4` of its first part and gives `{ status: 'squad', squad }`; a Unit code or a build code gives `{ status: 'unit', unit }`, anything else `{ status: 'invalid' }` (see [Decoding result](share-codes.en.md#decoding-result)).
 
 - Every part has its own CRC. Any broken part — the header, a Unit, an empty part — makes the whole code invalid: no partial import.
-- `squad` has the `name`, the `builds` and the `units` in Squad order; a Unit refers to its build by `buildIndex` and carries its Loadout, null for a build code part.
-- Units whose build sections are the same — kind and data, name and `OFFICER` included — share one build. The same Class tree with other Officer perks makes two builds.
+- `squad` has the `name`, the `builds` and the `units` in Squad order. A build is `{ kind, build, outdated }`, with `outdated` as in a Unit code. A Unit refers to its build by `buildIndex` and carries its Loadout, null for a build code part.
+- Units whose build sections are the same — kind and data, name and `OFFICER` included — and whose Outdated selections are the same share one build. The same Class tree with other Officer perks makes two builds.
 - The Loadout is not checked against the build, as in a Unit code.
 
 ## Where codes go

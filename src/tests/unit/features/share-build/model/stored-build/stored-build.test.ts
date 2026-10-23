@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { encodeBuild } from '@features/share-build/model/build-code';
 import { storedBuildCodec } from '@features/share-build/model/stored-build';
 
-import { BUILD_ID, GAPPED_MEC_BUILD, INVALID_CODE, MEC_BUILD, SHIV_BUILD, UNENCODABLE_SHIV_BUILD } from './stored-build.mock';
+import { BUILD_ID, COLLISION_CODE, GAPPED_MEC_BUILD, INVALID_CODE, MEC_BUILD, SHIV_BUILD, UNENCODABLE_SHIV_BUILD } from './stored-build.mock';
 
 const { serialize, parse } = storedBuildCodec('shiv');
 
@@ -38,6 +38,12 @@ describe('storedBuildCodec parse', () => {
 
   it('returns null for an invalid share code', () => {
     const build = parse(BUILD_ID, { code: INVALID_CODE, readonly: false });
+
+    expect(build).toBeNull();
+  });
+
+  it('returns null for a code with Outdated selections', () => {
+    const build = parse(BUILD_ID, { code: COLLISION_CODE, readonly: false });
 
     expect(build).toBeNull();
   });

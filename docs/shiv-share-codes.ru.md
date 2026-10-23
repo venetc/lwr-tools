@@ -18,9 +18,16 @@
 
 Код Unit SHIV — код билда SHIV плюс `LOADOUT` с раскладкой из [Кодов Unit](share-codes.ru.md#коды-unit): первый предмет — `code` SHIV type из `shiv-types.json`, `secondary` и `moduleCount` всегда `0`. Build calculator SHIV берёт из него Build и оставляет Loadout.
 
-`PERKS` хранит выбранные перки набором, без строк дерева. При импорте каждый перк встаёт в свою строку текущего дерева SHIV. Код невалиден, если перк неизвестен или не из дерева либо два перка из одной строки.
+`PERKS` хранит выбранные перки набором, без строк дерева. При импорте каждый перк встаёт в свою строку текущего дерева SHIV. Outdated selection в Build не попадают; модалка «Outdated selections» показывает каждую карточкой:
 
-Код: `entities/shiv` — Build ↔ коды `shivBuildCodes` / `shivBuildFromCodes`: коды перков по порядку строк, перк в своей строке по Build rule из `selectShivBuildPerk`, раскладка перков по Technology levels. `features/share-build` — только биты: `config/constants.ts` (`SHIV_BUILD_SECTION`, ширины полей), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT`, под `shiv` в `BUILD_CODE_LAYOUTS` из `model/build-code.ts`) поверх счётного списка кодов и `readWholeSection` из `model/section-fields.ts`.
+| Outdated selection | Карточка |
+|---|---|
+| `removed` — перка в дереве больше нет | «Removed from the SHIV tree» |
+| `collision` — перки теперь в одной строке | «Both on <Technology level> now» |
+
+Код невалиден, если перк неизвестен или повторяется.
+
+Код: `entities/shiv` — Build ↔ коды `shivBuildCodes` / `shivBuildFromCodes`: коды перков по порядку строк, перк в своей строке по Build rule из `selectShivBuildPerk`, раскладка перков по Technology levels и список `ShivOutdatedSelection`. `features/share-build` — только биты: `config/constants.ts` (`SHIV_BUILD_SECTION`, ширины полей), `model/shiv-build-code.ts` (`SHIV_BUILD_LAYOUT`, под `shiv` в `BUILD_CODE_LAYOUTS` из `model/build-code.ts`) поверх счётного списка кодов и `readWholeSection` из `model/section-fields.ts`.
 
 ## Нумерация
 
@@ -41,9 +48,10 @@
 | Правка | Старые коды |
 |---|---|
 | изменить или переиспользовать `code` | показывают не тот перк |
-| удалить перк | «Invalid code» |
+| удалить запись перка | «Invalid code» |
+| убрать перк из дерева | перк — Outdated selection |
 | поставить один перк в две строки | тест схемы не пропустит: у перка одна строка |
-| перенести два выбранных перка в одну строку | «Invalid code» у кодов с обоими |
+| перенести два выбранных перка в одну строку | оба — Outdated selection |
 | изменить поля секции или их ширину | «Invalid code» или неверные данные |
 
 Поля секции меняются только в новой секции с суффиксом версии, как у кодов солдат.

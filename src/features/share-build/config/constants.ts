@@ -110,6 +110,26 @@ export const SQUAD_CODE_SEPARATOR = '.';
 /** Error under the Import field of a Build calculator for a code that reads as no Unit and no Squad. */
 export const INVALID_CODE_TEXT = 'Invalid code';
 
+/** Section name of a SHIV tree step on an Outdated selection card. */
+export const SHIV_TREE_SECTION = 'SHIV tree';
+
+/** Note of the empty cell of an Outdated selection card for a perk gone from the SHIV tree. */
+export const REMOVED_FROM_SHIV_TREE_NOTE = 'Removed from the SHIV tree';
+
+/** Title, intro and confirm label of the Outdated selections dialog by what it confirms: an import or a build update. */
+export const OUTDATED_SELECTIONS_DIALOG_TEXT = {
+  import: {
+    title: 'Outdated selections',
+    intro: 'This code was made for an older mod version. These selections no longer fit the trees: Import clears them, and their steps stay empty.',
+    confirmLabel: 'Import',
+  },
+  update: {
+    title: 'Update build',
+    intro: 'Update clears these selections for good, and their steps stay empty. The original build cannot be restored afterwards.',
+    confirmLabel: 'Update',
+  },
+} as const;
+
 /** Result of a share code that reads as no Unit and no Squad. */
 export const INVALID_SHARE_CODE = { status: 'invalid' } as const satisfies ShareCodeReadResult;
 

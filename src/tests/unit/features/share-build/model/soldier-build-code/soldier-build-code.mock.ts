@@ -75,9 +75,9 @@ export const UNKNOWN_SECTION_ID = 20;
 
 export const INVALID_RESULT = { status: 'invalid' };
 
-export const BIOSOLDIER_DECODED_RESULT = { status: 'unit', unit: { kind: 'biosoldier', build: BIOSOLDIER_BUILD_STUB, loadout: null } };
+export const BIOSOLDIER_DECODED_RESULT = { status: 'unit', unit: { kind: 'biosoldier', build: BIOSOLDIER_BUILD_STUB, outdated: [], loadout: null } };
 
-export const MEC_DECODED_RESULT = { status: 'unit', unit: { kind: 'mec', build: MEC_BUILD_STUB, loadout: null } };
+export const MEC_DECODED_RESULT = { status: 'unit', unit: { kind: 'mec', build: MEC_BUILD_STUB, outdated: [], loadout: null } };
 
 export const GARBAGE_CODE = 'not a code';
 

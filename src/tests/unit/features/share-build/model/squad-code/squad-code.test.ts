@@ -49,9 +49,9 @@ describe('squad code round trip', () => {
       squad: {
         name: SQUAD_NAME,
         builds: [
-          { kind: 'biosoldier', build: OFFICER_BUILD },
-          { kind: 'mec', build: MEC_BUILD },
-          { kind: 'shiv', build: SHIV_BUILD },
+          { kind: 'biosoldier', build: OFFICER_BUILD, outdated: [] },
+          { kind: 'mec', build: MEC_BUILD, outdated: [] },
+          { kind: 'shiv', build: SHIV_BUILD, outdated: [] },
         ],
         units: [
           { buildIndex: 0, loadout: SERAPH_LOADOUT },
@@ -79,7 +79,7 @@ describe('squad code builds', () => {
       status: 'squad',
       squad: {
         name: SQUAD_NAME,
-        builds: [{ kind: 'biosoldier', build: OFFICER_BUILD }],
+        builds: [{ kind: 'biosoldier', build: OFFICER_BUILD, outdated: [] }],
         units: [{ buildIndex: 0, loadout: SERAPH_LOADOUT }, { buildIndex: 0, loadout: VEST_LOADOUT }],
       },
     });
@@ -100,7 +100,7 @@ describe('squad code builds', () => {
       status: 'squad',
       squad: {
         name: SQUAD_NAME,
-        builds: [{ kind: 'biosoldier', build: OFFICER_BUILD }, { kind: 'biosoldier', build: OTHER_OFFICER_BUILD }],
+        builds: [{ kind: 'biosoldier', build: OFFICER_BUILD, outdated: [] }, { kind: 'biosoldier', build: OTHER_OFFICER_BUILD, outdated: [] }],
         units: [{ buildIndex: 0, loadout: SERAPH_LOADOUT }, { buildIndex: 1, loadout: SERAPH_LOADOUT }],
       },
     });
@@ -135,7 +135,7 @@ describe('readShareCode of a Squad code', () => {
 
     expect(result).toEqual({
       status: 'squad',
-      squad: { name: SQUAD_NAME, builds: [{ kind: 'shiv', build: SHIV_BUILD }], units: [{ buildIndex: 0, loadout: null }] },
+      squad: { name: SQUAD_NAME, builds: [{ kind: 'shiv', build: SHIV_BUILD, outdated: [] }], units: [{ buildIndex: 0, loadout: null }] },
     });
   });
 

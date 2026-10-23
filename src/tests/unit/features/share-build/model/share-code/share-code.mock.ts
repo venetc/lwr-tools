@@ -1,5 +1,4 @@
 import type { DecodedLoadout } from '@entities/loadout';
-import { defaultShivBuild } from '@entities/shiv/model/build';
 import { BIOSOLDIER_CLASSES, MEC_CLASSES } from '@entities/soldier';
 import {
   defaultBiosoldierBuild,
@@ -19,7 +18,57 @@ export const BIOSOLDIER_BUILD = { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLA
 
 export const MEC_BUILD = { ...defaultSoldierBuild(FIRST_MEC_CLASS), name: 'Walker' };
 
-export const SHIV_BUILD = defaultShivBuild();
+export const SHIV_BUILD = { perks: [null, null, null, null, null], name: 'SHIV' };
+
+/** SHIV tree records without Smart Macrophages, as after a mod update that removes it. */
+export const TECHNOLOGY_LEVEL_CONTENT_MOCK = {
+  'base-configuration': { name: 'Basic Config', perks: ['lock-n-load', 'repair-servos', 'platform-stability'] },
+  'advancements-1': { name: 'Advancements I', perks: ['holo-rounds', 'shredder', 'damage-control'] },
+  'advancements-2': { name: 'Advancements II', perks: ['reactive-targeting-sensors', 'light-em-up', 'close-combat-specialist'] },
+  'advancements-3a': { name: 'Advancements IIIa', perks: ['critical-system-targeting', 'fortified', 'absorption-fields'] },
+  'advancements-3b': { name: 'Advancements IIIb', perks: ['vital-point-targeting', 'bring-em-on'] },
+};
+
+/**
+ * SHIV `PERKS` section with raw numbers: perk count 3 bits, then the perk numbers 6 bits each.
+ *
+ * @param perkCodes perk numbers in any order.
+ */
+export const rawShivPerksSection = (perkCodes: readonly number[]): BinaryCodeSection => ({
+  id: 1,
+  write: (writer) => {
+    writer.writeUint(perkCodes.length, 3);
+    perkCodes.forEach(perkCode => writer.writeUint(perkCode, 6));
+  },
+});
+
+/** Holo Rounds, then Smart Macrophages, which the mocked SHIV tree no longer has. */
+export const REMOVED_PERK_CODES = [4, 15];
+
+/** SHIV build of `REMOVED_PERK_CODES` without Smart Macrophages. */
+export const HOLO_ROUNDS_BUILD = { perks: [null, 'holo-rounds', null, null, null], name: 'SHIV' };
+
+/** Lock N' Load and Repair Servos, both of Basic Config. */
+export const COLLISION_CODES = [1, 2];
+
+/** Outdated selections of `COLLISION_CODES`. */
+export const COLLISION_OUTDATED = [
+  { perkId: 'lock-n-load', reason: 'collision', levelIndex: 0 },
+  { perkId: 'repair-servos', reason: 'collision', levelIndex: 0 },
+];
+
+/** Repair Servos, Holo Rounds, Smart Macrophages and Lock N' Load. */
+export const MIXED_CODES = [2, 4, 15, 1];
+
+/** Outdated selections of `MIXED_CODES`, in code order. */
+export const MIXED_OUTDATED = [
+  { perkId: 'repair-servos', reason: 'collision', levelIndex: 0 },
+  { perkId: 'smart-macrophages', reason: 'removed' },
+  { perkId: 'lock-n-load', reason: 'collision', levelIndex: 0 },
+];
+
+/** Holo Rounds and a perk number of no perk. */
+export const UNKNOWN_PERK_CODES = [4, 40];
 
 /**
  * Sniper build with empty steps between selections: Lone Wolf on Master Sergeant, Iron Skin, Psi Mastery on Master and
@@ -175,3 +224,26 @@ export const INVALID_RESULT = { status: 'invalid' };
 export const GARBAGE_CODE = 'not a code';
 
 export const UNKNOWN_SECTION: BinaryCodeSection = { id: 20, write: writer => writer.writeUint(0b11, 2) };
+
+/** SHIV `LOADOUT` section with every slot empty: three empty item numbers, no utility and no Module slots. */
+export const EMPTY_SHIV_LOADOUT_SECTION: BinaryCodeSection = {
+  id: 3,
+  write: (writer) => {
+    writer.writeUint(0, 8);
+    writer.writeUint(0, 8);
+    writer.writeUint(0, 8);
+    writer.writeUint(0, 3);
+    writer.writeUint(0, 2);
+  },
+};
+
+export const EMPTY_LOADOUT: DecodedLoadout = { armor: null, primary: null, secondary: null, utility: [], modules: [] };
+
+/** Squad header with the name `SQUAD_NAME`: the `NAME` section, byte length 5 bits, then the bytes. */
+export const SQUAD_HEADER_SECTION: BinaryCodeSection = { id: 1, write: writer => writer.writeString(SQUAD_NAME, 5) };
+
+/** Lock N' Load, Holo Rounds and Repair Servos: Holo Rounds is all that is left after the collision. */
+export const COLLISION_WITH_HOLO_ROUNDS_CODES = [1, 4, 2];
+
+/** Holo Rounds alone. */
+export const HOLO_ROUNDS_CODES = [4];

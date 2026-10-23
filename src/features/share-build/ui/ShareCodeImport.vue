@@ -6,6 +6,7 @@ import { TextField } from '@shared/ui/text-field';
 
 import type { BuildDataByKind } from '../model/build-code';
 import { useShareCodeImport } from '../model/share-code-import';
+import OutdatedSelectionsDialog from './OutdatedSelectionsDialog.vue';
 
 interface Props {
   /** Kind of build code the form accepts. */
@@ -13,7 +14,7 @@ interface Props {
 }
 
 interface Emits {
-  /** Build decoded from a valid code. */
+  /** Build decoded from a valid code, without the Outdated selections the dialog confirmed. */
   import: [build: BuildDataByKind[Kind]]
 }
 
@@ -21,7 +22,17 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
-const { isOpen, code, error, setOpen, submit } = useShareCodeImport(
+const {
+  isOpen,
+  code,
+  error,
+  isOutdatedOpen,
+  outdatedGroups,
+  setOpen,
+  setOutdatedOpen,
+  confirmOutdated,
+  submit,
+} = useShareCodeImport(
   () => props.kind,
   build => emit('import', build),
 );
@@ -46,6 +57,14 @@ const { isOpen, code, error, setOpen, submit } = useShareCodeImport(
       </TextField>
     </form>
   </Popover>
+
+  <OutdatedSelectionsDialog
+    :open="isOutdatedOpen"
+    mode="import"
+    :groups="outdatedGroups"
+    @update:open="setOutdatedOpen"
+    @confirm="confirmOutdated"
+  />
 </template>
 
 <style lang="scss" module src="./ShareCodeImport.scss" />

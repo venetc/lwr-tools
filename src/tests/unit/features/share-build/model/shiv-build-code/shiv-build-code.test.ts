@@ -9,6 +9,7 @@ import {
   BROKEN_NAME_SECTION,
   BUILD_NAME,
   BUILD_STUB,
+  DECODED_BUILD,
   DECODED_RESULT,
   DEFAULT_NAME_CODES,
   GARBAGE_CODE,
@@ -50,7 +51,7 @@ describe('encodeBuild of a SHIV build', () => {
 
 describe('readShareCode of a SHIV build code', () => {
   it('gives the build of the codes', () => {
-    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
+    vi.mocked(shivBuildFromCodes).mockReturnValue(DECODED_BUILD);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection(DEFAULT_NAME_CODES.perks)]) ?? '';
 
     const result = readShareCode(code);
@@ -92,7 +93,7 @@ describe('readShareCode of a SHIV build code', () => {
   });
 
   it('rejects a perks section with unread bits', () => {
-    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
+    vi.mocked(shivBuildFromCodes).mockReturnValue(DECODED_BUILD);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1], 1)]) ?? '';
 
     const result = readShareCode(code);
@@ -101,7 +102,7 @@ describe('readShareCode of a SHIV build code', () => {
   });
 
   it('rejects a broken name section', () => {
-    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
+    vi.mocked(shivBuildFromCodes).mockReturnValue(DECODED_BUILD);
     const code = encodeBinaryCode(SHIV_FORMAT, [perksSection([1]), BROKEN_NAME_SECTION]) ?? '';
 
     const result = readShareCode(code);
@@ -110,7 +111,7 @@ describe('readShareCode of a SHIV build code', () => {
   });
 
   it('rejects a code without the perks section', () => {
-    vi.mocked(shivBuildFromCodes).mockReturnValue(BUILD_STUB);
+    vi.mocked(shivBuildFromCodes).mockReturnValue(DECODED_BUILD);
     const code = encodeBinaryCode(SHIV_FORMAT, [UNKNOWN_SECTION]) ?? '';
 
     const result = readShareCode(code);

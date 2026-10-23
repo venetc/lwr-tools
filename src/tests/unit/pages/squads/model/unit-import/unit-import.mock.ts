@@ -32,9 +32,9 @@ export const findLoadoutItemStub = (id: LoadoutItemId) => {
 
 export const SQUAD_NAME = 'Alpha';
 
-export const BIOSOLDIER_SQUAD_BUILD: DecodedSquadBuild = { kind: 'biosoldier', build: { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS), name: 'Overwatch' } };
+export const BIOSOLDIER_SQUAD_BUILD: DecodedSquadBuild = { kind: 'biosoldier', build: { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS), name: 'Overwatch' }, outdated: [] };
 
-export const SHIV_SQUAD_BUILD: DecodedSquadBuild = { kind: 'shiv', build: { ...defaultShivBuild(), name: 'Tank' } };
+export const SHIV_SQUAD_BUILD: DecodedSquadBuild = { kind: 'shiv', build: { ...defaultShivBuild(), name: 'Tank' }, outdated: [] };
 
 export const DEFAULT_LOADOUT: Loadout = { armor: 'tactical-vest', primary: 'assault-rifle', secondary: 'pistol', utility: [null], modules: [] };
 

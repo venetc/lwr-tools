@@ -33,7 +33,7 @@ describe('unit code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit });
+    expect(result).toEqual({ status: 'unit', unit: { ...unit, outdated: [] } });
   });
 
   it('restores Seraph Armor of a biosoldier Unit without officer perks', () => {
@@ -42,7 +42,7 @@ describe('unit code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit });
+    expect(result).toEqual({ status: 'unit', unit: { ...unit, outdated: [] } });
   });
 
   it('restores a MEC Unit with its Modules', () => {
@@ -51,7 +51,7 @@ describe('unit code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit });
+    expect(result).toEqual({ status: 'unit', unit: { ...unit, outdated: [] } });
   });
 
   it('restores a SHIV Unit with its SHIV type', () => {
@@ -60,7 +60,7 @@ describe('unit code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit });
+    expect(result).toEqual({ status: 'unit', unit: { ...unit, outdated: [] } });
   });
 });
 
@@ -84,7 +84,7 @@ describe('readShareCode of a Unit code', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: PLAIN_BIOSOLDIER_BUILD, loadout: SERAPH_LOADOUT } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: PLAIN_BIOSOLDIER_BUILD, outdated: [], loadout: SERAPH_LOADOUT } });
   });
 
   it('skips unknown sections', () => {
@@ -92,7 +92,7 @@ describe('readShareCode of a Unit code', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: PLAIN_BIOSOLDIER_BUILD, loadout: SERAPH_LOADOUT } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: PLAIN_BIOSOLDIER_BUILD, outdated: [], loadout: SERAPH_LOADOUT } });
   });
 
   it('leaves the slot of an unknown item code empty', () => {
@@ -100,7 +100,7 @@ describe('readShareCode of a Unit code', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: PLAIN_BIOSOLDIER_BUILD, loadout: UNKNOWN_ARMOR_LOADOUT } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: PLAIN_BIOSOLDIER_BUILD, outdated: [], loadout: UNKNOWN_ARMOR_LOADOUT } });
   });
 
   it('gives invalid for a LOADOUT section with extra bits', () => {

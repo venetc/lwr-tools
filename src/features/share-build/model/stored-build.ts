@@ -28,7 +28,8 @@ export const storedBuildCodec = <Kind extends LoadoutUnitId>(kind: Kind) => {
   };
 
   /**
-   * Build of the stored record; null if the record does not match the schema or its code is no Build of the kind.
+   * Build of the stored record; null if the record does not match the schema, its code is no Build of the kind, or the
+   * code has Outdated selections.
    *
    * @param id build id.
    * @param record stored record.
@@ -40,7 +41,7 @@ export const storedBuildCodec = <Kind extends LoadoutUnitId>(kind: Kind) => {
 
     const result = readShareCode(storedBuild.data.code);
 
-    if (result.status !== 'unit' || !isUnitOf(result.unit, kind)) return null;
+    if (result.status !== 'unit' || !isUnitOf(result.unit, kind) || result.unit.outdated.length) return null;
 
     return { ...result.unit.build, id, readonly: storedBuild.data.readonly };
   };

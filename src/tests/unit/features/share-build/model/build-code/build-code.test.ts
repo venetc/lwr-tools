@@ -11,7 +11,7 @@ describe('biosoldier build code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build, loadout: null } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build, outdated: [], loadout: null } });
   });
 
   it.each(BIOSOLDIER_BUILDS)('restores a build: %s', (_, build) => {
@@ -19,7 +19,7 @@ describe('biosoldier build code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build, loadout: null } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build, outdated: [], loadout: null } });
   });
 });
 
@@ -29,7 +29,7 @@ describe('mec build code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'mec', build, loadout: null } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'mec', build, outdated: [], loadout: null } });
   });
 
   it.each(MEC_BUILDS)('restores a build: %s', (_, build) => {
@@ -37,7 +37,7 @@ describe('mec build code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'mec', build, loadout: null } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'mec', build, outdated: [], loadout: null } });
   });
 });
 
@@ -47,6 +47,6 @@ describe('shiv build code round trip', () => {
 
     const result = readShareCode(code);
 
-    expect(result).toEqual({ status: 'unit', unit: { kind: 'shiv', build, loadout: null } });
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'shiv', build, outdated: [], loadout: null } });
   });
 });

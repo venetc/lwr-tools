@@ -32,9 +32,21 @@ export const BLANK_NAME_CODES: ShivBuildCodes = { perks: [], name: ' ' };
 
 export const UNKNOWN_PERK_CODES: ShivBuildCodes = { perks: [1, 40], name: null };
 
-export const STRAY_PERK_CODES: ShivBuildCodes = { perks: [6], name: null };
+export const DUPLICATE_PERK_CODES: ShivBuildCodes = { perks: [3, 3], name: null };
 
-export const SAME_LEVEL_CODES: ShivBuildCodes = { perks: [1, 2], name: null };
+export const STRAY_PERK_CODES: ShivBuildCodes = { perks: [3, 6], name: null };
+
+export const STRAY_PERK_RESULT = {
+  build: { perks: [null, 'up', null], name: 'SHIV' },
+  outdated: [{ perkId: 'stray', reason: 'removed' }],
+};
+
+export const SAME_LEVEL_CODES: ShivBuildCodes = { perks: [5, 2, 1], name: null };
+
+export const SAME_LEVEL_RESULT = {
+  build: { perks: [null, null, 'top'], name: 'SHIV' },
+  outdated: [{ perkId: 'right', reason: 'collision', levelIndex: 0 }, { perkId: 'left', reason: 'collision', levelIndex: 0 }],
+};
 
 export const MISPLACED_PERK_BUILD: ShivBuildData = { perks: ['up', null, null], name: 'SHIV' };
 

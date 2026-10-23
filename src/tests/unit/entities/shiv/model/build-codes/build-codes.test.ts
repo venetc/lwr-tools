@@ -5,6 +5,7 @@ import { shivBuildCodes, shivBuildFromCodes } from '@entities/shiv/model/build-c
 import {
   BLANK_NAME_BUILD,
   BLANK_NAME_CODES,
+  DUPLICATE_PERK_CODES,
   EXTRA_EMPTY_LEVEL_BUILD,
   FULL_BUILD,
   FULL_CODES,
@@ -13,7 +14,9 @@ import {
   PARTLY_FILLED_CODES,
   REVERSED_CODES,
   SAME_LEVEL_CODES,
+  SAME_LEVEL_RESULT,
   STRAY_PERK_CODES,
+  STRAY_PERK_RESULT,
   UNKNOWN_PERK_BUILD,
   UNKNOWN_PERK_CODES,
 } from './build-codes.mock';
@@ -70,44 +73,50 @@ describe('shivBuildCodes', () => {
 
 describe('shivBuildFromCodes', () => {
   it('restores a build with every level and the default name', () => {
-    const build = shivBuildFromCodes(FULL_CODES);
+    const result = shivBuildFromCodes(FULL_CODES);
 
-    expect(build).toEqual(FULL_BUILD);
+    expect(result).toEqual({ build: FULL_BUILD, outdated: [] });
   });
 
   it('restores a build with empty levels and its own name', () => {
-    const build = shivBuildFromCodes(PARTLY_FILLED_CODES);
+    const result = shivBuildFromCodes(PARTLY_FILLED_CODES);
 
-    expect(build).toEqual(PARTLY_FILLED_BUILD);
+    expect(result).toEqual({ build: PARTLY_FILLED_BUILD, outdated: [] });
   });
 
   it('places each perk on its level whatever the code order', () => {
-    const build = shivBuildFromCodes(REVERSED_CODES);
+    const result = shivBuildFromCodes(REVERSED_CODES);
 
-    expect(build).toEqual(FULL_BUILD);
+    expect(result).toEqual({ build: FULL_BUILD, outdated: [] });
   });
 
   it('gives the default name for a blank name', () => {
-    const build = shivBuildFromCodes(BLANK_NAME_CODES);
+    const result = shivBuildFromCodes(BLANK_NAME_CODES);
 
-    expect(build?.name).toBe('SHIV');
+    expect(result?.build.name).toBe('SHIV');
   });
 
   it('gives null for an unknown perk', () => {
-    const build = shivBuildFromCodes(UNKNOWN_PERK_CODES);
+    const result = shivBuildFromCodes(UNKNOWN_PERK_CODES);
 
-    expect(build).toBeNull();
+    expect(result).toBeNull();
   });
 
-  it('gives null for a perk outside the SHIV tree', () => {
-    const build = shivBuildFromCodes(STRAY_PERK_CODES);
+  it('gives null for a perk given twice', () => {
+    const result = shivBuildFromCodes(DUPLICATE_PERK_CODES);
 
-    expect(build).toBeNull();
+    expect(result).toBeNull();
   });
 
-  it('gives null for two perks of one level', () => {
-    const build = shivBuildFromCodes(SAME_LEVEL_CODES);
+  it('leaves a perk outside the SHIV tree out as removed', () => {
+    const result = shivBuildFromCodes(STRAY_PERK_CODES);
 
-    expect(build).toBeNull();
+    expect(result).toEqual(STRAY_PERK_RESULT);
+  });
+
+  it('leaves two perks of one level out as a collision on the level', () => {
+    const result = shivBuildFromCodes(SAME_LEVEL_CODES);
+
+    expect(result).toEqual(SAME_LEVEL_RESULT);
   });
 });

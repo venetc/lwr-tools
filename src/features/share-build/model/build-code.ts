@@ -1,5 +1,5 @@
 import type { LoadoutUnitId } from '@entities/loadout';
-import type { ShivBuildData } from '@entities/shiv';
+import type { ShivBuildData, ShivOutdatedSelection } from '@entities/shiv';
 import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier';
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
@@ -20,22 +20,48 @@ export interface BuildDataByKind {
 }
 
 /**
+ * Outdated selection of the build code of each unit type: a selection of the code that the current tree has no place
+ * for, left out of the build.
+ */
+export interface OutdatedSelectionByKind {
+  /** Biosoldier: none, a misplaced ability makes the code invalid. */
+  biosoldier: never
+  /** MEC: none, a misplaced ability makes the code invalid. */
+  mec: never
+  /** SHIV: a perk gone from the SHIV tree or sharing a technology level now. */
+  shiv: ShivOutdatedSelection
+}
+
+/**
+ * Build of a build code and the selections of the code left out of it.
+ */
+export interface DecodedBuild<Build, Outdated> {
+  /** Build without the Outdated selections. */
+  build: Build
+  /** Outdated selections; empty if the code fits the current trees. */
+  outdated: Outdated[]
+}
+
+/**
  * Build code format: its number, the sections a build is written to and how the build is read back. Unit codes add
  * their own sections to the same format.
  */
-export interface BuildCodeLayout<Build> {
+export interface BuildCodeLayout<Build, Outdated = never> {
   /** Share code format number. */
   format: number
   /** Id of the `LOADOUT` section a Unit code of the format adds to the build sections. */
   loadoutSection: number
   /** Sections of the build, by ascending id; null if the build has no codes. */
   writeBuild: (build: Readonly<Build>) => BinaryCodeSection[] | null
-  /** Build of the code sections; unknown sections are skipped; null if a section is broken or the codes make no build. */
-  readBuild: (sections: ReadonlyMap<number, BitReader>) => Build | null
+  /**
+   * Build of the code sections and its Outdated selections; unknown sections are skipped; null if a section is broken
+   * or the codes make no build.
+   */
+  readBuild: (sections: ReadonlyMap<number, BitReader>) => DecodedBuild<Build, Outdated> | null
 }
 
 /** Code layout of each unit type: its format, sections and the `LOADOUT` section of its Unit codes. */
-export const BUILD_CODE_LAYOUTS: { readonly [Kind in LoadoutUnitId]: BuildCodeLayout<BuildDataByKind[Kind]> } = {
+export const BUILD_CODE_LAYOUTS: { readonly [Kind in LoadoutUnitId]: BuildCodeLayout<BuildDataByKind[Kind], OutdatedSelectionByKind[Kind]> } = {
   biosoldier: BIOSOLDIER_BUILD_LAYOUT,
   mec: MEC_BUILD_LAYOUT,
   shiv: SHIV_BUILD_LAYOUT,

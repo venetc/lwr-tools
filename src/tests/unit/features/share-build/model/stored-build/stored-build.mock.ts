@@ -26,3 +26,6 @@ const createGappedMecBuild = () => {
 };
 
 export const GAPPED_MEC_BUILD = createGappedMecBuild();
+
+/** SHIV build code with Lock N' Load and Repair Servos, two perks of Basic Config. */
+export const COLLISION_CODE = 'Agg9AhAAnQ';

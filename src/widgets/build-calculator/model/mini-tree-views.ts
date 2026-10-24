@@ -5,7 +5,8 @@ import type { BiosoldierBranch } from './biosoldier-branches';
 import type { MiniTreeRow, MiniTreeStepState } from './mini-tree';
 
 /**
- * Rows of a mini-tree with their classes: the title in the colour of its branch and each step in its look.
+ * Rows of a mini-tree with their classes: the title in the colour of its branch and each step in its look; the icon of
+ * an outdated step is semi-transparent.
  *
  * @param rows rows of the mini-tree.
  * @param style CSS module of the mini-tree.
@@ -20,6 +21,7 @@ export const useMiniTreeViews = (rows: MaybeRefOrGetter<readonly MiniTreeRow[]>,
 
   const cellStateClass: Record<MiniTreeStepState, string | undefined> = {
     selected: style.selectedCell,
+    outdated: style.outdatedCell,
     open: style.openCell,
     locked: style.lockedCell,
   };
@@ -27,6 +29,10 @@ export const useMiniTreeViews = (rows: MaybeRefOrGetter<readonly MiniTreeRow[]>,
   return computed(() => toValue(rows).map(row => ({
     row,
     titleClass: [style.title, titleToneClass[row.tone]],
-    steps: row.steps.map(step => ({ step, cellClass: [style.cell, cellStateClass[step.state]] })),
+    steps: row.steps.map(step => ({
+      step,
+      cellClass: [style.cell, cellStateClass[step.state]],
+      iconClass: [style.icon, step.state === 'outdated' ? style.outdatedIcon : style.currentIcon],
+    })),
   })));
 };

@@ -35,17 +35,19 @@ export interface CheckedSquadUnit extends CheckedUnit {
   unit: SquadUnit
   /** Build of the Unit. */
   squadBuild: SquadBuild
+  /** Whether the Build of the Unit is an Outdated build: the check skips the Unit, and its Loadout stays as the Squad keeps it. */
+  isOutdated: boolean
 }
 
 /**
  * Units of a Squad after the Unit check.
  */
 export interface SquadCheck {
-  /** Units that stay in the Squad, in Squad order, with their checked Loadouts. */
+  /** Units that stay in the Squad, in Squad order, with their checked Loadouts; a Unit of an Outdated build keeps its own. */
   units: CheckedSquadUnit[]
   /** Units whose Build is no longer saved: they leave the Squad. */
   removed: SquadUnit[]
-  /** Whether the Squad should keep other Units or Loadouts than it does, silent replacements of unknown codes included; a Unit left out because nothing fits it changes nothing. */
+  /** Whether the Squad should keep other Units or Loadouts than it does, silent replacements of unknown codes included; a Unit left out because nothing fits it or skipped for its Outdated build changes nothing. */
   isChanged: boolean
 }
 
@@ -74,6 +76,18 @@ interface BuildChanges {
 }
 
 /**
+ * Loadout with the default armor and primary weapon in place of unknown codes.
+ *
+ * @param loadout Loadout as the Squad keeps it or a Share code brings it.
+ * @param defaults Default Loadout of the Unit.
+ */
+const withDefaultCodes = (loadout: Readonly<DecodedLoadout>, defaults: Loadout): Loadout => ({
+  ...loadout,
+  armor: loadout.armor ?? defaults.armor,
+  primary: loadout.primary ?? defaults.primary,
+});
+
+/**
  * Unit check of one Unit: its Loadout brought to the rules of its Build. A new Unit gets the Default Loadout; armor
  * or a primary weapon of an unknown code silently becomes the default one, and anything else that no longer fits is
  * taken off or replaced with the default.
@@ -90,9 +104,26 @@ export const checkUnit = (loadout: Readonly<DecodedLoadout> | null, squadBuild: 
 
   if (!loadout) return { wearer, loadout: defaults, changes: [] };
 
-  const fit = fitLoadout({ ...loadout, armor: loadout.armor ?? defaults.armor, primary: loadout.primary ?? defaults.primary }, wearer);
+  const fit = fitLoadout(withDefaultCodes(loadout, defaults), wearer);
 
   return { wearer, loadout: fit.loadout, changes: fit.changes };
+};
+
+/**
+ * Unit of an Outdated build as the Unit check skips it: its Loadout as the Squad keeps it, unfitted, with the default
+ * armor and primary weapon shown in place of unknown codes, and no changes.
+ *
+ * @param loadout Loadout of the Unit as the Squad keeps it.
+ * @param squadBuild Outdated build of the Unit.
+ * @returns the Unit as it is shown; null if no armor or primary weapon fits the Unit.
+ */
+const skippedUnit = (loadout: Readonly<DecodedLoadout>, squadBuild: SquadBuildData): CheckedUnit | null => {
+  const wearer = squadBuildWearer(squadBuild);
+  const defaults = defaultLoadout(wearer);
+
+  if (!defaults) return null;
+
+  return { wearer, loadout: withDefaultCodes(loadout, defaults), changes: [] };
 };
 
 /**
@@ -121,7 +152,8 @@ const isSameLoadout = (kept: Readonly<DecodedLoadout>, checked: Loadout) => {
 
 /**
  * Unit check of the Units of a Squad: each Loadout brought to the rules of its Build, and the Units whose Build is gone
- * leave. A Unit that no armor or primary weapon fits is left out without a report.
+ * leave. A Unit of an Outdated build stays with its Loadout as it is until the update. A Unit that no armor or primary
+ * weapon fits is left out without a report.
  *
  * @param units Units of the Squad in Squad order.
  * @param squadBuilds saved builds by `squadBuildKey`.
@@ -136,11 +168,19 @@ export const checkSquad = (units: readonly SquadUnit[], squadBuilds: ReadonlyMap
       return check;
     }
 
+    if (squadBuild.build.outdated) {
+      const skipped = skippedUnit(unit.loadout, squadBuild);
+
+      if (skipped) check.units.push({ ...skipped, unit, squadBuild, isOutdated: true });
+
+      return check;
+    }
+
     const checked = checkUnit(unit.loadout, squadBuild);
 
     if (!checked) return check;
 
-    check.units.push({ ...checked, unit, squadBuild });
+    check.units.push({ ...checked, unit, squadBuild, isOutdated: false });
 
     if (!isSameLoadout(unit.loadout, checked.loadout)) check.isChanged = true;
 

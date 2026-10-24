@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { matchingBuilds, savedBuildFilters, savedBuildGroups } from '@pages/squads/model/saved-builds';
 
-import { BUILDS, FIELD_MEDIC, FILTER_COUNTS, FILTER_NAMES, GROUP_TITLES, IN_SQUAD_COUNTS, UNITS } from './saved-builds.mock';
+import { ALLOY_SUPPORT, BUILDS, FIELD_MEDIC, FILTER_COUNTS, FILTER_NAMES, GROUP_TITLES, IN_SQUAD_COUNTS, OLD_SUPPORT, UNITS } from './saved-builds.mock';
 
 describe('matchingBuilds', () => {
   it('finds a build by its name in any case', () => {
@@ -73,5 +73,11 @@ describe('savedBuildGroups', () => {
     const groups = savedBuildGroups(BUILDS, 'biosoldier', []);
 
     expect(groups[0].rows.map(row => row.className)).toEqual(['Sniper', 'Medic']);
+  });
+
+  it('marks an Outdated build', () => {
+    const groups = savedBuildGroups([ALLOY_SUPPORT, OLD_SUPPORT], 'shiv', []);
+
+    expect(groups[0].rows.map(row => row.isOutdated)).toEqual([false, true]);
   });
 });

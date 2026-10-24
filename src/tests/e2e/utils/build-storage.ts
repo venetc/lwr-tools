@@ -14,14 +14,16 @@ export interface SeededBuild {
 
 /**
  * Saves the build records of a Build calculator before the first page load; later loads of the tab keep what the page
- * saved, and other tabs of the context load what is stored.
+ * saved, and other tabs of the context load what is stored. Each calculator is seeded on its own, next to the Squads.
  *
  * @param page browser page.
  * @param storagePrefix prefix of the stored keys of the calculator, such as `lwr-tools.biosoldier-builds.v1.`.
  * @param builds build records in list order.
  */
 export const seedBuilds = (page: Page, storagePrefix: string, builds: SeededBuild[]) => page.addInitScript(({ prefix, seededBuilds }) => {
-  if (sessionStorage.getItem('seeded')) return;
+  const seededKey = `seeded.${prefix}`;
+
+  if (sessionStorage.getItem(seededKey)) return;
 
   localStorage.setItem(`${prefix}order`, JSON.stringify(seededBuilds.map(build => build.id)));
 
@@ -29,5 +31,5 @@ export const seedBuilds = (page: Page, storagePrefix: string, builds: SeededBuil
     localStorage.setItem(`${prefix}build.${build.id}`, JSON.stringify({ code: build.code, readonly: build.readonly }));
   }
 
-  sessionStorage.setItem('seeded', 'true');
+  sessionStorage.setItem(seededKey, 'true');
 }, { prefix: storagePrefix, seededBuilds: builds });

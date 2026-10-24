@@ -89,6 +89,20 @@ export const shivRemovedPerks = (selections: readonly ShivOutdatedSelection[]) =
 ));
 
 /**
+ * Ability names as a list: `A`, `A and B`, `A, B and C`.
+ *
+ * @param names ability names in list order.
+ */
+export const abilityNameList = (names: readonly string[]) => {
+  const head = names.slice(0, -1);
+  const last = names.at(-1) ?? '';
+
+  if (!head.length) return last;
+
+  return `${head.join(', ')} and ${last}`;
+};
+
+/**
  * Description note of an outdated cell: what the current tree has at its place, or, for cells of the code that share
  * a tier, that the tier takes only one of them now.
  *
@@ -99,10 +113,9 @@ export const shivRemovedPerks = (selections: readonly ShivOutdatedSelection[]) =
 const outdatedNote = (tier: TieredPickerTier, current: TieredPickerOption, tierCells: readonly OutdatedCell[]) => {
   if (tierCells.length < 2) return `Outdated selection: in this mod version ${tier.name} has ${current.item.name} here.`;
 
-  const names = tierCells.map(cell => cell.item.name);
-  const lastName = names.pop();
+  const names = abilityNameList(tierCells.map(cell => cell.item.name));
 
-  return `Outdated selection: in this mod version ${names.join(', ')} and ${lastName} are ${tierCells.length > 2 ? 'all' : 'both'} on ${tier.name}.`;
+  return `Outdated selection: in this mod version ${names} are ${tierCells.length > 2 ? 'all' : 'both'} on ${tier.name}.`;
 };
 
 /**

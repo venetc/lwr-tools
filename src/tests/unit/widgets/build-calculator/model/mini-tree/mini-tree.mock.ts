@@ -1,6 +1,7 @@
-import type { TieredPickerItem, TieredPickerTier, TieredPickerTierState } from '@shared/ui/tiered-picker/model/tiered-picker';
+import type { TieredPickerItem, TieredPickerTierState } from '@shared/ui/tiered-picker/model/tiered-picker';
 import type { BiosoldierBuild } from '@widgets/build-calculator/model/biosoldier-builds';
 import type { MiniTreeRow } from '@widgets/build-calculator/model/mini-tree';
+import type { BuildTreeTier } from '@widgets/build-calculator/model/saved-tree';
 
 export const LEFT_ITEM: TieredPickerItem = {
   id: 'left',
@@ -23,13 +24,15 @@ export const RIGHT_ITEM: TieredPickerItem = {
  *
  * @param state tier state.
  * @param selectedId id of the selected item, or null.
+ * @param outdatedItemIds ids of the items of the code of an Outdated build on the tier.
  */
-export const createTierMock = (state: TieredPickerTierState, selectedId: string | null): TieredPickerTier => ({
+export const createTierMock = (state: TieredPickerTierState, selectedId: string | null, outdatedItemIds: string[] = []): BuildTreeTier => ({
   id: 'first',
   name: 'First step',
   state,
   isDisabled: false,
   selectedId,
+  outdatedItemIds,
   options: [LEFT_ITEM, RIGHT_ITEM].map(item => ({ item, appearance: 'available', isDisabled: false, note: null })),
 });
 

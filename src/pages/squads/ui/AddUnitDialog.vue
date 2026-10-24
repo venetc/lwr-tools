@@ -9,8 +9,9 @@ import { Tabs } from '@shared/ui/tabs';
 import { TextField } from '@shared/ui/text-field';
 import { ToggleGroup, ToggleGroupOption } from '@shared/ui/toggle-group';
 
-import { ADD_UNIT_TABS, NEW_BUILD_GROUPS } from '../config/constants';
+import { ADD_UNIT_TABS, NEW_BUILD_GROUPS, OUTDATED_BUILD_ROW_HINT } from '../config/constants';
 import { useAddUnit } from '../model/add-unit';
+import OutdatedNote from './OutdatedNote.vue';
 import UnitBuildIcon from './UnitBuildIcon.vue';
 import UnitOfficerRankBadge from './UnitOfficerRankBadge.vue';
 
@@ -102,6 +103,7 @@ const {
                 <button
                   :class="$style.row"
                   type="button"
+                  :aria-disabled="row.isOutdated"
                   @click="addSavedBuild(row)"
                 >
                   <UnitBuildIcon :class="$style.rowIcon" :squad-build="row.squadBuild" />
@@ -110,7 +112,10 @@ const {
                     <UnitOfficerRankBadge :squad-build="row.squadBuild" />
                   </span>
                   <span v-if="row.inSquadCount" :class="$style.badge">In Squad ×{{ row.inSquadCount }}</span>
-                  <span :class="$style.rowClass">{{ row.className }}</span>
+                  <OutdatedNote v-if="row.isOutdated" :class="$style.outdatedHint">
+                    {{ OUTDATED_BUILD_ROW_HINT }}
+                  </OutdatedNote>
+                  <span v-else :class="$style.rowClass">{{ row.className }}</span>
                 </button>
               </li>
             </ul>

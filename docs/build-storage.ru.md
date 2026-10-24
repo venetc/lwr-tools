@@ -41,6 +41,7 @@ Outdated build заморожен, пока игрок его не обнови�
 - SHIV: оба перка коллизии стоят на своём Technology level, selected и помечены; в их описании — «Outdated selection: in this mod version <Perk> and <Perk> are both on <Technology level>.». У перка, убранного из SHIV tree, ячейки нет: его перечисляет плашка под деревом — «<Perk> — removed from the SHIV tree».
 - «Update» открывает модалку «Update build»: карточка на Outdated selection, справа пустая клетка «Empty». Подтверждение (`updateBuild`) снимает `outdated` и сохраняет билд новым кодом; шаги Outdated selection остаются пустыми. Замок сохраняется: Read-only build остаётся Read-only.
 - Обновление доходит до других вкладок, как любое изменение записи.
+- Squad planner: Unit check пропускает Unit с Outdated build — Unit остаётся, Loadout не меняется, не сохраняется и заморожен (тайлы ничего не открывают), строки в toast нет. На карточке вместо подписи — «Build outdated · update it in the Build», мини-дерево показывает сохранённое дерево, outdated-шаги — пунктиром danger. В модалке Build — тот же чип и «Update»; после обновления обычный Unit check срабатывает при закрытии модалки или открытии Squad. В Add Unit строка Outdated build disabled с «Update the build first».
 
 ## Синхронизация вкладок
 

@@ -12,27 +12,41 @@ import type { ShivBuild } from './shiv-builds';
 import { useShivBuildsStore } from './shiv-builds';
 
 /**
- * Tier groups of a SHIV build panel: the SHIV tree alone, and the selection in it through the store. An Outdated build
- * shows its saved tree: frozen, with both perks of a collision selected and marked on their technology level, and the
- * perks gone from the SHIV tree for the plate under the tree.
+ * SHIV tree of a SHIV build as picker tiers, the item described while the user inspects none, and the perks gone from
+ * the SHIV tree. An Outdated build shows its saved tree: frozen, with both perks of a collision selected and marked on
+ * their technology level.
+ *
+ * @param build SHIV build.
+ */
+export const useShivSavedTree = (build: MaybeRefOrGetter<Readonly<ShivBuild>>) => {
+  const { tiers, featuredPickerItem } = useShivBuildTiers(computed(() => shownTreeBuild(toValue(build))));
+
+  const outdatedSelections = computed(() => toValue(build).outdated?.selections ?? []);
+
+  const savedTiers = computed(() => savedTreeTiers(tiers.value, shivOutdatedCells(outdatedSelections.value)));
+
+  const removedPerks = computed(() => shivRemovedPerks(outdatedSelections.value));
+
+  return { tiers: savedTiers, featuredPickerItem, removedPerks };
+};
+
+/**
+ * Tier groups of a SHIV build panel: the saved SHIV tree alone, the perks gone from it for the plate under the tree,
+ * and the selection in it through the store.
  *
  * @param build SHIV build.
  */
 export const useShivBuildGroups = (build: MaybeRefOrGetter<Readonly<ShivBuild>>) => {
   const shivBuildsStore = useShivBuildsStore();
 
-  const { tiers, featuredPickerItem } = useShivBuildTiers(computed(() => shownTreeBuild(toValue(build))));
-
-  const outdatedSelections = computed(() => toValue(build).outdated?.selections ?? []);
+  const { tiers, featuredPickerItem, removedPerks } = useShivSavedTree(build);
 
   const groups = computed((): TieredPickerGroup<TechnologyLevelTier>[] => [{
     id: SHIV_TREE_GROUP_ID,
     name: SHIV_BUILD_NAME,
-    tiers: savedTreeTiers(tiers.value, shivOutdatedCells(outdatedSelections.value)),
+    tiers: tiers.value,
     defaultItem: featuredPickerItem.value,
   }]);
-
-  const removedPerks = computed(() => shivRemovedPerks(outdatedSelections.value));
 
   const hasRemovedPerks = computed(() => removedPerks.value.length > 0);
 

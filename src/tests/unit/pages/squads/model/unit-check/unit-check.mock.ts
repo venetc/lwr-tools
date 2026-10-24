@@ -125,9 +125,15 @@ export const SNIPER_UNIT: SquadUnit = { id: 'unit-1', build: { kind: 'biosoldier
 
 export const LOST_UNIT: SquadUnit = { id: 'unit-2', build: { kind: 'mec', id: 'deleted-build' }, loadout: SERAPH_LOADOUT };
 
+export const OUTDATED_SHIV_BUILD: SquadBuild = {
+  kind: 'shiv',
+  build: { id: 'outdated-build', name: 'Old Support', readonly: false, outdated: { code: 'old-code', selections: [] }, perks: [] },
+};
+
 export const SQUAD_BUILDS: ReadonlyMap<string, SquadBuild> = new Map([
   ['biosoldier/sniper-build', createBiosoldierBuildMock()],
   ['mec/mec-build', MEC_BUILD],
+  ['shiv/outdated-build', OUTDATED_SHIV_BUILD],
 ]);
 
 export const FIT_UNIT: SquadUnit = {
@@ -154,6 +160,10 @@ export const UNKNOWN_CODES_UNIT: SquadUnit = { id: 'unit-7', build: { kind: 'bio
 
 export const SECOND_LOST_UNIT: SquadUnit = { id: 'unit-8', build: { kind: 'shiv', id: 'deleted-build' }, loadout: SERAPH_LOADOUT };
 
+export const OUTDATED_UNIT: SquadUnit = { id: 'unit-9', build: { kind: 'shiv', id: 'outdated-build' }, loadout: SERAPH_LOADOUT };
+
+export const OUTDATED_UNKNOWN_CODES_UNIT: SquadUnit = { id: 'unit-10', build: { kind: 'shiv', id: 'outdated-build' }, loadout: UNKNOWN_CODES_LOADOUT };
+
 export const TOAST_TITLE = 'Loadouts updated';
 
 export const SNIPER_BUILD_KEY = 'biosoldier/sniper-build';
@@ -171,3 +181,5 @@ export const MEC_LINE = 'Goliath Wall — Grenade removed: wrong unit.';
 export const ONE_REMOVED_LINE = '1 Unit removed: Build not found';
 
 export const TWO_REMOVED_LINE = '2 Units removed: Build not found';
+
+export const SHIV_SHOWN_LOADOUT: DecodedLoadout = { ...UNKNOWN_CODES_LOADOUT, armor: 'shiv', primary: 'autocannon' };

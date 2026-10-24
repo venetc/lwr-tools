@@ -46,7 +46,7 @@
 - приводит каждый Unit к правилам его Build проверкой Unit;
 - открывает Squad и пишет в тосте, сколько Builds попало в каждый калькулятор и что сняла проверка.
 
-Кнопка Share code рядом с именем Squad копирует код открытого Squad: его имя и Units его карточек.
+Кнопка Share code рядом с именем Squad копирует код открытого Squad: его имя и Units его карточек. Squad, где есть Unit с Outdated build, не копируется, частичного экспорта нет: toast перечисляет Outdated builds. Кнопка копирования на карточке Unit с Outdated build так же ничего не копирует и говорит почему.
 
 ## Код
 
@@ -57,7 +57,7 @@
 
 - `model/outdated-import.ts` — `useOutdatedImport`: импортирует прочитанный код сразу или сначала открывает модалку «Outdated selections» с группами карточек его Builds (`outdatedSelectionGroups` из `model/outdated-selection-cards.ts`); через него импортируют калькуляторы и Squad planner.
 
-`pages/squads` превращает прочитанный Squad в Squad: `model/squad-import.ts` (Import в тулбаре), `model/add-unit.ts` (вкладка Share code в Add Unit), `model/squad-code-copy.ts` (кнопка Share code).
+`pages/squads` превращает прочитанный Squad в Squad: `model/squad-import.ts` (Import в тулбаре), `model/add-unit.ts` (вкладка Share code в Add Unit), `model/squad-code-copy.ts` (кнопка Share code), `model/code-copy-block.ts` (почему код Unit или Squad с Outdated builds не копируется).
 
 ## Развитие формата
 

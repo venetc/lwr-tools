@@ -33,7 +33,7 @@ const rowViews = useMiniTreeViews(() => props.rows, useCssModule());
           <span :class="stepView.cellClass" aria-hidden="true">
             <img
               v-if="stepView.step.icon"
-              :class="$style.icon"
+              :class="stepView.iconClass"
               :src="stepView.step.icon"
               alt=""
               draggable="false"

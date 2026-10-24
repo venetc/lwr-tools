@@ -172,7 +172,7 @@ export interface SeededSquad {
  * @param squads Squads in list order.
  */
 export const seedSquads = (page: Page, squads: SeededSquad[]) => page.addInitScript((seededSquads) => {
-  if (sessionStorage.getItem('seeded')) return;
+  if (sessionStorage.getItem('seeded.squads')) return;
 
   localStorage.setItem('lwr-tools.squads.v1.order', JSON.stringify(seededSquads.map(squad => squad.id)));
 
@@ -181,7 +181,7 @@ export const seedSquads = (page: Page, squads: SeededSquad[]) => page.addInitScr
   }
 
   localStorage.setItem('lwr-tools.squads.v1.open', seededSquads[0]?.id ?? '');
-  sessionStorage.setItem('seeded', 'true');
+  sessionStorage.setItem('seeded.squads', 'true');
 }, squads);
 
 /**

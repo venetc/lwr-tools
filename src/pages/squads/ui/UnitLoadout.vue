@@ -13,11 +13,15 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { isOpen, slotId, openSlot } = useUnitLoadout();
+const { isOpen, slotId, openSlot } = useUnitLoadout(() => props.card.isOutdated);
 </script>
 
 <template>
-  <LoadoutTiles :tiles="props.card.tiles" @select="openSlot" />
+  <LoadoutTiles
+    :tiles="props.card.tiles"
+    :disabled="props.card.isOutdated"
+    @select="openSlot"
+  />
 
   <Dialog
     v-model:open="isOpen"

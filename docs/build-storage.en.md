@@ -41,6 +41,7 @@ An Outdated build is frozen until the player updates it: selections, rename, Res
 - SHIV: both perks of a collision stand selected and marked on their technology level; their description notes «Outdated selection: in this mod version <Perk> and <Perk> are both on <Technology level>.». A perk gone from the SHIV tree has no cell: a plate under the tree lists it as «<Perk> — removed from the SHIV tree».
 - «Update» opens the «Update build» dialog with a card per Outdated selection and the empty cell «Empty» on the right. Confirming it (`updateBuild`) drops `outdated` and saves the build with its new code; the steps of the Outdated selections stay empty. The lock is kept: a readonly build stays readonly.
 - The update reaches other tabs as any record change.
+- Squad planner: the Unit check skips a Unit of an Outdated build — the Unit stays, its Loadout is not changed or saved and is frozen (its tiles open nothing), it gets no toast line. Its card reads «Build outdated · update it in the Build» in place of the caption, and the mini-tree shows the saved tree with the outdated steps dashed in danger. The Build dialog shows the same chip and «Update»; after the update the usual Unit check runs on closing the dialog or opening the Squad. In Add Unit the row of an Outdated build is disabled with «Update the build first».
 
 ## Sync between tabs
 

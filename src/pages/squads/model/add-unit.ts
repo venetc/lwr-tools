@@ -133,11 +133,13 @@ export const useAddUnit = () => {
   };
 
   /**
-   * Adds a Unit of the saved build; the same build may be added again.
+   * Adds a Unit of the saved build; the same build may be added again, an Outdated build not until the update.
    *
    * @param row saved build of the list.
    */
   const addSavedBuild = (row: SavedBuildRow) => {
+    if (row.isOutdated) return;
+
     const squadName = addUnit(row.squadBuild);
 
     if (!squadName) return;

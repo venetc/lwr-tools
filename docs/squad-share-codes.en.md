@@ -46,7 +46,7 @@ Import of a Squad code:
 - brings each Unit to the rules of its build with the Unit check;
 - opens the Squad and tells in a toast how many Builds went to each Build calculator and what the check took off.
 
-The Share code button next to the Squad name copies the code of the open Squad: its name and the Units of its cards.
+The Share code button next to the Squad name copies the code of the open Squad: its name and the Units of its cards. A Squad with a Unit of an Outdated build is not copied, there is no partial export: a toast lists the Outdated builds. The copy button of a Unit card likewise copies nothing for a Unit of an Outdated build and tells why.
 
 ## Code
 
@@ -57,7 +57,7 @@ The Share code button next to the Squad name copies the code of the open Squad: 
 
 - `model/outdated-import.ts` — `useOutdatedImport`: imports a read code at once, or first opens the "Outdated selections" dialog with the card groups of its builds (`outdatedSelectionGroups` of `model/outdated-selection-cards.ts`); the Build calculators and the Squad planner import through it.
 
-`pages/squads` turns a read Squad into a Squad: `model/squad-import.ts` (Import in the toolbar), `model/add-unit.ts` (the Share code tab of Add Unit), `model/squad-code-copy.ts` (the Share code button).
+`pages/squads` turns a read Squad into a Squad: `model/squad-import.ts` (Import in the toolbar), `model/add-unit.ts` (the Share code tab of Add Unit), `model/squad-code-copy.ts` (the Share code button), `model/code-copy-block.ts` (why a Unit code or a Squad code with Outdated builds is not copied).
 
 ## Evolving the format
 

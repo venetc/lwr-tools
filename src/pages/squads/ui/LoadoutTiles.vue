@@ -8,6 +8,8 @@ import SlotCaption from './SlotCaption.vue';
 interface Props {
   /** Tiles of the Loadout in inventory order. */
   tiles: readonly LoadoutTile[]
+  /** Whether the tiles open nothing: the Loadout is frozen. */
+  disabled?: boolean
 }
 
 interface Emits {
@@ -15,7 +17,9 @@ interface Emits {
   select: [tile: LoadoutTile]
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+});
 
 const emit = defineEmits<Emits>();
 
@@ -33,6 +37,7 @@ const tileViews = useLoadoutTileViews(() => props.tiles, useCssModule());
         :class="view.tileClass"
         type="button"
         :aria-label="view.tile.label"
+        :aria-disabled="props.disabled"
         @click="emit('select', view.tile)"
       >
         <img

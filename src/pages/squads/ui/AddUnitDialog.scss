@@ -144,10 +144,19 @@ $add-cell-border: 1px dashed colors.$accent;
   min-block-size: 44px;
   padding: 6px 8px;
   border-block-end: 1px solid colors.$border-subtle;
-  color: colors.$text-primary;
   text-align: start;
-  cursor: pointer;
-  @include -hoverable;
+
+  &[aria-disabled='false'] {
+    color: colors.$text-primary;
+    cursor: pointer;
+    @include -hoverable;
+  }
+
+  &[aria-disabled='true'] {
+    background: none;
+    color: colors.$text-disabled;
+    cursor: not-allowed;
+  }
 }
 
 .rowIcon {
@@ -184,6 +193,10 @@ $add-cell-border: 1px dashed colors.$accent;
   @include typography.body-2;
   flex: none;
   color: colors.$text-tertiary;
+}
+
+.outdatedHint {
+  flex: none;
 }
 
 .options {

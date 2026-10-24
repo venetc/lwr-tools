@@ -20,7 +20,7 @@ export const useOpenSquadCheck = () => {
 
   /**
    * Brings the Units of the open Squad to their Builds and saves them, the Units whose Build is gone left out; a Unit
-   * that nothing fits keeps its Loadout. Tells what was taken off; nothing is saved or told if every Loadout already fits.
+   * that nothing fits or whose Build is an Outdated build keeps its Loadout. Tells what was taken off; nothing is saved or told if every Loadout already fits.
    */
   const checkOpenSquad = () => {
     const squad = openSquad.value;
@@ -31,7 +31,7 @@ export const useOpenSquadCheck = () => {
 
     if (!check.isChanged) return;
 
-    const loadoutById = new Map(check.units.map(checked => [checked.unit.id, checked.loadout]));
+    const loadoutById = new Map(check.units.filter(checked => !checked.isOutdated).map(checked => [checked.unit.id, checked.loadout]));
     const removedIds = new Set(check.removed.map(unit => unit.id));
 
     squadsStore.setUnits(squad.id, squad.units

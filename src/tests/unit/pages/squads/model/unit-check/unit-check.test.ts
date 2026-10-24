@@ -19,6 +19,8 @@ import {
   MEC_WEARER,
   OFFICER_PERKS,
   ONE_REMOVED_LINE,
+  OUTDATED_UNIT,
+  OUTDATED_UNKNOWN_CODES_UNIT,
   PSIONIC_ABILITIES,
   SECOND_LOST_UNIT,
   SECOND_SNIPER_UNIT,
@@ -27,6 +29,7 @@ import {
   SERAPH_LOADOUT,
   SERAPH_REPLACED,
   SHIV_BUILD,
+  SHIV_SHOWN_LOADOUT,
   SHIV_WEARER,
   SNIPER_BUILD_KEY,
   SNIPER_DEFAULT_LOADOUT,
@@ -173,6 +176,54 @@ describe('checkSquad', () => {
   });
 });
 
+describe('checkSquad with an Outdated build', () => {
+  it('keeps a Unit of an Outdated build in the Squad', () => {
+    const check = checkSquad([OUTDATED_UNIT], SQUAD_BUILDS);
+
+    expect(check.units.map(unit => unit.unit.id)).toEqual([OUTDATED_UNIT.id]);
+  });
+
+  it('marks a Unit of an Outdated build', () => {
+    const check = checkSquad([OUTDATED_UNIT], SQUAD_BUILDS);
+
+    expect(check.units[0]?.isOutdated).toBe(true);
+  });
+
+  it('does not mark a Unit of a regular build', () => {
+    const check = checkSquad([SNIPER_UNIT], SQUAD_BUILDS);
+
+    expect(check.units[0]?.isOutdated).toBe(false);
+  });
+
+  it('does not fit the Loadout of a Unit of an Outdated build', () => {
+    checkSquad([OUTDATED_UNIT], SQUAD_BUILDS);
+
+    expect(fitLoadout).not.toHaveBeenCalled();
+  });
+
+  it('keeps the Loadout of a Unit of an Outdated build', () => {
+    vi.mocked(fitLoadout).mockReturnValue(SERAPH_FIT);
+
+    const check = checkSquad([OUTDATED_UNIT], SQUAD_BUILDS);
+
+    expect(check.units[0]?.loadout).toEqual(SERAPH_LOADOUT);
+  });
+
+  it('shows the default armor and primary weapon in place of unknown codes of an Outdated build', () => {
+    const check = checkSquad([OUTDATED_UNKNOWN_CODES_UNIT], SQUAD_BUILDS);
+
+    expect(check.units[0]?.loadout).toEqual(SHIV_SHOWN_LOADOUT);
+  });
+
+  it('gives a Unit of an Outdated build no changes', () => {
+    vi.mocked(fitLoadout).mockReturnValue(SERAPH_FIT);
+
+    const check = checkSquad([OUTDATED_UNIT], SQUAD_BUILDS);
+
+    expect(check.units[0]?.changes).toEqual([]);
+  });
+});
+
 describe('checkSquad isChanged', () => {
   it('is false when every Loadout fits and every Build is saved', () => {
     const check = checkSquad([FIT_UNIT], SQUAD_BUILDS);
@@ -194,6 +245,12 @@ describe('checkSquad isChanged', () => {
     expect(check.isChanged).toBe(true);
   });
 
+  it('is false when unknown codes of an Outdated build stay', () => {
+    const check = checkSquad([OUTDATED_UNKNOWN_CODES_UNIT], SQUAD_BUILDS);
+
+    expect(check.isChanged).toBe(false);
+  });
+
   it('is true when a Unit leaves with its Build', () => {
     const check = checkSquad([FIT_UNIT, LOST_UNIT], SQUAD_BUILDS);
 
@@ -204,6 +261,14 @@ describe('checkSquad isChanged', () => {
 describe('unitCheckToast', () => {
   it('is null when nothing changed', () => {
     const toast = unitCheckToast(checkSquad([FIT_UNIT], SQUAD_BUILDS));
+
+    expect(toast).toBeNull();
+  });
+
+  it('leaves a Unit of an Outdated build out', () => {
+    vi.mocked(fitLoadout).mockReturnValue(SERAPH_FIT);
+
+    const toast = unitCheckToast(checkSquad([OUTDATED_UNIT], SQUAD_BUILDS));
 
     expect(toast).toBeNull();
   });

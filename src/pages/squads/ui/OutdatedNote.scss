@@ -1,0 +1,16 @@
+@use 'styles/colors';
+@use 'styles/typography';
+
+.note {
+  @include typography.caps-4;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: colors.$danger;
+}
+
+.icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}

@@ -130,5 +130,11 @@ export const MINI_TREE_TECHNOLOGY_LEVEL_CAPTION = {
 /** Name a mini-tree gives an empty step open for selection, in place of an ability name. */
 export const MINI_TREE_OPEN_STEP_NAME = 'Empty';
 
+/** Words for Outdated selections after their count or names: the chip of an Outdated build and its mini-tree steps. */
+export const OUTDATED_SELECTION_WORDS = {
+  one: 'outdated selection',
+  many: 'outdated selections',
+} as const;
+
 /** Name a mini-tree gives an empty locked step, in place of an ability name. */
 export const MINI_TREE_LOCKED_STEP_NAME = 'Locked';

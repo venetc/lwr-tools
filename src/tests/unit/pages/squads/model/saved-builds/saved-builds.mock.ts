@@ -36,6 +36,11 @@ export const ALLOY_SUPPORT: SquadBuild = {
   build: { id: 'shiv-build', name: 'Alloy Support', readonly: false, outdated: null, perks: [] },
 };
 
+export const OLD_SUPPORT: SquadBuild = {
+  kind: 'shiv',
+  build: { id: 'old-shiv-build', name: 'Old Support', readonly: false, outdated: { code: 'old-code', selections: [] }, perks: [] },
+};
+
 export const BUILDS = [OVERWATCH_SNIPER, FIELD_MEDIC, GOLIATH_WALL, ALLOY_SUPPORT];
 
 /**

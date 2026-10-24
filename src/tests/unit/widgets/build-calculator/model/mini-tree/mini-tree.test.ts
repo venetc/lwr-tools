@@ -66,6 +66,30 @@ describe('miniTreeStep', () => {
     expect(step.state).toBe('locked');
   });
 
+  it('marks a tier whose selection is an Outdated selection as outdated', () => {
+    const step = miniTreeStep(createTierMock('completed', 'right', ['right']), CAPTION);
+
+    expect(step.state).toBe('outdated');
+  });
+
+  it('shows the selected icon of an Outdated selection', () => {
+    const step = miniTreeStep(createTierMock('completed', 'right', ['right']), CAPTION);
+
+    expect(step.icon).toBe('right-selected.png');
+  });
+
+  it('names the tier and its Outdated selection', () => {
+    const step = miniTreeStep(createTierMock('completed', 'right', ['right']), CAPTION);
+
+    expect(step.label).toBe('First step: Right, outdated selection');
+  });
+
+  it('names every Outdated selection of a tier in the order of its items', () => {
+    const step = miniTreeStep(createTierMock('completed', 'right', ['right', 'left']), CAPTION);
+
+    expect(step.label).toBe('First step: Left and Right, outdated selections');
+  });
+
   it('keeps the caption of the step', () => {
     const step = miniTreeStep(createTierMock('completed', 'right'), CAPTION);
 

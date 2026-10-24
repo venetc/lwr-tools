@@ -123,6 +123,18 @@ export const CHANGE_WORD = {
   added: 'added to',
 } as const satisfies Record<LoadoutChange['kind'], string>;
 
+/** Line under the Unit name on the card of a Unit of an Outdated build, in place of the caption. */
+export const OUTDATED_UNIT_CAPTION = 'Build outdated · update it in the Build';
+
+/** Hint of an Outdated build in the saved builds of the Add Unit dialog, in place of its class. */
+export const OUTDATED_BUILD_ROW_HINT = 'Update the build first';
+
+/** Title of the toast that tells why the Unit code of a Unit of an Outdated build is not copied. */
+export const UNIT_CODE_BLOCK_TITLE = 'Unit code not copied';
+
+/** Title of the toast that tells why the Squad code of a Squad with Outdated builds is not copied. */
+export const SQUAD_CODE_BLOCK_TITLE = 'Squad code not copied';
+
 /** Title of the toast of a Unit check that changed something. */
 export const UNIT_CHECK_TOAST_TITLE = 'Loadouts updated';
 

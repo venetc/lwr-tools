@@ -4,6 +4,7 @@ import { computed, toValue } from 'vue';
 import type { ListedBuild, NamedBuildData } from '@features/manage-builds';
 import type { TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
+import { OUTDATED_SELECTION_WORDS } from '../config/constants';
 import type { BuildTreeTier } from './saved-tree';
 
 /**
@@ -50,7 +51,7 @@ export const useBuildPanel = (
 
   const isTitleReadonly = computed(() => readonly.value || isOutdated.value);
 
-  const outdatedCountText = computed(() => `${outdatedCount.value} outdated ${outdatedCount.value === 1 ? 'selection' : 'selections'}`);
+  const outdatedCountText = computed(() => `${outdatedCount.value} ${outdatedCount.value === 1 ? OUTDATED_SELECTION_WORDS.one : OUTDATED_SELECTION_WORDS.many}`);
 
   /**
    * Checks whether the tier is open for selection.

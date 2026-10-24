@@ -4,7 +4,9 @@ import { Copy, Trash2 } from '@lucide/vue';
 import { createId } from '@shared/lib/id';
 import { HoldButton } from '@shared/ui/hold-button';
 
+import { OUTDATED_UNIT_CAPTION } from '../config/constants';
 import type { UnitCard } from '../model/unit-cards';
+import OutdatedNote from './OutdatedNote.vue';
 import UnitBuild from './UnitBuild.vue';
 import UnitBuildIcon from './UnitBuildIcon.vue';
 import UnitLoadout from './UnitLoadout.vue';
@@ -45,7 +47,10 @@ const headingId = createId();
           </h2>
           <UnitOfficerRankBadge :squad-build="props.card.squadBuild" />
         </div>
-        <p :class="$style.caption">
+        <p v-if="props.card.isOutdated" :class="$style.outdatedCaption">
+          <OutdatedNote>{{ OUTDATED_UNIT_CAPTION }}</OutdatedNote>
+        </p>
+        <p v-else :class="$style.caption">
           {{ props.card.caption }}
         </p>
       </div>

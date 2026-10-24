@@ -32,20 +32,28 @@ $large-image-width: 64px;
   min-block-size: 60px;
   padding: 4px;
   border-width: 1px;
-  cursor: pointer;
 
-  @include media.with-hover {
-    &:not(:hover) {
-      background: colors.$surface-base;
+  &[aria-disabled='false'] {
+    cursor: pointer;
+
+    @include media.with-hover {
+      &:not(:hover) {
+        background: colors.$surface-base;
+      }
+
+      &:hover {
+        background: colors.$surface-2;
+      }
     }
 
-    &:hover {
-      background: colors.$surface-2;
+    @include media.with-touch {
+      background: colors.$surface-base;
     }
   }
 
-  @include media.with-touch {
+  &[aria-disabled='true'] {
     background: colors.$surface-base;
+    cursor: not-allowed;
   }
 }
 

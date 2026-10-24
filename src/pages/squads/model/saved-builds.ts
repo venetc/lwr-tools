@@ -33,6 +33,8 @@ export interface SavedBuildRow {
   className: string
   /** Number of Units of the build in the Squad. */
   inSquadCount: number
+  /** Whether the build is an Outdated build: no Unit of it can be added until the update. */
+  isOutdated: boolean
 }
 
 /**
@@ -83,7 +85,7 @@ export const savedBuildFilters = (builds: readonly SquadBuild[]): SavedBuildFilt
 
 /**
  * Builds of the chosen unit type grouped by Build calculator in unit type order, without empty groups; each build
- * counts its Units in the Squad.
+ * counts its Units in the Squad and tells whether it is an Outdated build.
  *
  * @param builds builds to group.
  * @param kind unit type to keep, or all.
@@ -104,7 +106,13 @@ export const savedBuildGroups = (builds: readonly SquadBuild[], kind: SavedBuild
     const rows = builds.filter(squadBuild => squadBuild.kind === unit.id).map((squadBuild): SavedBuildRow => {
       const id = squadBuildKey({ kind: squadBuild.kind, id: squadBuild.build.id });
 
-      return { id, squadBuild, className: squadBuildClassName(squadBuild), inSquadCount: unitCountByBuild.get(id) ?? 0 };
+      return {
+        id,
+        squadBuild,
+        className: squadBuildClassName(squadBuild),
+        inSquadCount: unitCountByBuild.get(id) ?? 0,
+        isOutdated: squadBuild.build.outdated !== null,
+      };
     });
 
     if (rows.length) groups.push({ id: unit.id, title: buildListName(unit.id), rows });

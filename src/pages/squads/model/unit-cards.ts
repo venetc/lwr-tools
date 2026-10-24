@@ -22,6 +22,8 @@ export interface UnitCard {
   squadBuild: SquadBuild
   /** Unit type and class of the build. */
   caption: string
+  /** Whether the build is an Outdated build: the Unit check skips the Unit until the update. */
+  isOutdated: boolean
   /** What the Loadout rules need to know about the Unit. */
   wearer: LoadoutWearer
   /** Loadout of the Unit brought to the rules of its Build. */
@@ -35,7 +37,7 @@ export interface UnitCard {
 /**
  * Cards of the Units of the open Squad, in Squad order, and their removal. Units are read through the Unit check, so
  * every card shows a Loadout that fits its Build, and tells what saving the check would take off the Units of its Build;
- * a Unit whose build is no longer saved has no card.
+ * a Unit of an Outdated build shows its Loadout as it is, and a Unit whose build is no longer saved has no card.
  */
 export const useUnitCards = () => {
   const squadsStore = useSquadsStore();
@@ -54,6 +56,7 @@ export const useUnitCards = () => {
       id: checked.unit.id,
       squadBuild: checked.squadBuild,
       caption: squadBuildCaption(checked.squadBuild),
+      isOutdated: checked.isOutdated,
       wearer: checked.wearer,
       loadout: checked.loadout,
       tiles: loadoutTiles(checked.loadout, checked.wearer),

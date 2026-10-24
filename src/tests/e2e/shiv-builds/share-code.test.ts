@@ -14,6 +14,7 @@ import {
   LOCK_N_LOAD,
   PAGE_PATH,
   PANEL_NAME,
+  REPLACE_LABEL,
 } from './share-code.mock';
 
 /**
@@ -103,5 +104,53 @@ test.describe('SHIV Share code with Outdated selections', () => {
     await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
 
     await expect(page.getByRole('textbox', { name: CODE_LABEL })).toBeHidden();
+  });
+});
+
+test.describe('SHIV build replaced with a Share code with Outdated selections', () => {
+  test('opens the Outdated selections dialog', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), COLLISION_BUILD_CODE);
+
+    await expect(outdatedDialog(page)).toBeVisible();
+  });
+
+  test('keeps the build on Cancel', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await abilityCell(panel, LOCK_N_LOAD).click();
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), COLLISION_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+
+    await expect(abilityCell(panel, LOCK_N_LOAD)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('takes the other perks of the code on Import', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), COLLISION_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(abilityCell(panel, HOLO_ROUNDS)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('leaves the technology level of the collision empty on Import', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await abilityCell(panel, LOCK_N_LOAD).click();
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), COLLISION_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(abilityCell(panel, LOCK_N_LOAD)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('adds no build on Import', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), COLLISION_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(shivPanels(page)).toHaveCount(1);
   });
 });

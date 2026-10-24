@@ -19,3 +19,5 @@ export const IMPORT_LABEL = 'Import';
 export const CODE_LABEL = 'Code';
 
 export const LOCK_N_LOAD = 'Lock N\' Load';
+
+export const REPLACE_LABEL = 'Import build';

@@ -14,6 +14,7 @@ import {
   PAGE_PATH,
   PANEL_NAME,
   RAPID_FIRE,
+  REPLACE_LABEL,
   SHARPSHOOTER,
 } from './share-code.mock';
 
@@ -96,5 +97,53 @@ test.describe('MEC Share code with Outdated selections', () => {
     await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
 
     await expect(abilityCell(classPanels(page).last(), SHARPSHOOTER)).toHaveAttribute('aria-pressed', 'false');
+  });
+});
+
+test.describe('MEC build replaced with a Share code with Outdated selections', () => {
+  test('opens the Outdated selections dialog', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), OUTDATED_BUILD_CODE);
+
+    await expect(outdatedDialog(page)).toBeVisible();
+  });
+
+  test('keeps the build on Cancel', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await abilityCell(panel, RAPID_FIRE).click();
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
+
+    await expect(abilityCell(panel, RAPID_FIRE)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('takes the other perks of the code on Import', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(abilityCell(panel, LONE_WOLF)).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('leaves the outdated rank empty on Import', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await abilityCell(panel, RAPID_FIRE).click();
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(abilityCell(panel, RAPID_FIRE)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('adds no build on Import', async ({ page }) => {
+    const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
+    await importCode(page, panel.getByRole('button', { name: REPLACE_LABEL }), OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(classPanels(page)).toHaveCount(1);
   });
 });

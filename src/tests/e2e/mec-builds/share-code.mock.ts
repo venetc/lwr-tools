@@ -27,3 +27,5 @@ export const CANCEL_LABEL = 'Cancel';
 export const IMPORT_LABEL = 'Import';
 
 export const CODE_LABEL = 'Code';
+
+export const REPLACE_LABEL = 'Import build';

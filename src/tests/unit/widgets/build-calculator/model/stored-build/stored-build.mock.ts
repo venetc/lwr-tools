@@ -1,5 +1,5 @@
-import { MEC_CLASSES } from '@entities/soldier';
-import { defaultSoldierBuild, selectSoldierBuildPerk } from '@entities/soldier/model/build';
+import type { ShivOutdatedSelection } from '@entities/shiv';
+import { defaultSoldierBuild, MEC_CLASSES } from '@entities/soldier';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 import type { BinaryCodeSection } from '@shared/lib/binary-code';
 import type { SavedBuild } from '@widgets/build-calculator/model/build-list';
@@ -16,35 +16,13 @@ export const UNENCODABLE_SHIV_BUILD = { ...SHIV_BUILD, perks: ['unknown-perk', n
 
 export const MEC_BUILD = defaultSoldierBuild(FIRST_MEC_CLASS);
 
-/**
- * Stored MEC build with only the last rank selected.
- */
-const createGappedMecBuild = () => {
-  const build = { ...defaultSoldierBuild(FIRST_MEC_CLASS), id: BUILD_ID, readonly: false, outdated: null };
-
-  selectSoldierBuildPerk(build, 6, FIRST_MEC_CLASS.perks['master-sergeant'][0] ?? null);
-
-  return build;
-};
-
-export const GAPPED_MEC_BUILD = createGappedMecBuild();
-
-/** SHIV build code with Lock N' Load and Repair Servos, two perks of Basic Config. */
-export const COLLISION_CODE = 'Agg9AhAAnQ';
-
-/** Outdated selections of `COLLISION_CODE`. */
-export const COLLISION_SELECTIONS = [
-  { perkId: 'lock-n-load', reason: 'collision', levelIndex: 0 },
-  { perkId: 'repair-servos', reason: 'collision', levelIndex: 0 },
-];
-
-/** SHIV tree records without Smart Macrophages, as after a mod update that removes it. */
-export const TECHNOLOGY_LEVEL_CONTENT_MOCK = {
-  'base-configuration': { name: 'Basic Config', perks: ['lock-n-load', 'repair-servos', 'platform-stability'] },
-  'advancements-1': { name: 'Advancements I', perks: ['holo-rounds', 'shredder', 'damage-control'] },
-  'advancements-2': { name: 'Advancements II', perks: ['reactive-targeting-sensors', 'light-em-up', 'close-combat-specialist'] },
-  'advancements-3a': { name: 'Advancements IIIa', perks: ['critical-system-targeting', 'fortified', 'absorption-fields'] },
-  'advancements-3b': { name: 'Advancements IIIb', perks: ['vital-point-targeting', 'bring-em-on'] },
+/** Stored Jaeger build with only Extra Conditioning, the first perk of Master Sergeant. */
+export const GAPPED_MEC_BUILD: SavedBuild<'mec'> = {
+  ...defaultSoldierBuild(FIRST_MEC_CLASS),
+  perks: ['hunter', null, null, null, null, null, 'extra-conditioning'],
+  id: BUILD_ID,
+  readonly: false,
+  outdated: null,
 };
 
 /**
@@ -60,22 +38,25 @@ const rawShivPerksSection = (perkCodes: readonly number[]): BinaryCodeSection =>
   },
 });
 
-/** SHIV build code with Holo Rounds and Smart Macrophages, which the mocked SHIV tree no longer has. */
-const REMOVED_PERK_CODE = encodeBinaryCode(2, [rawShivPerksSection([4, 15])]) ?? '';
+/** SHIV build code with Lock N' Load and Repair Servos, two perks of Basic Config, and Holo Rounds between them. */
+const COLLISION_CODE = encodeBinaryCode(2, [rawShivPerksSection([1, 4, 2])]) ?? '';
 
-/** Stored editable record of `REMOVED_PERK_CODE`. */
-export const REMOVED_PERK_RECORD = { code: REMOVED_PERK_CODE, readonly: false };
+/** Outdated selections of `COLLISION_CODE`. */
+export const COLLISION_SELECTIONS: ShivOutdatedSelection[] = [
+  { perkId: 'lock-n-load', reason: 'collision', levelIndex: 0 },
+  { perkId: 'repair-servos', reason: 'collision', levelIndex: 0 },
+];
 
-/** Outdated build of `REMOVED_PERK_RECORD`: Holo Rounds kept, Smart Macrophages left out. */
-export const REMOVED_PERK_BUILD: SavedBuild<'shiv'> = {
+/** Stored editable record of `COLLISION_CODE`. */
+export const COLLISION_RECORD = { code: COLLISION_CODE, readonly: false };
+
+/** Outdated build of `COLLISION_RECORD`: Holo Rounds kept, Basic Config left empty. */
+export const COLLISION_BUILD: SavedBuild<'shiv'> = {
   perks: [null, 'holo-rounds', null, null, null],
   name: 'SHIV',
   id: BUILD_ID,
   readonly: false,
-  outdated: {
-    code: REMOVED_PERK_CODE,
-    selections: [{ perkId: 'smart-macrophages', reason: 'removed' }],
-  },
+  outdated: { code: COLLISION_CODE, selections: COLLISION_SELECTIONS },
 };
 
 /**

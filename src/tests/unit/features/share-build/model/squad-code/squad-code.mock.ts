@@ -1,36 +1,25 @@
 import type { DecodedLoadout } from '@entities/loadout';
-import { defaultShivBuild } from '@entities/shiv/model/build';
-import type { BiosoldierBuildData, SoldierClass } from '@entities/soldier';
-import { BIOSOLDIER_CLASSES, MEC_CLASSES, OFFICER_RANKS, selectBiosoldierBuildOfficerPerk, selectSoldierBuildPerk } from '@entities/soldier';
-import { SOLDIER_RANKS } from '@entities/soldier/config/constants/soldier-ranks';
-import { defaultBiosoldierBuild, defaultSoldierBuild } from '@entities/soldier/model/build';
+import { defaultShivBuild } from '@entities/shiv';
+import type { BiosoldierBuildData } from '@entities/soldier';
+import { BIOSOLDIER_CLASSES, defaultBiosoldierBuild, defaultSoldierBuild, MEC_CLASSES } from '@entities/soldier';
 import type { BinaryCodeSection } from '@shared/lib/binary-code';
-import type { DeepReadonly } from '@shared/lib/object';
 
 const [FIRST_BIOSOLDIER_CLASS] = BIOSOLDIER_CLASSES;
 
 const [FIRST_MEC_CLASS] = MEC_CLASSES;
 
-/**
- * Biosoldier build of the class with the last perk of every rank and the officer perk of the index at every officer rank.
- *
- * @param soldierClass biosoldier class.
- * @param officerPerkIndex index of the officer perk taken at every officer rank.
- */
-const officerBuild = (soldierClass: DeepReadonly<SoldierClass>, officerPerkIndex: number): BiosoldierBuildData => {
-  const build = defaultBiosoldierBuild(soldierClass);
-
-  SOLDIER_RANKS.slice(1).forEach((rank, index) => selectSoldierBuildPerk(build, index + 1, soldierClass.perks[rank.id].at(-1) ?? null));
-  OFFICER_RANKS.forEach((officerRank, officerRankIndex) => {
-    selectBiosoldierBuildOfficerPerk(build, officerRankIndex, officerRank.perks[officerPerkIndex] ?? null);
-  });
-
-  return build;
+/** Sniper build with the last perk of every rank and the first officer perk of every officer rank. */
+export const OFFICER_BUILD: BiosoldierBuildData = {
+  ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS),
+  perks: ['squadsight', 'in-the-zone', 'disabling-shot', 'executioner', 'precision-shot', 'bring-em-on', 'lone-wolf'],
+  officerPerks: ['strength-in-numbers', 'cover-tactics', 'show-em-the-ropes', 'clutch-leadership', 'camaraderie'],
 };
 
-export const OFFICER_BUILD = officerBuild(FIRST_BIOSOLDIER_CLASS, 0);
-
-export const OTHER_OFFICER_BUILD = officerBuild(FIRST_BIOSOLDIER_CLASS, 1);
+/** `OFFICER_BUILD` with the second officer perk of every officer rank. */
+export const OTHER_OFFICER_BUILD: BiosoldierBuildData = {
+  ...OFFICER_BUILD,
+  officerPerks: ['stay-frosty', 'cover-tenacity', 'tricks-of-the-trade', 'natural-leadership', 'combined-arms'],
+};
 
 export const MEC_BUILD = { ...defaultSoldierBuild(FIRST_MEC_CLASS), name: 'Walker' };
 

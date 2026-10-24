@@ -1,5 +1,5 @@
 import type { SoldierClass } from '@entities/soldier';
-import type { SquadUnit } from '@features/manage-squads/model/squad';
+import type { SquadUnit } from '@features/manage-squads';
 import type { SquadBuild } from '@pages/squads/model/squad-build';
 
 /**

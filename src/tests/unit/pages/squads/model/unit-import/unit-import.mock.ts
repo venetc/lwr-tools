@@ -1,11 +1,12 @@
 import type { Loadout, LoadoutChange, LoadoutItemId, LoadoutUnit } from '@entities/loadout';
-import { defaultShivBuild } from '@entities/shiv/model/build';
-import { BIOSOLDIER_CLASSES } from '@entities/soldier';
-import { defaultBiosoldierBuild } from '@entities/soldier/model/build';
+import { defaultShivBuild } from '@entities/shiv';
+import type { SoldierClass } from '@entities/soldier';
+import { defaultBiosoldierBuild } from '@entities/soldier';
 import type { SquadUnitBuild } from '@features/manage-squads';
 import type { DecodedSquadBuild } from '@features/share-build';
 
-const [FIRST_BIOSOLDIER_CLASS] = BIOSOLDIER_CLASSES;
+/** Class with only the fields the default build reads. */
+const SNIPER_CLASS = { id: 'sniper', name: 'Sniper', basePerk: 'squadsight' } as SoldierClass;
 
 export const LOADOUT_UNITS_STUB: LoadoutUnit[] = [
   { id: 'biosoldier', code: 1, name: 'Biosoldier' },
@@ -32,7 +33,7 @@ export const findLoadoutItemStub = (id: LoadoutItemId) => {
 
 export const SQUAD_NAME = 'Alpha';
 
-export const BIOSOLDIER_SQUAD_BUILD: DecodedSquadBuild = { kind: 'biosoldier', build: { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS), name: 'Overwatch' }, outdated: [] };
+export const BIOSOLDIER_SQUAD_BUILD: DecodedSquadBuild = { kind: 'biosoldier', build: { ...defaultBiosoldierBuild(SNIPER_CLASS), name: 'Overwatch' }, outdated: [] };
 
 export const SHIV_SQUAD_BUILD: DecodedSquadBuild = { kind: 'shiv', build: { ...defaultShivBuild(), name: 'Tank' }, outdated: [] };
 

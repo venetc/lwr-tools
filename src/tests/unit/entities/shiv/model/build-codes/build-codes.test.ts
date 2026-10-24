@@ -10,6 +10,8 @@ import {
   FULL_BUILD,
   FULL_CODES,
   MISPLACED_PERK_BUILD,
+  MIXED_OUTDATED_CODES,
+  MIXED_OUTDATED_RESULT,
   PARTLY_FILLED_BUILD,
   PARTLY_FILLED_CODES,
   REVERSED_CODES,
@@ -118,5 +120,11 @@ describe('shivBuildFromCodes', () => {
     const result = shivBuildFromCodes(SAME_LEVEL_CODES);
 
     expect(result).toEqual(SAME_LEVEL_RESULT);
+  });
+
+  it('gives removed and colliding perks as Outdated selections in code order', () => {
+    const result = shivBuildFromCodes(MIXED_OUTDATED_CODES);
+
+    expect(result).toEqual(MIXED_OUTDATED_RESULT);
   });
 });

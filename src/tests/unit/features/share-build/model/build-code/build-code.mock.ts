@@ -1,216 +1,124 @@
-import type { ShivBuildData } from '@entities/shiv';
-import { selectShivBuildPerk, TECHNOLOGY_LEVELS } from '@entities/shiv';
-import { defaultShivBuild } from '@entities/shiv/model/build';
-import type { BiosoldierBuildData, SoldierBuildData, SoldierClass } from '@entities/soldier';
-import {
-  BIOSOLDIER_CLASSES,
-  MEC_CLASSES,
-  OFFICER_RANKS,
-  selectBiosoldierBuildGeneMod,
-  selectBiosoldierBuildOfficerPerk,
-  selectBiosoldierBuildPsionicAbility,
-  selectSoldierBuildPerk,
-} from '@entities/soldier';
-import { BODY_PART_INDEX_BY_GENE_MOD, BODY_PARTS, NEURAL_DAMPING_ID } from '@entities/soldier/config/constants/body-parts';
-import { PSI_LEVELS } from '@entities/soldier/config/constants/psi-levels';
-import { SOLDIER_RANKS } from '@entities/soldier/config/constants/soldier-ranks';
-import { defaultBiosoldierBuild, defaultSoldierBuild } from '@entities/soldier/model/build';
+import type { ShivBuildData, ShivPerkId } from '@entities/shiv';
+import { defaultShivBuild } from '@entities/shiv';
+import type { AbilityId, BiosoldierBuildData, SoldierBuildData, SoldierClass } from '@entities/soldier';
+import { BIOSOLDIER_CLASSES, defaultBiosoldierBuild, defaultSoldierBuild, MEC_CLASSES } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 
 export const BUILD_NAME = 'Overwatch';
 
-/**
- * Last perk of each rank after the first one, in rank order.
- *
- * @param soldierClass biosoldier class or MEC class.
- */
-const lastPerksByRank = (soldierClass: DeepReadonly<SoldierClass>) => (
-  SOLDIER_RANKS.slice(1).map(rank => soldierClass.perks[rank.id].at(-1) ?? null)
-);
+/** Last perk of each rank from Lance Corporal, by class id. */
+const LAST_PERKS_BY_CLASS = new Map<string, readonly AbilityId[]>([
+  ['sniper', ['in-the-zone', 'disabling-shot', 'executioner', 'precision-shot', 'bring-em-on', 'lone-wolf']],
+  ['scout', ['smoke-and-mirrors', 'disabling-shot', 'tinker', 'pathfinder', 'kitted', 'extra-conditioning']],
+  ['infantry', ['grenadier', 'payload', 'kitted', 'ace', 'tandem-warheads', 'aggression']],
+  ['assault', ['breacher', 'fragmentation', 'killer-instinct', 'rapid-fire', 'heat-warheads', 'lock-n-load']],
+  ['gunner', ['mayhem', 'holo-rounds', 'penetrator', 'grit', 'impact', 'lock-n-load']],
+  ['rocketeer', ['smoke-and-mirrors', 'kitted', 'acid-tech', 'shock-and-awe', 'tandem-warheads', 'extra-conditioning']],
+  ['medic', ['smoke-and-mirrors', 'combat-drugs', 'ranger', 'savior', 'holo-rounds', 'sharpshooter']],
+  ['engineer', ['smoke-and-mirrors', 'firebase', 'dense-smoke', 'master-mechanic', 'acid-tech', 'extra-conditioning']],
+  ['jaeger', ['pyro', 'jetboot-module', 'bring-em-on', 'killer-instinct', 'repulsor', 'sprinter']],
+  ['marauder', ['dash-and-bash', 'grit', 'repulsor', 'sprinter', 'repair-servos', 'shadowstep']],
+  ['goliath', ['grenadier', 'fortified', 'blast', 'dampening-shield', 'tandem-warheads', 'executioner']],
+  ['shogun', ['grenadier', 'jetboot-module', 'sapper', 'arsenal', 'fragmentation', 'extra-conditioning']],
+]);
+
+/** First gene mod of every body part: Neural Damping in the Brain. */
+const FIRST_GENE_MODS: AbilityId[] = ['neural-damping', 'advanced-perception', 'dual-heart', 'enhanced-metabolism', 'muscle-amp'];
+
+/** Second gene mod of every body part: no Neural Damping. */
+const SECOND_GENE_MODS: AbilityId[] = ['smart-macrophages', 'predictive-tracking', 'adrenal-neurosympathy', 'iron-skin', 'regenesis'];
+
+/** Last psionic ability of every psi level. */
+const LAST_PSIONIC_ABILITIES: AbilityId[] = ['mind-fray', 'psi-inspire', 'fervor', 'telekinetic-field', 'psi-mastery'];
+
+/** First officer perk of every officer rank. */
+const FIRST_OFFICER_PERKS: AbilityId[] = ['strength-in-numbers', 'cover-tactics', 'show-em-the-ropes', 'clutch-leadership', 'camaraderie'];
+
+/** Last perk of every technology level. */
+const LAST_SHIV_PERKS: ShivPerkId[] = ['platform-stability', 'damage-control', 'close-combat-specialist', 'absorption-fields', 'smart-macrophages'];
 
 /**
- * Biosoldier build of the class with the last perk of every rank, selected with the mutators.
+ * Build of the class with the last perk of every rank; a class without its perks in `LAST_PERKS_BY_CLASS` gets only
+ * the base perk, which makes no share code.
+ *
+ * @param build default build of the class.
+ */
+const withFullTree = <Build extends SoldierBuildData>(build: Build): Build => ({
+  ...build,
+  perks: [build.soldierClass.basePerk, ...(LAST_PERKS_BY_CLASS.get(build.soldierClass.id) ?? [])],
+});
+
+/**
+ * Biosoldier build of the class with the last perk of every rank.
  *
  * @param soldierClass biosoldier class.
  */
-const fullTreeBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>): BiosoldierBuildData => {
-  const build = defaultBiosoldierBuild(soldierClass);
-
-  lastPerksByRank(soldierClass).forEach((perkId, index) => selectSoldierBuildPerk(build, index + 1, perkId));
-
-  return build;
-};
+const fullTreeBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>): BiosoldierBuildData => withFullTree(defaultBiosoldierBuild(soldierClass));
 
 /**
- * MEC build of the class with the last perk of every rank, selected with the mutators.
+ * MEC build of the class with the last perk of every rank.
  *
  * @param soldierClass MEC class.
  */
-const fullTreeMecBuild = (soldierClass: DeepReadonly<SoldierClass>): SoldierBuildData => {
-  const build = defaultSoldierBuild(soldierClass);
-
-  lastPerksByRank(soldierClass).forEach((perkId, index) => selectSoldierBuildPerk(build, index + 1, perkId));
-
-  return build;
-};
-
-/**
- * Selects a gene mod in every body part with the mutator.
- *
- * @param build biosoldier build; mutated in place.
- * @param variantIndex gene mod variant of each body part: 0 or 1.
- */
-const selectEveryGeneMod = (build: BiosoldierBuildData, variantIndex: number) => {
-  BODY_PARTS.forEach((bodyPart, bodyPartIndex) => selectBiosoldierBuildGeneMod(build, bodyPartIndex, bodyPart.geneMods[variantIndex] ?? null));
-};
-
-/**
- * Selects the last psionic ability of every psi level with the mutator.
- *
- * @param build biosoldier build; mutated in place.
- */
-const selectEveryPsionicAbility = (build: BiosoldierBuildData) => {
-  PSI_LEVELS.forEach((psiLevel, levelIndex) => selectBiosoldierBuildPsionicAbility(build, levelIndex, psiLevel.abilities.at(-1) ?? null));
-};
-
-/**
- * Selects the first officer perk of every officer rank with the mutator.
- *
- * @param build biosoldier build; mutated in place.
- */
-const selectEveryOfficerPerk = (build: BiosoldierBuildData) => {
-  OFFICER_RANKS.forEach((officerRank, officerRankIndex) => selectBiosoldierBuildOfficerPerk(build, officerRankIndex, officerRank.perks[0] ?? null));
-};
+const fullTreeMecBuild = (soldierClass: DeepReadonly<SoldierClass>): SoldierBuildData => withFullTree(defaultSoldierBuild(soldierClass));
 
 const [FIRST_BIOSOLDIER_CLASS] = BIOSOLDIER_CLASSES;
 
 const [FIRST_MEC_CLASS] = MEC_CLASSES;
 
-/**
- * Biosoldier build with gene mods in every body part, Neural Damping in its own.
- */
-const createGeneModsBuild = () => {
-  const build = fullTreeBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
+/** Sniper build with a full class tree. */
+const FULL_TREE_SNIPER_BUILD = fullTreeBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
 
-  selectEveryGeneMod(build, 0);
-  selectBiosoldierBuildGeneMod(build, BODY_PART_INDEX_BY_GENE_MOD.get(NEURAL_DAMPING_ID) ?? -1, NEURAL_DAMPING_ID);
+/** Sniper build with empty steps between selections: Lone Wolf, Predictive Tracking, Psi Mastery and Combined Arms. */
+const GAPPED_BUILD: BiosoldierBuildData = {
+  ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS),
+  perks: ['squadsight', null, null, null, null, null, 'lone-wolf'],
+  geneMods: [null, 'predictive-tracking', null, null, null],
+  psionicAbilities: [null, null, null, null, 'psi-mastery'],
+  officerPerks: [null, null, null, null, 'combined-arms'],
+};
 
-  return build;
+/** Jaeger build with only Sprinter, the last perk of the last rank. */
+const GAPPED_MEC_BUILD: SoldierBuildData = {
+  ...defaultSoldierBuild(FIRST_MEC_CLASS),
+  perks: ['hunter', null, null, null, null, null, 'sprinter'],
 };
 
 /**
- * Biosoldier build with a psionic ability on every psi level.
- */
-const createPsionicBuild = () => {
-  const build = fullTreeBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
-
-  selectEveryPsionicAbility(build);
-
-  return build;
-};
-
-/**
- * Biosoldier build with an officer perk on every officer rank.
- */
-const createOfficerBuild = () => {
-  const build = fullTreeBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
-
-  selectEveryOfficerPerk(build);
-
-  return build;
-};
-
-/**
- * Super soldier with its own name: gene mods without Neural Damping, every psi level and every officer rank.
- */
-const createSuperSoldierBuild = () => {
-  const build = fullTreeBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
-
-  selectEveryGeneMod(build, 1);
-  selectEveryPsionicAbility(build);
-  selectEveryOfficerPerk(build);
-  build.name = BUILD_NAME;
-
-  return build;
-};
-
-/**
- * SHIV build with the last perk of every technology level, selected with the mutator.
+ * SHIV build with the last perk of every technology level.
  *
  * @param name build name.
  */
-const createFullShivBuild = (name: string | null): ShivBuildData => {
-  const build = defaultShivBuild();
-
-  TECHNOLOGY_LEVELS.forEach((level, levelIndex) => selectShivBuildPerk(build, levelIndex, level.perks.at(-1)?.id ?? null));
-
-  if (name) build.name = name;
-
-  return build;
-};
-
-/**
- * Biosoldier build with empty steps between selections: the last rank, a body part, the last psi level and the last
- * officer rank selected, the rest empty.
- */
-const createGappedBuild = () => {
-  const build = defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
-  const lastRankIndex = SOLDIER_RANKS.length - 1;
-  const lastLevelIndex = PSI_LEVELS.length - 1;
-  const lastOfficerRankIndex = OFFICER_RANKS.length - 1;
-
-  selectSoldierBuildPerk(build, lastRankIndex, lastPerksByRank(FIRST_BIOSOLDIER_CLASS).at(-1) ?? null);
-  selectBiosoldierBuildGeneMod(build, 1, BODY_PARTS[1]?.geneMods[1] ?? null);
-  selectBiosoldierBuildPsionicAbility(build, lastLevelIndex, PSI_LEVELS[lastLevelIndex]?.abilities[0] ?? null);
-  selectBiosoldierBuildOfficerPerk(build, lastOfficerRankIndex, OFFICER_RANKS[lastOfficerRankIndex]?.perks[1] ?? null);
-
-  return build;
-};
-
-/**
- * Biosoldier build with an officer perk on every officer rank and only the base perk in the class tree.
- */
-const createRookieOfficerBuild = () => {
-  const build = defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS);
-
-  selectEveryOfficerPerk(build);
-
-  return build;
-};
-
-/**
- * MEC build with only the last rank selected.
- */
-const createGappedMecBuild = () => {
-  const build = defaultSoldierBuild(FIRST_MEC_CLASS);
-
-  selectSoldierBuildPerk(build, SOLDIER_RANKS.length - 1, lastPerksByRank(FIRST_MEC_CLASS).at(-1) ?? null);
-
-  return build;
-};
+const fullShivBuild = (name: string): ShivBuildData => ({ ...defaultShivBuild(), perks: [...LAST_SHIV_PERKS], name });
 
 export const FULL_TREE_BIOSOLDIER_BUILDS = BIOSOLDIER_CLASSES.map(soldierClass => [soldierClass.name, fullTreeBiosoldierBuild(soldierClass)] as const);
 
 export const FULL_TREE_MEC_BUILDS = MEC_CLASSES.map(soldierClass => [soldierClass.name, fullTreeMecBuild(soldierClass)] as const);
 
-export const BIOSOLDIER_BUILDS = [
+export const BIOSOLDIER_BUILDS: [string, BiosoldierBuildData][] = [
   ['default', defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS)],
-  ['gene mods with Neural Damping', createGeneModsBuild()],
-  ['every psi level', createPsionicBuild()],
-  ['every officer rank', createOfficerBuild()],
-  ['super soldier with its own name', createSuperSoldierBuild()],
-  ['empty steps between selections', createGappedBuild()],
-  ['every officer rank with only the base perk', createRookieOfficerBuild()],
-] as const;
+  ['gene mods with Neural Damping', { ...FULL_TREE_SNIPER_BUILD, geneMods: [...FIRST_GENE_MODS] }],
+  ['every psi level', { ...FULL_TREE_SNIPER_BUILD, psionicAbilities: [...LAST_PSIONIC_ABILITIES] }],
+  ['every officer rank', { ...FULL_TREE_SNIPER_BUILD, officerPerks: [...FIRST_OFFICER_PERKS] }],
+  ['super soldier with its own name', {
+    ...FULL_TREE_SNIPER_BUILD,
+    geneMods: [...SECOND_GENE_MODS],
+    psionicAbilities: [...LAST_PSIONIC_ABILITIES],
+    officerPerks: [...FIRST_OFFICER_PERKS],
+    name: BUILD_NAME,
+  }],
+  ['empty steps between selections', GAPPED_BUILD],
+  ['every officer rank with only the base perk', { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS), officerPerks: [...FIRST_OFFICER_PERKS] }],
+];
 
-export const MEC_BUILDS = [
+export const MEC_BUILDS: [string, SoldierBuildData][] = [
   ['default', defaultSoldierBuild(FIRST_MEC_CLASS)],
   ['with its own name', { ...fullTreeMecBuild(FIRST_MEC_CLASS), name: BUILD_NAME }],
-  ['empty ranks below a selection', createGappedMecBuild()],
-] as const;
+  ['empty ranks below a selection', GAPPED_MEC_BUILD],
+];
 
-export const SHIV_BUILDS = [
+export const SHIV_BUILDS: [string, ShivBuildData][] = [
   ['default', defaultShivBuild()],
-  ['every technology level', createFullShivBuild(null)],
-  ['every technology level with its own name', createFullShivBuild(BUILD_NAME)],
-] as const;
+  ['every technology level', fullShivBuild('SHIV')],
+  ['every technology level with its own name', fullShivBuild(BUILD_NAME)],
+];

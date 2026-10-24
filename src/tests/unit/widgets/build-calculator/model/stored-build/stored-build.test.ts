@@ -1,26 +1,20 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { encodeBuild } from '@features/share-build';
 import { storedBuildCodec } from '@widgets/build-calculator/model/stored-build';
 
 import {
   BUILD_ID,
-  COLLISION_CODE,
-  COLLISION_SELECTIONS,
+  COLLISION_BUILD,
+  COLLISION_RECORD,
   GAPPED_MEC_BUILD,
   INVALID_CODE,
   MEC_BUILD,
   OUTDATED_MEC_BUILD,
   OUTDATED_MEC_RECORD,
-  REMOVED_PERK_BUILD,
-  REMOVED_PERK_RECORD,
   SHIV_BUILD,
   UNENCODABLE_SHIV_BUILD,
 } from './stored-build.mock';
-
-vi.mock('@entities/shiv/config/constants/technology-level-content', async () => ({
-  TECHNOLOGY_LEVEL_CONTENT: (await import('./stored-build.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
-}));
 
 const { serialize, parse } = storedBuildCodec('shiv');
 
@@ -46,9 +40,9 @@ describe('storedBuildCodec serialize', () => {
   });
 
   it('stores an Outdated SHIV build as its stored record', () => {
-    const record = serialize(REMOVED_PERK_BUILD);
+    const record = serialize(COLLISION_BUILD);
 
-    expect(record).toEqual(REMOVED_PERK_RECORD);
+    expect(record).toEqual(COLLISION_RECORD);
   });
 
   it('returns null for a build without a share code', () => {
@@ -77,22 +71,10 @@ describe('storedBuildCodec parse', () => {
     expect(build).toEqual(OUTDATED_MEC_BUILD);
   });
 
-  it('keeps the code of a SHIV code with Outdated selections in the Outdated build', () => {
-    const build = parse(BUILD_ID, { code: COLLISION_CODE, readonly: false });
+  it('gives a SHIV code with Outdated selections as an Outdated build with the code and the selections', () => {
+    const build = parse(BUILD_ID, COLLISION_RECORD);
 
-    expect(build?.outdated?.code).toBe(COLLISION_CODE);
-  });
-
-  it('gives a SHIV code with a perk gone from the tree as an Outdated build without the perk', () => {
-    const build = parse(BUILD_ID, REMOVED_PERK_RECORD);
-
-    expect(build).toEqual(REMOVED_PERK_BUILD);
-  });
-
-  it('gives both colliding perks of a SHIV code as Outdated selections', () => {
-    const build = parse(BUILD_ID, { code: COLLISION_CODE, readonly: false });
-
-    expect(build?.outdated?.selections).toEqual(COLLISION_SELECTIONS);
+    expect(build).toEqual(COLLISION_BUILD);
   });
 
   it('returns null for a build code of another unit type', () => {

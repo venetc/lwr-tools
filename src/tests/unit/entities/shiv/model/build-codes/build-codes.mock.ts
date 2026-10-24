@@ -48,6 +48,19 @@ export const SAME_LEVEL_RESULT = {
   outdated: [{ perkId: 'right', reason: 'collision', levelIndex: 0 }, { perkId: 'left', reason: 'collision', levelIndex: 0 }],
 };
 
+/** Right, Stray, Up and Left: Left and Right collide on the first level, Stray is outside the tree. */
+export const MIXED_OUTDATED_CODES: ShivBuildCodes = { perks: [2, 6, 3, 1], name: null };
+
+/** Result of `MIXED_OUTDATED_CODES`: Up kept, Outdated selections in code order. */
+export const MIXED_OUTDATED_RESULT = {
+  build: { perks: [null, 'up', null], name: 'SHIV' },
+  outdated: [
+    { perkId: 'right', reason: 'collision', levelIndex: 0 },
+    { perkId: 'stray', reason: 'removed' },
+    { perkId: 'left', reason: 'collision', levelIndex: 0 },
+  ],
+};
+
 export const MISPLACED_PERK_BUILD: ShivBuildData = { perks: ['up', null, null], name: 'SHIV' };
 
 export const UNKNOWN_PERK_BUILD: ShivBuildData = { perks: ['missing', null, null], name: 'SHIV' };

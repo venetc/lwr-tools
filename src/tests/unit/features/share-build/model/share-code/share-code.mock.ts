@@ -1,13 +1,6 @@
 import type { DecodedLoadout } from '@entities/loadout';
-import { BIOSOLDIER_CLASSES, MEC_CLASSES } from '@entities/soldier';
-import {
-  defaultBiosoldierBuild,
-  defaultSoldierBuild,
-  selectBiosoldierBuildGeneMod,
-  selectBiosoldierBuildOfficerPerk,
-  selectBiosoldierBuildPsionicAbility,
-  selectSoldierBuildPerk,
-} from '@entities/soldier/model/build';
+import type { BiosoldierBuildData, SoldierBuildData } from '@entities/soldier';
+import { BIOSOLDIER_CLASSES, defaultBiosoldierBuild, defaultSoldierBuild, MEC_CLASSES } from '@entities/soldier';
 import type { BinaryCodeSection, BitWriter } from '@shared/lib/binary-code';
 
 const [FIRST_BIOSOLDIER_CLASS] = BIOSOLDIER_CLASSES;
@@ -19,15 +12,6 @@ export const BIOSOLDIER_BUILD = { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLA
 export const MEC_BUILD = { ...defaultSoldierBuild(FIRST_MEC_CLASS), name: 'Walker' };
 
 export const SHIV_BUILD = { perks: [null, null, null, null, null], name: 'SHIV' };
-
-/** SHIV tree records without Smart Macrophages, as after a mod update that removes it. */
-export const TECHNOLOGY_LEVEL_CONTENT_MOCK = {
-  'base-configuration': { name: 'Basic Config', perks: ['lock-n-load', 'repair-servos', 'platform-stability'] },
-  'advancements-1': { name: 'Advancements I', perks: ['holo-rounds', 'shredder', 'damage-control'] },
-  'advancements-2': { name: 'Advancements II', perks: ['reactive-targeting-sensors', 'light-em-up', 'close-combat-specialist'] },
-  'advancements-3a': { name: 'Advancements IIIa', perks: ['critical-system-targeting', 'fortified', 'absorption-fields'] },
-  'advancements-3b': { name: 'Advancements IIIb', perks: ['vital-point-targeting', 'bring-em-on'] },
-};
 
 /**
  * SHIV `PERKS` section with raw numbers: perk count 3 bits, then the perk numbers 6 bits each.
@@ -42,10 +26,7 @@ export const rawShivPerksSection = (perkCodes: readonly number[]): BinaryCodeSec
   },
 });
 
-/** Holo Rounds, then Smart Macrophages, which the mocked SHIV tree no longer has. */
-export const REMOVED_PERK_CODES = [4, 15];
-
-/** SHIV build of `REMOVED_PERK_CODES` without Smart Macrophages. */
+/** SHIV build with only Holo Rounds. */
 export const HOLO_ROUNDS_BUILD = { perks: [null, 'holo-rounds', null, null, null], name: 'SHIV' };
 
 /** Lock N' Load and Repair Servos, both of Basic Config. */
@@ -57,13 +38,12 @@ export const COLLISION_OUTDATED = [
   { perkId: 'repair-servos', reason: 'collision', levelIndex: 0 },
 ];
 
-/** Repair Servos, Holo Rounds, Smart Macrophages and Lock N' Load. */
-export const MIXED_CODES = [2, 4, 15, 1];
+/** Repair Servos, Holo Rounds and Lock N' Load. */
+export const MIXED_CODES = [2, 4, 1];
 
 /** Outdated selections of `MIXED_CODES`, in code order. */
 export const MIXED_OUTDATED = [
   { perkId: 'repair-servos', reason: 'collision', levelIndex: 0 },
-  { perkId: 'smart-macrophages', reason: 'removed' },
   { perkId: 'lock-n-load', reason: 'collision', levelIndex: 0 },
 ];
 
@@ -74,31 +54,21 @@ export const UNKNOWN_PERK_CODES = [4, 40];
  * Sniper build with empty steps between selections: Lone Wolf on Master Sergeant, Iron Skin, Psi Mastery on Master and
  * Cover Tenacity on Captain.
  */
-const createGappedBiosoldierBuild = () => {
-  const build = { ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS), name: 'Gaps' };
-
-  selectSoldierBuildPerk(build, 6, 'lone-wolf');
-  selectBiosoldierBuildGeneMod(build, 3, 'iron-skin');
-  selectBiosoldierBuildPsionicAbility(build, 4, 'psi-mastery');
-  selectBiosoldierBuildOfficerPerk(build, 1, 'cover-tenacity');
-
-  return build;
+export const GAPPED_BIOSOLDIER_BUILD: BiosoldierBuildData = {
+  ...defaultBiosoldierBuild(FIRST_BIOSOLDIER_CLASS),
+  name: 'Gaps',
+  perks: ['squadsight', null, null, null, null, null, 'lone-wolf'],
+  geneMods: [null, null, null, 'iron-skin', null],
+  psionicAbilities: [null, null, null, null, 'psi-mastery'],
+  officerPerks: [null, 'cover-tenacity', null, null, null],
 };
 
-export const GAPPED_BIOSOLDIER_BUILD = createGappedBiosoldierBuild();
-
-/**
- * MEC build with only the last rank selected.
- */
-const createGappedMecBuild = () => {
-  const build = { ...defaultSoldierBuild(FIRST_MEC_CLASS), name: 'Walker' };
-
-  selectSoldierBuildPerk(build, 6, FIRST_MEC_CLASS.perks['master-sergeant'][0] ?? null);
-
-  return build;
+/** Jaeger build with only Extra Conditioning, the first perk of Master Sergeant. */
+export const GAPPED_MEC_BUILD: SoldierBuildData = {
+  ...defaultSoldierBuild(FIRST_MEC_CLASS),
+  name: 'Walker',
+  perks: ['hunter', null, null, null, null, null, 'extra-conditioning'],
 };
-
-export const GAPPED_MEC_BUILD = createGappedMecBuild();
 
 /**
  * Selection of a raw step: its variant index and its ability number; null for an empty step.

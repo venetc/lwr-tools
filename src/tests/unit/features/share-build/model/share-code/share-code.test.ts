@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { encodeBuild } from '@features/share-build/model/build-code';
 import { readShareCode } from '@features/share-build/model/share-code';
@@ -38,7 +38,6 @@ import {
   OTHER_RANK_PERK_SECTIONS,
   OUTDATED_BRANCH_CASES,
   rawShivPerksSection,
-  REMOVED_PERK_CODES,
   ROOKIE_GAP_BUILD,
   ROOKIE_GAP_SECTIONS,
   SEPARATOR,
@@ -55,10 +54,6 @@ import {
   UNKNOWN_PERK_CODES,
   UNKNOWN_SECTION,
 } from './share-code.mock';
-
-vi.mock('@entities/shiv/config/constants/technology-level-content', async () => ({
-  TECHNOLOGY_LEVEL_CONTENT: (await import('./share-code.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
-}));
 
 const SHIV_UNIT_CODE = encodeUnit({ kind: 'shiv', build: SHIV_BUILD, loadout: SHIV_LOADOUT }) ?? '';
 
@@ -161,15 +156,6 @@ describe('readShareCode of a soldier build code with Outdated selections', () =>
 });
 
 describe('readShareCode of a SHIV build code with Outdated selections', () => {
-  it('leaves a perk removed from the SHIV tree out of the build', () => {
-    const result = readShareCode(encodeBinaryCode(2, [rawShivPerksSection(REMOVED_PERK_CODES)]) ?? '');
-
-    expect(result).toEqual({
-      status: 'unit',
-      unit: { kind: 'shiv', build: HOLO_ROUNDS_BUILD, outdated: [{ perkId: 'smart-macrophages', reason: 'removed' }], loadout: null },
-    });
-  });
-
   it('leaves two perks of one technology level out of the build', () => {
     const result = readShareCode(encodeBinaryCode(2, [rawShivPerksSection(COLLISION_CODES)]) ?? '');
 

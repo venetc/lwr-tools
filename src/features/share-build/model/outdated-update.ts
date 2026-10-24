@@ -3,8 +3,8 @@ import { computed, ref, toValue } from 'vue';
 
 import type { LoadoutUnitId } from '@entities/loadout';
 
+import type { StoredOutdatedBuild } from './build-code';
 import { outdatedUpdateGroups } from './outdated-selection-cards';
-import type { StoredOutdatedBuild } from './stored-build';
 
 /**
  * Update of an Outdated build through the «Update build» dialog: the dialog shows the cards of its Outdated selections,

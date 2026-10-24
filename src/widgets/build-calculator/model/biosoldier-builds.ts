@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import type { BiosoldierBuildData, SoldierClass } from '@entities/soldier';
+import type { SoldierClass } from '@entities/soldier';
 import {
   BIOSOLDIER_CLASSES,
   defaultBiosoldierBuild,
@@ -9,17 +9,16 @@ import {
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from '@entities/soldier';
-import type { ListedBuild } from '@features/manage-builds';
-import { useBuildList } from '@features/manage-builds';
-import type { OutdatedSelectionByKind } from '@features/share-build';
-import { storedBuildCodec } from '@features/share-build';
 
 import { BIOSOLDIER_BUILD_KEY_PREFIX, BIOSOLDIER_BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
+import type { SavedBuild } from './build-list';
+import { useBuildList } from './build-list';
+import { storedBuildCodec } from './stored-build';
 
 /**
  * Saved biosoldier build: build data with its id, lock and Outdated build record.
  */
-export type BiosoldierBuild = ListedBuild<BiosoldierBuildData, OutdatedSelectionByKind['biosoldier']>;
+export type BiosoldierBuild = SavedBuild<'biosoldier'>;
 
 /**
  * Default builds: one per class with only the base perk selected, with fixed ids.
@@ -35,7 +34,7 @@ const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map((soldierClass): Biosold
  * Saved biosoldier builds, kept in the local storage and synced between tabs.
  */
 export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier-builds', () => {
-  const buildList = useBuildList<BiosoldierBuildData, OutdatedSelectionByKind['biosoldier']>({
+  const buildList = useBuildList<'biosoldier'>({
     orderKey: BIOSOLDIER_BUILD_ORDER_KEY,
     itemKeyPrefix: BIOSOLDIER_BUILD_KEY_PREFIX,
     ...storedBuildCodec('biosoldier'),

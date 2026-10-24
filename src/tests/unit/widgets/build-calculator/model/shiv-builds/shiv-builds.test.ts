@@ -19,7 +19,7 @@ import {
 
 vi.mock('@entities/shiv', async () => (await import('./shiv-builds.mock')).SHIV_ENTITY_MOCK);
 
-vi.mock('@features/share-build', async () => (await import('./shiv-builds.mock')).SHARE_BUILD_MOCK);
+vi.mock('@widgets/build-calculator/model/stored-build', async () => (await import('./shiv-builds.mock')).STORED_BUILD_MOCK);
 
 beforeEach(() => {
   vi.useFakeTimers();

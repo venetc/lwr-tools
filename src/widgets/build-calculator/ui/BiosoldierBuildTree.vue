@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { useCssModule } from 'vue';
 
-import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
 import { useBiosoldierBranchClasses } from '../model/biosoldier-branch-classes';
 import { tierLabel, useBiosoldierBuildGroups } from '../model/biosoldier-build-groups';
 import type { BiosoldierBuild } from '../model/biosoldier-builds';
 import { useBiosoldierBuildsStore } from '../model/biosoldier-builds';
-import { useBuildTreeHandlers } from '../model/build-tree-handlers';
+import { useBuildEditor } from '../model/build-editor';
 import BiosoldierClassIcon from './BiosoldierClassIcon.vue';
 import BuildPanel from './BuildPanel.vue';
 import OfficerRankBadge from './OfficerRankBadge.vue';
@@ -35,11 +34,9 @@ const emit = defineEmits<Emits>();
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
-const editor = useBuildEditor(() => props.build, biosoldierBuildsStore);
-
 const { tree, groups, select: selectItem } = useBiosoldierBuildGroups(() => props.build);
 
-const { rename, lock, replace, reset, update, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
+const { rename, lock, replace, reset, update, select } = useBuildEditor(() => props.build, biosoldierBuildsStore, selectItem, () => emit('change'));
 
 const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
 </script>

@@ -33,6 +33,16 @@ export interface OutdatedSelectionByKind {
 }
 
 /**
+ * Stored record of an Outdated build of the kind: its share code, kept until the update, and its Outdated selections.
+ */
+export interface StoredOutdatedBuild<Kind extends LoadoutUnitId> {
+  /** Share code of the stored record. */
+  code: string
+  /** Outdated selections of the code. */
+  selections: readonly OutdatedSelectionByKind[Kind][]
+}
+
+/**
  * Build of a build code and the selections of the code left out of it.
  */
 export interface DecodedBuild<Build, Outdated> {

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useBuildList } from '@features/manage-builds/model/build-list';
+import { useBuildList } from '@widgets/build-calculator/model/build-list';
 
 import { SAVE_DELAY, stubPage } from '../../../../shared/lib/stored-list/stored-list/stored-list.mock';
 import {

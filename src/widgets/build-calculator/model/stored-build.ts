@@ -1,30 +1,9 @@
 import type { LoadoutUnitId } from '@entities/loadout';
-import type { LockableItem } from '@shared/lib/stored-list';
+import type { DecodedUnitOf } from '@features/share-build';
+import { encodeBuild, isUnitOf, readShareCode } from '@features/share-build';
 
 import { STORED_BUILD_SCHEMA } from '../config/constants';
-import type { BuildDataByKind, OutdatedSelectionByKind } from './build-code';
-import { encodeBuild } from './build-code';
-import { readShareCode } from './share-code';
-import type { DecodedUnitOf } from './unit-code';
-import { isUnitOf } from './unit-code';
-
-/**
- * Stored record of an Outdated build of the kind: its share code, kept until the update, and its Outdated selections.
- */
-export interface StoredOutdatedBuild<Kind extends LoadoutUnitId> {
-  /** Share code of the stored record. */
-  code: string
-  /** Outdated selections of the code. */
-  selections: readonly OutdatedSelectionByKind[Kind][]
-}
-
-/**
- * Stored build of the kind: build data with its id, lock and Outdated build record.
- */
-export type StoredBuildOf<Kind extends LoadoutUnitId> = LockableItem<BuildDataByKind[Kind]> & {
-  /** Stored record of an Outdated build; null for a build whose code fits the current trees. */
-  outdated: StoredOutdatedBuild<Kind> | null
-};
+import type { SavedBuild } from './build-list';
 
 /**
  * Stored records of builds of the kind through their share codes: `{ code, readonly }`. The record of an Outdated
@@ -37,9 +16,9 @@ export const storedBuildCodec = <Kind extends LoadoutUnitId>(kind: Kind) => {
    * Stored record of the build: the stored record of an Outdated build as it is, otherwise the share code of the build;
    * null if the build has no share code.
    *
-   * @param build stored build.
+   * @param build saved build.
    */
-  const serialize = (build: Readonly<StoredBuildOf<Kind>>) => {
+  const serialize = (build: Readonly<SavedBuild<Kind>>) => {
     if (build.outdated) return { code: build.outdated.code, readonly: build.readonly };
 
     const code = encodeBuild(kind, build);

@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 import type { SoldierStepKind } from '@entities/soldier';
 
 import type { StepListBits } from '../model/section-fields';
@@ -145,9 +143,3 @@ export const OUTDATED_SELECTIONS_DIALOG_TEXT = {
 
 /** Result of a share code that reads as no Unit and no Squad. */
 export const INVALID_SHARE_CODE = { status: 'invalid' } as const satisfies ShareCodeReadResult;
-
-/** Stored build record: share code of the build and its lock. */
-export const STORED_BUILD_SCHEMA = z.object({
-  code: z.string(),
-  readonly: z.boolean(),
-});

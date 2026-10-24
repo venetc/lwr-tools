@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
-import { useBuildTreeHandlers } from '../model/build-tree-handlers';
+import { useBuildEditor } from '../model/build-editor';
 import { useMecBuildGroups } from '../model/mec-build-groups';
 import type { MecBuild } from '../model/mec-builds';
 import { useMecBuildsStore } from '../model/mec-builds';
@@ -30,11 +29,9 @@ const emit = defineEmits<Emits>();
 
 const mecBuildsStore = useMecBuildsStore();
 
-const editor = useBuildEditor(() => props.build, mecBuildsStore);
-
 const { tree, groups, select: selectItem } = useMecBuildGroups(() => props.build);
 
-const { rename, lock, replace, reset, update, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
+const { rename, lock, replace, reset, update, select } = useBuildEditor(() => props.build, mecBuildsStore, selectItem, () => emit('change'));
 </script>
 
 <template>

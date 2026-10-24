@@ -1,39 +1,23 @@
+import type { LoadoutUnitId } from '@entities/loadout';
+import type { BuildDataByKind, StoredOutdatedBuild } from '@features/share-build';
 import { createId } from '@shared/lib/id';
 import type { LockableItem, StoredListOptions } from '@shared/lib/stored-list';
 import { useStoredList } from '@shared/lib/stored-list';
 
 /**
- * Build data a list can show: at least a name.
+ * Saved build of the kind: build data with its id, lock and Outdated build record.
  */
-export interface NamedBuildData {
-  /** Build name shown in the heading and the navigation. */
-  name: string
-}
-
-/**
- * Stored record of an Outdated build, kept as it is until the update.
- */
-export interface OutdatedBuildRecord<Selection> {
-  /** Share code of the stored record. */
-  code: string
-  /** Outdated selections of the code, which the list keeps without reading them. */
-  selections: readonly Selection[]
-}
-
-/**
- * Build of a list: build data with its id, lock and Outdated build record.
- */
-export type ListedBuild<Data, Selection> = LockableItem<Data> & {
+export type SavedBuild<Kind extends LoadoutUnitId> = LockableItem<BuildDataByKind[Kind]> & {
   /** Stored record of an Outdated build, frozen until the update; null for a build that fits the current trees. */
-  outdated: OutdatedBuildRecord<Selection> | null
+  outdated: StoredOutdatedBuild<Kind> | null
 };
 
 /**
  * Options of a build list: how the builds are stored and what a reset turns a build into.
  */
-export interface BuildListOptions<Data extends NamedBuildData, Selection> extends StoredListOptions<ListedBuild<Data, Selection>> {
+export interface BuildListOptions<Kind extends LoadoutUnitId> extends StoredListOptions<SavedBuild<Kind>> {
   /** Data of a new build of the same kind as the build, for a reset; the list keeps the name, id and lock. */
-  newData: (build: Readonly<ListedBuild<Data, Selection>>) => Data
+  newData: (build: Readonly<SavedBuild<Kind>>) => BuildDataByKind[Kind]
 }
 
 /**
@@ -42,7 +26,7 @@ export interface BuildListOptions<Data extends NamedBuildData, Selection> extend
  *
  * @param options build list options.
  */
-export const useBuildList = <Data extends NamedBuildData, Selection>(options: BuildListOptions<Data, Selection>) => {
+export const useBuildList = <Kind extends LoadoutUnitId>(options: BuildListOptions<Kind>) => {
   const buildList = useStoredList(options);
 
   /**
@@ -64,7 +48,7 @@ export const useBuildList = <Data extends NamedBuildData, Selection>(options: Bu
    * @param buildId build id.
    * @param edit changes the build in place.
    */
-  const editBuild = (buildId: string, edit: (build: ListedBuild<Data, Selection>) => void) => {
+  const editBuild = (buildId: string, edit: (build: SavedBuild<Kind>) => void) => {
     const build = findEditableBuild(buildId);
 
     if (!build) return;
@@ -105,10 +89,10 @@ export const useBuildList = <Data extends NamedBuildData, Selection>(options: Bu
    * @param data build data, such as imported data or the data of a new build.
    * @returns id of the new build.
    */
-  const addBuild = (data: Data) => {
+  const addBuild = (data: BuildDataByKind[Kind]) => {
     const id = createId();
 
-    buildList.addItem({ ...data, id, readonly: false, outdated: null });
+    buildList.addItem(Object.assign({}, data, { id, readonly: false, outdated: null }));
 
     return id;
   };
@@ -120,7 +104,7 @@ export const useBuildList = <Data extends NamedBuildData, Selection>(options: Bu
    * @param buildId build id.
    * @param data imported build data.
    */
-  const replaceBuild = (buildId: string, data: Data) => {
+  const replaceBuild = (buildId: string, data: BuildDataByKind[Kind]) => {
     const build = findEditableBuild(buildId);
 
     if (!build) return;

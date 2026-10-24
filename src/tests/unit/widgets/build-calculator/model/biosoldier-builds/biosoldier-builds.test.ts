@@ -23,7 +23,7 @@ vi.mock('@entities/soldier', async () => (await import('./biosoldier-builds.mock
 
 vi.mock('@entities/shiv', () => ({ TECHNOLOGY_LEVELS: [] }));
 
-vi.mock('@features/share-build', async () => (await import('./biosoldier-builds.mock')).SHARE_BUILD_MOCK);
+vi.mock('@widgets/build-calculator/model/stored-build', async () => (await import('./biosoldier-builds.mock')).STORED_BUILD_MOCK);
 
 beforeEach(() => {
   vi.useFakeTimers();

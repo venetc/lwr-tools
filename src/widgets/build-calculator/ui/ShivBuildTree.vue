@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { SHIV_BUILD_NAME } from '@entities/shiv';
-import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
 import { REMOVED_SHIV_PERK_NOTE } from '../config/constants';
-import { useBuildTreeHandlers } from '../model/build-tree-handlers';
+import { useBuildEditor } from '../model/build-editor';
 import { useShivBuildGroups } from '../model/shiv-build-groups';
 import type { ShivBuild } from '../model/shiv-builds';
 import { useShivBuildsStore } from '../model/shiv-builds';
@@ -32,11 +31,9 @@ const emit = defineEmits<Emits>();
 
 const shivBuildsStore = useShivBuildsStore();
 
-const editor = useBuildEditor(() => props.build, shivBuildsStore);
-
 const { groups, removedPerks, hasRemovedPerks, select: selectItem } = useShivBuildGroups(() => props.build);
 
-const { rename, lock, replace, reset, update, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
+const { rename, lock, replace, reset, update, select } = useBuildEditor(() => props.build, shivBuildsStore, selectItem, () => emit('change'));
 </script>
 
 <template>

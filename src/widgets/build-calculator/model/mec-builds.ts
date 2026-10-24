@@ -1,18 +1,17 @@
 import { defineStore } from 'pinia';
 
-import type { SoldierBuildData, SoldierClass } from '@entities/soldier';
+import type { SoldierClass } from '@entities/soldier';
 import { defaultSoldierBuild, MEC_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
-import type { ListedBuild } from '@features/manage-builds';
-import { useBuildList } from '@features/manage-builds';
-import type { OutdatedSelectionByKind } from '@features/share-build';
-import { storedBuildCodec } from '@features/share-build';
 
 import { DEFAULT_BUILD_ID_PREFIX, MEC_BUILD_KEY_PREFIX, MEC_BUILD_ORDER_KEY } from '../config/constants';
+import type { SavedBuild } from './build-list';
+import { useBuildList } from './build-list';
+import { storedBuildCodec } from './stored-build';
 
 /**
  * Saved MEC build: build data with its id, lock and Outdated build record.
  */
-export type MecBuild = ListedBuild<SoldierBuildData, OutdatedSelectionByKind['mec']>;
+export type MecBuild = SavedBuild<'mec'>;
 
 /**
  * Default builds: one per class with only the base perk selected, with fixed ids.
@@ -28,7 +27,7 @@ const createDefaultBuilds = () => MEC_CLASSES.map((soldierClass): MecBuild => ({
  * Saved MEC builds, kept in the local storage and synced between tabs.
  */
 export const useMecBuildsStore = defineStore('build-calculator-mec-builds', () => {
-  const buildList = useBuildList<SoldierBuildData, OutdatedSelectionByKind['mec']>({
+  const buildList = useBuildList<'mec'>({
     orderKey: MEC_BUILD_ORDER_KEY,
     itemKeyPrefix: MEC_BUILD_KEY_PREFIX,
     ...storedBuildCodec('mec'),

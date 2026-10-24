@@ -1,9 +1,9 @@
-<script setup lang="ts" generic="Kind extends LoadoutUnitId, Build extends StoredBuildOf<Kind>">
+<script setup lang="ts" generic="Kind extends LoadoutUnitId, Build extends SavedBuild<Kind>">
 import { ClipboardPaste, TriangleAlert } from '@lucide/vue';
 import type { VNode } from 'vue';
 
 import type { LoadoutUnitId } from '@entities/loadout';
-import type { BuildDataByKind, StoredBuildOf } from '@features/share-build';
+import type { BuildDataByKind } from '@features/share-build';
 import { ShareCodeImport } from '@features/share-build';
 import { usePanelScroll } from '@shared/lib/panel-scroll';
 import { Button } from '@shared/ui/button';
@@ -11,6 +11,7 @@ import { ListNav } from '@shared/ui/list-nav';
 import { PageToolbar } from '@shared/ui/page-toolbar';
 
 import { useBuildCalculatorNav } from '../model/build-calculator';
+import type { SavedBuild } from '../model/build-list';
 
 interface Props {
   /** Builds of the calculator, in page order. */

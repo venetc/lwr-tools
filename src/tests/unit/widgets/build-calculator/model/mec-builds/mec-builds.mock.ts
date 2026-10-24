@@ -32,9 +32,9 @@ export const SOLDIER_ENTITY_MOCK = {
 };
 
 /**
- * Share codes that store every build as it is and read nothing back, so each store starts from its default builds.
+ * Stored build records that keep every build as it is and read nothing back, so each store starts from its default builds.
  */
-export const SHARE_BUILD_MOCK = {
+export const STORED_BUILD_MOCK = {
   storedBuildCodec: () => ({ serialize: (build: object) => build, parse: () => null }),
 };
 

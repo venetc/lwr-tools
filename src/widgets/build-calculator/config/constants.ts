@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 import type { TechnologyLevel } from '@entities/shiv';
 import { TECHNOLOGY_LEVELS } from '@entities/shiv';
 import type { ClassTreeRank, SoldierStepKind } from '@entities/soldier';
@@ -43,6 +45,12 @@ export const SHIV_BUILD_ORDER_KEY = `${SHIV_BUILD_STORAGE_PREFIX}order`;
 
 /** Key prefix of a stored SHIV build, followed by the build id; the value is JSON `{ code, readonly }`. */
 export const SHIV_BUILD_KEY_PREFIX = `${SHIV_BUILD_STORAGE_PREFIX}build.`;
+
+/** Stored build record: share code of the build and its lock. */
+export const STORED_BUILD_SCHEMA = z.object({
+  code: z.string(),
+  readonly: z.boolean(),
+});
 
 /**
  * Id prefix of default Biosoldier and MEC builds, followed by the class id. Fixed ids let tabs opened for the first

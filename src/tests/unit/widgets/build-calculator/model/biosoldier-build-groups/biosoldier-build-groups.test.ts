@@ -13,7 +13,7 @@ vi.mock('@entities/soldier', async () => (await import('../biosoldier-builds/bio
 
 vi.mock('@entities/shiv', () => ({ TECHNOLOGY_LEVELS: [] }));
 
-vi.mock('@features/share-build', async () => (await import('../biosoldier-builds/biosoldier-builds.mock')).SHARE_BUILD_MOCK);
+vi.mock('@widgets/build-calculator/model/stored-build', async () => (await import('../biosoldier-builds/biosoldier-builds.mock')).STORED_BUILD_MOCK);
 
 vi.mock('@widgets/build-calculator/model/biosoldier-branches', async () => {
   const { BRANCHES_MOCK } = await import('./biosoldier-build-groups.mock');

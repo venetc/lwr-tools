@@ -1,8 +1,8 @@
 import { MEC_CLASSES } from '@entities/soldier';
 import { defaultSoldierBuild, selectSoldierBuildPerk } from '@entities/soldier/model/build';
-import type { StoredBuildOf } from '@features/share-build/model/stored-build';
 import { encodeBinaryCode } from '@shared/lib/binary-code';
 import type { BinaryCodeSection } from '@shared/lib/binary-code';
+import type { SavedBuild } from '@widgets/build-calculator/model/build-list';
 
 const [FIRST_MEC_CLASS] = MEC_CLASSES;
 
@@ -67,7 +67,7 @@ const REMOVED_PERK_CODE = encodeBinaryCode(2, [rawShivPerksSection([4, 15])]) ??
 export const REMOVED_PERK_RECORD = { code: REMOVED_PERK_CODE, readonly: false };
 
 /** Outdated build of `REMOVED_PERK_RECORD`: Holo Rounds kept, Smart Macrophages left out. */
-export const REMOVED_PERK_BUILD: StoredBuildOf<'shiv'> = {
+export const REMOVED_PERK_BUILD: SavedBuild<'shiv'> = {
   perks: [null, 'holo-rounds', null, null, null],
   name: 'SHIV',
   id: BUILD_ID,
@@ -103,7 +103,7 @@ export const OUTDATED_MEC_CODE = encodeBinaryCode(3, [{
 export const OUTDATED_MEC_RECORD = { code: OUTDATED_MEC_CODE, readonly: true };
 
 /** Outdated build of `OUTDATED_MEC_RECORD`: Lone Wolf kept, Lance Corporal empty. */
-export const OUTDATED_MEC_BUILD: StoredBuildOf<'mec'> = {
+export const OUTDATED_MEC_BUILD: SavedBuild<'mec'> = {
   ...defaultSoldierBuild(FIRST_MEC_CLASS),
   name: 'Jaeger',
   perks: ['hunter', null, null, null, null, 'lone-wolf', null],

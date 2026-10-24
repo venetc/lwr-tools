@@ -1,10 +1,11 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
-import type { ListedBuild, NamedBuildData } from '@features/manage-builds';
+import type { LoadoutUnitId } from '@entities/loadout';
 import type { TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
 import { OUTDATED_SELECTION_WORDS } from '../config/constants';
+import type { SavedBuild } from './build-list';
 import type { BuildTreeTier } from './saved-tree';
 
 /**
@@ -29,7 +30,7 @@ export interface BuildPanelRequests {
  * @param requests requests to the panel owner.
  */
 export const useBuildPanel = (
-  build: MaybeRefOrGetter<Readonly<ListedBuild<NamedBuildData, unknown>>>,
+  build: MaybeRefOrGetter<Readonly<SavedBuild<LoadoutUnitId>>>,
   style: Record<string, string>,
   requests: BuildPanelRequests,
 ) => {

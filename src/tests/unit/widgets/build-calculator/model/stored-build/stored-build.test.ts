@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { encodeBuild } from '@features/share-build/model/build-code';
-import { storedBuildCodec } from '@features/share-build/model/stored-build';
+import { encodeBuild } from '@features/share-build';
+import { storedBuildCodec } from '@widgets/build-calculator/model/stored-build';
 
 import {
   BUILD_ID,

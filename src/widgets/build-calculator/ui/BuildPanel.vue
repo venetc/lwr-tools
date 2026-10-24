@@ -4,7 +4,7 @@ import type { VNode } from 'vue';
 import { useCssModule } from 'vue';
 
 import type { LoadoutUnitId } from '@entities/loadout';
-import type { BuildDataByKind, StoredBuildOf } from '@features/share-build';
+import type { BuildDataByKind } from '@features/share-build';
 import { OutdatedSelectionsDialog, ShareCodeExport, ShareCodeImport, useOutdatedUpdate } from '@features/share-build';
 import { ActionBar } from '@shared/ui/action-bar';
 import { Button } from '@shared/ui/button';
@@ -12,6 +12,7 @@ import { EditableTitle } from '@shared/ui/editable-title';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
 import { TieredPicker, TieredPickerCell } from '@shared/ui/tiered-picker';
 
+import type { SavedBuild } from '../model/build-list';
 import { useBuildPanel } from '../model/build-panel';
 import type { BuildTreeTier } from '../model/saved-tree';
 
@@ -19,7 +20,7 @@ interface Props {
   /** Kind of build code, for sharing and importing the build. */
   kind: Kind
   /** Build to render; an Outdated build is frozen until the update. */
-  build: StoredBuildOf<Kind>
+  build: SavedBuild<Kind>
   /** Accessible name of the build tree. */
   label: string
   /** Name restored when the build name is left blank. */

@@ -1,0 +1,44 @@
+@use 'styles/colors';
+@use 'styles/shape';
+@use 'styles/typography';
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 440px;
+}
+
+.removed {
+  @include shape.frame(shape.$cut-md, 1px, colors.$danger-muted, colors.$surface-1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 14px;
+  list-style: none;
+}
+
+.removedPerk {
+  @include typography.body-2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: colors.$text-secondary;
+}
+
+.removedIcon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+.removedName {
+  color: colors.$text-primary;
+}
+
+.removedNote {
+  color: colors.$danger;
+}

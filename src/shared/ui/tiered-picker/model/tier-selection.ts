@@ -7,12 +7,11 @@ import type { TieredPickerOption, TieredPickerTier } from './tiered-picker';
  */
 export const useTierSelection = (onSelect: (tierIndex: number, itemId: string | null) => void) => {
   /**
-   * Checks whether the option is the selected one on its tier.
+   * Checks whether the option is shown selected on its tier.
    *
-   * @param tier tier of the option.
    * @param option tier option.
    */
-  const isPressed = (tier: TieredPickerTier, option: TieredPickerOption) => option.item.id === tier.selectedId;
+  const isPressed = (option: TieredPickerOption) => option.appearance === 'selected';
 
   /**
    * Requests an item selection on an editable tier: the selected option clears the tier, any other one replaces
@@ -26,7 +25,7 @@ export const useTierSelection = (onSelect: (tierIndex: number, itemId: string | 
   const toggle = (tier: TieredPickerTier, tierIndex: number, option: TieredPickerOption) => {
     if (tier.isDisabled) return;
 
-    const itemId = isPressed(tier, option) ? null : option.item.id;
+    const itemId = isPressed(option) ? null : option.item.id;
     const isAffectedItemDisabled = tier.options.some(({ item, isDisabled }) => (
       isDisabled && (item.id === itemId || item.id === tier.selectedId)
     ));

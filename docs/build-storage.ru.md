@@ -38,6 +38,7 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 Outdated build заморожен, пока игрок его не обновит: выбор, переименование, Reset, импорт, переключение замка и экспорт ничего не делают, удаление работает. Его запись сохраняется такой, какой загрузилась, без перекодирования.
 
 - Панель: сохранённое дерево (текущее дерево, только чтение; на шаге с Outdated selection в ячейке её варианта стоит абилка кода — selected, с пунктирной рамкой danger, полупрозрачной иконкой и ярлыком «OLD»; в её описании — «Outdated selection: in this mod version <step> has <Ability> here.»), в строке заголовка — чип «N outdated selections» и кнопка «Update»; в списке билдов — треугольник danger после имени.
+- SHIV: оба перка коллизии стоят на своём Technology level, selected и помечены; в их описании — «Outdated selection: in this mod version <Perk> and <Perk> are both on <Technology level>.». У перка, убранного из SHIV tree, ячейки нет: его перечисляет плашка под деревом — «<Perk> — removed from the SHIV tree».
 - «Update» открывает модалку «Update build»: карточка на Outdated selection, справа пустая клетка «Empty». Подтверждение (`updateBuild`) снимает `outdated` и сохраняет билд новым кодом; шаги Outdated selection остаются пустыми. Замок сохраняется: Read-only build остаётся Read-only.
 - Обновление доходит до других вкладок, как любое изменение записи.
 

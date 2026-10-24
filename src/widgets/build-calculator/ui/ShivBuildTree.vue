@@ -3,6 +3,7 @@ import { SHIV_BUILD_NAME } from '@entities/shiv';
 import { useBuildEditor } from '@features/manage-builds';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
+import { REMOVED_SHIV_PERK_NOTE } from '../config/constants';
 import { useBuildTreeHandlers } from '../model/build-tree-handlers';
 import { useShivBuildGroups } from '../model/shiv-build-groups';
 import type { ShivBuild } from '../model/shiv-builds';
@@ -33,33 +34,53 @@ const shivBuildsStore = useShivBuildsStore();
 
 const editor = useBuildEditor(() => props.build, shivBuildsStore);
 
-const { groups, select: selectItem } = useShivBuildGroups(() => props.build);
+const { groups, removedPerks, hasRemovedPerks, select: selectItem } = useShivBuildGroups(() => props.build);
 
 const { rename, lock, replace, reset, update, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
 </script>
 
 <template>
-  <BuildPanel
-    :build="props.build"
-    :label="SHIV_BUILD_NAME"
-    :fallback-name="SHIV_BUILD_NAME"
-    kind="shiv"
-    :groups="groups"
-    :removable="props.removable"
-    @rename="rename"
-    @lock="lock"
-    @replace="replace"
-    @reset="reset"
-    @update="update"
-    @remove="emit('remove', props.build.id)"
-    @select="select"
-  >
-    <template #tier="{ tier, highlighted }">
-      <TieredPickerTierLabel
-        :icon="tier.level.icon"
-        :name="tier.level.name"
-        :highlighted="highlighted"
-      />
-    </template>
-  </BuildPanel>
+  <div :class="$style.tree">
+    <BuildPanel
+      :build="props.build"
+      :label="SHIV_BUILD_NAME"
+      :fallback-name="SHIV_BUILD_NAME"
+      kind="shiv"
+      :groups="groups"
+      :removable="props.removable"
+      @rename="rename"
+      @lock="lock"
+      @replace="replace"
+      @reset="reset"
+      @update="update"
+      @remove="emit('remove', props.build.id)"
+      @select="select"
+    >
+      <template #tier="{ tier, highlighted }">
+        <TieredPickerTierLabel
+          :icon="tier.level.icon"
+          :name="tier.level.name"
+          :highlighted="highlighted"
+        />
+      </template>
+    </BuildPanel>
+
+    <ul v-if="hasRemovedPerks" :class="$style.removed">
+      <li
+        v-for="perk in removedPerks"
+        :key="perk.id"
+        :class="$style.removedPerk"
+      >
+        <img
+          :class="$style.removedIcon"
+          :src="perk.icon.disabled"
+          alt=""
+        >
+        <span :class="$style.removedName">{{ perk.name }}</span>
+        <span :class="$style.removedNote">{{ REMOVED_SHIV_PERK_NOTE }}</span>
+      </li>
+    </ul>
+  </div>
 </template>
+
+<style lang="scss" module src="./ShivBuildTree.scss" />

@@ -38,6 +38,7 @@ Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (lo
 An Outdated build is frozen until the player updates it: selections, rename, Reset, import, the lock toggle and export do nothing, removal works. Its record is saved back as it was loaded, without re-encoding.
 
 - Panel: the saved tree (the current tree, readonly; on a step of an Outdated selection the ability of the code stands in the cell of its variant, selected, with a dashed danger frame, a semi-transparent icon and an «OLD» label; its description notes «Outdated selection: in this mod version <step> has <Ability> here.»), the chip «N outdated selections» and the «Update» button in the header row; a danger triangle after the name in the build list.
+- SHIV: both perks of a collision stand selected and marked on their technology level; their description notes «Outdated selection: in this mod version <Perk> and <Perk> are both on <Technology level>.». A perk gone from the SHIV tree has no cell: a plate under the tree lists it as «<Perk> — removed from the SHIV tree».
 - «Update» opens the «Update build» dialog with a card per Outdated selection and the empty cell «Empty» on the right. Confirming it (`updateBuild`) drops `outdated` and saves the build with its new code; the steps of the Outdated selections stay empty. The lock is kept: a readonly build stays readonly.
 - The update reaches other tabs as any record change.
 

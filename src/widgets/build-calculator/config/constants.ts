@@ -101,6 +101,9 @@ export const PSIONIC_BLOCK_NOTE = 'Unavailable with Psionic abilities';
 /** Note of a psionic ability blocked by Neural Damping. */
 export const NEURAL_DAMPING_BLOCK_NOTE = 'Unavailable with Neural Damping';
 
+/** Note after the name of a perk gone from the SHIV tree, on the plate under the tree. */
+export const REMOVED_SHIV_PERK_NOTE = '— removed from the SHIV tree';
+
 /** Title of the row of the SHIV tree in a mini-tree. */
 export const SHIV_MINI_TREE_TITLE = 'SHIV tree';
 

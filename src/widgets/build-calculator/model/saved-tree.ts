@@ -1,9 +1,12 @@
+import type { ShivOutdatedSelection } from '@entities/shiv';
+import { shivPerkById } from '@entities/shiv';
 import type { SoldierOutdatedSelection } from '@entities/soldier';
 import { treeAbility } from '@entities/soldier';
 import type { TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
 
-import { SOLDIER_STEP_GROUP_ID } from '../config/constants';
+import { SOLDIER_STEP_GROUP_ID, TECHNOLOGY_LEVEL_PICKER_ITEMS } from '../config/constants';
 import { treeAbilityPickerItem } from './ability-picker-item';
+import { shivPerkPickerItem } from './shiv-perk-picker-item';
 
 /**
  * Picker tier of a build tree, which an Outdated build can show with abilities of its code.
@@ -59,31 +62,69 @@ export const soldierOutdatedCells = (selections: readonly SoldierOutdatedSelecti
 }, new Map<string, OutdatedCell[]>());
 
 /**
- * Description note of an outdated cell: what the current tree has at its place.
+ * Cells of SHIV Outdated selections: each perk of a collision in the cell of its variant on the technology level they
+ * share. A perk gone from the SHIV tree has no cell: the plate under the tree lists it.
  *
- * @param tierName name of the tier of the cell.
- * @param currentName name of the ability the current tree has in the cell.
+ * @param selections Outdated selections of a SHIV build; empty for a build without them.
  */
-const outdatedNote = (tierName: string, currentName: string) => `Outdated selection: in this mod version ${tierName} has ${currentName} here.`;
+export const shivOutdatedCells = (selections: readonly ShivOutdatedSelection[]) => selections.flatMap((selection): OutdatedCell[] => {
+  if (selection.reason !== 'collision') return [];
+
+  const levelItems = TECHNOLOGY_LEVEL_PICKER_ITEMS[selection.levelIndex] ?? [];
+  const variantIndex = levelItems.findIndex(item => item.id === selection.perkId);
+  const item = levelItems[variantIndex];
+
+  if (!item) return [];
+
+  return [{ tierIndex: selection.levelIndex, variantIndex, item }];
+});
 
 /**
- * Option of an outdated cell: the ability of the code, selected and not selectable, with the note about the ability
- * the current tree has there.
+ * Picker items of the perks of a SHIV build gone from the SHIV tree, for the plate under the tree.
+ *
+ * @param selections Outdated selections of a SHIV build; empty for a build without them.
+ */
+export const shivRemovedPerks = (selections: readonly ShivOutdatedSelection[]) => selections.flatMap(selection => (
+  selection.reason === 'removed' ? [shivPerkPickerItem(shivPerkById(selection.perkId))] : []
+));
+
+/**
+ * Description note of an outdated cell: what the current tree has at its place, or, for cells of the code that share
+ * a tier, that the tier takes only one of them now.
+ *
+ * @param tier tier of the cell.
+ * @param current option the current tree has in the cell.
+ * @param tierCells outdated cells of the tier.
+ */
+const outdatedNote = (tier: TieredPickerTier, current: TieredPickerOption, tierCells: readonly OutdatedCell[]) => {
+  if (tierCells.length < 2) return `Outdated selection: in this mod version ${tier.name} has ${current.item.name} here.`;
+
+  const names = tierCells.map(cell => cell.item.name);
+  const lastName = names.pop();
+
+  return `Outdated selection: in this mod version ${names.join(', ')} and ${lastName} are ${tierCells.length > 2 ? 'all' : 'both'} on ${tier.name}.`;
+};
+
+/**
+ * Option of an outdated cell: the ability of the code, selected and not selectable, with the note about what the
+ * current tree has there.
  *
  * @param cell outdated cell.
  * @param tier tier of the cell.
  * @param current option the current tree has in the cell.
+ * @param tierCells outdated cells of the tier.
  */
-const outdatedOption = (cell: OutdatedCell, tier: TieredPickerTier, current: TieredPickerOption): TieredPickerOption => ({
+const outdatedOption = (cell: OutdatedCell, tier: TieredPickerTier, current: TieredPickerOption, tierCells: readonly OutdatedCell[]): TieredPickerOption => ({
   item: cell.item,
   appearance: 'selected',
   isDisabled: true,
-  note: outdatedNote(tier.name, current.item.name),
+  note: outdatedNote(tier, current, tierCells),
 });
 
 /**
  * Tiers of the saved tree of an Outdated build: on a tier with Outdated selections the abilities of the code stand in
- * the cells of their variants, selected and marked; the other variants are current.
+ * the cells of their variants, selected and marked, such as both perks of a SHIV collision; the other variants are
+ * current.
  *
  * @param tiers tiers of the current tree, shown readonly.
  * @param cells outdated cells of the tiers; empty for a build without Outdated selections.
@@ -106,7 +147,7 @@ export const savedTreeTiers = <Tier extends BuildTreeTier>(tiers: readonly Tier[
       options: tier.options.map((option, optionIndex) => {
         const cell = tierCells.find(({ variantIndex }) => variantIndex === optionIndex);
 
-        return cell ? outdatedOption(cell, tier, option) : option;
+        return cell ? outdatedOption(cell, tier, option, tierCells) : option;
       }),
     };
   });

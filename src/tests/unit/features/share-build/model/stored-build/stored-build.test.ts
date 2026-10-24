@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { encodeBuild } from '@features/share-build/model/build-code';
 import { storedBuildCodec } from '@features/share-build/model/stored-build';
@@ -6,14 +6,21 @@ import { storedBuildCodec } from '@features/share-build/model/stored-build';
 import {
   BUILD_ID,
   COLLISION_CODE,
+  COLLISION_SELECTIONS,
   GAPPED_MEC_BUILD,
   INVALID_CODE,
   MEC_BUILD,
   OUTDATED_MEC_BUILD,
   OUTDATED_MEC_RECORD,
+  REMOVED_PERK_BUILD,
+  REMOVED_PERK_RECORD,
   SHIV_BUILD,
   UNENCODABLE_SHIV_BUILD,
 } from './stored-build.mock';
+
+vi.mock('@entities/shiv/config/constants/technology-level-content', async () => ({
+  TECHNOLOGY_LEVEL_CONTENT: (await import('./stored-build.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
+}));
 
 const { serialize, parse } = storedBuildCodec('shiv');
 
@@ -36,6 +43,12 @@ describe('storedBuildCodec serialize', () => {
     const record = mecCodec.serialize(OUTDATED_MEC_BUILD);
 
     expect(record).toEqual(OUTDATED_MEC_RECORD);
+  });
+
+  it('stores an Outdated SHIV build as its stored record', () => {
+    const record = serialize(REMOVED_PERK_BUILD);
+
+    expect(record).toEqual(REMOVED_PERK_RECORD);
   });
 
   it('returns null for a build without a share code', () => {
@@ -68,6 +81,18 @@ describe('storedBuildCodec parse', () => {
     const build = parse(BUILD_ID, { code: COLLISION_CODE, readonly: false });
 
     expect(build?.outdated?.code).toBe(COLLISION_CODE);
+  });
+
+  it('gives a SHIV code with a perk gone from the tree as an Outdated build without the perk', () => {
+    const build = parse(BUILD_ID, REMOVED_PERK_RECORD);
+
+    expect(build).toEqual(REMOVED_PERK_BUILD);
+  });
+
+  it('gives both colliding perks of a SHIV code as Outdated selections', () => {
+    const build = parse(BUILD_ID, { code: COLLISION_CODE, readonly: false });
+
+    expect(build?.outdated?.selections).toEqual(COLLISION_SELECTIONS);
   });
 
   it('returns null for a build code of another unit type', () => {

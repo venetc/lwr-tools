@@ -15,6 +15,8 @@ interface Props {
   lockLabel: string
   /** Whether the bar offers removal; the remove button still hides while locked. */
   removable?: boolean
+  /** Whether the bar offers the lock toggle. */
+  lockable?: boolean
 }
 
 interface Emits {
@@ -29,6 +31,7 @@ interface DefaultSlotProps {
 
 const props = withDefaults(defineProps<Props>(), {
   removable: false,
+  lockable: true,
 });
 
 const emit = defineEmits<Emits>();
@@ -68,7 +71,11 @@ const { lockClass, secondaryClass, removeClass, lockIcon, isEditable, isRemovabl
 
     <slot :action-class="secondaryClass" />
 
-    <Toggle v-model="locked" :class="lockClass">
+    <Toggle
+      v-if="props.lockable"
+      v-model="locked"
+      :class="lockClass"
+    >
       <component
         :is="lockIcon"
         :class="$style.icon"

@@ -1,11 +1,13 @@
+import type { LoadoutUnitId } from '@entities/loadout';
 import type { ShivOutdatedSelection, ShivPerkId } from '@entities/shiv';
 import { shivPerkById, TECHNOLOGY_LEVELS } from '@entities/shiv';
 import type { AbilityId, SoldierOutdatedSelection } from '@entities/soldier';
 import { abilityById, BODY_PARTS, OFFICER_RANKS, PSI_LEVELS, SOLDIER_RANKS } from '@entities/soldier';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
-import { REMOVED_FROM_SHIV_TREE_NOTE, SHIV_TREE_SECTION, SOLDIER_STEP_SECTION } from '../config/constants';
-import type { DecodedSquadBuild } from './squad-code';
+import { EMPTY_STEP_NOTE, REMOVED_FROM_SHIV_TREE_NOTE, SHIV_TREE_SECTION, SOLDIER_STEP_SECTION } from '../config/constants';
+import type { OutdatedSelectionByKind } from './build-code';
+import type { DecodedSquadBuild, DecodedSquadBuildOf } from './squad-code';
 
 /**
  * Ability on an Outdated selection card.
@@ -160,17 +162,33 @@ const soldierOutdatedCards = (outdated: readonly SoldierOutdatedSelection[]): Ou
   note: null,
 }));
 
+/** Cards of the Outdated selections of each unit type. */
+const OUTDATED_CARDS_BY_KIND: { readonly [Kind in LoadoutUnitId]: (outdated: readonly OutdatedSelectionByKind[Kind][]) => OutdatedSelectionCard[] } = {
+  biosoldier: soldierOutdatedCards,
+  mec: soldierOutdatedCards,
+  shiv: shivOutdatedCards,
+};
+
+/**
+ * Cards of the Outdated selections of a build of the kind.
+ *
+ * @param kind unit type of the build.
+ * @param outdated Outdated selections of the build.
+ * @returns the cards; empty for a build without Outdated selections.
+ */
+const outdatedCardsOf = <Kind extends LoadoutUnitId>(kind: Kind, outdated: readonly OutdatedSelectionByKind[Kind][]) => {
+  const outdatedCards: (outdated: readonly OutdatedSelectionByKind[Kind][]) => OutdatedSelectionCard[] = OUTDATED_CARDS_BY_KIND[kind];
+
+  return outdatedCards(outdated);
+};
+
 /**
  * Cards of the Outdated selections of a build of a share code.
  *
  * @param squadBuild build of a share code with its kind and Outdated selections.
  * @returns the cards; empty for a build without Outdated selections.
  */
-const buildOutdatedCards = (squadBuild: DecodedSquadBuild): OutdatedSelectionCard[] => {
-  if (squadBuild.kind === 'shiv') return shivOutdatedCards(squadBuild.outdated);
-
-  return soldierOutdatedCards(squadBuild.outdated);
-};
+const buildOutdatedCards = <Kind extends LoadoutUnitId>(squadBuild: DecodedSquadBuildOf<Kind>) => outdatedCardsOf(squadBuild.kind, squadBuild.outdated);
 
 /**
  * Card groups of the Outdated selections of the builds of a share code: a group per build that has them, in the order
@@ -187,3 +205,19 @@ export const outdatedSelectionGroups = (builds: readonly DecodedSquadBuild[]) =>
 
   return groups;
 }, []);
+
+/**
+ * Card group of the update of an Outdated build of the kind: its cards with the empty cell «Empty» on the right, as
+ * every step of an Outdated selection stays empty after the update.
+ *
+ * @param kind unit type of the build.
+ * @param outdated Outdated selections of the build.
+ * @returns the group; empty for a build without Outdated selections.
+ */
+export const outdatedUpdateGroups = <Kind extends LoadoutUnitId>(kind: Kind, outdated: readonly OutdatedSelectionByKind[Kind][]): OutdatedSelectionGroup[] => {
+  if (!outdated.length) return [];
+
+  const cards = outdatedCardsOf(kind, outdated).map(card => ({ ...card, current: null, note: EMPTY_STEP_NOTE }));
+
+  return [{ id: 'update', name: null, cards }];
+};

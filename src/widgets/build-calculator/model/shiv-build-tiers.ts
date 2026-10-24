@@ -4,16 +4,16 @@ import { computed, toValue } from 'vue';
 import type { TechnologyLevel } from '@entities/shiv';
 import { featuredShivPerk, TECHNOLOGY_LEVELS, technologyLevelState } from '@entities/shiv';
 import type { DeepReadonly } from '@shared/lib/object';
-import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 import { tierOption } from '@shared/ui/tiered-picker';
 
 import { SHIV_PERK_PICKER_ITEM_BY_ID, TECHNOLOGY_LEVEL_PICKER_ITEMS } from '../config/constants';
+import type { BuildTreeTier } from './saved-tree';
 import type { ShivBuild } from './shiv-builds';
 
 /**
  * Picker tier of a technology level.
  */
-export interface TechnologyLevelTier extends TieredPickerTier {
+export interface TechnologyLevelTier extends BuildTreeTier {
   /** Technology level of the tier. */
   level: DeepReadonly<TechnologyLevel>
 }
@@ -43,6 +43,7 @@ export const useShivBuildTiers = (build: MaybeRefOrGetter<Readonly<ShivBuild>>) 
         state,
         isDisabled: readonly,
         selectedId,
+        outdatedItemIds: [],
         options: (TECHNOLOGY_LEVEL_PICKER_ITEMS[levelIndex] ?? []).map(item => tierOption(item, state, selectedId)),
       };
     });

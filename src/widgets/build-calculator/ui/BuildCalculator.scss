@@ -1,3 +1,4 @@
+@use 'styles/colors';
 @use 'styles/layout';
 
 .page {
@@ -32,4 +33,11 @@
   flex: none;
   width: 16px;
   height: 16px;
+}
+
+.outdatedMark {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: colors.$danger;
 }

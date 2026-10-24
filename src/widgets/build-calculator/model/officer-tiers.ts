@@ -4,10 +4,11 @@ import { computed, toValue } from 'vue';
 import type { BiosoldierBuildData, OfficerRank } from '@entities/soldier';
 import { highestSelectedStepIndex, OFFICER_RANKS, rankState } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
-import type { TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
+import type { TieredPickerOption } from '@shared/ui/tiered-picker';
 import { tierOption } from '@shared/ui/tiered-picker';
 
 import { OFFICER_RANK_PICKER_ITEMS } from '../config/constants';
+import type { BuildTreeTier } from './saved-tree';
 
 /**
  * Biosoldier build shown in the officer tree: its officer perks with its lock.
@@ -17,7 +18,7 @@ export type OfficerTreeBuild = Readonly<Pick<BiosoldierBuildData, 'officerPerks'
 /**
  * Picker tier of an officer rank.
  */
-export interface OfficerRankTier extends TieredPickerTier {
+export interface OfficerRankTier extends BuildTreeTier {
   /** Officer rank of the tier. */
   officerRank: DeepReadonly<OfficerRank>
 }
@@ -57,6 +58,7 @@ export const useOfficerTiers = (build: MaybeRefOrGetter<OfficerTreeBuild>) => {
         state,
         isDisabled: readonly,
         selectedId,
+        outdatedItemIds: [],
         options: (OFFICER_RANK_PICKER_ITEMS[officerRankIndex] ?? []).map((item): TieredPickerOption => ({ ...tierOption(item, state, selectedId), note })),
       };
     });

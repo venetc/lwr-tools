@@ -11,11 +11,29 @@ export interface NamedBuildData {
 }
 
 /**
+ * Stored record of an Outdated build, kept as it is until the update.
+ */
+export interface OutdatedBuildRecord<Selection> {
+  /** Share code of the stored record. */
+  code: string
+  /** Outdated selections of the code, which the list keeps without reading them. */
+  selections: readonly Selection[]
+}
+
+/**
+ * Build of a list: build data with its id, lock and Outdated build record.
+ */
+export type ListedBuild<Data, Selection> = LockableItem<Data> & {
+  /** Stored record of an Outdated build, frozen until the update; null for a build that fits the current trees. */
+  outdated: OutdatedBuildRecord<Selection> | null
+};
+
+/**
  * Options of a build list: how the builds are stored and what a reset turns a build into.
  */
-export interface BuildListOptions<Data extends NamedBuildData> extends StoredListOptions<LockableItem<Data>> {
+export interface BuildListOptions<Data extends NamedBuildData, Selection> extends StoredListOptions<ListedBuild<Data, Selection>> {
   /** Data of a new build of the same kind as the build, for a reset; the list keeps the name, id and lock. */
-  newData: (build: Readonly<LockableItem<Data>>) => Data
+  newData: (build: Readonly<ListedBuild<Data, Selection>>) => Data
 }
 
 /**
@@ -24,29 +42,29 @@ export interface BuildListOptions<Data extends NamedBuildData> extends StoredLis
  *
  * @param options build list options.
  */
-export const useBuildList = <Data extends NamedBuildData>(options: BuildListOptions<Data>) => {
+export const useBuildList = <Data extends NamedBuildData, Selection>(options: BuildListOptions<Data, Selection>) => {
   const buildList = useStoredList(options);
 
   /**
-   * Editable build by id: null for a missing or locked build.
+   * Editable build by id: null for a missing, locked or Outdated build.
    *
    * @param buildId build id.
    */
   const findEditableBuild = (buildId: string) => {
     const build = buildList.getItem(buildId);
 
-    if (!build || build.readonly) return null;
+    if (!build || build.readonly || build.outdated) return null;
 
     return build;
   };
 
   /**
-   * Edits an editable build in place and saves it; a missing or locked build is left as it is.
+   * Edits an editable build in place and saves it; a missing, locked or Outdated build is left as it is.
    *
    * @param buildId build id.
    * @param edit changes the build in place.
    */
-  const editBuild = (buildId: string, edit: (build: LockableItem<Data>) => void) => {
+  const editBuild = (buildId: string, edit: (build: ListedBuild<Data, Selection>) => void) => {
     const build = findEditableBuild(buildId);
 
     if (!build) return;
@@ -66,7 +84,7 @@ export const useBuildList = <Data extends NamedBuildData>(options: BuildListOpti
   });
 
   /**
-   * Locks or unlocks the build against editing.
+   * Locks or unlocks the build against editing; an Outdated build keeps its lock until the update.
    *
    * @param buildId build id.
    * @param isReadonly whether the build is locked.
@@ -74,7 +92,7 @@ export const useBuildList = <Data extends NamedBuildData>(options: BuildListOpti
   const setReadonly = (buildId: string, isReadonly: boolean) => {
     const build = buildList.getItem(buildId);
 
-    if (!build) return;
+    if (!build || build.outdated) return;
 
     build.readonly = isReadonly;
     buildList.markItemChanged(buildId);
@@ -90,7 +108,7 @@ export const useBuildList = <Data extends NamedBuildData>(options: BuildListOpti
   const addBuild = (data: Data) => {
     const id = createId();
 
-    buildList.addItem({ ...data, id, readonly: false });
+    buildList.addItem({ ...data, id, readonly: false, outdated: null });
 
     return id;
   };
@@ -124,6 +142,21 @@ export const useBuildList = <Data extends NamedBuildData>(options: BuildListOpti
     replaceBuild(buildId, { ...options.newData(build), name: build.name });
   };
 
+  /**
+   * Updates an Outdated build: drops its stored record and saves it with the code of its build, which already has no
+   * Outdated selections. The lock is not checked and stays; a regular build is left as it is.
+   *
+   * @param buildId build id.
+   */
+  const updateBuild = (buildId: string) => {
+    const build = buildList.getItem(buildId);
+
+    if (!build?.outdated) return;
+
+    build.outdated = null;
+    buildList.markItemChanged(buildId);
+  };
+
   return {
     builds: buildList.items,
     editBuild,
@@ -132,6 +165,7 @@ export const useBuildList = <Data extends NamedBuildData>(options: BuildListOpti
     resetBuild,
     setName,
     setReadonly,
+    updateBuild,
     removeBuild: buildList.removeItem,
   };
 };

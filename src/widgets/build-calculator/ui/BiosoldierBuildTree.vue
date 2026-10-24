@@ -23,7 +23,7 @@ interface Props {
 interface Emits {
   /** Requests removal of the build. */
   remove: [buildId: string]
-  /** Tells of an edit of what the build holds: a selection, a reset or an import. */
+  /** Tells of an edit of what the build holds: a selection, a reset, an import or an update. */
   change: []
 }
 
@@ -39,7 +39,7 @@ const editor = useBuildEditor(() => props.build, biosoldierBuildsStore);
 
 const { tree, groups, select: selectItem } = useBiosoldierBuildGroups(() => props.build);
 
-const { rename, lock, replace, reset, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
+const { rename, lock, replace, reset, update, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
 
 const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
 </script>
@@ -57,6 +57,7 @@ const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
     @lock="lock"
     @replace="replace"
     @reset="reset"
+    @update="update"
     @remove="emit('remove', props.build.id)"
     @select="select"
   >

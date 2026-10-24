@@ -1,6 +1,6 @@
 import type { TechnologyLevel } from '@entities/shiv';
 import { TECHNOLOGY_LEVELS } from '@entities/shiv';
-import type { ClassTreeRank } from '@entities/soldier';
+import type { ClassTreeRank, SoldierStepKind } from '@entities/soldier';
 import { BODY_PARTS, OFFICER_RANKS, PSI_LEVELS } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { TieredPickerItem } from '@shared/ui/tiered-picker';
@@ -63,6 +63,14 @@ export const BIOSOLDIER_BRANCH_TITLE = {
   'psionic': 'Psionic',
   'officer': 'Officer',
 } as const;
+
+/** Tier group of a soldier build panel with the steps of each kind: the branch of a biosoldier, the class tree of a MEC. */
+export const SOLDIER_STEP_GROUP_ID = {
+  'rank': 'class-tree',
+  'body-part': 'gene-mods',
+  'psi-level': 'psionic',
+  'officer-rank': 'officer',
+} as const satisfies Record<SoldierStepKind, keyof typeof BIOSOLDIER_BRANCH_TITLE>;
 
 /** Id of the only tier group of a MEC build panel: the class tree. */
 export const MEC_TREE_GROUP_ID = 'class-tree';

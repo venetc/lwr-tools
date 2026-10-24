@@ -2,16 +2,17 @@ import { defineStore } from 'pinia';
 
 import type { ShivBuildData } from '@entities/shiv';
 import { selectShivBuildPerk, SHIV_BUILD_NAME, TECHNOLOGY_LEVELS } from '@entities/shiv';
+import type { ListedBuild } from '@features/manage-builds';
 import { useBuildList } from '@features/manage-builds';
+import type { OutdatedSelectionByKind } from '@features/share-build';
 import { storedBuildCodec } from '@features/share-build';
-import type { LockableItem } from '@shared/lib/stored-list';
 
 import { DEFAULT_SHIV_BUILD_ID, SHIV_BUILD_KEY_PREFIX, SHIV_BUILD_ORDER_KEY } from '../config/constants';
 
 /**
- * Saved SHIV build: build data with its id and lock.
+ * Saved SHIV build: build data with its id, lock and Outdated build record.
  */
-export type ShivBuild = LockableItem<ShivBuildData>;
+export type ShivBuild = ListedBuild<ShivBuildData, OutdatedSelectionByKind['shiv']>;
 
 /**
  * Data of a new build with no perk selected.
@@ -25,11 +26,11 @@ const newShivBuildData = (): ShivBuildData => ({
  * Saved SHIV builds, kept in the local storage and synced between tabs.
  */
 export const useShivBuildsStore = defineStore('build-calculator-shiv-builds', () => {
-  const buildList = useBuildList<ShivBuildData>({
+  const buildList = useBuildList<ShivBuildData, OutdatedSelectionByKind['shiv']>({
     orderKey: SHIV_BUILD_ORDER_KEY,
     itemKeyPrefix: SHIV_BUILD_KEY_PREFIX,
     ...storedBuildCodec('shiv'),
-    defaultItems: () => [{ ...newShivBuildData(), id: DEFAULT_SHIV_BUILD_ID, readonly: false }],
+    defaultItems: () => [{ ...newShivBuildData(), id: DEFAULT_SHIV_BUILD_ID, readonly: false, outdated: null }],
     newData: newShivBuildData,
   });
 
@@ -58,6 +59,7 @@ export const useShivBuildsStore = defineStore('build-calculator-shiv-builds', ()
     importBuild: buildList.addBuild,
     replaceBuild: buildList.replaceBuild,
     resetBuild: buildList.resetBuild,
+    updateBuild: buildList.updateBuild,
     removeBuild: buildList.removeBuild,
   };
 });

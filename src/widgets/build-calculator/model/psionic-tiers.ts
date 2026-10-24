@@ -4,9 +4,10 @@ import { computed, toValue } from 'vue';
 import type { BiosoldierBuildData, BuildBlockReason, PsiLevel, RankState } from '@entities/soldier';
 import { highestSelectedStepIndex, PSI_LEVELS, psiLevelState, psionicAbilityBlockReason } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
-import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
+import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption } from '@shared/ui/tiered-picker';
 
 import { NEURAL_DAMPING_BLOCK_NOTE, PSI_LEVEL_PICKER_ITEMS } from '../config/constants';
+import type { BuildTreeTier } from './saved-tree';
 
 /**
  * Biosoldier build shown in the psionic tree: its gene mods and psionic abilities with its lock.
@@ -16,7 +17,7 @@ export type PsionicTreeBuild = Readonly<Pick<BiosoldierBuildData, 'geneMods' | '
 /**
  * Picker tier of a psi level.
  */
-export interface PsiLevelTier extends TieredPickerTier {
+export interface PsiLevelTier extends BuildTreeTier {
   /** Psi level of the tier. */
   psiLevel: DeepReadonly<PsiLevel>
 }
@@ -89,6 +90,7 @@ export const usePsionicTiers = (build: MaybeRefOrGetter<PsionicTreeBuild>) => {
         state,
         isDisabled: readonly || state === 'locked',
         selectedId,
+        outdatedItemIds: [],
         options: (PSI_LEVEL_PICKER_ITEMS[levelIndex] ?? []).map(item => psionicOption(item, selectedId, state, readonly, blockReason)),
       };
     });

@@ -5,20 +5,22 @@ import { SHIV_BUILD_NAME } from '@entities/shiv';
 import type { TieredPickerGroup } from '@shared/ui/tiered-picker';
 
 import { SHIV_TREE_GROUP_ID } from '../config/constants';
+import { shownTreeBuild } from './saved-tree';
 import type { TechnologyLevelTier } from './shiv-build-tiers';
 import { useShivBuildTiers } from './shiv-build-tiers';
 import type { ShivBuild } from './shiv-builds';
 import { useShivBuildsStore } from './shiv-builds';
 
 /**
- * Tier groups of a SHIV build panel: the SHIV tree alone, and the selection in it through the store.
+ * Tier groups of a SHIV build panel: the SHIV tree alone, and the selection in it through the store. An Outdated build
+ * is shown frozen.
  *
  * @param build SHIV build.
  */
 export const useShivBuildGroups = (build: MaybeRefOrGetter<Readonly<ShivBuild>>) => {
   const shivBuildsStore = useShivBuildsStore();
 
-  const { tiers, featuredPickerItem } = useShivBuildTiers(build);
+  const { tiers, featuredPickerItem } = useShivBuildTiers(computed(() => shownTreeBuild(toValue(build))));
 
   const groups = computed((): TieredPickerGroup<TechnologyLevelTier>[] => [{
     id: SHIV_TREE_GROUP_ID,

@@ -19,7 +19,7 @@ interface Props {
 interface Emits {
   /** Requests removal of the build. */
   remove: [buildId: string]
-  /** Tells of an edit of what the build holds: a selection, a reset or an import. */
+  /** Tells of an edit of what the build holds: a selection, a reset, an import or an update. */
   change: []
 }
 
@@ -35,7 +35,7 @@ const editor = useBuildEditor(() => props.build, shivBuildsStore);
 
 const { groups, select: selectItem } = useShivBuildGroups(() => props.build);
 
-const { rename, lock, replace, reset, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
+const { rename, lock, replace, reset, update, select } = useBuildTreeHandlers(editor, selectItem, () => emit('change'));
 </script>
 
 <template>
@@ -50,6 +50,7 @@ const { rename, lock, replace, reset, select } = useBuildTreeHandlers(editor, se
     @lock="lock"
     @replace="replace"
     @reset="reset"
+    @update="update"
     @remove="emit('remove', props.build.id)"
     @select="select"
   >

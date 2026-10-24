@@ -22,7 +22,7 @@ export const SHARE_BUILD_MOCK = {
 
 export const DEFAULT_SHIV_ID = 'default-shiv';
 
-export const DEFAULT_SHIV_BUILD = { id: 'default-shiv', perks: [null, null, null], name: 'SHIV', readonly: false };
+export const DEFAULT_SHIV_BUILD = { id: 'default-shiv', perks: [null, null, null], name: 'SHIV', readonly: false, outdated: null };
 
 export const PICKED_PERKS = [null, 'picked', null];
 

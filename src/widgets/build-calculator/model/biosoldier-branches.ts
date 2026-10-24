@@ -1,5 +1,5 @@
 import type { MaybeRefOrGetter } from 'vue';
-import { computed } from 'vue';
+import { computed, toValue } from 'vue';
 
 import type { TieredPickerItem } from '@shared/ui/tiered-picker';
 
@@ -13,6 +13,7 @@ import type { OfficerRankTier } from './officer-tiers';
 import { useOfficerTiers } from './officer-tiers';
 import type { PsiLevelTier } from './psionic-tiers';
 import { usePsionicTiers } from './psionic-tiers';
+import { savedTreeTiers, shownTreeBuild, soldierOutdatedCells } from './saved-tree';
 
 /**
  * Branch of a biosoldier build: the class tree, the gene mods, the psionic abilities or the officer perks.
@@ -57,25 +58,38 @@ const branchTiers = (
 });
 
 /**
- * Branches of a biosoldier build as picker tiers with their featured items, in tab order: the class tree, the gene mods, the psionic abilities
- * and the officer perks.
+ * Branches of a biosoldier build as picker tiers with their featured items, in tab order: the class tree, the gene mods,
+ * the psionic abilities and the officer perks. An Outdated build shows its saved tree: frozen, with the abilities of its
+ * code in the cells of their variants.
  *
  * @param build biosoldier build.
  */
 export const useBiosoldierBranches = (build: MaybeRefOrGetter<Readonly<BiosoldierBuild>>) => {
-  const classTree = useClassTreeTiers(build);
+  const shownBuild = computed(() => shownTreeBuild(toValue(build)));
 
-  const geneMods = useGeneModTiers(build);
+  const classTree = useClassTreeTiers(shownBuild);
 
-  const psionic = usePsionicTiers(build);
+  const geneMods = useGeneModTiers(shownBuild);
 
-  const officer = useOfficerTiers(build);
+  const psionic = usePsionicTiers(shownBuild);
+
+  const officer = useOfficerTiers(shownBuild);
+
+  const cellsByBranch = computed(() => soldierOutdatedCells(toValue(build).outdated?.selections ?? []));
+
+  /**
+   * Tiers of the branch with the outdated cells of an Outdated build.
+   *
+   * @param id branch id.
+   * @param tiers picker tiers of the current tree.
+   */
+  const savedBranchTiers = <Tier extends BiosoldierBuildTier>(id: BiosoldierBranch, tiers: readonly Tier[]) => savedTreeTiers(tiers, cellsByBranch.value.get(id) ?? []);
 
   const branches = computed((): BiosoldierBranchTiers[] => [
-    branchTiers('class-tree', classTree.tiers.value, classTree.featuredPickerItem.value),
-    branchTiers('gene-mods', geneMods.tiers.value, geneMods.featuredPickerItem.value),
-    branchTiers('psionic', psionic.tiers.value, psionic.featuredPickerItem.value),
-    branchTiers('officer', officer.tiers.value, officer.featuredPickerItem.value),
+    branchTiers('class-tree', savedBranchTiers('class-tree', classTree.tiers.value), classTree.featuredPickerItem.value),
+    branchTiers('gene-mods', savedBranchTiers('gene-mods', geneMods.tiers.value), geneMods.featuredPickerItem.value),
+    branchTiers('psionic', savedBranchTiers('psionic', psionic.tiers.value), psionic.featuredPickerItem.value),
+    branchTiers('officer', savedBranchTiers('officer', officer.tiers.value), officer.featuredPickerItem.value),
   ]);
 
   return { tree: classTree.tree, branches };

@@ -13,9 +13,16 @@ import {
   IMPORTED_DATA,
   LOCKED_BUILD,
   LOCKED_ID,
+  LOCKED_OUTDATED_ID,
   NEW_NAME,
+  OUTDATED_BUILD,
+  OUTDATED_ID,
+  OUTDATED_KEY,
   REPLACED_EDITABLE_BUILD,
   RESET_EDITABLE_BUILD,
+  UPDATED_BUILD,
+  UPDATED_LOCKED_BUILD,
+  UPDATED_RECORD,
 } from './build-list.mock';
 
 beforeEach(() => {
@@ -77,7 +84,7 @@ describe('useBuildList', () => {
 
     const id = buildList.addBuild(IMPORTED_DATA);
 
-    expect(buildList.builds.value.at(-1)).toEqual({ ...IMPORTED_DATA, id, readonly: false });
+    expect(buildList.builds.value.at(-1)).toEqual({ ...IMPORTED_DATA, id, readonly: false, outdated: null });
   });
 
   it('gives an added build the returned id when the data carries another', () => {
@@ -134,5 +141,88 @@ describe('useBuildList', () => {
     buildList.setReadonly(LOCKED_ID, false);
 
     expect(buildList.builds.value[1]?.readonly).toBe(false);
+  });
+
+  it('leaves an Outdated build unedited', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.editBuild(OUTDATED_ID, build => build.perks.push('top'));
+
+    expect(buildList.builds.value[2]).toEqual(OUTDATED_BUILD);
+  });
+
+  it('leaves an Outdated build unrenamed', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.setName(OUTDATED_ID, NEW_NAME);
+
+    expect(buildList.builds.value[2]).toEqual(OUTDATED_BUILD);
+  });
+
+  it('leaves an Outdated build unreset', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.resetBuild(OUTDATED_ID);
+
+    expect(buildList.builds.value[2]).toEqual(OUTDATED_BUILD);
+  });
+
+  it('leaves an Outdated build unreplaced', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.replaceBuild(OUTDATED_ID, IMPORTED_DATA);
+
+    expect(buildList.builds.value[2]).toEqual(OUTDATED_BUILD);
+  });
+
+  it('leaves an Outdated build unlocked', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.setReadonly(OUTDATED_ID, true);
+
+    expect(buildList.builds.value[2]).toEqual(OUTDATED_BUILD);
+  });
+
+  it('removes an Outdated build', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.removeBuild(OUTDATED_ID);
+
+    expect(buildList.builds.value.map(build => build.id)).not.toContain(OUTDATED_ID);
+  });
+
+  it('updates an Outdated build into a regular one', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.updateBuild(OUTDATED_ID);
+
+    expect(buildList.builds.value[2]).toEqual(UPDATED_BUILD);
+  });
+
+  it('saves an updated build', () => {
+    const page = stubPage();
+    const buildList = useBuildList(createOptionsMock());
+    vi.advanceTimersByTime(SAVE_DELAY);
+
+    buildList.updateBuild(OUTDATED_ID);
+    vi.advanceTimersByTime(SAVE_DELAY);
+
+    expect(page.values.get(OUTDATED_KEY)).toBe(UPDATED_RECORD);
+  });
+
+  it('updates a locked Outdated build and keeps it locked', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.updateBuild(LOCKED_OUTDATED_ID);
+
+    expect(buildList.builds.value[3]).toEqual(UPDATED_LOCKED_BUILD);
+  });
+
+  it('leaves a regular build as it is on an update', () => {
+    const buildList = useBuildList(createOptionsMock());
+
+    buildList.updateBuild(LOCKED_ID);
+
+    expect(buildList.builds.value[1]).toEqual(LOCKED_BUILD);
   });
 });

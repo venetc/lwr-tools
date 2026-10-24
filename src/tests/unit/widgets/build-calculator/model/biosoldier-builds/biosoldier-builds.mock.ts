@@ -66,6 +66,7 @@ export const DEFAULT_ASSAULT_BUILD = {
   officerPerks: [null],
   name: 'Assault',
   readonly: false,
+  outdated: null,
 };
 
 export const DEFAULT_BUILDS = [

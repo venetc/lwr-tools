@@ -16,13 +16,14 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 - `order` is the display order. No `order` means nothing has been saved yet, and the page shows the default builds; `[]` means the user removed them all.
 - `lwr-tools.` is required: on GitHub Pages every `<user>.github.io` project shares one storage.
 
-Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `features/manage-builds` (build list operations: rename, lock, import, replace, remove); `features/share-build`: `config/constants.ts` (record schema) and `model/stored-build.ts` (build record ↔ build through the share code; a code with Outdated selections reads no record); the `widgets/build-calculator` widget: `config/constants.ts` (keys) and the stores `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (default builds, tree rules). The stores are read by several pages, which do not import each other, and need both features, which do not import each other either: the widget is the lowest layer that fits.
+Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (loading, saving, sync between tabs, delays), `features/manage-builds` (build list operations: rename, lock, import, replace, remove, update of an Outdated build); `features/share-build`: `config/constants.ts` (record schema) and `model/stored-build.ts` (build record ↔ build through the share code; a code with Outdated selections reads as an Outdated build); the `widgets/build-calculator` widget: `config/constants.ts` (keys) and the stores `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (default builds, tree rules). The stores are read by several pages, which do not import each other, and need both features, which do not import each other either: the widget is the lowest layer that fits.
 
 ## Loading
 
 - Ids from `order` first, then build records missing from it — last, in storage order. Such records appear when two tabs add builds at once.
 - Ids from `order` without a record are skipped.
-- A record that fails to parse (JSON, shape, share code) or whose code has [Outdated selections](share-codes.en.md#decoding-result) is skipped and stays in the storage: a newer app version may read it.
+- A record that fails to parse (JSON, shape, share code) is skipped and stays in the storage: a newer app version may read it.
+- A record whose code has [Outdated selections](share-codes.en.md#decoding-result) loads as an Outdated build: the build without them, with the record (`code`) and the Outdated selections in `outdated`; a regular build has `outdated: null`.
 - An invalid `order` counts as `[]`: records are still restored.
 - Default builds have fixed ids (`default-<classId>` for Biosoldiers and MECs, `default-shiv` for SHIVs) and are saved right away, so tabs opened for the first time at once write the same records.
 
@@ -31,6 +32,14 @@ Code: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.en.md) (lo
 - Store actions mark the changed build and, when builds are added or removed, the order; nothing watches the state.
 - Changes are saved 300 ms after the last one, at least every 2 s during continuous editing, and right away when the page is hidden or closed (`visibilitychange`, `pagehide`).
 - A build is saved again from its current state; a removed build's record is removed.
+
+## Outdated build
+
+An Outdated build is frozen until the player updates it: selections, rename, Reset, import, the lock toggle and export do nothing, removal works. Its record is saved back as it was loaded, without re-encoding.
+
+- Panel: the saved tree (the current tree, readonly; on a step of an Outdated selection the ability of the code stands in the cell of its variant, selected, with a dashed danger frame, a semi-transparent icon and an «OLD» label; its description notes «Outdated selection: in this mod version <step> has <Ability> here.»), the chip «N outdated selections» and the «Update» button in the header row; a danger triangle after the name in the build list.
+- «Update» opens the «Update build» dialog with a card per Outdated selection and the empty cell «Empty» on the right. Confirming it (`updateBuild`) drops `outdated` and saves the build with its new code; the steps of the Outdated selections stay empty. The lock is kept: a readonly build stays readonly.
+- The update reaches other tabs as any record change.
 
 ## Sync between tabs
 

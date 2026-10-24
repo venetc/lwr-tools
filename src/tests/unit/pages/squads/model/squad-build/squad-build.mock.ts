@@ -15,6 +15,7 @@ export const SNIPER_SQUAD_BUILD: SquadBuild = {
     id: 'sniper-build',
     name: 'Overwatch Sniper',
     readonly: false,
+    outdated: null,
     soldierClass: soldierClassMock('sniper', 'Sniper'),
     perks: [],
     geneMods: [],
@@ -25,10 +26,10 @@ export const SNIPER_SQUAD_BUILD: SquadBuild = {
 
 export const GOLIATH_SQUAD_BUILD: SquadBuild = {
   kind: 'mec',
-  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [] },
+  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [] },
 };
 
 export const SHIV_SQUAD_BUILD: SquadBuild = {
   kind: 'shiv',
-  build: { id: 'shiv-build', name: 'Alloy Support', readonly: false, perks: [] },
+  build: { id: 'shiv-build', name: 'Alloy Support', readonly: false, outdated: null, perks: [] },
 };

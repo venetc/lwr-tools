@@ -9,16 +9,17 @@ import {
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from '@entities/soldier';
+import type { ListedBuild } from '@features/manage-builds';
 import { useBuildList } from '@features/manage-builds';
+import type { OutdatedSelectionByKind } from '@features/share-build';
 import { storedBuildCodec } from '@features/share-build';
-import type { LockableItem } from '@shared/lib/stored-list';
 
 import { BIOSOLDIER_BUILD_KEY_PREFIX, BIOSOLDIER_BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
 
 /**
- * Saved biosoldier build: build data with its id and lock.
+ * Saved biosoldier build: build data with its id, lock and Outdated build record.
  */
-export type BiosoldierBuild = LockableItem<BiosoldierBuildData>;
+export type BiosoldierBuild = ListedBuild<BiosoldierBuildData, OutdatedSelectionByKind['biosoldier']>;
 
 /**
  * Default builds: one per class with only the base perk selected, with fixed ids.
@@ -27,13 +28,14 @@ const createDefaultBuilds = () => BIOSOLDIER_CLASSES.map((soldierClass): Biosold
   ...defaultBiosoldierBuild(soldierClass),
   id: `${DEFAULT_BUILD_ID_PREFIX}${soldierClass.id}`,
   readonly: false,
+  outdated: null,
 }));
 
 /**
  * Saved biosoldier builds, kept in the local storage and synced between tabs.
  */
 export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier-builds', () => {
-  const buildList = useBuildList<BiosoldierBuildData>({
+  const buildList = useBuildList<BiosoldierBuildData, OutdatedSelectionByKind['biosoldier']>({
     orderKey: BIOSOLDIER_BUILD_ORDER_KEY,
     itemKeyPrefix: BIOSOLDIER_BUILD_KEY_PREFIX,
     ...storedBuildCodec('biosoldier'),
@@ -98,6 +100,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
     importBuild: buildList.addBuild,
     replaceBuild: buildList.replaceBuild,
     resetBuild: buildList.resetBuild,
+    updateBuild: buildList.updateBuild,
     removeBuild: buildList.removeBuild,
   };
 });

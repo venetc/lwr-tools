@@ -1,12 +1,11 @@
-<script setup lang="ts" generic="Kind extends LoadoutUnitId, Build extends LockableItem<BuildDataByKind[Kind]>">
-import { ClipboardPaste } from '@lucide/vue';
+<script setup lang="ts" generic="Kind extends LoadoutUnitId, Build extends StoredBuildOf<Kind>">
+import { ClipboardPaste, TriangleAlert } from '@lucide/vue';
 import type { VNode } from 'vue';
 
 import type { LoadoutUnitId } from '@entities/loadout';
-import type { BuildDataByKind } from '@features/share-build';
+import type { BuildDataByKind, StoredBuildOf } from '@features/share-build';
 import { ShareCodeImport } from '@features/share-build';
 import { usePanelScroll } from '@shared/lib/panel-scroll';
-import type { LockableItem } from '@shared/lib/stored-list';
 import { Button } from '@shared/ui/button';
 import { ListNav } from '@shared/ui/list-nav';
 import { PageToolbar } from '@shared/ui/page-toolbar';
@@ -87,6 +86,12 @@ const { navItems, hasNavIcon } = useBuildCalculatorNav(() => props.builds, slots
         </template>
 
         <template #badge="{ item }">
+          <TriangleAlert
+            v-if="item.isOutdated"
+            :class="$style.outdatedMark"
+            role="img"
+            aria-label="Outdated build"
+          />
           <slot name="nav-badge" :build="item.build" />
         </template>
       </ListNav>

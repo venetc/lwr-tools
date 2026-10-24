@@ -6,7 +6,6 @@ import { useTierGrid } from './lib/tier-grid';
 import { useTierAppearance } from './model/tier-appearance';
 import { useTierSelection } from './model/tier-selection';
 import type { TieredPickerOption, TieredPickerTier } from './model/tiered-picker';
-import TieredPickerCell from './TieredPickerCell.vue';
 
 interface Props {
   /** Tiers from lowest to highest. */
@@ -24,12 +23,18 @@ interface TierSlotProps {
   tier: Tier
 }
 
+interface CellSlotProps {
+  tier: Tier
+  option: TieredPickerOption
+}
+
 const props = defineProps<Props>();
 
 const emit = defineEmits<Emits>();
 
 defineSlots<{
   tier?: (props: TierSlotProps) => VNode[]
+  cell?: (props: CellSlotProps) => VNode[]
 }>();
 
 const { isPressed, toggle, getAriaDisabled } = useTierSelection((tierIndex, itemId) => emit('select', tierIndex, itemId));
@@ -67,10 +72,10 @@ const { getTierClass } = useTierAppearance(useCssModule());
           @pointerenter="emit('inspect', tier, option)"
           @focus="emit('inspect', tier, option)"
         >
-          <TieredPickerCell
-            :icon="option.item.icon"
-            :name="option.item.name"
-            :appearance="option.appearance"
+          <slot
+            name="cell"
+            :tier="tier"
+            :option="option"
           />
         </button>
       </div>

@@ -24,6 +24,7 @@ export const createBuildMock = (perks: (string | null)[], readonly = false): Shi
   perks,
   name: 'SHIV',
   readonly,
+  outdated: null,
 });
 
 export const FIRST_FILLED_PERKS = ['right', null];

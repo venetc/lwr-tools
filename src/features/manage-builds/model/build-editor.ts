@@ -17,11 +17,13 @@ export interface BuildEditorActions<Data> {
   replaceBuild: (buildId: string, data: Data) => void
   /** Resets an editable build to a new build of its kind; the name stays. */
   resetBuild: (buildId: string) => void
+  /** Updates an Outdated build: its Outdated selections are cleared for good. */
+  updateBuild: (buildId: string) => void
 }
 
 /**
- * Editing of one build through its store: handlers of the build panel events for renaming, locking, replacement
- * and reset. Removal is not editing: the owner of the panel decides whether and how a build is removed.
+ * Editing of one build through its store: handlers of the build panel events for renaming, locking, replacement,
+ * reset and the update of an Outdated build. Removal is not editing: the owner of the panel decides whether and how a build is removed.
  *
  * @param build build to edit.
  * @param actions store actions.
@@ -53,5 +55,10 @@ export const useBuildEditor = <Data>(build: MaybeRefOrGetter<Readonly<LockableIt
    */
   const reset = () => actions.resetBuild(toValue(build).id);
 
-  return { rename, lock, replace, reset };
+  /**
+   * Updates the Outdated build: its Outdated selections are cleared for good.
+   */
+  const update = () => actions.updateBuild(toValue(build).id);
+
+  return { rename, lock, replace, reset, update };
 };

@@ -23,6 +23,7 @@ export const SNIPER_BUILD: BiosoldierBuild = {
   id: 'shared',
   name: 'Overwatch Sniper',
   readonly: false,
+  outdated: null,
   soldierClass: SNIPER,
   perks: [],
   geneMods: [],
@@ -30,9 +31,9 @@ export const SNIPER_BUILD: BiosoldierBuild = {
   officerPerks: [],
 };
 
-export const GOLIATH_BUILD: MecBuild = { id: 'shared', name: 'Goliath Wall', readonly: false, soldierClass: GOLIATH, perks: [] };
+export const GOLIATH_BUILD: MecBuild = { id: 'shared', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: GOLIATH, perks: [] };
 
-export const SHIV_BUILD: ShivBuild = { id: 'shared', name: 'Alloy Support', readonly: false, perks: [] };
+export const SHIV_BUILD: ShivBuild = { id: 'shared', name: 'Alloy Support', readonly: false, outdated: null, perks: [] };
 
 export const SQUAD_BUILDS = [
   { kind: 'biosoldier', build: SNIPER_BUILD },

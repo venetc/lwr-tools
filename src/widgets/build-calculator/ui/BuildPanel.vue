@@ -1,23 +1,25 @@
-<script setup lang="ts" generic="Kind extends LoadoutUnitId, Group extends TieredPickerGroup">
-import { ClipboardPaste, RotateCcw, Share2 } from '@lucide/vue';
+<script setup lang="ts" generic="Kind extends LoadoutUnitId, Group extends TieredPickerGroup<BuildTreeTier>">
+import { ClipboardPaste, RotateCcw, Share2, TriangleAlert } from '@lucide/vue';
 import type { VNode } from 'vue';
+import { useCssModule } from 'vue';
 
 import type { LoadoutUnitId } from '@entities/loadout';
-import type { BuildDataByKind } from '@features/share-build';
-import { ShareCodeExport, ShareCodeImport } from '@features/share-build';
-import type { LockableItem } from '@shared/lib/stored-list';
+import type { BuildDataByKind, StoredBuildOf } from '@features/share-build';
+import { OutdatedSelectionsDialog, ShareCodeExport, ShareCodeImport, useOutdatedUpdate } from '@features/share-build';
 import { ActionBar } from '@shared/ui/action-bar';
+import { Button } from '@shared/ui/button';
 import { EditableTitle } from '@shared/ui/editable-title';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
-import { TieredPicker } from '@shared/ui/tiered-picker';
+import { TieredPicker, TieredPickerCell } from '@shared/ui/tiered-picker';
 
 import { useBuildPanel } from '../model/build-panel';
+import type { BuildTreeTier } from '../model/saved-tree';
 
 interface Props {
   /** Kind of build code, for sharing and importing the build. */
   kind: Kind
-  /** Build to render. */
-  build: LockableItem<BuildDataByKind[Kind]>
+  /** Build to render; an Outdated build is frozen until the update. */
+  build: StoredBuildOf<Kind>
   /** Accessible name of the build tree. */
   label: string
   /** Name restored when the build name is left blank. */
@@ -39,6 +41,8 @@ interface Emits {
   reset: []
   /** Requests removal of the build. */
   remove: []
+  /** Requests the update of the Outdated build, once confirmed in the «Update build» dialog. */
+  update: []
   /** Requests an item selection on a tier of the group; null clears the tier. */
   select: [groupId: string, tierIndex: number, itemId: string | null]
 }
@@ -72,11 +76,30 @@ defineSlots<{
   'item-name'?: (props: ItemNameSlotProps) => VNode[]
 }>();
 
-const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.build, {
+const {
+  name,
+  readonly,
+  isOutdated,
+  isEditable,
+  isTitleReadonly,
+  outdatedCountText,
+  select,
+  isTierHighlighted,
+  isOutdatedCell,
+  getCellClass,
+  getCellIconClass,
+} = useBuildPanel(() => props.build, useCssModule(), {
   onRename: value => emit('rename', value),
   onLock: isReadonly => emit('lock', isReadonly),
   onSelect: (groupId, tierIndex, itemId) => emit('select', groupId, tierIndex, itemId),
 });
+
+const {
+  isOpen: isUpdateOpen,
+  groups: updateGroups,
+  open: openUpdate,
+  confirm: confirmUpdate,
+} = useOutdatedUpdate(() => props.kind, () => props.build.outdated, () => emit('update'));
 </script>
 
 <template>
@@ -90,7 +113,7 @@ const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.
         v-model="name"
         :fallback="props.fallbackName"
         edit-label="Rename build"
-        :readonly="readonly"
+        :readonly="isTitleReadonly"
       >
         <template #icon>
           <slot name="icon" />
@@ -100,14 +123,24 @@ const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.
           <slot name="badge" />
         </template>
       </EditableTitle>
+      <div v-if="isOutdated" :class="$style.outdated">
+        <span :class="$style.outdatedChip">
+          <TriangleAlert :class="$style.outdatedChipIcon" aria-hidden="true" />
+          {{ outdatedCountText }}
+        </span>
+        <Button variant="primary" @click="openUpdate">
+          <span :class="$style.buttonContent">Update</span>
+        </Button>
+      </div>
       <ActionBar
         v-model:locked="readonly"
         remove-label="Remove build"
         lock-label="Lock build"
         :removable="props.removable"
+        :lockable="isEditable"
         @remove="emit('remove')"
       >
-        <template #editable="{ actionClass }">
+        <template v-if="isEditable" #editable="{ actionClass }">
           <ShareCodeImport :kind="props.kind" @import="emit('replace', $event)">
             <template #trigger>
               <button :class="actionClass" type="button">
@@ -127,7 +160,7 @@ const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.
           </button>
         </template>
 
-        <template #default="{ actionClass }">
+        <template v-if="isEditable" #default="{ actionClass }">
           <ShareCodeExport :kind="props.kind" :build="props.build">
             <template #trigger>
               <button :class="actionClass" type="button">
@@ -154,6 +187,22 @@ const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.
       />
     </template>
 
+    <template #cell="{ tier, option }">
+      <span :class="getCellClass(tier, option)">
+        <TieredPickerCell
+          :class="getCellIconClass(tier, option)"
+          :icon="option.item.icon"
+          :name="option.item.name"
+          :appearance="option.appearance"
+        />
+        <span
+          v-if="isOutdatedCell(tier, option)"
+          :class="$style.outdatedLabel"
+          aria-hidden="true"
+        >OLD</span>
+      </span>
+    </template>
+
     <template #item-name="{ item, group }">
       <slot
         name="item-name"
@@ -164,6 +213,13 @@ const { name, readonly, select, isTierHighlighted } = useBuildPanel(() => props.
       </slot>
     </template>
   </TieredPicker>
+
+  <OutdatedSelectionsDialog
+    v-model:open="isUpdateOpen"
+    mode="update"
+    :groups="updateGroups"
+    @confirm="confirmUpdate"
+  />
 </template>
 
 <style lang="scss" module src="./BuildPanel.scss" />

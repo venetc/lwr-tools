@@ -126,6 +126,9 @@ export const SOLDIER_STEP_SECTION = {
 /** Note of the empty cell of an Outdated selection card for a perk gone from the SHIV tree. */
 export const REMOVED_FROM_SHIV_TREE_NOTE = 'Removed from the SHIV tree';
 
+/** Note of the empty cell of an Outdated selection card in the update of an Outdated build: the step stays empty. */
+export const EMPTY_STEP_NOTE = 'Empty';
+
 /** Title, intro and confirm label of the Outdated selections dialog by what it confirms: an import or a build update. */
 export const OUTDATED_SELECTIONS_DIALOG_TEXT = {
   import: {

@@ -46,11 +46,12 @@ export const DEFAULT_VALKYRIE_BUILD = {
   perks: ['jet-boots', null],
   name: 'Valkyrie',
   readonly: false,
+  outdated: null,
 };
 
 export const DEFAULT_BUILDS = [
   DEFAULT_VALKYRIE_BUILD,
-  { id: 'default-goliath', soldierClass: GOLIATH, perks: ['body-shield', null], name: 'Goliath', readonly: false },
+  { id: 'default-goliath', soldierClass: GOLIATH, perks: ['body-shield', null], name: 'Goliath', readonly: false, outdated: null },
 ];
 
 export const PICKED_PERKS = ['picked', null];

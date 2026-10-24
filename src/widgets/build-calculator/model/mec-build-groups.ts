@@ -8,21 +8,25 @@ import type { ClassTreeRankTier } from './class-tree-tiers';
 import { useClassTreeTiers } from './class-tree-tiers';
 import type { MecBuild } from './mec-builds';
 import { useMecBuildsStore } from './mec-builds';
+import { savedTreeTiers, shownTreeBuild, soldierOutdatedCells } from './saved-tree';
 
 /**
- * Tier groups of a MEC build panel: the class tree alone, and the selection in it through the store.
+ * Tier groups of a MEC build panel: the class tree alone, and the selection in it through the store. An Outdated build
+ * shows its saved tree: frozen, with the perks of its code in the cells of their variants.
  *
  * @param build MEC build.
  */
 export const useMecBuildGroups = (build: MaybeRefOrGetter<Readonly<MecBuild>>) => {
   const mecBuildsStore = useMecBuildsStore();
 
-  const { tree, tiers, featuredPickerItem } = useClassTreeTiers(build);
+  const { tree, tiers, featuredPickerItem } = useClassTreeTiers(computed(() => shownTreeBuild(toValue(build))));
+
+  const outdatedCells = computed(() => soldierOutdatedCells(toValue(build).outdated?.selections ?? []).get(MEC_TREE_GROUP_ID) ?? []);
 
   const groups = computed((): TieredPickerGroup<ClassTreeRankTier>[] => [{
     id: MEC_TREE_GROUP_ID,
     name: tree.value.name,
-    tiers: tiers.value,
+    tiers: savedTreeTiers(tiers.value, outdatedCells.value),
     defaultItem: featuredPickerItem.value,
   }]);
 

@@ -10,6 +10,8 @@ export interface BuildTreeEditor<Data> {
   replace: (data: Data) => void
   /** Resets the build to a new build of its kind; the name stays. */
   reset: () => void
+  /** Updates the Outdated build: its Outdated selections are cleared for good. */
+  update: () => void
 }
 
 /**
@@ -19,7 +21,7 @@ export type BuildTreeSelect = (groupId: string, tierIndex: number, itemId: strin
 
 /**
  * Handlers of a build tree for the build panel events that tell its owner of every edit of what the build holds once
- * it is made: a selection, a reset and an import. Renaming and locking leave what the build holds as it is and tell
+ * it is made: a selection, a reset, an import and the update of an Outdated build. Renaming and locking leave what the build holds as it is and tell
  * nothing.
  *
  * @param editor handlers of the build editor.
@@ -46,6 +48,14 @@ export const useBuildTreeHandlers = <Data>(editor: BuildTreeEditor<Data>, select
   };
 
   /**
+   * Updates the Outdated build and tells of the edit.
+   */
+  const update = () => {
+    editor.update();
+    onChange();
+  };
+
+  /**
    * Selects an item on a tier of the group, or clears the tier, and tells of the edit.
    *
    * @param groupId group id.
@@ -57,5 +67,5 @@ export const useBuildTreeHandlers = <Data>(editor: BuildTreeEditor<Data>, select
     onChange();
   };
 
-  return { rename: editor.rename, lock: editor.lock, replace, reset, select };
+  return { rename: editor.rename, lock: editor.lock, replace, reset, update, select };
 };

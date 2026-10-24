@@ -1,11 +1,13 @@
 export { encodeBuild } from './model/build-code';
-export type { BuildDataByKind } from './model/build-code';
+export type { BuildDataByKind, OutdatedSelectionByKind } from './model/build-code';
 export { useOutdatedImport } from './model/outdated-import';
+export { useOutdatedUpdate } from './model/outdated-update';
 export { readShareCode } from './model/share-code';
 export type { ShareCodeReadResult } from './model/share-code';
 export { encodeSquad } from './model/squad-code';
 export type { DecodedSquad, DecodedSquadBuild, DecodedSquadUnit } from './model/squad-code';
 export { storedBuildCodec } from './model/stored-build';
+export type { StoredBuildOf, StoredOutdatedBuild } from './model/stored-build';
 export { encodeUnit } from './model/unit-code';
 export type { DecodedUnit } from './model/unit-code';
 export { default as OutdatedSelectionsDialog } from './ui/OutdatedSelectionsDialog.vue';

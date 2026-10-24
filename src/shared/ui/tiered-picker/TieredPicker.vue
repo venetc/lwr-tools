@@ -5,7 +5,8 @@ import { ScrollArea } from '@shared/ui/scroll-area';
 import { Tabs } from '@shared/ui/tabs';
 
 import { usePickerGroups } from './model/picker-groups';
-import type { TieredPickerGroup, TieredPickerItem } from './model/tiered-picker';
+import type { TieredPickerGroup, TieredPickerItem, TieredPickerOption } from './model/tiered-picker';
+import TieredPickerCell from './TieredPickerCell.vue';
 import TieredPickerTiers from './TieredPickerTiers.vue';
 
 interface Props {
@@ -28,6 +29,11 @@ interface TierSlotProps {
   tier: Group['tiers'][number]
 }
 
+interface CellSlotProps {
+  tier: Group['tiers'][number]
+  option: TieredPickerOption
+}
+
 interface ItemNameSlotProps {
   item: TieredPickerItem
   group: Group
@@ -41,6 +47,7 @@ defineSlots<{
   'header'?: () => VNode[]
   'tab'?: (props: GroupSlotProps) => VNode[]
   'tier'?: (props: TierSlotProps) => VNode[]
+  'cell'?: (props: CellSlotProps) => VNode[]
   'item-name'?: (props: ItemNameSlotProps) => VNode[]
 }>();
 
@@ -86,6 +93,20 @@ const {
           <template #tier="{ tier }">
             <slot name="tier" :tier="tier" />
           </template>
+
+          <template #cell="{ tier, option }">
+            <slot
+              name="cell"
+              :tier="tier"
+              :option="option"
+            >
+              <TieredPickerCell
+                :icon="option.item.icon"
+                :name="option.item.name"
+                :appearance="option.appearance"
+              />
+            </slot>
+          </template>
         </TieredPickerTiers>
       </template>
     </Tabs>
@@ -98,6 +119,20 @@ const {
     >
       <template #tier="{ tier }">
         <slot name="tier" :tier="tier" />
+      </template>
+
+      <template #cell="{ tier, option }">
+        <slot
+          name="cell"
+          :tier="tier"
+          :option="option"
+        >
+          <TieredPickerCell
+            :icon="option.item.icon"
+            :name="option.item.name"
+            :appearance="option.appearance"
+          />
+        </slot>
       </template>
     </TieredPickerTiers>
 

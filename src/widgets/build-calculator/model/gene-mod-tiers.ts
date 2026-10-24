@@ -4,9 +4,10 @@ import { computed, toValue } from 'vue';
 import type { BiosoldierBuildData, BodyPart, BuildBlockReason } from '@entities/soldier';
 import { BODY_PARTS, bodyPartState, geneModBlockReason } from '@entities/soldier';
 import type { DeepReadonly } from '@shared/lib/object';
-import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption, TieredPickerTier } from '@shared/ui/tiered-picker';
+import type { TieredPickerAppearance, TieredPickerItem, TieredPickerOption } from '@shared/ui/tiered-picker';
 
 import { BODY_PART_PICKER_ITEMS, PSIONIC_BLOCK_NOTE } from '../config/constants';
+import type { BuildTreeTier } from './saved-tree';
 
 /**
  * Biosoldier build shown in the gene mods: its gene mods and psionic abilities with its lock.
@@ -16,7 +17,7 @@ export type GeneModTreeBuild = Readonly<Pick<BiosoldierBuildData, 'geneMods' | '
 /**
  * Picker tier of a body part.
  */
-export interface BodyPartTier extends TieredPickerTier {
+export interface BodyPartTier extends BuildTreeTier {
   /** Body part of the tier. */
   bodyPart: DeepReadonly<BodyPart>
 }
@@ -83,6 +84,7 @@ export const useGeneModTiers = (build: MaybeRefOrGetter<GeneModTreeBuild>) => {
         state: bodyPartState(selectedId, readonly),
         isDisabled: readonly,
         selectedId,
+        outdatedItemIds: [],
         options: (BODY_PART_PICKER_ITEMS[bodyPartIndex] ?? []).map(item => (
           geneModOption(item, selectedId, readonly, geneModBlockReason(geneModTreeBuild, bodyPartIndex, item.id))
         )),

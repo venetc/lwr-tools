@@ -3,10 +3,10 @@ import { computed, toValue } from 'vue';
 
 import type { ClassTreeRank, SoldierBuildData } from '@entities/soldier';
 import { classTree, featuredPerk, rankState } from '@entities/soldier';
-import type { TieredPickerTier } from '@shared/ui/tiered-picker';
 import { tierOption } from '@shared/ui/tiered-picker';
 
 import { treeAbilityPickerItem } from './ability-picker-item';
+import type { BuildTreeTier } from './saved-tree';
 
 /**
  * Soldier build shown in a class tree: build data with its lock.
@@ -16,7 +16,7 @@ export type ClassTreeBuild = Readonly<SoldierBuildData & { readonly: boolean }>;
 /**
  * Picker tier of a soldier rank.
  */
-export interface ClassTreeRankTier extends TieredPickerTier {
+export interface ClassTreeRankTier extends BuildTreeTier {
   /** Soldier rank of the tier. */
   rank: ClassTreeRank
 }
@@ -53,6 +53,7 @@ export const useClassTreeTiers = (build: MaybeRefOrGetter<ClassTreeBuild>) => {
         state,
         isDisabled: readonly || rankIndex === 0,
         selectedId,
+        outdatedItemIds: [],
         options: (rankPickerItems.value[rankIndex] ?? []).map(item => tierOption(item, state, selectedId)),
       };
     });

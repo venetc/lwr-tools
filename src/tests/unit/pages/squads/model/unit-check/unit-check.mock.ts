@@ -70,6 +70,7 @@ export const createBiosoldierBuildMock = (
     id: 'sniper-build',
     name: 'Overwatch Sniper',
     readonly: false,
+    outdated: null,
     soldierClass: soldierClassMock('sniper', 'Sniper'),
     perks: [],
     geneMods: build.geneMods ?? [null, null, null, null, null],
@@ -80,12 +81,12 @@ export const createBiosoldierBuildMock = (
 
 export const MEC_BUILD: SquadBuild = {
   kind: 'mec',
-  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [] },
+  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [] },
 };
 
 export const SHIV_BUILD: SquadBuild = {
   kind: 'shiv',
-  build: { id: 'shiv-build', name: 'Alloy Support', readonly: false, perks: [] },
+  build: { id: 'shiv-build', name: 'Alloy Support', readonly: false, outdated: null, perks: [] },
 };
 
 export const GENE_MODS: SelectedGeneMods = [null, 'ram', null, null, null];

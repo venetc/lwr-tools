@@ -10,15 +10,15 @@ export { bodyPartState } from './model/body-parts';
 export type { BodyPart, SelectedGeneMods } from './model/body-parts';
 export {
   biosoldierBuildBranchSet,
+  biosoldierBuildTraits,
   defaultBiosoldierBuild,
   defaultSoldierBuild,
-  isOfficerBuild,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
 } from './model/build';
-export type { BiosoldierBranchSet, BiosoldierBuildData, SoldierBuildData } from './model/build';
+export type { BiosoldierBranchSet, BiosoldierBuildData, BiosoldierBuildTraits, SoldierBuildData } from './model/build';
 export { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from './model/build-codes';
 export type {
   BiosoldierBuildCodes,

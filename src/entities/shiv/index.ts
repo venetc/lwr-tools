@@ -1,6 +1,6 @@
 export { SHIV_BUILD_NAME } from './config/constants/build';
 export { TECHNOLOGY_LEVELS } from './config/constants/technology-levels';
-export { selectShivBuildPerk } from './model/build';
+export { defaultShivBuild, selectShivBuildPerk } from './model/build';
 export type { SelectedShivPerks, ShivBuildData } from './model/build';
 export { shivBuildCodes, shivBuildFromCodes } from './model/build-codes';
 export type { ShivBuildCodes, ShivBuildOfCodes, ShivOutdatedSelection } from './model/build-codes';

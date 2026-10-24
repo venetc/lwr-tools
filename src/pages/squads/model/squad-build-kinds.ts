@@ -3,7 +3,7 @@ import { markRaw } from 'vue';
 
 import type { LoadoutUnitId, LoadoutWearer } from '@entities/loadout';
 import type { SoldierClass } from '@entities/soldier';
-import { BIOSOLDIER_CLASSES, biosoldierBuildBranchSet, isOfficerBuild, MEC_CLASSES } from '@entities/soldier';
+import { BIOSOLDIER_CLASSES, biosoldierBuildTraits, MEC_CLASSES } from '@entities/soldier';
 import type { BuildDataByKind } from '@features/share-build';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { SvgIcon } from '@shared/ui/svg-icon';
@@ -63,15 +63,9 @@ export const SQUAD_BUILD_KINDS: { readonly [Kind in LoadoutUnitId]: Readonly<Squ
     classes: BIOSOLDIER_CLASSES,
     className: build => build.soldierClass.name,
     wearer: (build) => {
-      const branchSet = biosoldierBuildBranchSet(build);
+      const { hasGeneMod, hasPsionicAbility, isOfficer } = biosoldierBuildTraits(build);
 
-      return {
-        unit: 'biosoldier',
-        classId: build.soldierClass.id,
-        hasGeneMod: branchSet === 'gene-mods' || branchSet === 'both',
-        hasPsionicAbility: branchSet === 'psionic' || branchSet === 'both',
-        isOfficer: isOfficerBuild(build),
-      };
+      return { unit: 'biosoldier', classId: build.soldierClass.id, hasGeneMod, hasPsionicAbility, isOfficer };
     },
     miniTree: markRaw(BiosoldierMiniTree),
     buildTree: markRaw(BiosoldierBuildTree),

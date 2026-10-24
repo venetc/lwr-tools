@@ -21,8 +21,7 @@ export const GOLIATH = soldierClassMock('goliath', 'Goliath');
 export const SOLDIER_ENTITY_MOCK = {
   BIOSOLDIER_CLASSES: [ASSAULT, SNIPER],
   MEC_CLASSES: [GOLIATH],
-  biosoldierBuildBranchSet: () => 'plain',
-  isOfficerBuild: () => false,
+  biosoldierBuildTraits: () => ({ hasGeneMod: false, hasPsionicAbility: false, isOfficer: false }),
 };
 
 export const BIOSOLDIER_UNIT: LoadoutUnit = { id: 'biosoldier', code: 1, name: 'Biosoldier' };

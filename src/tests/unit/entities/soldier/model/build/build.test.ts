@@ -2,9 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   biosoldierBuildBranchSet,
+  biosoldierBuildTraits,
   defaultBiosoldierBuild,
   defaultSoldierBuild,
-  isOfficerBuild,
   selectBiosoldierBuildGeneMod,
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPsionicAbility,
@@ -370,28 +370,52 @@ describe('biosoldierBuildBranchSet', () => {
   });
 });
 
-describe('isOfficerBuild', () => {
-  it('is false for a build without officer perks', () => {
+describe('biosoldierBuildTraits', () => {
+  it('has no traits for an empty build', () => {
+    const build = createOfficerBuildMock(BASE_PERKS);
+
+    const traits = biosoldierBuildTraits(build);
+
+    expect(traits).toEqual({ hasGeneMod: false, hasPsionicAbility: false, isOfficer: false });
+  });
+
+  it('has a gene mod for a build with only Neural Damping', () => {
+    const build = createBiosoldierBuildMock(NEURAL_DAMPING_GENE_MODS);
+
+    const traits = biosoldierBuildTraits(build);
+
+    expect(traits).toEqual({ hasGeneMod: true, hasPsionicAbility: false, isOfficer: false });
+  });
+
+  it('has a psionic ability for a build with a psionic ability above empty psi levels', () => {
+    const build = createBiosoldierBuildMock(NO_GENE_MODS, HIGH_PSIONICS);
+
+    const traits = biosoldierBuildTraits(build);
+
+    expect(traits).toEqual({ hasGeneMod: false, hasPsionicAbility: true, isOfficer: false });
+  });
+
+  it('is not an officer for a build with every rank perk but no officer perk', () => {
     const build = createOfficerBuildMock(ALL_PERKS);
 
-    const isOfficer = isOfficerBuild(build);
+    const traits = biosoldierBuildTraits(build);
 
-    expect(isOfficer).toBe(false);
+    expect(traits).toEqual({ hasGeneMod: false, hasPsionicAbility: false, isOfficer: false });
   });
 
-  it('is true for a build with an officer perk above empty officer ranks', () => {
-    const build = createOfficerBuildMock(BASE_PERKS, GAMMA_OFFICER_PERKS);
-
-    const isOfficer = isOfficerBuild(build);
-
-    expect(isOfficer).toBe(true);
-  });
-
-  it('is true for a build with an officer perk', () => {
+  it('is an officer for a build with an officer perk on the first officer rank', () => {
     const build = createOfficerBuildMock(ALL_PERKS, ALPHA_OFFICER_PERKS);
 
-    const isOfficer = isOfficerBuild(build);
+    const traits = biosoldierBuildTraits(build);
 
-    expect(isOfficer).toBe(true);
+    expect(traits).toEqual({ hasGeneMod: false, hasPsionicAbility: false, isOfficer: true });
+  });
+
+  it('is an officer for a build with an officer perk above empty officer ranks', () => {
+    const build = createOfficerBuildMock(BASE_PERKS, GAMMA_OFFICER_PERKS);
+
+    const traits = biosoldierBuildTraits(build);
+
+    expect(traits).toEqual({ hasGeneMod: false, hasPsionicAbility: false, isOfficer: true });
   });
 });

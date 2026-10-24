@@ -3,11 +3,12 @@ import { expect } from 'vitest';
 import type { PageMock } from '../../../../shared/lib/stored-list/stored-list/stored-list.mock';
 
 /**
- * Entity of SHIVs with three technology levels without perks and a selection that only puts the id at the index.
+ * Entity of SHIVs with three technology levels without perks, a default build with none selected and a selection that
+ * only puts the id at the index.
  */
 export const SHIV_ENTITY_MOCK = {
   TECHNOLOGY_LEVELS: [{ perks: [] }, { perks: [] }, { perks: [] }],
-  SHIV_BUILD_NAME: 'SHIV',
+  defaultShivBuild: () => ({ perks: [null, null, null], name: 'SHIV' }),
   selectShivBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
     build.perks[index] = id;
   },

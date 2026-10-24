@@ -42,6 +42,18 @@ export interface BiosoldierBuildData extends SoldierBuildData {
 export type BiosoldierBranchSet = 'plain' | 'gene-mods' | 'psionic' | 'both';
 
 /**
+ * What a biosoldier build has beyond its class.
+ */
+export interface BiosoldierBuildTraits {
+  /** Whether any gene mod is selected, Neural Damping included. */
+  hasGeneMod: boolean
+  /** Whether any psionic ability is selected. */
+  hasPsionicAbility: boolean
+  /** Whether the build is an Officer: any officer perk is selected. */
+  isOfficer: boolean
+}
+
+/**
  * Default build of the class: the base perk on the first rank, the other ranks empty, named after the class.
  *
  * @param soldierClass biosoldier class or MEC class.
@@ -125,24 +137,27 @@ export const selectBiosoldierBuildOfficerPerk = (build: BiosoldierBuildData, off
 };
 
 /**
- * Branches of the biosoldier build: any gene mod counts as gene mods, Neural Damping included; any psionic ability as
- * psionic.
+ * Traits of the biosoldier build beyond its class: any gene mod counts, Neural Damping included; any psionic ability;
+ * any officer perk makes an Officer.
+ *
+ * @param build biosoldier build.
+ */
+export const biosoldierBuildTraits = (build: BiosoldierBuildData): BiosoldierBuildTraits => ({
+  hasGeneMod: build.geneMods.some(geneModId => geneModId !== null),
+  hasPsionicAbility: build.psionicAbilities.some(abilityId => abilityId !== null),
+  isOfficer: build.officerPerks.some(perkId => perkId !== null),
+});
+
+/**
+ * Branches of the biosoldier build, from its gene mod and psionic ability traits.
  *
  * @param build biosoldier build.
  */
 export const biosoldierBuildBranchSet = (build: BiosoldierBuildData): BiosoldierBranchSet => {
-  const hasGeneMods = build.geneMods.some(geneModId => geneModId !== null);
-  const hasPsionicAbilities = build.psionicAbilities.some(abilityId => abilityId !== null);
+  const { hasGeneMod, hasPsionicAbility } = biosoldierBuildTraits(build);
 
-  if (hasGeneMods && hasPsionicAbilities) return 'both';
-  if (hasGeneMods) return 'gene-mods';
-  if (hasPsionicAbilities) return 'psionic';
+  if (hasGeneMod && hasPsionicAbility) return 'both';
+  if (hasGeneMod) return 'gene-mods';
+  if (hasPsionicAbility) return 'psionic';
   return 'plain';
 };
-
-/**
- * Whether the biosoldier build is an Officer: at least one officer perk is selected.
- *
- * @param build biosoldier build.
- */
-export const isOfficerBuild = (build: BiosoldierBuildData) => build.officerPerks.some(perkId => perkId !== null);

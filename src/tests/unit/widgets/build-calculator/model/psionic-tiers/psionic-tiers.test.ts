@@ -1,136 +1,161 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { toValue } from 'vue';
 
+import { highestSelectedStepIndex, psiLevelState, psionicAbilityBlockReason } from '@entities/soldier';
 import { usePsionicTiers } from '@widgets/build-calculator/model/psionic-tiers';
 
 import {
-  ALL_UNAVAILABLE_NOTES,
   createBuildMock,
   LOW_AND_HIGH_PSIONICS,
+  LOW_BLOCK_CALLS,
+  LOW_BUILD,
   LOW_PSIONICS,
-  NEURAL_DAMPING_GENE_MODS,
-  NO_GENE_MODS,
+  NEURAL_DAMPING_BLOCKED_OPTIONS,
   NO_PSIONICS,
+  READONLY_LOW_STATE_CALLS,
 } from './psionic-tiers.mock';
 
-vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
-  ABILITY_CONTENT: (await import('./psionic-tiers.mock')).ABILITY_CONTENT_MOCK,
-}));
+vi.mock('@entities/soldier', async () => {
+  const { PSI_LEVELS_MOCK, treeAbilityStub } = await import('./psionic-tiers.mock');
 
-vi.mock('@entities/soldier/config/constants/body-part-content', async () => ({
-  BODY_PART_CONTENT: (await import('./psionic-tiers.mock')).BODY_PART_CONTENT_MOCK,
-}));
+  return {
+    BODY_PARTS: [],
+    OFFICER_RANKS: [],
+    PSI_LEVELS: PSI_LEVELS_MOCK,
+    highestSelectedStepIndex: vi.fn(),
+    psiLevelState: vi.fn(),
+    psionicAbilityBlockReason: vi.fn(),
+    treeAbility: treeAbilityStub,
+  };
+});
 
-vi.mock('@entities/soldier/config/constants/psi-level-content', async () => ({
-  PSI_LEVEL_CONTENT: (await import('./psionic-tiers.mock')).PSI_LEVEL_CONTENT_MOCK,
-}));
+vi.mock('@entities/shiv', () => ({ TECHNOLOGY_LEVELS: [] }));
 
-vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
+beforeEach(() => {
+  vi.mocked(highestSelectedStepIndex).mockReset().mockReturnValue(-1);
+  vi.mocked(psiLevelState).mockReset().mockReturnValue('available');
+  vi.mocked(psionicAbilityBlockReason).mockReset().mockReturnValue(null);
+});
 
 describe('usePsionicTiers', () => {
-  it('opens every psi level of an empty build', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, NO_PSIONICS));
+  it('gives a tier for each psi level', () => {
+    const { tiers } = usePsionicTiers(LOW_BUILD);
 
-    expect(tiers.value.map(tier => tier.state)).toEqual(['available', 'available', 'available']);
+    expect(tiers.value.map(tier => tier.name)).toEqual(['Low', 'Middle', 'High']);
   });
 
-  it('completes trained psi levels and keeps the empty ones open', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_AND_HIGH_PSIONICS));
+  it('gives the id of the psionic ability of the psi level', () => {
+    const { tiers } = usePsionicTiers(LOW_BUILD);
 
-    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'available', 'completed']);
+    expect(tiers.value[0].selectedId).toBe('low-right');
   });
 
-  it('disables no psi level of an editable build', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS));
+  it('gives null for a psi level without a psionic ability', () => {
+    const { tiers } = usePsionicTiers(LOW_BUILD);
 
-    expect(tiers.value.map(tier => tier.isDisabled)).toEqual([false, false, false]);
+    expect(tiers.value[1].selectedId).toBeNull();
   });
 
-  it('locks every psi level under Neural Damping', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NEURAL_DAMPING_GENE_MODS, NO_PSIONICS));
+  it('asks the Build rule about each psi level itself', () => {
+    const { tiers } = usePsionicTiers(LOW_BUILD);
 
-    expect(tiers.value.map(tier => tier.state)).toEqual(['locked', 'locked', 'locked']);
+    toValue(tiers);
+
+    expect(vi.mocked(psionicAbilityBlockReason).mock.calls).toEqual(LOW_BLOCK_CALLS);
   });
 
-  it('keeps trained psi levels of a readonly build completed and locks the rest', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS, true));
+  it('asks the psi level state with the selection, the lock of the build and the block of each psi level', () => {
+    vi.mocked(psionicAbilityBlockReason).mockReturnValueOnce('neural-damping');
 
-    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'locked', 'locked']);
+    const { tiers } = usePsionicTiers(createBuildMock(LOW_PSIONICS, true));
+
+    toValue(tiers);
+
+    expect(vi.mocked(psiLevelState).mock.calls).toEqual(READONLY_LOW_STATE_CALLS);
+  });
+
+  it('takes the state of each psi level from its psi level state', () => {
+    vi.mocked(psiLevelState).mockReturnValueOnce('completed').mockReturnValueOnce('locked');
+
+    const { tiers } = usePsionicTiers(LOW_BUILD);
+
+    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'locked', 'available']);
+  });
+
+  it('disables only the locked psi levels of an editable build', () => {
+    vi.mocked(psiLevelState).mockReturnValueOnce('completed').mockReturnValueOnce('locked');
+
+    const { tiers } = usePsionicTiers(LOW_BUILD);
+
+    expect(tiers.value.map(tier => tier.isDisabled)).toEqual([false, true, false]);
   });
 
   it('disables every psi level of a readonly build', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS, true));
+    const { tiers } = usePsionicTiers(createBuildMock(LOW_PSIONICS, true));
 
     expect(tiers.value.map(tier => tier.isDisabled)).toEqual([true, true, true]);
   });
 
-  it('shows the chosen psionic ability as selected and the other one as available', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS));
+  it('shows the chosen psionic ability as selected and keeps the other one available', () => {
+    const { tiers } = usePsionicTiers(LOW_BUILD);
 
     expect(tiers.value[0].options.map(option => option.appearance)).toEqual(['available', 'selected']);
   });
 
-  it('shows the psionic abilities of an available psi level as available', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS));
-
-    expect(tiers.value[1].options[0].appearance).toBe('available');
-  });
-
-  it('shows the psionic abilities of an empty psi level above an empty one as available', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS));
+  it('shows the psionic abilities of an empty psi level as available', () => {
+    const { tiers } = usePsionicTiers(LOW_BUILD);
 
     expect(tiers.value[2].options.map(option => option.appearance)).toEqual(['available', 'available']);
   });
 
-  it('shows the psionic abilities of an empty psi level of a readonly build as disabled', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS, true));
+  it('shows the psionic abilities of a locked psi level as disabled', () => {
+    vi.mocked(psiLevelState).mockReturnValue('locked');
+
+    const { tiers } = usePsionicTiers(LOW_BUILD);
 
     expect(tiers.value[2].options.map(option => option.appearance)).toEqual(['disabled', 'disabled']);
   });
 
   it('keeps the chosen psionic ability of a readonly build selected and disables the other one', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS, true));
+    const { tiers } = usePsionicTiers(createBuildMock(LOW_PSIONICS, true));
 
     expect(tiers.value[0].options.map(option => option.appearance)).toEqual(['disabled', 'selected']);
   });
 
-  it('shows every psionic ability as disabled under Neural Damping', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NEURAL_DAMPING_GENE_MODS, NO_PSIONICS));
+  it('blocks and notes the psionic abilities of a psi level the Build rule blocks for Neural Damping', () => {
+    vi.mocked(psionicAbilityBlockReason).mockReturnValueOnce('neural-damping');
 
-    expect(tiers.value.flatMap(tier => tier.options.map(option => option.appearance))).toEqual(['disabled', 'disabled', 'disabled', 'disabled', 'disabled']);
+    const { tiers } = usePsionicTiers(LOW_BUILD);
+
+    expect(tiers.value[0].options.map(option => [option.appearance, option.isDisabled, option.note])).toEqual(NEURAL_DAMPING_BLOCKED_OPTIONS);
   });
 
-  it('blocks every psionic ability under Neural Damping', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NEURAL_DAMPING_GENE_MODS, NO_PSIONICS));
+  it('leaves the psionic abilities of a locked psi level unblocked and without a note', () => {
+    vi.mocked(psiLevelState).mockReturnValue('locked');
 
-    expect(tiers.value.flatMap(tier => tier.options.map(option => option.isDisabled))).toEqual([true, true, true, true, true]);
-  });
-
-  it('notes every psionic ability blocked by Neural Damping', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NEURAL_DAMPING_GENE_MODS, NO_PSIONICS));
-
-    expect(tiers.value.flatMap(tier => tier.options.map(option => option.note))).toEqual(ALL_UNAVAILABLE_NOTES);
-  });
-
-  it('leaves psionic abilities of a locked psi level in a readonly build unblocked and without a note', () => {
-    const { tiers } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS, true));
+    const { tiers } = usePsionicTiers(createBuildMock(LOW_PSIONICS, true));
 
     expect(tiers.value[2].options.map(option => [option.isDisabled, option.note])).toEqual([[false, null], [false, null]]);
   });
 
-  it('features the psionic ability of the highest trained psi level', () => {
-    const { featuredPickerItem } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_PSIONICS));
+  it('asks the highest selected psi level with the psionic abilities', () => {
+    const { featuredPickerItem } = usePsionicTiers(createBuildMock(LOW_AND_HIGH_PSIONICS));
 
-    expect(featuredPickerItem.value?.id).toBe('low-right');
+    toValue(featuredPickerItem);
+
+    expect(highestSelectedStepIndex).toHaveBeenCalledWith(LOW_AND_HIGH_PSIONICS);
   });
 
-  it('features the psionic ability of the highest trained psi level above an empty one', () => {
-    const { featuredPickerItem } = usePsionicTiers(createBuildMock(NO_GENE_MODS, LOW_AND_HIGH_PSIONICS));
+  it('features the psionic ability of the highest selected psi level', () => {
+    vi.mocked(highestSelectedStepIndex).mockReturnValue(2);
+
+    const { featuredPickerItem } = usePsionicTiers(createBuildMock(LOW_AND_HIGH_PSIONICS));
 
     expect(featuredPickerItem.value?.id).toBe('high-left');
   });
 
   it('features the first psionic ability of the first psi level without psionic abilities', () => {
-    const { featuredPickerItem } = usePsionicTiers(createBuildMock(NO_GENE_MODS, NO_PSIONICS));
+    const { featuredPickerItem } = usePsionicTiers(createBuildMock(NO_PSIONICS));
 
     expect(featuredPickerItem.value?.id).toBe('low-left');
   });

@@ -1,21 +1,28 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { featuredShivPerk, technologyLevelState } from '@entities/shiv';
 import { savedTreeTiers, shivOutdatedCells, shivRemovedPerks } from '@widgets/build-calculator/model/saved-tree';
 import { useShivBuildTiers } from '@widgets/build-calculator/model/shiv-build-tiers';
 
 import { COLLISION_NOTE, OUTDATED_SHIV_BUILD } from './saved-tree.mock';
 
-vi.mock('@entities/shiv/config/constants/perk-content', async () => ({
-  SHIV_PERK_CONTENT: (await import('./saved-tree.mock')).SHIV_PERK_CONTENT_MOCK,
-}));
+vi.mock('@entities/shiv', async () => {
+  const { shivPerkByIdStub, TECHNOLOGY_LEVELS_MOCK } = await import('./saved-tree.mock');
 
-vi.mock('@entities/shiv/config/constants/technology-level-content', async () => ({
-  TECHNOLOGY_LEVEL_CONTENT: (await import('./saved-tree.mock')).TECHNOLOGY_LEVEL_CONTENT_MOCK,
-}));
+  return {
+    TECHNOLOGY_LEVELS: TECHNOLOGY_LEVELS_MOCK,
+    featuredShivPerk: vi.fn(),
+    shivPerkById: shivPerkByIdStub,
+    technologyLevelState: vi.fn(),
+  };
+});
 
-vi.mock('@entities/shiv/config/constants/perk-icons', () => ({ SHIV_PERK_ICON: {} }));
+vi.mock('@entities/soldier', () => ({ BODY_PARTS: [], OFFICER_RANKS: [], PSI_LEVELS: [] }));
 
-vi.mock('@entities/shiv/config/constants/technology-level-icons', () => ({ TECHNOLOGY_LEVEL_ICON: {} }));
+beforeEach(() => {
+  vi.mocked(featuredShivPerk).mockReset().mockReturnValue(null);
+  vi.mocked(technologyLevelState).mockReset().mockReturnValue('locked');
+});
 
 /**
  * Tiers of the saved SHIV tree of `OUTDATED_SHIV_BUILD`.
@@ -29,10 +36,16 @@ describe('saved SHIV tree', () => {
     expect(firstTier?.options.map(option => option.appearance)).toEqual(['selected', 'disabled', 'selected']);
   });
 
+  it('completes the technology level of the collision', () => {
+    const [firstTier] = savedShivTiers();
+
+    expect(firstTier?.state).toBe('completed');
+  });
+
   it('marks both colliding perks as outdated', () => {
     const [firstTier] = savedShivTiers();
 
-    expect(firstTier?.outdatedItemIds).toEqual(['lock-n-load', 'platform-stability']);
+    expect(firstTier?.outdatedItemIds).toEqual(['left', 'right']);
   });
 
   it('notes the collision in the description of a colliding perk', () => {
@@ -47,9 +60,17 @@ describe('saved SHIV tree', () => {
     expect(secondTier?.outdatedItemIds).toEqual([]);
   });
 
+  it('gives the same tiers without outdated cells', () => {
+    const { tiers } = useShivBuildTiers(OUTDATED_SHIV_BUILD);
+
+    const savedTiers = savedTreeTiers(tiers.value, []);
+
+    expect(savedTiers).toBe(tiers.value);
+  });
+
   it('lists a perk gone from the SHIV tree for the plate under the tree', () => {
     const perks = shivRemovedPerks(OUTDATED_SHIV_BUILD.outdated?.selections ?? []);
 
-    expect(perks.map(perk => perk.name)).toEqual(['Gone']);
+    expect(perks.map(perk => perk.name)).toEqual(['gone']);
   });
 });

@@ -1,28 +1,45 @@
-import type { AbilityContent } from '@entities/soldier/model/abilities';
-import type { SoldierClass } from '@entities/soldier/model/classes';
-import type { SoldierRankContent } from '@entities/soldier/model/ranks';
+import type { classTree, ClassTreeRank, SoldierClass, TreeAbility } from '@entities/soldier';
 import type { ClassTreeBuild } from '@widgets/build-calculator/model/class-tree-tiers';
 
-export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
-  granted: { code: 10, name: 'Granted', description: 'Granted by the class.' },
-  left: { code: 11, name: 'Left', description: 'Left choice.' },
-  right: { code: 12, name: 'Right', description: 'Right choice.' },
-  top: { code: 13, name: 'Top', description: 'Top choice.' },
-};
+/**
+ * Tree ability with placeholder texts and icons.
+ *
+ * @param id ability id.
+ * @param grants abilities it grants.
+ */
+const treeAbilityMock = (id: string, grants: TreeAbility[] = []): TreeAbility => ({
+  id,
+  name: id,
+  description: `${id} description`,
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+  grants,
+});
 
-export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
-  first: { name: 'First' },
-  second: { name: 'Second' },
-  third: { name: 'Third' },
-};
+/**
+ * Rank of the class tree with only the fields the tiers read.
+ *
+ * @param id rank id.
+ * @param name rank name.
+ * @param perks perks of the rank.
+ */
+const rankMock = (id: string, name: string, perks: TreeAbility[]) => ({ id, name, perks } as unknown as ClassTreeRank);
 
-const SOLDIER_CLASS_MOCK = {
-  id: 'tester',
-  code: 3,
+export const RIGHT_PERK = treeAbilityMock('right');
+
+/** Class tree of the mock class: the base perk granting Bonus, Left and Right, then Top. */
+export const CLASS_TREE_MOCK: ReturnType<typeof classTree> = {
   name: 'Tester',
-  perks: { first: ['granted'], second: ['left', 'right'], third: ['top'] },
-  basePerk: 'granted',
-} as unknown as SoldierClass;
+  ranks: [
+    rankMock('first', 'First', [treeAbilityMock('granted', [treeAbilityMock('bonus')])]),
+    rankMock('second', 'Second', [treeAbilityMock('left'), RIGHT_PERK]),
+    rankMock('third', 'Third', [treeAbilityMock('top')]),
+  ],
+};
+
+/** Perk outside the class tree of the mock class. */
+export const STRANGER_PERK = treeAbilityMock('stranger');
+
+const SOLDIER_CLASS_MOCK = { id: 'tester', name: 'Tester' } as unknown as SoldierClass;
 
 /**
  * Build of the mock class.
@@ -37,8 +54,7 @@ export const createBuildMock = (perks: (string | null)[], readonly = false): Cla
   readonly,
 });
 
-export const BASE_PERKS = ['granted', null, null];
-
 export const PARTIAL_PERKS = ['granted', 'right', null];
 
-export const GAPPED_PERKS = ['granted', null, 'top'];
+/** Arguments of the rank state of each rank of `PARTIAL_PERKS` in a readonly build. */
+export const READONLY_PARTIAL_RANK_STATE_CALLS = [['granted', true], ['right', true], [null, true]];

@@ -1,5 +1,7 @@
-import type { TreeAbility } from '@entities/soldier/model/abilities';
+import type { AbilityContent, TreeAbility } from '@entities/soldier/model/abilities';
 import type { ClassTree } from '@entities/soldier/model/class-tree';
+import type { SoldierClass } from '@entities/soldier/model/classes';
+import type { SoldierRankContent } from '@entities/soldier/model/ranks';
 
 /**
  * Tree perk without grants.
@@ -41,3 +43,24 @@ export const PARTIAL_BUILD = ['granted', 'right', null];
 export const GAPPED_BUILD = ['granted', null, 'top'];
 
 export const BASE_BUILD = ['granted', null, null];
+
+export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
+  granted: { code: 10, name: 'Granted', description: 'Granted by the class.' },
+  left: { code: 11, name: 'Left', description: 'Left choice.' },
+  right: { code: 12, name: 'Right', description: 'Right choice.' },
+  top: { code: 13, name: 'Top', description: 'Top choice.' },
+};
+
+export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
+  first: { name: 'First' },
+  second: { name: 'Second' },
+  third: { name: 'Third' },
+};
+
+export const SOLDIER_CLASS_MOCK = {
+  id: 'tester',
+  code: 3,
+  name: 'Tester',
+  perks: { third: ['top'], first: ['granted'], second: ['left', 'right'] },
+  basePerk: 'granted',
+} as unknown as SoldierClass;

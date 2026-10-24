@@ -1,34 +1,38 @@
-import type { ShivPerkContent } from '@entities/shiv/model/perks';
-import type { TechnologyLevelContent } from '@entities/shiv/model/technology-levels';
+import type { ShivOutdatedSelection, ShivPerk, TechnologyLevel } from '@entities/shiv';
 import type { ShivBuild } from '@widgets/build-calculator/model/shiv-builds';
 
-export const SHIV_PERK_CONTENT_MOCK: Record<string, ShivPerkContent> = {
-  'lock-n-load': { code: 1, name: 'Left', description: 'Left choice.' },
-  'repair-servos': { code: 2, name: 'Middle', description: 'Middle choice.' },
-  'platform-stability': { code: 3, name: 'Right', description: 'Right choice.' },
-  'holo-rounds': { code: 4, name: 'Top', description: 'Top choice.' },
-  'smart-macrophages': { code: 5, name: 'Gone', description: 'Perk of no level.' },
-};
+/**
+ * Stub of `shivPerkById`: a SHIV perk named by its id, with placeholder texts and icons.
+ *
+ * @param id perk id.
+ */
+export const shivPerkByIdStub = (id: string) => ({
+  id,
+  code: 0,
+  name: id,
+  description: `${id} description`,
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+}) as unknown as ShivPerk;
 
-export const TECHNOLOGY_LEVEL_CONTENT_MOCK: Record<string, TechnologyLevelContent> = {
-  first: { name: 'First', perks: ['lock-n-load', 'repair-servos', 'platform-stability'] },
-  second: { name: 'Second', perks: ['holo-rounds'] },
-};
+export const TECHNOLOGY_LEVELS_MOCK = [
+  { id: 'first', name: 'First', perks: ['left', 'middle', 'right'].map(shivPerkByIdStub) },
+  { id: 'second', name: 'Second', perks: ['top'].map(shivPerkByIdStub) },
+] as unknown as TechnologyLevel[];
 
-/** Outdated SHIV build with Left and Right colliding on First, Gone removed from the tree and Top kept; perk ids are real, their content is mocked. */
+/** Outdated selections: left and right colliding on First, and gone removed from the SHIV tree. */
+const OUTDATED_SELECTIONS = [
+  { perkId: 'left', reason: 'collision', levelIndex: 0 },
+  { perkId: 'gone', reason: 'removed' },
+  { perkId: 'right', reason: 'collision', levelIndex: 0 },
+] as unknown as ShivOutdatedSelection[];
+
+/** Outdated SHIV build with left and right colliding on First, gone removed from the tree and top kept. */
 export const OUTDATED_SHIV_BUILD: ShivBuild = {
   id: 'build',
-  perks: [null, 'holo-rounds'],
+  perks: [null, 'top'],
   name: 'SHIV',
   readonly: true,
-  outdated: {
-    code: 'code',
-    selections: [
-      { perkId: 'lock-n-load', reason: 'collision', levelIndex: 0 },
-      { perkId: 'smart-macrophages', reason: 'removed' },
-      { perkId: 'platform-stability', reason: 'collision', levelIndex: 0 },
-    ],
-  },
+  outdated: { code: 'code', selections: OUTDATED_SELECTIONS },
 };
 
-export const COLLISION_NOTE = 'Outdated selection: in this mod version Left and Right are both on First.';
+export const COLLISION_NOTE = 'Outdated selection: in this mod version left and right are both on First.';

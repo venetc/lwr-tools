@@ -1,65 +1,75 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { toValue } from 'vue';
 
+import { highestSelectedStepIndex, rankState } from '@entities/soldier';
 import { useOfficerTiers } from '@widgets/build-calculator/model/officer-tiers';
 
 import {
-  ALL_OFFICER_PERKS,
   ALPHA_AND_BETA_OFFICER_PERKS,
-  ALPHA_AND_GAMMA_OFFICER_PERKS,
+  ALPHA_BUILD,
   ALPHA_OFFICER_PERKS,
   createBuildMock,
-  createSuperSoldierBuildMock,
-  GAMMA_OFFICER_PERKS,
   NO_OFFICER_PERKS,
+  READONLY_ALPHA_STATE_CALLS,
 } from './officer-tiers.mock';
 
-vi.mock('@entities/soldier/config/constants/ability-content', async () => ({
-  ABILITY_CONTENT: (await import('./officer-tiers.mock')).ABILITY_CONTENT_MOCK,
-}));
+vi.mock('@entities/soldier', async () => {
+  const { OFFICER_RANKS_MOCK, treeAbilityStub } = await import('./officer-tiers.mock');
 
-vi.mock('@entities/soldier/config/constants/body-part-content', async () => ({
-  BODY_PART_CONTENT: (await import('./officer-tiers.mock')).BODY_PART_CONTENT_MOCK,
-}));
+  return {
+    BODY_PARTS: [],
+    OFFICER_RANKS: OFFICER_RANKS_MOCK,
+    PSI_LEVELS: [],
+    highestSelectedStepIndex: vi.fn(),
+    rankState: vi.fn(),
+    treeAbility: treeAbilityStub,
+  };
+});
 
-vi.mock('@entities/soldier/config/constants/officer-rank-content', async () => ({
-  OFFICER_RANK_CONTENT: (await import('./officer-tiers.mock')).OFFICER_RANK_CONTENT_MOCK,
-}));
+vi.mock('@entities/shiv', () => ({ TECHNOLOGY_LEVELS: [] }));
 
-vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => ({
-  SOLDIER_RANK_CONTENT: (await import('./officer-tiers.mock')).SOLDIER_RANK_CONTENT_MOCK,
-}));
-
-vi.mock('@entities/soldier/config/constants/biosoldier-classes', () => ({ BIOSOLDIER_CLASSES: [] }));
-
-vi.mock('@entities/soldier/config/constants/mec-classes', () => ({ MEC_CLASSES: [] }));
-
-vi.mock('@entities/soldier/config/constants/ability-icons', () => ({ ABILITY_ICON: {} }));
-
-vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {} }));
-
-vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
+beforeEach(() => {
+  vi.mocked(highestSelectedStepIndex).mockReset().mockReturnValue(-1);
+  vi.mocked(rankState).mockReset().mockReturnValue('available');
+});
 
 describe('useOfficerTiers', () => {
-  it('opens every officer rank of a build without officer perks', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(NO_OFFICER_PERKS));
+  it('gives a tier for each officer rank', () => {
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
 
-    expect(tiers.value.map(tier => tier.state)).toEqual(['available', 'available', 'available']);
+    expect(tiers.value.map(tier => tier.name)).toEqual(['Alpha', 'Beta', 'Gamma']);
   });
 
-  it('completes trained officer ranks and keeps the empty ones open', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(GAMMA_OFFICER_PERKS));
+  it('gives the id of the officer perk of the officer rank', () => {
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
 
-    expect(tiers.value.map(tier => tier.state)).toEqual(['available', 'available', 'completed']);
+    expect(tiers.value[0].selectedId).toBe('alpha-left');
   });
 
-  it('locks the empty officer ranks of a readonly build', () => {
+  it('gives null for an officer rank without an officer perk', () => {
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
+
+    expect(tiers.value[1].selectedId).toBeNull();
+  });
+
+  it('asks the rank state with the officer perk of each officer rank and the lock of the build', () => {
     const { tiers } = useOfficerTiers(createBuildMock(ALPHA_OFFICER_PERKS, true));
 
-    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'locked', 'locked']);
+    toValue(tiers);
+
+    expect(vi.mocked(rankState).mock.calls).toEqual(READONLY_ALPHA_STATE_CALLS);
+  });
+
+  it('takes the state of each officer rank from its rank state', () => {
+    vi.mocked(rankState).mockReturnValueOnce('completed').mockReturnValueOnce('locked');
+
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
+
+    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'locked', 'available']);
   });
 
   it('disables no officer rank of an editable build', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(ALPHA_OFFICER_PERKS));
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
 
     expect(tiers.value.map(tier => tier.isDisabled)).toEqual([false, false, false]);
   });
@@ -71,66 +81,60 @@ describe('useOfficerTiers', () => {
   });
 
   it('notes the officer perks with the rank the game requires', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(NO_OFFICER_PERKS));
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
 
     expect(tiers.value[1].options.map(option => option.note)).toEqual(['Requires Third in game', 'Requires Third in game']);
   });
 
   it('notes the officer perks of a completed officer rank with the rank the game requires', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(ALPHA_OFFICER_PERKS));
+    vi.mocked(rankState).mockReturnValue('completed');
+
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
 
     expect(tiers.value[0].options.map(option => option.note)).toEqual(['Requires Second in game', 'Requires Second in game']);
   });
 
   it('shows the chosen officer perk of a completed officer rank as selected and the other one as disabled', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(ALPHA_OFFICER_PERKS));
+    vi.mocked(rankState).mockReturnValue('completed');
+
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
 
     expect(tiers.value[0].options.map(option => option.appearance)).toEqual(['selected', 'disabled']);
   });
 
-  it('shows the officer perks of an empty officer rank above an empty one as available', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(NO_OFFICER_PERKS));
+  it('shows the officer perks of an available officer rank as available', () => {
+    const { tiers } = useOfficerTiers(ALPHA_BUILD);
 
     expect(tiers.value[2].options.map(option => option.appearance)).toEqual(['available', 'available']);
   });
 
-  it('shows the officer perks of an empty officer rank of a readonly build as disabled', () => {
+  it('shows the officer perks of a locked officer rank as disabled', () => {
+    vi.mocked(rankState).mockReturnValue('locked');
+
     const { tiers } = useOfficerTiers(createBuildMock(ALPHA_OFFICER_PERKS, true));
 
     expect(tiers.value[2].options.map(option => option.appearance)).toEqual(['disabled', 'disabled']);
   });
 
-  it('keeps the chosen officer perks of a readonly build selected', () => {
-    const { tiers } = useOfficerTiers(createBuildMock(ALL_OFFICER_PERKS, true));
+  it('asks the highest selected officer rank with the officer perks', () => {
+    const { featuredPickerItem } = useOfficerTiers(createBuildMock(ALPHA_AND_BETA_OFFICER_PERKS));
 
-    expect(tiers.value.map(tier => tier.options.map(option => option.appearance))).toEqual([
-      ['selected', 'disabled'],
-      ['disabled', 'selected'],
-      ['selected', 'disabled'],
-    ]);
+    toValue(featuredPickerItem);
+
+    expect(highestSelectedStepIndex).toHaveBeenCalledWith(ALPHA_AND_BETA_OFFICER_PERKS);
   });
 
-  it('features the officer perk of the highest trained officer rank', () => {
+  it('features the officer perk of the highest selected officer rank', () => {
+    vi.mocked(highestSelectedStepIndex).mockReturnValue(1);
+
     const { featuredPickerItem } = useOfficerTiers(createBuildMock(ALPHA_AND_BETA_OFFICER_PERKS));
 
     expect(featuredPickerItem.value?.id).toBe('beta-right');
-  });
-
-  it('features the officer perk of the highest trained officer rank above an empty one', () => {
-    const { featuredPickerItem } = useOfficerTiers(createBuildMock(ALPHA_AND_GAMMA_OFFICER_PERKS));
-
-    expect(featuredPickerItem.value?.id).toBe('gamma-right');
   });
 
   it('features the first officer perk of the first officer rank without officer perks', () => {
     const { featuredPickerItem } = useOfficerTiers(createBuildMock(NO_OFFICER_PERKS));
 
     expect(featuredPickerItem.value?.id).toBe('alpha-left');
-  });
-
-  it('ignores Neural Damping and psionic abilities of the build', () => {
-    const { tiers } = useOfficerTiers(createSuperSoldierBuildMock(ALPHA_OFFICER_PERKS));
-
-    expect(tiers.value.map(tier => tier.state)).toEqual(['completed', 'available', 'available']);
   });
 });

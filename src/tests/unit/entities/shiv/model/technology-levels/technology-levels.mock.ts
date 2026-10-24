@@ -31,3 +31,5 @@ export const PARTLY_FILLED_PERKS = [null, 'second', null];
 export const FILLED_PERKS = ['first', 'second', 'third'];
 
 export const EMPTY_PERKS = [null, null, null];
+
+export const SELECTED_PERK = 'second';

@@ -1,65 +1,77 @@
-import type { AbilityContent } from '@entities/soldier/model/abilities';
-import type { BodyPartContent } from '@entities/soldier/model/body-parts';
-import type { SoldierClass } from '@entities/soldier/model/classes';
-import type { OfficerRankContent } from '@entities/soldier/model/officer-ranks';
-import type { PsiLevelContent } from '@entities/soldier/model/psi-levels';
-import type { SoldierRankContent } from '@entities/soldier/model/ranks';
+import type {
+  BodyPart,
+  classTree,
+  ClassTreeRank,
+  OfficerRank,
+  PsiLevel,
+  SoldierClass,
+  SoldierOutdatedSelection,
+  TreeAbility,
+} from '@entities/soldier';
 import type { BiosoldierBuild } from '@widgets/build-calculator/model/biosoldier-builds';
 
-export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
-  'granted': { code: 10, name: 'Granted', description: 'Granted by the class.' },
-  'left': { code: 11, name: 'Left', description: 'Left choice.' },
-  'right': { code: 12, name: 'Right', description: 'Right choice.' },
-  'neural-damping': { code: 20, name: 'Neural Damping', description: 'Damps the brain.' },
-  'head-second': { code: 21, name: 'Head Second', description: 'Second head option.' },
-  'feet-first': { code: 22, name: 'Feet First', description: 'First feet option.' },
-  'feet-second': { code: 23, name: 'Feet Second', description: 'Second feet option.' },
-  'low-left': { code: 30, name: 'Low Left', description: 'Left low option.' },
-  'low-right': { code: 31, name: 'Low Right', description: 'Right low option.' },
-  'alpha-left': { code: 40, name: 'Alpha Left', description: 'Left alpha option.' },
-  'alpha-right': { code: 41, name: 'Alpha Right', description: 'Right alpha option.' },
-};
+/**
+ * Stub of `treeAbility`: a tree ability with placeholder texts and icons, without grants.
+ *
+ * @param id ability id.
+ */
+export const treeAbilityStub = (id: string): TreeAbility => ({
+  id,
+  name: id,
+  description: `${id} description`,
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+  grants: [],
+});
 
-export const SOLDIER_RANK_CONTENT_MOCK: Record<string, SoldierRankContent> = {
-  first: { name: 'First' },
-  second: { name: 'Second' },
-};
+/**
+ * Rank of the class tree with only the fields the tiers read.
+ *
+ * @param id rank id.
+ * @param name rank name.
+ * @param perkIds perk ids of the rank.
+ */
+const rankMock = (id: string, name: string, perkIds: string[]) => ({ id, name, perks: perkIds.map(treeAbilityStub) } as unknown as ClassTreeRank);
 
-export const BODY_PART_CONTENT_MOCK: Record<string, BodyPartContent> = {
-  head: { name: 'Head', geneMods: ['neural-damping', 'head-second'] },
-  feet: { name: 'Feet', geneMods: ['feet-first', 'feet-second'] },
-};
+export const RIGHT_PERK = treeAbilityStub('right');
 
-export const PSI_LEVEL_CONTENT_MOCK: Record<string, PsiLevelContent> = {
-  low: { name: 'Low', abilities: ['low-left', 'low-right'] },
-};
-
-export const OFFICER_RANK_CONTENT_MOCK: Record<string, OfficerRankContent> = {
-  alpha: { name: 'Alpha', abbreviation: 'A', requiredRank: 'second', perks: ['alpha-left', 'alpha-right'] },
-};
-
-const SOLDIER_CLASS_MOCK = {
-  id: 'tester',
-  code: 3,
+export const CLASS_TREE_MOCK: ReturnType<typeof classTree> = {
   name: 'Tester',
-  perks: { first: ['granted'], second: ['left', 'right'] },
-  basePerk: 'granted',
-} as unknown as SoldierClass;
+  ranks: [
+    rankMock('first', 'First', ['granted']),
+    rankMock('second', 'Second', ['left', 'right']),
+  ],
+};
+
+export const BODY_PARTS_MOCK = [
+  { id: 'head', name: 'Head', geneMods: ['head-left', 'head-right'] },
+  { id: 'feet', name: 'Feet', geneMods: ['feet-first', 'feet-second'] },
+] as unknown as BodyPart[];
+
+export const PSI_LEVELS_MOCK = [
+  { id: 'low', name: 'Low', abilities: ['low-left', 'low-right'] },
+] as unknown as PsiLevel[];
+
+export const OFFICER_RANKS_MOCK = [
+  { id: 'alpha', name: 'Alpha', requiredRankName: 'Second', perks: ['alpha-left', 'alpha-right'] },
+] as unknown as OfficerRank[];
+
+const SOLDIER_CLASS_MOCK = { id: 'tester', name: 'Tester' } as unknown as SoldierClass;
 
 /**
  * Biosoldier build of the mock class.
  *
- * @param fields selections of the build that differ from an empty one.
+ * @param fields fields of the build that differ from an empty editable one.
  */
-export const createBuildMock = (fields: Partial<Record<'perks' | 'geneMods' | 'psionicAbilities' | 'officerPerks', (string | null)[]> & { readonly: boolean }>) => ({
+const createBuildMock = (fields: Partial<Record<'perks' | 'geneMods' | 'psionicAbilities' | 'officerPerks', (string | null)[]> & Pick<BiosoldierBuild, 'readonly' | 'outdated'>>) => ({
   id: 'build',
   soldierClass: SOLDIER_CLASS_MOCK,
-  perks: ['granted'],
+  perks: ['granted', null],
   geneMods: [null, null],
-  psionicAbilities: [],
-  officerPerks: [],
+  psionicAbilities: [null],
+  officerPerks: [null],
   name: 'Tester',
   readonly: false,
+  outdated: null,
   ...fields,
 } as BiosoldierBuild);
 
@@ -68,7 +80,26 @@ export const EMPTY_BUILD = createBuildMock({});
 export const FILLED_BUILD = createBuildMock({
   perks: ['granted', 'right'],
   geneMods: [null, 'feet-second'],
+  psionicAbilities: ['low-right'],
   officerPerks: ['alpha-right'],
 });
 
 export const READONLY_FILLED_BUILD = { ...FILLED_BUILD, readonly: true };
+
+/** Outdated selection of the code: Feet Old in the cell of the first gene mod of Feet. */
+const FEET_OUTDATED_SELECTION = {
+  stepKind: 'body-part',
+  stepIndex: 1,
+  variantIndex: 0,
+  abilityId: 'feet-old',
+  currentAbilityId: 'feet-first',
+} as unknown as SoldierOutdatedSelection;
+
+/** Editable Outdated build with Feet Old in its code. */
+export const OUTDATED_BUILD = createBuildMock({ outdated: { code: 'code', selections: [FEET_OUTDATED_SELECTION] } });
+
+/** Lock of every tier of the branches of a frozen build: two ranks, two body parts, a psi level and an officer rank. */
+export const FROZEN_TIERS = [true, true, true, true, true, true];
+
+/** Outdated ability ids of `OUTDATED_BUILD` by branch and tier: Feet Old on Feet. */
+export const OUTDATED_ITEM_IDS = [[[], []], [[], ['feet-old']], [[]], [[]]];

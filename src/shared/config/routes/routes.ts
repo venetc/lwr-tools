@@ -1,32 +1,45 @@
 import type { RouteRecordInfo } from 'vue-router';
 
 /**
- * Names and paths of app routes, importable from any layer. Paths are absolute, nested routes included.
+ * Names, paths, titles and descriptions of app routes, importable from any layer. Paths are absolute, nested routes
+ * included. A title labels the route in breadcrumbs, route menus and the document title; the home page has none.
+ * A description is the meta description of the page and its lead paragraph.
  */
 export const ROUTES = {
   HOME: {
     name: 'home',
     path: '/',
+    description: 'Plan Long War Rebalance builds for XCOM: Enemy Within: Biosoldier, MEC and SHIV perk trees, squads with loadouts, all shareable by code.',
   },
   BUILDS: {
     name: 'builds',
     path: '/builds',
+    title: 'Builds',
+    description: 'Build calculators for Long War Rebalance: plan Biosoldier, MEC and SHIV perks rank by rank and share each build by code.',
   },
   BIOSOLDIER_BUILDS: {
     name: 'biosoldier-builds',
     path: '/builds/biosoldier',
+    title: 'Biosoldier',
+    description: 'Plan Long War Rebalance Biosoldier builds: perks for every Rank of all 8 Classes, Officer perks, Gene mods and Psionic abilities.',
   },
   MEC_BUILDS: {
     name: 'mec-builds',
     path: '/builds/mec',
+    title: 'MEC',
+    description: 'Plan Long War Rebalance MEC builds for XCOM: Enemy Within: pick perks for every Rank of the four MEC Classes and share them by code.',
   },
   SHIV_BUILDS: {
     name: 'shiv-builds',
     path: '/builds/shiv',
+    title: 'SHIV',
+    description: 'Plan Long War Rebalance SHIV builds for XCOM: Enemy Within: pick SHIV perks for every Technology level and share them by code.',
   },
   SQUADS: {
     name: 'squads',
     path: '/squads',
+    title: 'Squad planner',
+    description: 'Plan Long War Rebalance squads: assemble Units from your saved builds, fit armor, weapons and equipment, and check every Loadout.',
   },
 } as const;
 

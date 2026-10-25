@@ -6,9 +6,10 @@ import { ROUTES } from '@shared/config/routes';
  * Route record of the Squad planner. The page component is loaded lazily.
  */
 export const squadsPageRoute: RouteRecordRaw = {
-  ...ROUTES.SQUADS,
+  name: ROUTES.SQUADS.name,
+  path: ROUTES.SQUADS.path,
   component: () => import('../ui/SquadsPage.vue'),
   meta: {
-    title: 'Squad planner',
+    title: ROUTES.SQUADS.title,
   },
 };

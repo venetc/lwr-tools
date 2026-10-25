@@ -9,6 +9,8 @@ import { shivBuildsPageRoute } from '@pages/shiv-builds';
 import { squadsPageRoute } from '@pages/squads';
 import { ROUTES } from '@shared/config/routes';
 
+import { applyPageHead } from './lib/page-head';
+
 export const router: Router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -16,7 +18,7 @@ export const router: Router = createRouter({
     {
       path: ROUTES.BUILDS.path,
       meta: {
-        title: 'Builds',
+        title: ROUTES.BUILDS.title,
       },
       children: [
         buildsPageRoute,
@@ -32,3 +34,5 @@ export const router: Router = createRouter({
     },
   ],
 });
+
+router.afterEach(applyPageHead);

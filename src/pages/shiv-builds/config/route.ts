@@ -6,9 +6,10 @@ import { ROUTES } from '@shared/config/routes';
  * Route record of the SHIV Build calculator. The page component is loaded lazily.
  */
 export const shivBuildsPageRoute: RouteRecordRaw = {
-  ...ROUTES.SHIV_BUILDS,
+  name: ROUTES.SHIV_BUILDS.name,
+  path: ROUTES.SHIV_BUILDS.path,
   component: () => import('../ui/ShivBuildsPage.vue'),
   meta: {
-    title: 'SHIV',
+    title: ROUTES.SHIV_BUILDS.title,
   },
 };

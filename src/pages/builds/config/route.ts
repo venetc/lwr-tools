@@ -7,6 +7,7 @@ import { ROUTES } from '@shared/config/routes';
  * route. The page component is loaded lazily.
  */
 export const buildsPageRoute: RouteRecordRaw = {
-  ...ROUTES.BUILDS,
+  name: ROUTES.BUILDS.name,
+  path: ROUTES.BUILDS.path,
   component: () => import('../ui/BuildsPage.vue'),
 };

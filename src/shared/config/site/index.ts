@@ -1,1 +1,8 @@
-export { SITE_NAME } from './site';
+export {
+  SITE_APPLICATION_CATEGORY,
+  SITE_IMAGE_PATH,
+  SITE_NAME,
+  SITE_TAGLINE,
+  SITE_THEME_COLOR,
+  SITE_TOUCH_ICON_PATH,
+} from './site';

@@ -9,6 +9,7 @@ import {
   BLANK_NAME_CODES,
   createBuildMock,
   createCodesMock,
+  createSignatureSkillBuildMock,
   FEET_GENE_MOD_BUILD,
   FEET_GENE_MOD_CODES,
   GAPPED_BUILD,
@@ -26,6 +27,7 @@ import {
   NEURAL_DAMPING_BUILD,
   NEURAL_DAMPING_CODES,
   NEURAL_DAMPING_ONLY_CODES,
+  NOT_CLASS_TREE_SIGNATURE_SKILL_CODES,
   OTHER_RANK_MEC_BUILD,
   OTHER_RANK_PERK_BUILD,
   OTHER_RANK_PERK_CODES,
@@ -40,6 +42,7 @@ import {
   SUPER_SOLDIER_BUILD,
   SUPER_SOLDIER_CODES,
   SWAPPED_PERK_CODES,
+  TOP_SIGNATURE_SKILL_MEC_BUILD,
   UNKNOWN_ABILITY_PERK_CODES,
   UNKNOWN_CLASS_CODE,
 } from './build-codes.mock';
@@ -186,6 +189,38 @@ describe('biosoldierBuildCodes', () => {
   });
 });
 
+describe('biosoldierBuildCodes of a Signature skill', () => {
+  it('gives the code of a perk not selected in the build', () => {
+    const build = createSignatureSkillBuildMock('left');
+
+    const codes = biosoldierBuildCodes(build);
+
+    expect(codes?.signatureSkill).toBe(11);
+  });
+
+  it('gives the code of the Base perk', () => {
+    const build = createSignatureSkillBuildMock('granted');
+
+    const codes = biosoldierBuildCodes(build);
+
+    expect(codes?.signatureSkill).toBe(10);
+  });
+
+  it('gives no code without a Signature skill', () => {
+    const codes = biosoldierBuildCodes(PLAIN_BUILD);
+
+    expect(codes?.signatureSkill).toBeNull();
+  });
+
+  it('gives null for a perk not in the class tree', () => {
+    const build = createSignatureSkillBuildMock('foreign');
+
+    const codes = biosoldierBuildCodes(build);
+
+    expect(codes).toBeNull();
+  });
+});
+
 describe('biosoldierBuildFromCodes', () => {
   it('restores a build with every part', () => {
     const build = biosoldierBuildFromCodes(SUPER_SOLDIER_CODES);
@@ -296,6 +331,38 @@ describe('biosoldierBuildFromCodes', () => {
   });
 });
 
+describe('biosoldierBuildFromCodes of a Signature skill', () => {
+  it('restores a perk not selected in the build', () => {
+    const result = biosoldierBuildFromCodes(createCodesMock({ signatureSkill: 11 }));
+
+    expect(result?.build.signatureSkill).toBe('left');
+  });
+
+  it('restores the Base perk', () => {
+    const result = biosoldierBuildFromCodes(createCodesMock({ signatureSkill: 10 }));
+
+    expect(result?.build.signatureSkill).toBe('granted');
+  });
+
+  it('keeps a perk the code has on another rank', () => {
+    const result = biosoldierBuildFromCodes(createCodesMock({ perks: OTHER_RANK_PERK_CODES, signatureSkill: 13 }));
+
+    expect(result?.build.signatureSkill).toBe('top');
+  });
+
+  it.each(NOT_CLASS_TREE_SIGNATURE_SKILL_CODES)('leaves the Signature skill empty for %s', (_, code) => {
+    const result = biosoldierBuildFromCodes(createCodesMock({ signatureSkill: code }));
+
+    expect(result?.build.signatureSkill).toBeNull();
+  });
+
+  it.each(NOT_CLASS_TREE_SIGNATURE_SKILL_CODES)('gives no Outdated selection for %s', (_, code) => {
+    const result = biosoldierBuildFromCodes(createCodesMock({ signatureSkill: code }));
+
+    expect(result?.outdated).toEqual([]);
+  });
+});
+
 describe('mecBuildCodes', () => {
   it('gives the codes of a build with the default name', () => {
     const codes = mecBuildCodes(MEC_BUILD);
@@ -319,6 +386,28 @@ describe('mecBuildCodes', () => {
     const codes = mecBuildCodes({ ...MEC_BUILD, perks: ['granted', 'top', null] });
 
     expect(codes).toBeNull();
+  });
+});
+
+describe('mecBuildCodes of a Signature skill', () => {
+  it('gives the code of the Signature skill', () => {
+    const codes = mecBuildCodes(TOP_SIGNATURE_SKILL_MEC_BUILD);
+
+    expect(codes?.signatureSkill).toBe(13);
+  });
+});
+
+describe('mecBuildFromCodes of a Signature skill', () => {
+  it('restores the Signature skill', () => {
+    const result = mecBuildFromCodes({ ...MEC_CODES, signatureSkill: 13 });
+
+    expect(result?.build.signatureSkill).toBe('top');
+  });
+
+  it('leaves the Signature skill empty for a perk not in the class tree', () => {
+    const result = mecBuildFromCodes({ ...MEC_CODES, signatureSkill: 14 });
+
+    expect(result?.build.signatureSkill).toBeNull();
   });
 });
 

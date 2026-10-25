@@ -9,6 +9,8 @@ import {
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
+  selectSoldierBuildSignatureSkill,
+  soldierBuildSignatureSkill,
 } from '@entities/soldier/model/build';
 
 import {
@@ -28,6 +30,7 @@ import {
   NO_GENE_MODS,
   NO_OFFICER_PERKS,
   NO_PSIONICS,
+  NOT_CLASS_TREE_PERKS,
   PERKS_TO_THIRD,
   SOLDIER_CLASS_MOCK,
 } from './build.mock';
@@ -64,9 +67,21 @@ describe('defaultSoldierBuild', () => {
 
     expect(build.perks).toEqual(BASE_PERKS);
   });
+
+  it('has no Signature skill', () => {
+    const build = defaultSoldierBuild(SOLDIER_CLASS_MOCK);
+
+    expect(build.signatureSkill).toBeNull();
+  });
 });
 
 describe('defaultBiosoldierBuild', () => {
+  it('has no Signature skill', () => {
+    const build = defaultBiosoldierBuild(SOLDIER_CLASS_MOCK);
+
+    expect(build.signatureSkill).toBeNull();
+  });
+
   it('leaves every psi level empty', () => {
     const build = defaultBiosoldierBuild(SOLDIER_CLASS_MOCK);
 
@@ -145,12 +160,112 @@ describe('selectSoldierBuildPerk', () => {
     expect(build.perks).toEqual(ALL_PERKS);
   });
 
+  it('keeps the Signature skill when its rank is cleared', () => {
+    const build = createBuildMock(ALL_PERKS, 'top');
+
+    selectSoldierBuildPerk(build, 2, null);
+
+    expect(build.signatureSkill).toBe('top');
+  });
+
+  it('keeps the Signature skill when its rank takes another perk', () => {
+    const build = createBuildMock(PERKS_TO_THIRD, 'right');
+
+    selectSoldierBuildPerk(build, 1, 'left');
+
+    expect(build.signatureSkill).toBe('right');
+  });
+
   it('keeps the officer perks of a biosoldier build when a rank is cleared', () => {
     const build = createOfficerBuildMock(PERKS_TO_THIRD, ALL_OFFICER_PERKS);
 
     selectSoldierBuildPerk(build, 1, null);
 
     expect(build.officerPerks).toEqual(ALL_OFFICER_PERKS);
+  });
+});
+
+describe('selectSoldierBuildSignatureSkill', () => {
+  it('sets a perk selected in the build', () => {
+    const build = createBuildMock(PERKS_TO_THIRD);
+
+    selectSoldierBuildSignatureSkill(build, 'top');
+
+    expect(build.signatureSkill).toBe('top');
+  });
+
+  it('sets a perk not selected in the build', () => {
+    const build = createBuildMock(BASE_PERKS);
+
+    selectSoldierBuildSignatureSkill(build, 'bottom');
+
+    expect(build.signatureSkill).toBe('bottom');
+  });
+
+  it('sets the Base perk', () => {
+    const build = createBuildMock(BASE_PERKS);
+
+    selectSoldierBuildSignatureSkill(build, 'granted');
+
+    expect(build.signatureSkill).toBe('granted');
+  });
+
+  it('replaces the Signature skill', () => {
+    const build = createBuildMock(PERKS_TO_THIRD, 'top');
+
+    selectSoldierBuildSignatureSkill(build, 'left');
+
+    expect(build.signatureSkill).toBe('left');
+  });
+
+  it('clears the Signature skill on a null perk', () => {
+    const build = createBuildMock(PERKS_TO_THIRD, 'top');
+
+    selectSoldierBuildSignatureSkill(build, null);
+
+    expect(build.signatureSkill).toBeNull();
+  });
+
+  it('keeps the selected perks', () => {
+    const build = createBuildMock(PERKS_TO_THIRD);
+
+    selectSoldierBuildSignatureSkill(build, 'bottom');
+
+    expect(build.perks).toEqual(PERKS_TO_THIRD);
+  });
+
+  it.each(NOT_CLASS_TREE_PERKS)('ignores %s', (_, perkId) => {
+    const build = createBuildMock(PERKS_TO_THIRD, 'top');
+
+    selectSoldierBuildSignatureSkill(build, perkId);
+
+    expect(build.signatureSkill).toBe('top');
+  });
+});
+
+describe('soldierBuildSignatureSkill', () => {
+  it('gives the perk of the Signature skill', () => {
+    const build = createBuildMock(PERKS_TO_THIRD, 'right');
+
+    const perk = soldierBuildSignatureSkill(build);
+
+    expect(perk?.name).toBe('Right');
+  });
+
+  it('gives null without a Signature skill', () => {
+    const build = createBuildMock(PERKS_TO_THIRD);
+
+    const perk = soldierBuildSignatureSkill(build);
+
+    expect(perk).toBeNull();
+  });
+
+  it('gives null for a perk not in the class tree', () => {
+    const build = createBuildMock(PERKS_TO_THIRD, 'foreign');
+
+    const perk = soldierBuildSignatureSkill(build);
+
+    expect(perk).toBeNull();
   });
 });
 

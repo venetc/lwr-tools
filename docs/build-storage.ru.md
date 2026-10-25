@@ -11,12 +11,12 @@ lwr-tools.biosoldier-builds.v1.order         → ["id1", "id2", …]
 lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly": false }
 ```
 
-- `code` — [share-код](share-codes.ru.md) билда: класс, перки, Gene mods, Psionic abilities, Officer perks и имя. Его формат сам обеспечивает чтение старых кодов, поэтому запись добавляет к нему только лок.
+- `code` — [share-код](share-codes.ru.md) билда: класс, перки, Gene mods, Psionic abilities, Officer perks, имя и Signature skill. Его формат сам обеспечивает чтение старых кодов, поэтому запись добавляет к нему только лок.
 - По ключу на билд: вкладка меняет только те записи, которые затронула, и не перезаписывает правки других вкладок целым снимком.
 - `order` — порядок показа. Если `order` нет, значит, ещё ничего не сохраняли, и страница показывает дефолтные билды. `[]` означает, что пользователь удалил все.
 - Префикс `lwr-tools.` обязателен: на GitHub Pages все проекты `<user>.github.io` делят одно хранилище.
 
-Код: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.ru.md) (загрузка, сохранение, синхронизация вкладок, задержки), виджет `widgets/build-calculator`: `config/constants.ts` (ключи и схема записи), `model/build-list.ts` (тип `SavedBuild` и операции списка билдов: переименование, замок, импорт, замена, удаление, обновление Outdated build), `model/stored-build.ts` (запись билда ↔ билд через публичный API share-кодов `features/share-build`; код с Outdated selection читается как Outdated build), `model/build-editor.ts` (редактирование одного билда из его дерева) и сторы `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (билды по умолчанию, правила дерева). Сторы читают несколько страниц, которые не импортируют друг друга: виджет — самый низкий подходящий слой.
+Код: [`shared/lib/stored-list`](../src/shared/lib/stored-list/README.ru.md) (загрузка, сохранение, синхронизация вкладок, задержки), виджет `widgets/build-calculator`: `config/constants.ts` (ключи и схема записи), `model/build-list.ts` (тип `SavedBuild` и операции списка билдов: переименование, замок, импорт, замена, удаление, обновление Outdated build), `model/stored-build.ts` (запись билда ↔ билд через публичный API share-кодов `features/share-build`; код с Outdated selection читается как Outdated build), `model/build-editor.ts` (редактирование одного билда из его дерева, у биосолдат и MEC — и его Signature skill) и сторы `model/biosoldier-builds.ts` / `model/mec-builds.ts` / `model/shiv-builds.ts` (билды по умолчанию, правила дерева). Сторы читают несколько страниц, которые не импортируют друг друга: виджет — самый низкий подходящий слой.
 
 ## Загрузка
 
@@ -24,6 +24,7 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 - id из `order` без записи пропускаются.
 - Запись, которую не удалось разобрать (JSON, форма, share-код), пропускается и остаётся в хранилище: её может прочитать более новая версия приложения.
 - Запись, чей код с [Outdated selection](share-codes.ru.md#результат-декодирования), загружается как Outdated build: билд без них, а в `outdated` — запись (`code`) и Outdated selection; у обычного билда `outdated: null`.
+- Signature skill, чьего перка в Class tree больше нет, загружается пустым; запись теряет его при следующем сохранении билда, без миграции.
 - Битый `order` считается `[]`, записи всё равно восстанавливаются.
 - У дефолтных билдов фиксированные id (`default-<classId>` у биосолдат и MEC, `default-shiv` у SHIV), и они сохраняются сразу. Поэтому вкладки, открытые впервые одновременно, пишут одни и те же записи.
 
@@ -35,9 +36,10 @@ lwr-tools.biosoldier-builds.v1.build.<id>    → { "code": "AQx…", "readonly":
 
 ## Outdated build
 
-Outdated build заморожен, пока игрок его не обновит: выбор, переименование, Reset, импорт, переключение замка и экспорт ничего не делают, удаление работает. Его запись сохраняется такой, какой загрузилась, без перекодирования.
+Outdated build заморожен, пока игрок его не обновит: выбор, Signature skill, переименование, Reset, импорт, переключение замка и экспорт ничего не делают, удаление работает. Его запись сохраняется такой, какой загрузилась, без перекодирования.
 
 - Панель: сохранённое дерево (текущее дерево, только чтение; на шаге с Outdated selection в ячейке её варианта стоит абилка кода — selected, с пунктирной рамкой danger, полупрозрачной иконкой и ярлыком «OLD»; в её описании — «Outdated selection: in this mod version <step> has <Ability> here.»), в строке заголовка — чип «N outdated selections» и кнопка «Update»; в списке билдов — треугольник danger после имени.
+- Его Signature skill берётся из сохранённого кода и стоит на неактивной кнопке в шапке; обновление его сохраняет, и новый код его несёт.
 - SHIV: оба перка коллизии стоят на своём Technology level, selected и помечены; в их описании — «Outdated selection: in this mod version <Perk> and <Perk> are both on <Technology level>.». У перка, убранного из SHIV tree, ячейки нет: его перечисляет плашка под деревом — «<Perk> — removed from the SHIV tree».
 - «Update» открывает модалку «Update build»: карточка на Outdated selection, справа пустая клетка «Empty». Подтверждение (`updateBuild`) снимает `outdated` и сохраняет билд новым кодом; шаги Outdated selection остаются пустыми. Замок сохраняется: Read-only build остаётся Read-only.
 - Обновление доходит до других вкладок, как любое изменение записи.

@@ -19,7 +19,7 @@ const soldierClassMock = (id: SoldierClass['id'], name: string) => ({ id, name }
  */
 const biosoldierBuildMock = (id: string, name: string, soldierClass: SoldierClass): SquadBuild => ({
   kind: 'biosoldier',
-  build: { id, name, readonly: false, outdated: null, soldierClass, perks: [], geneMods: [], psionicAbilities: [], officerPerks: [] },
+  build: { id, name, readonly: false, outdated: null, soldierClass, perks: [], signatureSkill: null, geneMods: [], psionicAbilities: [], officerPerks: [] },
 });
 
 export const OVERWATCH_SNIPER = biosoldierBuildMock('sniper-build', 'Overwatch Sniper', soldierClassMock('sniper', 'Sniper'));
@@ -28,7 +28,7 @@ export const FIELD_MEDIC = biosoldierBuildMock('medic-build', 'Field Medic', sol
 
 export const GOLIATH_WALL: SquadBuild = {
   kind: 'mec',
-  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [] },
+  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [], signatureSkill: null },
 };
 
 export const ALLOY_SUPPORT: SquadBuild = {

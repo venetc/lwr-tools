@@ -4,16 +4,17 @@ import { EMPTY_GENE_MODS } from '../config/constants/body-parts';
 import { EMPTY_OFFICER_PERKS } from '../config/constants/officer-ranks';
 import { EMPTY_PSIONIC_ABILITIES } from '../config/constants/psi-levels';
 import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
-import type { AbilityId } from './abilities';
+import type { AbilityId, TreeAbility } from './abilities';
+import { treeAbility } from './abilities';
 import type { SelectedGeneMods } from './body-parts';
-import { geneModBlockReason, officerPerkBlockReason, perkBlockReason, psionicAbilityBlockReason } from './build-rules';
+import { geneModBlockReason, officerPerkBlockReason, perkBlockReason, psionicAbilityBlockReason, signatureSkillBlockReason } from './build-rules';
 import type { SelectedPerks } from './class-tree';
 import type { SoldierClass } from './classes';
 import type { SelectedOfficerPerks } from './officer-ranks';
 import type { SelectedPsionicAbilities } from './psi-levels';
 
 /**
- * Soldier build: class, selected perks and name, without editor state.
+ * Soldier build: class, selected perks, name and Signature skill, without editor state.
  */
 export interface SoldierBuildData {
   /** Soldier class of the build. */
@@ -22,6 +23,8 @@ export interface SoldierBuildData {
   perks: SelectedPerks
   /** Build name shown in the heading. */
   name: string
+  /** Signature skill: a perk of the class tree, selected in the build or not; null for none. */
+  signatureSkill: AbilityId | null
 }
 
 /**
@@ -54,7 +57,8 @@ export interface BiosoldierBuildTraits {
 }
 
 /**
- * Default build of the class: the base perk on the first rank, the other ranks empty, named after the class.
+ * Default build of the class: the base perk on the first rank, the other ranks empty, named after the class, without
+ * a Signature skill.
  *
  * @param soldierClass biosoldier class or MEC class.
  */
@@ -62,6 +66,7 @@ export const defaultSoldierBuild = (soldierClass: DeepReadonly<SoldierClass>): S
   soldierClass,
   perks: SOLDIER_RANKS.map((_, rankIndex) => (rankIndex === 0 ? soldierClass.basePerk : null)),
   name: soldierClass.name,
+  signatureSkill: null,
 });
 
 /**
@@ -89,6 +94,32 @@ export const selectSoldierBuildPerk = (build: SoldierBuildData, rankIndex: numbe
   if (perkBlockReason(build, rankIndex, perkId)) return;
 
   build.perks[rankIndex] = perkId;
+};
+
+/**
+ * Sets the Signature skill of the build, or clears it. It does not depend on the selections on the ranks; a perk that
+ * breaks a Build rule is ignored: any ability but a perk of the class tree of the build.
+ *
+ * @param build soldier build; its Signature skill is mutated in place.
+ * @param perkId perk id, or null to clear the Signature skill.
+ */
+export const selectSoldierBuildSignatureSkill = (build: SoldierBuildData, perkId: string | null): void => {
+  if (signatureSkillBlockReason(build, perkId)) return;
+
+  build.signatureSkill = perkId as AbilityId | null;
+};
+
+/**
+ * Perk of the Signature skill of the build, to show; null without one or for a perk the class tree does not have.
+ *
+ * @param build soldier build.
+ */
+export const soldierBuildSignatureSkill = (build: Readonly<SoldierBuildData>): TreeAbility | null => {
+  const { signatureSkill } = build;
+
+  if (!signatureSkill || signatureSkillBlockReason(build, signatureSkill)) return null;
+
+  return treeAbility(signatureSkill);
 };
 
 /**

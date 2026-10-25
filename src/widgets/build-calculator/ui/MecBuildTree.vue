@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
-import { useBuildEditor } from '../model/build-editor';
+import { useSoldierBuildEditor } from '../model/build-editor';
 import { useMecBuildGroups } from '../model/mec-build-groups';
 import type { MecBuild } from '../model/mec-builds';
 import { useMecBuildsStore } from '../model/mec-builds';
 import BuildPanel from './BuildPanel.vue';
+import SignatureSkillButton from './SignatureSkillButton.vue';
 
 interface Props {
   /** MEC build to render and edit. */
@@ -17,7 +18,7 @@ interface Props {
 interface Emits {
   /** Requests removal of the build. */
   remove: [buildId: string]
-  /** Tells of an edit of what the build holds: a selection, a reset, an import or an update. */
+  /** Tells of an edit of what the build holds: a selection, the Signature skill, a reset, an import or an update. */
   change: []
 }
 
@@ -31,7 +32,12 @@ const mecBuildsStore = useMecBuildsStore();
 
 const { tree, groups, select: selectItem } = useMecBuildGroups(() => props.build);
 
-const { rename, lock, replace, reset, update, select } = useBuildEditor(() => props.build, mecBuildsStore, selectItem, () => emit('change'));
+const { rename, lock, replace, reset, update, select, selectSignatureSkill } = useSoldierBuildEditor(
+  () => props.build,
+  mecBuildsStore,
+  selectItem,
+  () => emit('change'),
+);
 </script>
 
 <template>
@@ -57,6 +63,7 @@ const { rename, lock, replace, reset, update, select } = useBuildEditor(() => pr
         :class="$style.classIcon"
         aria-hidden="true"
       />
+      <SignatureSkillButton :build="props.build" @select="selectSignatureSkill" />
     </template>
 
     <template #tier="{ tier, highlighted }">

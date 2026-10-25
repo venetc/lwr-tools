@@ -59,8 +59,8 @@ export interface DecodedSquad {
 }
 
 /**
- * Key of the build sections of the Unit: Units with equal keys have the same build, name and officer perks included,
- * and the same Outdated selections, which the build no longer shows; null for a build without codes, which shares its
+ * Key of the build sections of the Unit: Units with equal keys have the same build, name, officer perks and Signature
+ * skill included, and the same Outdated selections, which the build no longer shows; null for a build without codes, which shares its
  * build with no other Unit.
  *
  * @param unit Unit of a Squad code.

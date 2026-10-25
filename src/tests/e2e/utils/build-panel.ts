@@ -93,3 +93,38 @@ export const resetBuild = (panel: Locator) => panel.getByRole('button', { name: 
  * @param buildName build name.
  */
 export const buildRemovalDialog = (page: Page, buildName: string) => page.getByRole('dialog', { name: `Delete «${buildName}»?` });
+
+/**
+ * Signature skill button in the header of the panel, with or without a Signature skill.
+ *
+ * @param panel build panel.
+ */
+export const signatureSkillButton = (panel: Locator) => panel.getByRole('button', { name: /^(Select signature skill|Signature skill: )/ });
+
+/**
+ * «Select signature skill:» dialog of a build panel.
+ *
+ * @param page browser page.
+ */
+export const signatureSkillDialog = (page: Page) => page.getByRole('dialog', { name: 'Select signature skill:' });
+
+/**
+ * Tile of a perk in the Signature skill dialog; its name also holds «In the Build» for a perk selected in the build.
+ *
+ * @param page browser page.
+ * @param perkName perk name.
+ */
+export const signatureSkillTile = (page: Page, perkName: string) => signatureSkillDialog(page).getByRole('button', { name: perkName });
+
+/**
+ * Sets the Signature skill of the build of the panel: opens the dialog, marks the perk and saves.
+ *
+ * @param page browser page.
+ * @param panel build panel.
+ * @param perkName perk name.
+ */
+export const selectSignatureSkill = async (page: Page, panel: Locator, perkName: string) => {
+  await signatureSkillButton(panel).click();
+  await signatureSkillTile(page, perkName).click();
+  await signatureSkillDialog(page).getByRole('button', { name: 'Save', exact: true }).click();
+};

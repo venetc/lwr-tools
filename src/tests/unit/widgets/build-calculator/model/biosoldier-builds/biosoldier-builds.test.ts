@@ -12,9 +12,13 @@ import {
   LOCKED_PICKED_BUILD,
   NEW_NAME,
   NEW_SNIPER_BUILD,
+  OUTDATED_BUILD,
+  OUTDATED_ID,
+  OUTDATED_STORAGE,
   RENAMED_ASSAULT_BUILD,
   SAVE_DELAY,
   SELECTIONS,
+  SIGNATURE_ASSAULT_BUILD,
   SNIPER,
   storedBuild,
 } from './biosoldier-builds.mock';
@@ -72,6 +76,65 @@ describe('useBiosoldierBuildsStore', () => {
     store[action](DEFAULT_ASSAULT_ID, 0, 'picked');
 
     expect(store.builds[0]).toEqual(LOCKED_ASSAULT_BUILD);
+  });
+
+  it('sets the Signature skill of an editable build', () => {
+    stubPage();
+    const store = useBiosoldierBuildsStore();
+
+    store.selectBuildSignatureSkill(DEFAULT_ASSAULT_ID, 'picked');
+
+    expect(store.builds[0]).toEqual(SIGNATURE_ASSAULT_BUILD);
+  });
+
+  it('saves the Signature skill', () => {
+    const page = stubPage();
+    const store = useBiosoldierBuildsStore();
+    vi.advanceTimersByTime(SAVE_DELAY);
+
+    store.selectBuildSignatureSkill(DEFAULT_ASSAULT_ID, 'picked');
+    vi.advanceTimersByTime(SAVE_DELAY);
+
+    expect(storedBuild(page, DEFAULT_ASSAULT_ID)).toEqual(SIGNATURE_ASSAULT_BUILD);
+  });
+
+  it('leaves a locked build as it is on a Signature skill', () => {
+    stubPage();
+    const store = useBiosoldierBuildsStore();
+    store.setReadonly(DEFAULT_ASSAULT_ID, true);
+
+    store.selectBuildSignatureSkill(DEFAULT_ASSAULT_ID, 'picked');
+
+    expect(store.builds[0]).toEqual(LOCKED_ASSAULT_BUILD);
+  });
+
+  it('leaves an Outdated build as it is on a Signature skill', () => {
+    stubPage(OUTDATED_STORAGE);
+    const store = useBiosoldierBuildsStore();
+
+    store.selectBuildSignatureSkill(OUTDATED_ID, 'picked');
+
+    expect(store.builds[0]).toEqual(OUTDATED_BUILD);
+  });
+
+  it('keeps the Signature skill of an Outdated build on its update', () => {
+    stubPage(OUTDATED_STORAGE);
+    const store = useBiosoldierBuildsStore();
+
+    store.updateBuild(OUTDATED_ID);
+
+    expect(store.builds[0]?.signatureSkill).toBe('kept');
+  });
+
+  it('clears the Signature skill on a reset and keeps the name', () => {
+    stubPage();
+    const store = useBiosoldierBuildsStore();
+    store.setName(DEFAULT_ASSAULT_ID, NEW_NAME);
+    store.selectBuildSignatureSkill(DEFAULT_ASSAULT_ID, 'picked');
+
+    store.resetBuild(DEFAULT_ASSAULT_ID);
+
+    expect(store.builds[0]).toEqual(RENAMED_ASSAULT_BUILD);
   });
 
   it('adds a new build of the class with only the base perk and returns its id', () => {

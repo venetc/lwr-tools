@@ -25,9 +25,12 @@ export const SOLDIER_ENTITY_MOCK = {
   BODY_PARTS: [],
   PSI_LEVELS: [],
   OFFICER_RANKS: [],
-  defaultSoldierBuild: (soldierClass: SoldierClass) => ({ soldierClass, perks: [soldierClass.basePerk, null], name: soldierClass.name }),
+  defaultSoldierBuild: (soldierClass: SoldierClass) => ({ soldierClass, perks: [soldierClass.basePerk, null], name: soldierClass.name, signatureSkill: null }),
   selectSoldierBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
     build.perks[index] = id;
+  },
+  selectSoldierBuildSignatureSkill: (build: { signatureSkill: string | null }, id: string | null) => {
+    build.signatureSkill = id;
   },
 };
 
@@ -45,13 +48,14 @@ export const DEFAULT_VALKYRIE_BUILD = {
   soldierClass: VALKYRIE,
   perks: ['jet-boots', null],
   name: 'Valkyrie',
+  signatureSkill: null,
   readonly: false,
   outdated: null,
 };
 
 export const DEFAULT_BUILDS = [
   DEFAULT_VALKYRIE_BUILD,
-  { id: 'default-goliath', soldierClass: GOLIATH, perks: ['body-shield', null], name: 'Goliath', readonly: false, outdated: null },
+  { id: 'default-goliath', soldierClass: GOLIATH, perks: ['body-shield', null], name: 'Goliath', signatureSkill: null, readonly: false, outdated: null },
 ];
 
 export const PICKED_PERKS = ['picked', null];
@@ -83,3 +87,5 @@ export const storedBuild = (page: PageMock, id: string): unknown => {
 
   return value ? JSON.parse(value) : null;
 };
+
+export const SIGNATURE_VALKYRIE_BUILD = { ...DEFAULT_VALKYRIE_BUILD, signatureSkill: 'picked' };

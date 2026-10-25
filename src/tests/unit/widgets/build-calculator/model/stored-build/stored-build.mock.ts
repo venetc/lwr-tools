@@ -25,6 +25,15 @@ export const GAPPED_MEC_BUILD: SavedBuild<'mec'> = {
   outdated: null,
 };
 
+/** Stored Jaeger build with Lone Wolf, not selected in it, as the Signature skill. */
+export const SIGNATURE_MEC_BUILD: SavedBuild<'mec'> = {
+  ...defaultSoldierBuild(FIRST_MEC_CLASS),
+  signatureSkill: 'lone-wolf',
+  id: BUILD_ID,
+  readonly: false,
+  outdated: null,
+};
+
 /**
  * SHIV `PERKS` section with raw numbers: perk count 3 bits, then the perk numbers 6 bits each.
  *

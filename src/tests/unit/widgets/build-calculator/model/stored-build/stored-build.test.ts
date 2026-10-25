@@ -13,6 +13,7 @@ import {
   OUTDATED_MEC_BUILD,
   OUTDATED_MEC_RECORD,
   SHIV_BUILD,
+  SIGNATURE_MEC_BUILD,
   UNENCODABLE_SHIV_BUILD,
 } from './stored-build.mock';
 
@@ -31,6 +32,12 @@ describe('storedBuildCodec serialize', () => {
     const record = mecCodec.serialize(GAPPED_MEC_BUILD);
 
     expect(mecCodec.parse(BUILD_ID, record)).toEqual(GAPPED_MEC_BUILD);
+  });
+
+  it('stores a record that restores the Signature skill', () => {
+    const record = mecCodec.serialize(SIGNATURE_MEC_BUILD);
+
+    expect(mecCodec.parse(BUILD_ID, record)).toEqual(SIGNATURE_MEC_BUILD);
   });
 
   it('stores an Outdated build as its stored record', () => {

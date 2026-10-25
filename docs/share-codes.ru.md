@@ -46,9 +46,9 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Код:
 
-- `entities/soldier` — Build ↔ коды: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. Entity переводит Build в стабильные коды и обратно: каждый выбор — индекс варианта на шаге и `code` его абилки. Она отдаёт null на неизвестный код, класс другого вида, шаги или вариант, которых нет в дереве, или Build, нарушающий Build rule. Из кодов она отдаёт и Outdated selection (`SoldierOutdatedSelection`: вид и индекс шага, индекс варианта, абилка кода и абилка дерева на этом месте), оставляя их шаги пустыми. Из кодов она собирает Build от Default build по шагам мутаторами калькулятора; Build кодируется, только если его собирает тот же проход.
+- `entities/soldier` — Build ↔ коды: `biosoldierBuildCodes` / `biosoldierBuildFromCodes`, `mecBuildCodes` / `mecBuildFromCodes`. Entity переводит Build в стабильные коды и обратно: каждый выбор — индекс варианта на шаге и `code` его абилки. Она отдаёт null на неизвестный код, класс другого вида, шаги или вариант, которых нет в дереве, или Build, нарушающий Build rule. Из кодов она отдаёт и Outdated selection (`SoldierOutdatedSelection`: вид и индекс шага, индекс варианта, абилка кода и абилка дерева на этом месте), оставляя их шаги пустыми. Signature skill идёт как `code` его перка; из кодов он ставится последним, своим мутатором, а неизвестный `code` или перк не из Class tree дают пустой Signature skill, а не Outdated selection. Из кодов она собирает Build от Default build по шагам мутаторами калькулятора; Build кодируется, только если его собирает тот же проход.
 - `shared/lib/binary-code` — заголовок, секции, CRC; поверх `shared/lib/bit-stream`, `base64-url` и `crc8`.
-- `features/share-build` — только биты. Публичный API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `isUnitOf`, `useOutdatedImport`, `useOutdatedUpdate`, компоненты `ShareCodeImport`, `ShareCodeExport` и `OutdatedSelectionsDialog` и типы. Внутри: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/share-code.ts` (`readShareCode` и его результат), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — формат, секции билда и их чтение, — `BUILD_CODE_LAYOUTS` по видам Unit из `LoadoutUnitId`, так что вид без раскладки не компилируется, и `encodeBuild`), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList`, список шагов `writeStepList` / `readStepList`, секция `NAME` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS` и `NAME`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения), `model/unit-code.ts` (коды Unit), `model/squad-code.ts` (коды Squad), `model/outdated-selection-cards.ts`, `model/outdated-import.ts`, `model/outdated-update.ts` и `ui/OutdatedSelectionsDialog.vue` (карточки, импорт через модалку, обновление Outdated build через неё — с записью Outdated build `{ code, selections }`, которую оно принимает, — и сама модалка Outdated selection). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки. Записи хранилища поверх share-кода — часть сохранённых билдов `widgets/build-calculator` ([Хранение билдов](build-storage.ru.md)).
+- `features/share-build` — только биты. Публичный API: `readShareCode`, `encodeBuild(kind, build)`, `encodeUnit`, `encodeSquad`, `isUnitOf`, `useOutdatedImport`, `useOutdatedUpdate`, компоненты `ShareCodeImport`, `ShareCodeExport` и `OutdatedSelectionsDialog` и типы. Внутри: `config/constants.ts` (номера форматов, id секций, ширины полей), `model/share-code.ts` (`readShareCode` и его результат), `model/build-code.ts` (`BuildDataByKind`, `BuildCodeLayout` — формат, секции билда и их чтение, — `BUILD_CODE_LAYOUTS` по видам Unit из `LoadoutUnitId`, так что вид без раскладки не компилируется, и `encodeBuild`), `model/section-fields.ts` (счётный список кодов `writeCodeList` / `readCodeList`, список шагов `writeStepList` / `readStepList`, секция `NAME` и `readWholeSection`, который отдаёт null для секции, прочитанной не ровно до конца), `model/soldier-build-code.ts` и `model/shiv-build-code.ts` (секции поверх кодов билда; `soldierBuildLayout` собирает раскладку формата солдат из пары Build ↔ коды и расширения — секций сверх `PERKS`, `NAME` и `SIGNATURE_SKILL`, которые любой формат солдат пишет и читает в `writeBuild` / `readBuild`: `BIOSOLDIER_BUILD_LAYOUT` — формат 1 с расширением Gene mods, Psionic abilities и Officer perks, `MEC_BUILD_LAYOUT` — формат 3 без расширения), `model/unit-code.ts` (коды Unit), `model/squad-code.ts` (коды Squad), `model/outdated-selection-cards.ts`, `model/outdated-import.ts`, `model/outdated-update.ts` и `ui/OutdatedSelectionsDialog.vue` (карточки, импорт через модалку, обновление Outdated build через неё — с записью Outdated build `{ code, selections }`, которую оно принимает, — и сама модалка Outdated selection). Фича обслуживает все страницы калькуляторов и остаётся отдельным слайсом: формат меняется по своим причинам, у него свои тесты и доки. Записи хранилища поверх share-кода — часть сохранённых билдов `widgets/build-calculator` ([Хранение билдов](build-storage.ru.md)).
 
 ## Секции
 
@@ -60,12 +60,15 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 | `PSIONIC` | 4 | шаги, `variant` 2 | только у биосолдат, если у билда есть Psionic ability |
 | `OFFICER` | 5 | шаги, `variant` 1 | только у биосолдат, если у билда есть Officer perk |
 | `LOADOUT` | 6 | `armor` 8 · `primary` 8 · `secondary` 8 · `utilityCount` 3 · `item` 8 × utilityCount · `moduleCount` 2 · `item` 8 × moduleCount | только в кодах Unit |
+| `SIGNATURE_SKILL` | 7 | `ability` 8 | если у билда есть Signature skill |
 
 Шаги — список всех шагов дерева: `count` 3, затем на каждый шаг `selected` 1 и, при выборе, `variant` (его индекс среди вариантов шага, в порядке дерева) и `ability` 8. Пустые шаги сохраняют своё место, поэтому Build с пропусками возвращается таким, каким был.
 
 В `PERKS` шаги — ранги снизу вверх, со второго: базовый перк при импорте берётся из текущего дерева. В `GENE_MODS` — Body parts от Brain к Legs, в `PSIONIC` — Psi levels от Awakened к Master, в `OFFICER` — Officer ranks от Lieutenant к Field Commander. Код без одной из этих секций даёт там пустые шаги; в имеющейся секции шаги есть всегда.
 
 Число шагов должно быть как в дереве, а индекс варианта — существовать на своём шаге; иначе код невалиден. Выбор, чью абилку его шаг предлагает, берётся под любым индексом варианта: перестановка вариантов шага ничего не меняет. Абилка, которой на шаге больше нет, — Outdated selection: шаг остаётся пустым, а карточка модалки показывает шаг, абилку кода и абилку, что стоит в дереве на её варианте сейчас. Базового перка в коде нет, поэтому он не бывает Outdated selection.
+
+В `SIGNATURE_SKILL` `ability` — `code` перка Signature skill: любой Perk Class tree, Base perk тоже, выбранный в Build или нет. Код без секции даёт Build без Signature skill. Неизвестный `code` или перк, которого в Class tree больше нет, оставляют его пустым: это не Outdated selection, и код остаётся валидным. Перк, переехавший на другой Rank, остаётся Signature skill.
 
 Коды MEC не пишут `GENE_MODS`, `PSIONIC` и `OFFICER`, декодер MEC пропускает их как неизвестные.
 
@@ -78,7 +81,8 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 - Utility slots идут по позициям, Gear Slots и Psi Slots последними; Module slots — по позициям.
 - Декодер не сверяет Loadout с Build: неизвестный код предмета оставляет слот пустым, Seraph Armor без Officer perks — не `invalid`. Squad planner при импорте приводит Loadout к правилам проверкой Unit и сообщает тостом, что снято.
 - Build calculator берёт Build из кода Unit своего вида и оставляет Loadout. Код Build, добавленный как Unit, получает Default Loadout.
-- Новая часть Unit — новая секция после `LOADOUT`, по тем же правилам, что новая часть Build.
+- id секций общие у частей Build и Unit: `SIGNATURE_SKILL` (7), часть Build, идёт после `LOADOUT` и в коде Unit.
+- Новая часть Unit — новая секция со следующим id, по тем же правилам, что новая часть Build.
 
 Код: `model/unit-code.ts` — `encodeUnit` пишет секции раскладки своего вида (`BUILD_CODE_LAYOUTS`) и `LOADOUT` поверх `loadoutCodes` из `entities/loadout`; `readUnit`, который вызывает `readShareCode`, читает открытый код любого формата билдов в вид, Build и Loadout из `loadoutFromCodes`, null — у кода Build.
 
@@ -126,9 +130,9 @@ format (8) | секция … | 0 (5) | padding | crc (8)   → base64url
 
 Чтение старых секций остаётся навсегда. Сама разметка секций меняется только новым номером в `SHARE_CODE_FORMAT`.
 
-Пример: в `PERKS` добавляется поле, максимальный id секции — 6.
+Пример: в `PERKS` добавляется поле, максимальный id секции — 7.
 
-1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 7`.
+1. `SOLDIER_BUILD_SECTION`: `PERKS_V2: 8`.
 2. Новое поле — в `SoldierBuildCodes` из `entities/soldier`.
 3. `writeBuild` из `soldierBuildLayout` пишет `PERKS_V2` вместо `PERKS`.
 4. `readBuild` из `soldierBuildLayout`: `PERKS` — с новым полем по умолчанию, `PERKS_V2` — с новым полем.

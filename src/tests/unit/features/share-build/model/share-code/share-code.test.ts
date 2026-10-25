@@ -15,7 +15,9 @@ import {
   COLLISION_WITH_HOLO_ROUNDS_CODES,
   EMPTY_LOADOUT,
   EMPTY_SHIV_LOADOUT_SECTION,
+  EMPTY_SNIPER_PERKS_SECTION,
   EMPTY_SOLDIER_LOADOUT_SECTION,
+  EXTRA_CONDITIONING_SIGNATURE_MEC_BUILD,
   GAPPED_BIOSOLDIER_BUILD,
   GAPPED_MEC_BUILD,
   GARBAGE_CODE,
@@ -24,6 +26,7 @@ import {
   INVALID_BIOSOLDIER_SECTIONS,
   INVALID_RESULT,
   LONE_WOLF_MEC_BUILD,
+  LONE_WOLF_SIGNATURE_BUILD,
   MAGNUM_BUILD,
   MEC_BUILD,
   MEC_LOADOUT,
@@ -32,22 +35,27 @@ import {
   MIXED_SOLDIER_BUILD,
   MIXED_SOLDIER_OUTDATED,
   MIXED_SOLDIER_SECTIONS,
+  NOT_SNIPER_SIGNATURE_SKILL_CASES,
   OTHER_RANK_MEC_OUTDATED,
   OTHER_RANK_MEC_PERKS_SECTION,
   OTHER_RANK_PERK_OUTDATED,
   OTHER_RANK_PERK_SECTIONS,
+  OTHER_RANK_SIGNATURE_SECTIONS,
   OUTDATED_BRANCH_CASES,
   rawShivPerksSection,
+  rawSignatureSkillSection,
   ROOKIE_GAP_BUILD,
   ROOKIE_GAP_SECTIONS,
   SEPARATOR,
   SERAPH_LOADOUT,
+  SHARPSHOOTER_SIGNATURE_BUILD,
   SHIV_BUILD,
   SHIV_LOADOUT,
   SMART_MACROPHAGES_BUILD,
   SNIPER_BUILD,
   SQUAD_HEADER_SECTION,
   SQUAD_NAME,
+  SQUADSIGHT_SIGNATURE_BUILD,
   SWAPPED_GENE_MOD_SECTIONS,
   SWAPPED_PERK_SECTIONS,
   UNKNOWN_FORMAT,
@@ -152,6 +160,81 @@ describe('readShareCode of a soldier build code with Outdated selections', () =>
     const result = readShareCode(encodeBinaryCode(1, [...OTHER_RANK_PERK_SECTIONS, EMPTY_SOLDIER_LOADOUT_SECTION]) ?? '');
 
     expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SNIPER_BUILD, outdated: OTHER_RANK_PERK_OUTDATED, loadout: EMPTY_LOADOUT } });
+  });
+});
+
+describe('readShareCode of a soldier build code with a Signature skill', () => {
+  it('gives a biosoldier build with a perk not selected in it as the Signature skill', () => {
+    const result = readShareCode(encodeBuild('biosoldier', LONE_WOLF_SIGNATURE_BUILD) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: LONE_WOLF_SIGNATURE_BUILD, outdated: [], loadout: null } });
+  });
+
+  it('gives a biosoldier build with the Base perk as the Signature skill', () => {
+    const result = readShareCode(encodeBuild('biosoldier', SQUADSIGHT_SIGNATURE_BUILD) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SQUADSIGHT_SIGNATURE_BUILD, outdated: [], loadout: null } });
+  });
+
+  it('gives a MEC build with its Signature skill', () => {
+    const result = readShareCode(encodeBuild('mec', EXTRA_CONDITIONING_SIGNATURE_MEC_BUILD) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'mec', build: EXTRA_CONDITIONING_SIGNATURE_MEC_BUILD, outdated: [], loadout: null } });
+  });
+
+  it('gives a build without a Signature skill for a code without the section', () => {
+    const result = readShareCode(encodeBinaryCode(1, [EMPTY_SNIPER_PERKS_SECTION]) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SNIPER_BUILD, outdated: [], loadout: null } });
+  });
+
+  it.each(NOT_SNIPER_SIGNATURE_SKILL_CASES)('leaves the Signature skill empty for %s, with no Outdated selection', (_, signatureSkillCode) => {
+    const result = readShareCode(encodeBinaryCode(1, [EMPTY_SNIPER_PERKS_SECTION, rawSignatureSkillSection(signatureSkillCode)]) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SNIPER_BUILD, outdated: [], loadout: null } });
+  });
+
+  it('keeps a Signature skill the code has on another rank', () => {
+    const result = readShareCode(encodeBinaryCode(1, OTHER_RANK_SIGNATURE_SECTIONS) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: SHARPSHOOTER_SIGNATURE_BUILD, outdated: OTHER_RANK_PERK_OUTDATED, loadout: null } });
+  });
+
+  it('gives invalid for a signature skill section of another length', () => {
+    const result = readShareCode(encodeBinaryCode(1, [EMPTY_SNIPER_PERKS_SECTION, rawSignatureSkillSection(33, 9)]) ?? '');
+
+    expect(result).toEqual(INVALID_RESULT);
+  });
+
+  it('leaves the section out of the code of a build without a Signature skill', () => {
+    const code = encodeBuild('biosoldier', SNIPER_BUILD);
+
+    expect(code).toBe(encodeBinaryCode(1, [EMPTY_SNIPER_PERKS_SECTION]));
+  });
+
+  it('gives a Unit code with its Loadout and Signature skill', () => {
+    const result = readShareCode(encodeUnit({ kind: 'biosoldier', build: LONE_WOLF_SIGNATURE_BUILD, loadout: SERAPH_LOADOUT }) ?? '');
+
+    expect(result).toEqual({ status: 'unit', unit: { kind: 'biosoldier', build: LONE_WOLF_SIGNATURE_BUILD, outdated: [], loadout: SERAPH_LOADOUT } });
+  });
+
+  it('gives a Squad whose Units keep their own Signature skills', () => {
+    const units = [
+      { kind: 'biosoldier', build: LONE_WOLF_SIGNATURE_BUILD, loadout: SERAPH_LOADOUT },
+      { kind: 'biosoldier', build: SQUADSIGHT_SIGNATURE_BUILD, loadout: SERAPH_LOADOUT },
+    ] as const;
+    const code = encodeSquad({ name: SQUAD_NAME, units: [...units] }) ?? '';
+
+    const result = readShareCode(code);
+
+    expect(result).toEqual({
+      status: 'squad',
+      squad: {
+        name: SQUAD_NAME,
+        builds: [{ kind: 'biosoldier', build: LONE_WOLF_SIGNATURE_BUILD, outdated: [] }, { kind: 'biosoldier', build: SQUADSIGHT_SIGNATURE_BUILD, outdated: [] }],
+        units: [{ buildIndex: 0, loadout: SERAPH_LOADOUT }, { buildIndex: 1, loadout: SERAPH_LOADOUT }],
+      },
+    });
   });
 });
 

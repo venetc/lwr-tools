@@ -31,14 +31,18 @@ export const ALL_PERKS = ['granted', 'right', 'top', 'bottom'];
  * Fresh build of the mock class with its own perks array.
  *
  * @param perks selected perks by rank; null for an empty rank.
+ * @param signatureSkill Signature skill id, set as it is; null for none.
  */
-export const createBuildMock = (perks: (string | null)[]): SoldierBuildData => ({
+export const createBuildMock = (perks: (string | null)[], signatureSkill: string | null = null): SoldierBuildData => ({
   soldierClass: SOLDIER_CLASS_MOCK,
   perks: [...perks],
   name: 'Tester',
+  signatureSkill: signatureSkill as SoldierBuildData['signatureSkill'],
 });
 
 export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
+  'right': { code: 2, name: 'Right', description: 'Right second option.' },
+  'foreign': { code: 9, name: 'Foreign', description: 'Perk of another class.' },
   'neural-damping': { code: 20, name: 'Neural Damping', description: 'Damps the brain.' },
   'head-second': { code: 21, name: 'Head Second', description: 'Second head option.' },
   'feet-first': { code: 22, name: 'Feet First', description: 'First feet option.' },
@@ -119,3 +123,12 @@ export const createOfficerBuildMock = (perks: (string | null)[], officerPerks: (
   perks: [...perks],
   officerPerks: [...officerPerks] as BiosoldierBuildData['officerPerks'],
 });
+
+/** Abilities the class tree of the mock class does not offer, by what they are. */
+export const NOT_CLASS_TREE_PERKS: [string, string][] = [
+  ['a gene mod', 'feet-first'],
+  ['a psionic ability', 'middle'],
+  ['an officer perk', 'alpha-left'],
+  ['a perk of another class', 'foreign'],
+  ['an unknown id', 'missing'],
+];

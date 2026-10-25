@@ -17,9 +17,10 @@ import {
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
+  selectSoldierBuildSignatureSkill,
 } from './build';
 import type { BuildBlockReason } from './build-rules';
-import { geneModBlockReason, officerPerkBlockReason, perkBlockReason, psionicAbilityBlockReason } from './build-rules';
+import { geneModBlockReason, officerPerkBlockReason, perkBlockReason, psionicAbilityBlockReason, signatureSkillBlockReason } from './build-rules';
 import type { SoldierClass } from './classes';
 
 /**
@@ -47,6 +48,8 @@ export interface SoldierBuildCodes {
   perks: StepCodes
   /** Build name; null for the default name, the class name, or a blank one. */
   name: string | null
+  /** Code of the perk of the Signature skill; null for none. */
+  signatureSkill: number | null
 }
 
 /**
@@ -104,11 +107,19 @@ type StepIds = readonly (string | null)[];
 type StepVariants = readonly (readonly AbilityId[])[];
 
 /**
- * Selections of a biosoldier build beyond its class, as ids by step.
+ * Selections of a soldier build beyond its class: perk ids by step and the Signature skill.
  */
-interface BiosoldierSelections {
+interface SoldierSelections {
   /** Perk ids by rank, from the second rank. */
   perks: StepIds
+  /** Perk id of the Signature skill; null for none. */
+  signatureSkill: string | null
+}
+
+/**
+ * Selections of a biosoldier build beyond its class, as ids by step, and the Signature skill.
+ */
+interface BiosoldierSelections extends SoldierSelections {
   /** Gene mod ids by body part. */
   geneMods: StepIds
   /** Psionic ability ids by psi level. */
@@ -144,24 +155,42 @@ const takeSteps = <Build>(
 });
 
 /**
- * Soldier build of the class assembled from its default build with the mutators, perk by perk; null if a Build rule
- * refuses a perk.
+ * Takes the Signature skill with the mutator, unless a Build rule refuses it; none is taken as none.
+ *
+ * @param build soldier build; mutated in place.
+ * @param perkId perk id of the Signature skill; null for none.
+ * @returns whether the Signature skill is taken.
+ */
+const takeSignatureSkill = (build: SoldierBuildData, perkId: string | null) => {
+  if (signatureSkillBlockReason(build, perkId)) return false;
+
+  selectSoldierBuildSignatureSkill(build, perkId);
+
+  return true;
+};
+
+/**
+ * Soldier build of the class assembled from its default build with the mutators, perk by perk, then the Signature
+ * skill; null if a Build rule refuses a choice.
  *
  * @param soldierClass MEC class.
- * @param perkIds perk ids by rank, from the second rank.
+ * @param selections choices by step and the Signature skill.
  * @param name build name.
  */
-const assembleSoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, perkIds: StepIds, name: string) => {
+const assembleSoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, selections: SoldierSelections, name: string) => {
   const build = { ...defaultSoldierBuild(soldierClass), name };
 
-  if (!takeSteps(build, perkIds, perkBlockReason, selectSoldierBuildPerk, 1)) return null;
+  const isTaken = takeSteps(build, selections.perks, perkBlockReason, selectSoldierBuildPerk, 1)
+    && takeSignatureSkill(build, selections.signatureSkill);
+
+  if (!isTaken) return null;
 
   return build;
 };
 
 /**
  * Biosoldier build of the class assembled from its default build with the mutators: perks, gene mods, psionic abilities,
- * then officer perks; null if a Build rule refuses a choice. Neural Damping comes before psionic abilities, so the
+ * officer perks, then the Signature skill; null if a Build rule refuses a choice. Neural Damping comes before psionic abilities, so the
  * pair is refused.
  *
  * @param soldierClass biosoldier class.
@@ -174,7 +203,8 @@ const assembleBiosoldierBuild = (soldierClass: DeepReadonly<SoldierClass>, selec
   const isTaken = takeSteps(build, selections.perks, perkBlockReason, selectSoldierBuildPerk, 1)
     && takeSteps(build, selections.geneMods, geneModBlockReason, selectBiosoldierBuildGeneMod, 0)
     && takeSteps(build, selections.psionicAbilities, psionicAbilityBlockReason, selectBiosoldierBuildPsionicAbility, 0)
-    && takeSteps(build, selections.officerPerks, (_, officerRankIndex, perkId) => officerPerkBlockReason(officerRankIndex, perkId), selectBiosoldierBuildOfficerPerk, 0);
+    && takeSteps(build, selections.officerPerks, (_, officerRankIndex, perkId) => officerPerkBlockReason(officerRankIndex, perkId), selectBiosoldierBuildOfficerPerk, 0)
+    && takeSignatureSkill(build, selections.signatureSkill);
 
   if (!isTaken) return null;
 
@@ -315,6 +345,31 @@ const nameOfCode = (name: string | null, defaultName: string) => (name?.trim() ?
 const codeOfName = (name: string, defaultName: string) => (name.trim() && name !== defaultName ? name : null);
 
 /**
+ * Code of the Signature skill: the code of its perk; null for none.
+ *
+ * @param perkId perk id of the Signature skill; null for none.
+ */
+const codeOfSignatureSkill = (perkId: AbilityId | null) => (perkId && ABILITY_CONTENT[perkId].code);
+
+/**
+ * Signature skill of its code: the perk of the code, if the class tree has it. An unknown code or a perk gone from the
+ * class tree leaves the Signature skill empty and is no Outdated selection.
+ *
+ * @param soldierClass soldier class.
+ * @param code code of the perk of the Signature skill; null for none.
+ * @returns the perk id; null for none.
+ */
+const signatureSkillOfCode = (soldierClass: DeepReadonly<SoldierClass>, code: number | null) => {
+  if (!code) return null;
+
+  const perkId = ABILITY_ID_BY_CODE.get(code) ?? null;
+
+  if (signatureSkillBlockReason({ soldierClass }, perkId)) return null;
+
+  return perkId;
+};
+
+/**
  * Class of the build among the classes of a kind, if the build starts as its default build.
  *
  * @param build soldier build.
@@ -338,20 +393,26 @@ const buildClass = (build: Readonly<SoldierBuildData>, classByCode: ReadonlyMap<
  */
 export const mecBuildCodes = (build: Readonly<SoldierBuildData>): SoldierBuildCodes | null => {
   const soldierClass = buildClass(build, MEC_CLASS_BY_CODE);
-  const perkIds = build.perks.slice(1);
+  const selections: SoldierSelections = { perks: build.perks.slice(1), signatureSkill: build.signatureSkill };
 
-  if (!soldierClass || !assembleSoldierBuild(soldierClass, perkIds, build.name)) return null;
+  if (!soldierClass || !assembleSoldierBuild(soldierClass, selections, build.name)) return null;
 
-  const perks = stepCodes(perkIds, rankVariants(soldierClass));
+  const perks = stepCodes(selections.perks, rankVariants(soldierClass));
 
   if (!perks) return null;
 
-  return { classCode: soldierClass.code, perks, name: codeOfName(build.name, soldierClass.name) };
+  return {
+    classCode: soldierClass.code,
+    perks,
+    name: codeOfName(build.name, soldierClass.name),
+    signatureSkill: codeOfSignatureSkill(build.signatureSkill),
+  };
 };
 
 /**
  * MEC build of stable codes, assembled with the mutators by the Build rules. A perk its rank no longer offers is an
- * Outdated selection and stays out of the build; the base perk always comes from the current tree.
+ * Outdated selection and stays out of the build; the base perk always comes from the current tree. A Signature skill
+ * the class tree has no perk of is left empty and is no Outdated selection.
  *
  * @param codes MEC build codes.
  * @returns the build and its Outdated selections; null for an unknown code, a class of another kind, or steps or a
@@ -363,7 +424,8 @@ export const mecBuildFromCodes = (codes: Readonly<SoldierBuildCodes>): SoldierBu
 
   if (!soldierClass || !perks) return null;
 
-  const build = assembleSoldierBuild(soldierClass, perks.ids, nameOfCode(codes.name, soldierClass.name));
+  const selections: SoldierSelections = { perks: perks.ids, signatureSkill: signatureSkillOfCode(soldierClass, codes.signatureSkill) };
+  const build = assembleSoldierBuild(soldierClass, selections, nameOfCode(codes.name, soldierClass.name));
 
   return build && { build, outdated: perks.outdated };
 };
@@ -379,6 +441,7 @@ export const biosoldierBuildCodes = (build: Readonly<BiosoldierBuildData>): Bios
   const soldierClass = buildClass(build, BIOSOLDIER_CLASS_BY_CODE);
   const selections: BiosoldierSelections = {
     perks: build.perks.slice(1),
+    signatureSkill: build.signatureSkill,
     geneMods: build.geneMods,
     psionicAbilities: build.psionicAbilities,
     officerPerks: build.officerPerks,
@@ -397,6 +460,7 @@ export const biosoldierBuildCodes = (build: Readonly<BiosoldierBuildData>): Bios
     classCode: soldierClass.code,
     perks,
     name: codeOfName(build.name, soldierClass.name),
+    signatureSkill: codeOfSignatureSkill(build.signatureSkill),
     geneMods,
     psionicAbilities,
     officerPerks,
@@ -405,7 +469,8 @@ export const biosoldierBuildCodes = (build: Readonly<BiosoldierBuildData>): Bios
 
 /**
  * Biosoldier build of stable codes, assembled with the mutators by the Build rules. An ability its step no longer
- * offers is an Outdated selection and stays out of the build; the base perk always comes from the current tree.
+ * offers is an Outdated selection and stays out of the build; the base perk always comes from the current tree. A
+ * Signature skill the class tree has no perk of is left empty and is no Outdated selection.
  *
  * @param codes biosoldier build codes.
  * @returns the build and its Outdated selections in tree order: ranks, body parts, psi levels, officer ranks; null for
@@ -423,6 +488,7 @@ export const biosoldierBuildFromCodes = (codes: Readonly<BiosoldierBuildCodes>):
 
   const selections: BiosoldierSelections = {
     perks: perks.ids,
+    signatureSkill: signatureSkillOfCode(soldierClass, codes.signatureSkill),
     geneMods: geneMods.ids,
     psionicAbilities: psionicAbilities.ids,
     officerPerks: officerPerks.ids,

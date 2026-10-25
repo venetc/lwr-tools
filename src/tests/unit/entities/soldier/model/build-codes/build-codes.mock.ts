@@ -12,6 +12,7 @@ export const ABILITY_CONTENT_MOCK: Record<string, AbilityContent> = {
   'left': { code: 11, name: 'Left', description: 'Left choice.' },
   'right': { code: 12, name: 'Right', description: 'Right choice.' },
   'top': { code: 13, name: 'Top', description: 'Top choice.' },
+  'foreign': { code: 14, name: 'Foreign', description: 'Perk of another class.' },
   'neural-damping': { code: 20, name: 'Neural Damping', description: 'First head option that excludes psionics.' },
   'head-second': { code: 21, name: 'Head Second', description: 'Second head option.' },
   'feet-first': { code: 22, name: 'Feet First', description: 'First feet option.' },
@@ -77,6 +78,7 @@ export const PLAIN_BUILD: BiosoldierBuildData = {
   soldierClass: BIOSOLDIER_CLASS_MOCK,
   perks: ['granted', 'right', 'top'],
   name: 'Tester',
+  signatureSkill: null,
   geneMods: [null, null],
   psionicAbilities: [null, null],
   officerPerks: [null, null],
@@ -93,6 +95,7 @@ export const SUPER_SOLDIER_CODES: BiosoldierBuildCodes = {
   classCode: 3,
   perks: [selection(1, 12), selection(0, 13)],
   name: null,
+  signatureSkill: null,
   geneMods: [selection(1, 21), selection(0, 22)],
   psionicAbilities: [selection(1, 31), selection(0, 32)],
   officerPerks: [selection(1, 41), selection(0, 42)],
@@ -109,6 +112,7 @@ export const GAPPED_CODES: BiosoldierBuildCodes = {
   classCode: 3,
   perks: [null, selection(0, 13)],
   name: null,
+  signatureSkill: null,
   geneMods: [],
   psionicAbilities: [null, selection(0, 32)],
   officerPerks: [null, selection(1, 43)],
@@ -138,9 +142,9 @@ export const NEURAL_DAMPING_BUILD = { ...PLAIN_BUILD, geneMods: ['neural-damping
 
 export const NEURAL_DAMPING_CODES: BiosoldierBuildCodes = { ...FEET_GENE_MOD_CODES, geneMods: [selection(0, 20), selection(0, 22)] };
 
-export const MEC_BUILD: SoldierBuildData = { soldierClass: MEC_CLASS_MOCK, perks: ['granted', 'left', null], name: 'Walker' };
+export const MEC_BUILD: SoldierBuildData = { soldierClass: MEC_CLASS_MOCK, perks: ['granted', 'left', null], name: 'Walker', signatureSkill: null };
 
-export const MEC_CODES: SoldierBuildCodes = { classCode: 5, perks: [selection(0, 11), null], name: null };
+export const MEC_CODES: SoldierBuildCodes = { classCode: 5, perks: [selection(0, 11), null], name: null, signatureSkill: null };
 
 export const NAMED_MEC_BUILD: SoldierBuildData = { ...MEC_BUILD, name: 'Juggernaut' };
 
@@ -200,6 +204,23 @@ export const OUTDATED_BRANCH_CASES: [string, Partial<BiosoldierBuildCodes>, unkn
 
 /** Codes of the right perk on the second rank under the variant index of the left one. */
 export const SWAPPED_PERK_CODES = [selection(0, 12), selection(0, 13)];
+
+/**
+ * Plain biosoldier build with the Signature skill set as it is.
+ *
+ * @param signatureSkill perk id of the Signature skill.
+ */
+export const createSignatureSkillBuildMock = (signatureSkill: string) => ({ ...PLAIN_BUILD, signatureSkill } as unknown as BiosoldierBuildData);
+
+/** MEC build with the top perk, not selected in it, as the Signature skill. */
+export const TOP_SIGNATURE_SKILL_MEC_BUILD = { ...MEC_BUILD, signatureSkill: 'top' } as unknown as SoldierBuildData;
+
+/** Signature skill codes the class tree has no perk of, by what they are. */
+export const NOT_CLASS_TREE_SIGNATURE_SKILL_CODES: [string, number][] = [
+  ['an unknown ability code', UNKNOWN_ABILITY_CODE],
+  ['a perk of another class', 14],
+  ['a gene mod', 22],
+];
 
 /**
  * Biosoldier build of the mock class with the given choices, the rest as in a plain build.

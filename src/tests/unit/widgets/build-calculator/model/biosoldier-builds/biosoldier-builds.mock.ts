@@ -33,6 +33,7 @@ export const SOLDIER_ENTITY_MOCK = {
     psionicAbilities: [null],
     officerPerks: [null],
     name: soldierClass.name,
+    signatureSkill: null,
   }),
   selectSoldierBuildPerk: (build: { perks: (string | null)[] }, index: number, id: string | null) => {
     build.perks[index] = id;
@@ -46,13 +47,17 @@ export const SOLDIER_ENTITY_MOCK = {
   selectBiosoldierBuildOfficerPerk: (build: { officerPerks: (string | null)[] }, index: number, id: string | null) => {
     build.officerPerks[index] = id;
   },
+  selectSoldierBuildSignatureSkill: (build: { signatureSkill: string | null }, id: string | null) => {
+    build.signatureSkill = id;
+  },
 };
 
 /**
- * Stored build records that keep every build as it is and read nothing back, so each store starts from its default builds.
+ * Stored build records that keep every build as it is and read it back as it is, so a store without stored builds
+ * starts from its default builds.
  */
 export const STORED_BUILD_MOCK = {
-  storedBuildCodec: () => ({ serialize: (build: object) => build, parse: () => null }),
+  storedBuildCodec: () => ({ serialize: (build: object) => build, parse: (_: string, record: unknown) => record }),
 };
 
 export const DEFAULT_ASSAULT_ID = 'default-assault';
@@ -65,6 +70,7 @@ export const DEFAULT_ASSAULT_BUILD = {
   psionicAbilities: [null],
   officerPerks: [null],
   name: 'Assault',
+  signatureSkill: null,
   readonly: false,
   outdated: null,
 };
@@ -112,3 +118,21 @@ export const SELECTIONS = [
   { action: 'selectBuildPsionicAbility', field: 'psionicAbilities', selected: ['picked'] },
   { action: 'selectBuildOfficerPerk', field: 'officerPerks', selected: ['picked'] },
 ] as const;
+
+export const SIGNATURE_ASSAULT_BUILD = { ...DEFAULT_ASSAULT_BUILD, signatureSkill: 'picked' };
+
+export const OUTDATED_ID = 'outdated';
+
+/** Outdated build with a Signature skill, as the store reads it back. */
+export const OUTDATED_BUILD = {
+  ...DEFAULT_ASSAULT_BUILD,
+  id: OUTDATED_ID,
+  signatureSkill: 'kept',
+  outdated: { code: 'stored-code', selections: [] },
+};
+
+/** Storage with only `OUTDATED_BUILD`. */
+export const OUTDATED_STORAGE = {
+  'lwr-tools.biosoldier-builds.v1.order': JSON.stringify([OUTDATED_ID]),
+  [`${BUILD_KEY_PREFIX}${OUTDATED_ID}`]: JSON.stringify(OUTDATED_BUILD),
+};

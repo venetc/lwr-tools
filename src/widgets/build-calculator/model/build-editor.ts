@@ -99,3 +99,41 @@ export const useBuildEditor = <Kind extends LoadoutUnitId>(
 
   return { rename, lock, replace, reset, update, select };
 };
+
+/**
+ * Store actions a soldier build editor works through: the actions of a build editor and the Signature skill.
+ */
+export interface SoldierBuildEditorActions<Data> extends BuildEditorActions<Data> {
+  /** Sets the Signature skill of an editable build, or clears it. */
+  selectBuildSignatureSkill: (buildId: string, perkId: string | null) => void
+}
+
+/**
+ * Editing of one Biosoldier or MEC build through its store, as `useBuildEditor`, and of its Signature skill, told to
+ * the owner of the tree as an edit of what the build holds.
+ *
+ * @param build build to edit.
+ * @param actions store actions.
+ * @param selectItem selection in the groups of the tree.
+ * @param onChange tells the owner of the tree of an edit of what the build holds.
+ */
+export const useSoldierBuildEditor = <Kind extends 'biosoldier' | 'mec'>(
+  build: MaybeRefOrGetter<Readonly<SavedBuild<Kind>>>,
+  actions: SoldierBuildEditorActions<BuildDataByKind[Kind]>,
+  selectItem: BuildTreeSelect,
+  onChange: () => void,
+) => {
+  const editor = useBuildEditor(build, actions, selectItem, onChange);
+
+  /**
+   * Sets the Signature skill of the build, or clears it, and tells of the edit.
+   *
+   * @param perkId perk id of the Signature skill, or null to clear it.
+   */
+  const selectSignatureSkill = (perkId: string | null) => {
+    actions.selectBuildSignatureSkill(toValue(build).id, perkId);
+    onChange();
+  };
+
+  return { ...editor, selectSignatureSkill };
+};

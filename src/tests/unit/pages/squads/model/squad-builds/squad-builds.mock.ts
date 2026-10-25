@@ -26,12 +26,13 @@ export const SNIPER_BUILD: BiosoldierBuild = {
   outdated: null,
   soldierClass: SNIPER,
   perks: [],
+  signatureSkill: null,
   geneMods: [],
   psionicAbilities: [],
   officerPerks: [],
 };
 
-export const GOLIATH_BUILD: MecBuild = { id: 'shared', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: GOLIATH, perks: [] };
+export const GOLIATH_BUILD: MecBuild = { id: 'shared', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: GOLIATH, perks: [], signatureSkill: null };
 
 export const SHIV_BUILD: ShivBuild = { id: 'shared', name: 'Alloy Support', readonly: false, outdated: null, perks: [] };
 

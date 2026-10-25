@@ -34,6 +34,10 @@ import {
   PLAIN_CODES,
   PLAIN_PERKS_SECTION,
   psionicSection,
+  SIGNATURE_SKILL_CODE,
+  SIGNATURE_SKILL_CODES,
+  SIGNATURE_SKILL_MEC_CODES,
+  signatureSkillSection,
   SINGLE_GENE_MOD_STEPS,
   SINGLE_OFFICER_STEPS,
   SINGLE_PSIONIC_STEPS,
@@ -85,6 +89,14 @@ describe('encodeBuild of a biosoldier build', () => {
     const code = encodeBuild('biosoldier', BIOSOLDIER_BUILD_STUB);
 
     expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION, nameSection(BUILD_NAME)]));
+  });
+
+  it('writes the signature skill section for a Signature skill', () => {
+    vi.mocked(biosoldierBuildCodes).mockReturnValue(SIGNATURE_SKILL_CODES);
+
+    const code = encodeBuild('biosoldier', BIOSOLDIER_BUILD_STUB);
+
+    expect(code).toBe(encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION, signatureSkillSection(SIGNATURE_SKILL_CODE)]));
   });
 
   it('leaves out the gene mods section without gene mods', () => {
@@ -170,6 +182,14 @@ describe('readShareCode of a biosoldier build code', () => {
     expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(NAMED_CODES);
   });
 
+  it('reads the Signature skill of the signature skill section', () => {
+    const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION, signatureSkillSection(SIGNATURE_SKILL_CODE)]) ?? '';
+
+    readShareCode(code);
+
+    expect(biosoldierBuildFromCodes).toHaveBeenLastCalledWith(SIGNATURE_SKILL_CODES);
+  });
+
   it('skips unknown sections', () => {
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, [PLAIN_PERKS_SECTION, UNKNOWN_SECTION]) ?? '';
 
@@ -193,6 +213,8 @@ describe('readShareCode of a biosoldier build code', () => {
     ['gene mods', [PLAIN_PERKS_SECTION, geneModsSection(SINGLE_GENE_MOD_STEPS, 1)]],
     ['psionic', [PLAIN_PERKS_SECTION, psionicSection(SINGLE_PSIONIC_STEPS, 1)]],
     ['officer', [PLAIN_PERKS_SECTION, officerSection(SINGLE_OFFICER_STEPS, 1)]],
+    ['long signature skill', [PLAIN_PERKS_SECTION, signatureSkillSection(SIGNATURE_SKILL_CODE, 9)]],
+    ['short signature skill', [PLAIN_PERKS_SECTION, signatureSkillSection(SIGNATURE_SKILL_CODE, 7)]],
   ])('rejects a broken %s section', (_, sections) => {
     vi.mocked(biosoldierBuildFromCodes).mockReturnValue(BIOSOLDIER_BUILD_OF_CODES_STUB);
     const code = encodeBinaryCode(BIOSOLDIER_FORMAT, sections) ?? '';
@@ -248,6 +270,14 @@ describe('encodeBuild of a MEC build', () => {
     expect(code).toBe(encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION, nameSection(BUILD_NAME)]));
   });
 
+  it('writes the signature skill section for a Signature skill', () => {
+    vi.mocked(mecBuildCodes).mockReturnValue(SIGNATURE_SKILL_MEC_CODES);
+
+    const code = encodeBuild('mec', MEC_BUILD_STUB);
+
+    expect(code).toBe(encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION, signatureSkillSection(SIGNATURE_SKILL_CODE)]));
+  });
+
   it('gives null for a build without codes', () => {
     vi.mocked(mecBuildCodes).mockReturnValue(null);
 
@@ -265,6 +295,14 @@ describe('readShareCode of a MEC build code', () => {
     const result = readShareCode(code);
 
     expect(result).toEqual(MEC_DECODED_RESULT);
+  });
+
+  it('reads the Signature skill of the signature skill section', () => {
+    const code = encodeBinaryCode(MEC_FORMAT, [MEC_PERKS_SECTION, signatureSkillSection(SIGNATURE_SKILL_CODE)]) ?? '';
+
+    readShareCode(code);
+
+    expect(mecBuildFromCodes).toHaveBeenLastCalledWith(SIGNATURE_SKILL_MEC_CODES);
   });
 
   it('skips the sections of biosoldier parts', () => {

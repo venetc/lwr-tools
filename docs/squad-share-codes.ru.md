@@ -27,7 +27,7 @@
 
 - У каждой части свой CRC. Любая битая часть — заголовок, Unit, пустая часть — делает невалидным весь код: частичного импорта нет.
 - В `squad` — `name`, `builds` и `units` в порядке Squad. Build — `{ kind, build, outdated }`, `outdated` — как в коде Unit. Unit ссылается на свой Build через `buildIndex` и несёт Loadout, null у части с кодом Build.
-- Units с одинаковыми секциями Build — вид и данные, включая имя и `OFFICER`, — и одинаковыми Outdated selection делят один Build. Одинаковый Class tree с другими Officer perks — два Builds.
+- Units с одинаковыми секциями Build — вид и данные, включая имя, `OFFICER` и `SIGNATURE_SKILL`, — и одинаковыми Outdated selection делят один Build. Одинаковый Class tree с другими Officer perks или другим Signature skill — два Builds.
 - Loadout с Build не сверяется, как и в коде Unit.
 
 ## Где какой код принимается

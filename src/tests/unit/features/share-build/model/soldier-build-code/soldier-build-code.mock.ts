@@ -39,6 +39,7 @@ export const PLAIN_CODES: BiosoldierBuildCodes = {
   classCode: BIOSOLDIER_CLASS_CODE,
   perks: [selection(1, 12), selection(2, 13), null],
   name: null,
+  signatureSkill: null,
   geneMods: [],
   psionicAbilities: [],
   officerPerks: [],
@@ -61,13 +62,19 @@ export const GAPPED_CODES: BiosoldierBuildCodes = {
 
 export const NAMED_CODES: BiosoldierBuildCodes = { ...PLAIN_CODES, name: BUILD_NAME };
 
+export const SIGNATURE_SKILL_CODE = 64;
+
+export const SIGNATURE_SKILL_CODES: BiosoldierBuildCodes = { ...PLAIN_CODES, signatureSkill: SIGNATURE_SKILL_CODE };
+
 export const NO_GENE_MODS_CODES: BiosoldierBuildCodes = { ...FULL_CODES, geneMods: [] };
 
 export const NO_PSIONIC_CODES: BiosoldierBuildCodes = { ...FULL_CODES, psionicAbilities: [] };
 
 export const NO_OFFICER_CODES: BiosoldierBuildCodes = { ...FULL_CODES, officerPerks: [] };
 
-export const MEC_CODES: SoldierBuildCodes = { classCode: MEC_CLASS_CODE, perks: [null, selection(0, 11)], name: null };
+export const MEC_CODES: SoldierBuildCodes = { classCode: MEC_CLASS_CODE, perks: [null, selection(0, 11)], name: null, signatureSkill: null };
+
+export const SIGNATURE_SKILL_MEC_CODES: SoldierBuildCodes = { ...MEC_CODES, signatureSkill: SIGNATURE_SKILL_CODE };
 
 export const NAMED_MEC_CODES: SoldierBuildCodes = { ...MEC_CODES, name: BUILD_NAME };
 
@@ -86,6 +93,8 @@ export const GENE_MODS_SECTION_ID = 3;
 export const PSIONIC_SECTION_ID = 4;
 
 export const OFFICER_SECTION_ID = 5;
+
+export const SIGNATURE_SKILL_SECTION_ID = 7;
 
 export const UNKNOWN_SECTION_ID = 20;
 
@@ -185,6 +194,17 @@ export const SINGLE_OFFICER_STEPS = [selection(0, 41)];
  * @param name build name.
  */
 export const nameSection = (name: string): BinaryCodeSection => ({ id: NAME_SECTION_ID, write: writer => writer.writeString(name, 5) });
+
+/**
+ * `SIGNATURE_SKILL` section with a raw number: the ability number 8 bits.
+ *
+ * @param code ability number.
+ * @param bits width the number is written with.
+ */
+export const signatureSkillSection = (code: number, bits = 8): BinaryCodeSection => ({
+  id: SIGNATURE_SKILL_SECTION_ID,
+  write: writer => writer.writeUint(code, bits),
+});
 
 export const PLAIN_PERKS_SECTION = perksSection(BIOSOLDIER_CLASS_CODE, PLAIN_CODES.perks);
 

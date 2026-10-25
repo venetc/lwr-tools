@@ -8,6 +8,7 @@ import {
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
+  selectSoldierBuildSignatureSkill,
 } from '@entities/soldier';
 
 import { BIOSOLDIER_BUILD_KEY_PREFIX, BIOSOLDIER_BUILD_ORDER_KEY, DEFAULT_BUILD_ID_PREFIX } from '../config/constants';
@@ -79,6 +80,14 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
   const selectBuildOfficerPerk = (buildId: string, officerRankIndex: number, perkId: string | null) => buildList.editBuild(buildId, build => selectBiosoldierBuildOfficerPerk(build, officerRankIndex, perkId));
 
   /**
+   * Sets the Signature skill of an editable build by the tree rules, or clears it.
+   *
+   * @param buildId build id.
+   * @param perkId perk id of the Signature skill, or null to clear it.
+   */
+  const selectBuildSignatureSkill = (buildId: string, perkId: string | null) => buildList.editBuild(buildId, build => selectSoldierBuildSignatureSkill(build, perkId));
+
+  /**
    * Adds a new build of the class with only the base perk selected.
    *
    * @param soldierClass biosoldier class of the new build.
@@ -93,6 +102,7 @@ export const useBiosoldierBuildsStore = defineStore('build-calculator-biosoldier
     selectBuildGeneMod,
     selectBuildPsionicAbility,
     selectBuildOfficerPerk,
+    selectBuildSignatureSkill,
     setName: buildList.setName,
     setReadonly: buildList.setReadonly,
     addBuild,

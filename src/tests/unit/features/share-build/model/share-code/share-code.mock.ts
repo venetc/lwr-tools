@@ -323,3 +323,38 @@ export const COLLISION_WITH_HOLO_ROUNDS_CODES = [1, 4, 2];
 
 /** Holo Rounds alone. */
 export const HOLO_ROUNDS_CODES = [4];
+
+/** Sniper build with Lone Wolf, a perk of Master Sergeant not selected in it, as the Signature skill. */
+export const LONE_WOLF_SIGNATURE_BUILD: BiosoldierBuildData = { ...BIOSOLDIER_BUILD, signatureSkill: 'lone-wolf' };
+
+/** Sniper build with Squadsight, its Base perk, as the Signature skill. */
+export const SQUADSIGHT_SIGNATURE_BUILD: BiosoldierBuildData = { ...BIOSOLDIER_BUILD, signatureSkill: 'squadsight' };
+
+/** Jaeger build with Extra Conditioning, not selected in it, as the Signature skill. */
+export const EXTRA_CONDITIONING_SIGNATURE_MEC_BUILD: SoldierBuildData = { ...MEC_BUILD, signatureSkill: 'extra-conditioning' };
+
+/**
+ * `SIGNATURE_SKILL` section with a raw number: the ability number 8 bits.
+ *
+ * @param code ability number.
+ * @param bits width the number is written with.
+ */
+export const rawSignatureSkillSection = (code: number, bits = 8): BinaryCodeSection => ({
+  id: 7,
+  write: writer => writer.writeUint(code, bits),
+});
+
+/** `PERKS` section of a Sniper without selections above the Base perk. */
+export const EMPTY_SNIPER_PERKS_SECTION = rawPerksSection(SNIPER_CODE, [null, null, null, null, null, null]);
+
+/** Signature skill numbers the Sniper class tree has no perk of, by what they are. */
+export const NOT_SNIPER_SIGNATURE_SKILL_CASES: [string, number][] = [
+  ['a perk of another class', 48],
+  ['an unknown ability code', 200],
+];
+
+/** Sniper with Sharpshooter, a perk of Corporal, on Lance Corporal and as the Signature skill. */
+export const OTHER_RANK_SIGNATURE_SECTIONS = [...OTHER_RANK_PERK_SECTIONS, rawSignatureSkillSection(59)];
+
+/** Sniper build of `OTHER_RANK_SIGNATURE_SECTIONS`. */
+export const SHARPSHOOTER_SIGNATURE_BUILD = { ...SNIPER_BUILD, signatureSkill: 'sharpshooter' };

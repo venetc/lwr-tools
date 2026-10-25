@@ -11,6 +11,7 @@ import { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuild
 import type { BinaryCodeSection, BitReader } from '@shared/lib/binary-code';
 
 import {
+  ABILITY_CODE_BITS,
   BODY_PART_STEP_BITS,
   CLASS_CODE_BITS,
   OFFICER_RANK_STEP_BITS,
@@ -34,8 +35,30 @@ interface SoldierBuildExtension<Codes extends SoldierBuildCodes> {
 }
 
 /**
- * Layout of soldier build codes of one format: the `PERKS` and `NAME` sections of every soldier, plus the parts of the
- * format extension, over the build codes of the entity.
+ * Section with the code of the perk of the Signature skill.
+ *
+ * @param code ability code of the perk.
+ */
+const signatureSkillSection = (code: number): BinaryCodeSection => ({
+  id: SOLDIER_BUILD_SECTION.SIGNATURE_SKILL,
+  write: writer => writer.writeUint(code, ABILITY_CODE_BITS),
+});
+
+/**
+ * Signature skill of a `SIGNATURE_SKILL` section read in whole.
+ *
+ * @param reader reader of the `SIGNATURE_SKILL` section; null if the code has none.
+ * @returns `{ signatureSkill }` with the ability code, or with null without the section; null if the section is broken.
+ */
+const readSignatureSkillSection = (reader: BitReader | null): { signatureSkill: number | null } | null => {
+  if (!reader) return { signatureSkill: null };
+
+  return readWholeSection(reader, sectionReader => ({ signatureSkill: sectionReader.readUint(ABILITY_CODE_BITS) }));
+};
+
+/**
+ * Layout of soldier build codes of one format: the `PERKS`, `NAME` and `SIGNATURE_SKILL` sections of every soldier,
+ * plus the parts of the format extension, over the build codes of the entity.
  *
  * @param format share code format number.
  * @param buildCodes build codes of a build; null if it cannot be encoded.
@@ -50,7 +73,7 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
 ): BuildCodeLayout<Build, SoldierOutdatedSelection> => {
   /**
    * Sections of the build: the `PERKS` section with the class and perks, the `NAME` section if the build has its own
-   * name, then the extension sections.
+   * name, the extension sections, then the `SIGNATURE_SKILL` section if the build has a Signature skill.
    *
    * @param build soldier build of the format.
    * @returns the sections; null if the build has no codes.
@@ -72,11 +95,14 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
 
     sections.push(...extension.write(codes));
 
+    if (codes.signatureSkill) sections.push(signatureSkillSection(codes.signatureSkill));
+
     return sections;
   };
 
   /**
-   * Build of the code sections. Absent sections of the extra parts give empty parts; unknown sections are skipped.
+   * Build of the code sections. Absent sections of the extra parts and of the Signature skill give empty parts; unknown
+   * sections are skipped.
    *
    * @param sections code sections by id.
    * @returns the build without its Outdated selections and the selections; null if there is no `PERKS` section, a
@@ -89,10 +115,11 @@ const soldierBuildLayout = <Build, Codes extends SoldierBuildCodes>(
       perks: readStepList(reader, RANK_STEP_BITS),
     }));
     const nameField = readNameSection(sections.get(SOLDIER_BUILD_SECTION.NAME) ?? null);
+    const signatureSkillField = readSignatureSkillSection(sections.get(SOLDIER_BUILD_SECTION.SIGNATURE_SKILL) ?? null);
 
-    if (!perks || !nameField) return null;
+    if (!perks || !nameField || !signatureSkillField) return null;
 
-    const codes = extension.read({ ...perks, name: nameField.name }, sections);
+    const codes = extension.read({ ...perks, name: nameField.name, signatureSkill: signatureSkillField.signatureSkill }, sections);
 
     return codes && buildFromCodes(codes);
   };

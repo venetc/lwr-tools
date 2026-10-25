@@ -18,6 +18,7 @@ export const SNIPER_SQUAD_BUILD: SquadBuild = {
     outdated: null,
     soldierClass: soldierClassMock('sniper', 'Sniper'),
     perks: [],
+    signatureSkill: null,
     geneMods: [],
     psionicAbilities: [],
     officerPerks: [],
@@ -26,7 +27,7 @@ export const SNIPER_SQUAD_BUILD: SquadBuild = {
 
 export const GOLIATH_SQUAD_BUILD: SquadBuild = {
   kind: 'mec',
-  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [] },
+  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [], signatureSkill: null },
 };
 
 export const SHIV_SQUAD_BUILD: SquadBuild = {

@@ -17,6 +17,8 @@ export {
   selectBiosoldierBuildOfficerPerk,
   selectBiosoldierBuildPsionicAbility,
   selectSoldierBuildPerk,
+  selectSoldierBuildSignatureSkill,
+  soldierBuildSignatureSkill,
 } from './model/build';
 export type { BiosoldierBranchSet, BiosoldierBuildData, BiosoldierBuildTraits, SoldierBuildData } from './model/build';
 export { biosoldierBuildCodes, biosoldierBuildFromCodes, mecBuildCodes, mecBuildFromCodes } from './model/build-codes';

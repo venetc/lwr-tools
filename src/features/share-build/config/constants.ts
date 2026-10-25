@@ -25,14 +25,15 @@ export const SOLDIER_BUILD_SECTION = {
   PSIONIC: 4,
   OFFICER: 5,
   LOADOUT: 6,
+  SIGNATURE_SKILL: 7,
 } as const;
 
 /** Width of the class number; part of the `PERKS` section, a change means a new section id. */
 export const CLASS_CODE_BITS = 5;
 
 /**
- * Width of the ability number of a selection; part of the `PERKS`, `GENE_MODS`, `PSIONIC` and `OFFICER` sections, a
- * change means new section ids.
+ * Width of the ability number of a selection; part of the `PERKS`, `GENE_MODS`, `PSIONIC`, `OFFICER` and
+ * `SIGNATURE_SKILL` sections, a change means new section ids.
  */
 export const ABILITY_CODE_BITS = 8;
 

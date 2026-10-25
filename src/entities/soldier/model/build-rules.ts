@@ -7,7 +7,8 @@ import type { BiosoldierBuildData, SoldierBuildData } from './build';
 /**
  * Why a Build rule refuses a choice:
  * - `base-perk`: the first rank holds the base perk;
- * - `not-offered`: the ability is not offered on the step, or the step is outside the tree;
+ * - `not-offered`: the ability is not offered on the step, or the step is outside the tree; for the Signature skill, the
+ *   class tree has no such perk;
  * - `neural-damping`: a psionic ability while Neural Damping is selected;
  * - `psionic-ability`: Neural Damping while a psionic ability is selected.
  */
@@ -34,6 +35,28 @@ export const perkBlockReason = (build: Readonly<SoldierBuildData>, rankIndex: nu
   const offeredIds: readonly string[] = build.soldierClass.perks[rank.id];
 
   if (!offeredIds.includes(perkId)) return 'not-offered';
+
+  return null;
+};
+
+/**
+ * Why a perk cannot be the Signature skill of the build: the Signature skill is a perk of any rank of the class tree,
+ * the base perk included, selected in the build or not; null if it can. Clearing the Signature skill (a null perk) is
+ * always allowed.
+ *
+ * @param build soldier build: its class.
+ * @param perkId perk id, or null to clear the Signature skill.
+ */
+export const signatureSkillBlockReason = (build: Readonly<Pick<SoldierBuildData, 'soldierClass'>>, perkId: string | null): BuildBlockReason | null => {
+  if (perkId === null) return null;
+
+  const isOffered = SOLDIER_RANKS.some((rank) => {
+    const offeredIds: readonly string[] = build.soldierClass.perks[rank.id];
+
+    return offeredIds.includes(perkId);
+  });
+
+  if (!isOffered) return 'not-offered';
 
   return null;
 };

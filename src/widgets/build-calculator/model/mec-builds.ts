@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
 import type { SoldierClass } from '@entities/soldier';
-import { defaultSoldierBuild, MEC_CLASSES, selectSoldierBuildPerk } from '@entities/soldier';
+import { defaultSoldierBuild, MEC_CLASSES, selectSoldierBuildPerk, selectSoldierBuildSignatureSkill } from '@entities/soldier';
 
 import { DEFAULT_BUILD_ID_PREFIX, MEC_BUILD_KEY_PREFIX, MEC_BUILD_ORDER_KEY } from '../config/constants';
 import type { SavedBuild } from './build-list';
@@ -45,6 +45,14 @@ export const useMecBuildsStore = defineStore('build-calculator-mec-builds', () =
   const selectBuildPerk = (buildId: string, rankIndex: number, perkId: string | null) => buildList.editBuild(buildId, build => selectSoldierBuildPerk(build, rankIndex, perkId));
 
   /**
+   * Sets the Signature skill of an editable build by the tree rules, or clears it.
+   *
+   * @param buildId build id.
+   * @param perkId perk id of the Signature skill, or null to clear it.
+   */
+  const selectBuildSignatureSkill = (buildId: string, perkId: string | null) => buildList.editBuild(buildId, build => selectSoldierBuildSignatureSkill(build, perkId));
+
+  /**
    * Adds a new build of the class with only the base perk selected.
    *
    * @param soldierClass MEC class of the new build.
@@ -56,6 +64,7 @@ export const useMecBuildsStore = defineStore('build-calculator-mec-builds', () =
   return {
     builds: buildList.builds,
     selectBuildPerk,
+    selectBuildSignatureSkill,
     setName: buildList.setName,
     setReadonly: buildList.setReadonly,
     addBuild,

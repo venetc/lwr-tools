@@ -16,6 +16,7 @@ import {
   PICKED_PERKS,
   RENAMED_VALKYRIE_BUILD,
   SAVE_DELAY,
+  SIGNATURE_VALKYRIE_BUILD,
   storedBuild,
 } from './mec-builds.mock';
 
@@ -70,6 +71,25 @@ describe('useMecBuildsStore', () => {
     store.setReadonly(DEFAULT_VALKYRIE_ID, true);
 
     store.selectBuildPerk(DEFAULT_VALKYRIE_ID, 0, 'picked');
+
+    expect(store.builds[0]).toEqual(LOCKED_VALKYRIE_BUILD);
+  });
+
+  it('sets the Signature skill of an editable build', () => {
+    stubPage();
+    const store = useMecBuildsStore();
+
+    store.selectBuildSignatureSkill(DEFAULT_VALKYRIE_ID, 'picked');
+
+    expect(store.builds[0]).toEqual(SIGNATURE_VALKYRIE_BUILD);
+  });
+
+  it('leaves a locked build as it is on a Signature skill', () => {
+    stubPage();
+    const store = useMecBuildsStore();
+    store.setReadonly(DEFAULT_VALKYRIE_ID, true);
+
+    store.selectBuildSignatureSkill(DEFAULT_VALKYRIE_ID, 'picked');
 
     expect(store.builds[0]).toEqual(LOCKED_VALKYRIE_BUILD);
   });

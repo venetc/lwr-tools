@@ -58,6 +58,7 @@ export const createBuildMock = (perks: (string | null)[], readonly = false): Cla
   soldierClass: SOLDIER_CLASS_MOCK,
   perks,
   name: 'Tester',
+  signatureSkill: null,
   readonly,
 });
 

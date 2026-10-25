@@ -146,3 +146,14 @@ export const OUTDATED_SELECTION_WORDS = {
 
 /** Name a mini-tree gives an empty locked step, in place of an ability name. */
 export const MINI_TREE_LOCKED_STEP_NAME = 'Locked';
+
+/**
+ * Texts of the Signature skill of a soldier build: the name of the button without one, the start of its name with one
+ * (followed by the perk name), the dialog title and the accessible name of the mark of a perk selected in the build.
+ */
+export const SIGNATURE_SKILL_TEXT = {
+  select: 'Select signature skill',
+  labelPrefix: 'Signature skill: ',
+  dialogTitle: 'Select signature skill:',
+  inBuild: 'In the Build',
+} as const;

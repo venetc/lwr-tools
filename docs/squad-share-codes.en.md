@@ -27,7 +27,7 @@ The name is cut to 31 bytes. A header without `NAME` is invalid; unknown section
 
 - Every part has its own CRC. Any broken part — the header, a Unit, an empty part — makes the whole code invalid: no partial import.
 - `squad` has the `name`, the `builds` and the `units` in Squad order. A build is `{ kind, build, outdated }`, with `outdated` as in a Unit code. A Unit refers to its build by `buildIndex` and carries its Loadout, null for a build code part.
-- Units whose build sections are the same — kind and data, name and `OFFICER` included — and whose Outdated selections are the same share one build. The same Class tree with other Officer perks makes two builds.
+- Units whose build sections are the same — kind and data, name, `OFFICER` and `SIGNATURE_SKILL` included — and whose Outdated selections are the same share one build. The same Class tree with other Officer perks or another Signature skill makes two builds.
 - The Loadout is not checked against the build, as in a Unit code.
 
 ## Where codes go

@@ -73,6 +73,7 @@ export const createBiosoldierBuildMock = (
     outdated: null,
     soldierClass: soldierClassMock('sniper', 'Sniper'),
     perks: [],
+    signatureSkill: null,
     geneMods: build.geneMods ?? [null, null, null, null, null],
     psionicAbilities: build.psionicAbilities ?? [],
     officerPerks: build.officerPerks ?? [],
@@ -81,7 +82,7 @@ export const createBiosoldierBuildMock = (
 
 export const MEC_BUILD: SquadBuild = {
   kind: 'mec',
-  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [] },
+  build: { id: 'mec-build', name: 'Goliath Wall', readonly: false, outdated: null, soldierClass: soldierClassMock('goliath', 'Goliath'), perks: [], signatureSkill: null },
 };
 
 export const SHIV_BUILD: SquadBuild = {

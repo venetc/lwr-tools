@@ -1,9 +1,9 @@
 import type { Plugin } from 'vite';
 
-import { ROUTES } from '../src/shared/config/routes';
-import { SITE_APPLICATION_CATEGORY, SITE_IMAGE_PATH, SITE_NAME, SITE_TAGLINE, SITE_THEME_COLOR, SITE_TOUCH_ICON_PATH } from '../src/shared/config/site';
-import type { PageSite } from '../src/shared/lib/page-head';
-import { pageHeadHtml, pageNoscriptHtml, resolvePageHead } from '../src/shared/lib/page-head';
+import { ROUTES } from '../src/shared/config/routes/index.ts';
+import { SITE_APPLICATION_CATEGORY, SITE_IMAGE_PATH, SITE_NAME, SITE_TAGLINE, SITE_THEME_COLOR, SITE_TOUCH_ICON_PATH } from '../src/shared/config/site/index.ts';
+import type { PageSite } from '../src/shared/lib/page-head/index.ts';
+import { pageHeadHtml, pageNoscriptHtml, resolvePageHead } from '../src/shared/lib/page-head/index.ts';
 
 /** Path on no route list: its head goes to `404.html`. */
 const NOT_FOUND_PATH = '/404';

@@ -5,4 +5,4 @@ export {
   SITE_TAGLINE,
   SITE_THEME_COLOR,
   SITE_TOUCH_ICON_PATH,
-} from './site';
+} from './site.ts';

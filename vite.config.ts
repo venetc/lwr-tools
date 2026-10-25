@@ -6,7 +6,7 @@ import { defineConfig } from 'vite';
 import { imagetools } from 'vite-imagetools';
 import svgLoader from 'vite-svg-loader';
 
-import { pageHtml } from './vite-plugins/page-html';
+import { pageHtml } from './vite-plugins/page-html.ts';
 
 /**
  * Absolute URL of the site root without a trailing slash: `SITE_URL` when set, the dev server otherwise. Its path

@@ -1,4 +1,4 @@
-import type { PageSite } from './page-head';
+import type { PageSite } from './page-head.ts';
 
 /**
  * Absolute URL of the page without a trailing slash; the root is the site URL with one, as a host serves it

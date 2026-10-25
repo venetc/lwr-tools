@@ -1,7 +1,7 @@
-import { PAGE_HEAD_ATTRIBUTE } from './constants';
-import { escapeHtml } from './escape-html';
-import type { PageHead, PageRoute, PageSite } from './page-head';
-import { pageUrl } from './page-url';
+import { PAGE_HEAD_ATTRIBUTE } from './constants.ts';
+import { escapeHtml } from './escape-html.ts';
+import type { PageHead, PageRoute, PageSite } from './page-head.ts';
+import { pageUrl } from './page-url.ts';
 
 /**
  * Meta tag with a `name` or a `property`.

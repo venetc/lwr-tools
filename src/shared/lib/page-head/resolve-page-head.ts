@@ -1,5 +1,5 @@
-import type { PageHead, PageRoute, PageSite } from './page-head';
-import { pageUrl } from './page-url';
+import type { PageHead, PageRoute, PageSite } from './page-head.ts';
+import { pageUrl } from './page-url.ts';
 
 interface ChainLink {
   /** Title of the route, or the site name for the root. */

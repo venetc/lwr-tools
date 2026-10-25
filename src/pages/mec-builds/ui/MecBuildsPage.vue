@@ -6,7 +6,7 @@ import { MEC_CLASSES } from '@entities/soldier';
 import { BuildRemovalDialog, useBuildRemoval } from '@features/manage-squads';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
-import { BuildCalculator, MecBuildTree, useMecBuildsStore } from '@widgets/build-calculator';
+import { BuildCalculator, MecBuildTree, SignatureSkillIcon, useMecBuildsStore } from '@widgets/build-calculator';
 
 const mecBuildsStore = useMecBuildsStore();
 
@@ -58,6 +58,7 @@ const { isDialogOpen, title, note, removeBuild, confirmRemoval } = useBuildRemov
 
     <template #nav-icon="{ build }">
       <component :is="build.soldierClass.icon" :class="$style.navIcon" />
+      <SignatureSkillIcon :build="build" />
     </template>
   </BuildCalculator>
 

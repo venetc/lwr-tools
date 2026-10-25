@@ -1,0 +1,15 @@
+$icon-size: 18px;
+
+// Keeps its box without a Signature skill, so the names of a list line up.
+.root {
+  flex: none;
+  display: block;
+  width: $icon-size;
+  height: $icon-size;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

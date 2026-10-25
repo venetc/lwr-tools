@@ -128,3 +128,32 @@ export const selectSignatureSkill = async (page: Page, panel: Locator, perkName:
   await signatureSkillTile(page, perkName).click();
   await signatureSkillDialog(page).getByRole('button', { name: 'Save', exact: true }).click();
 };
+
+/**
+ * Item of the first build with the name in the build navigation of the calculator.
+ *
+ * @param page browser page.
+ * @param buildName build name.
+ */
+export const buildNavItem = (page: Page, buildName: string) => page
+  .getByRole('navigation', { name: 'Builds' })
+  .getByRole('button', { name: buildName, exact: true })
+  .first();
+
+/**
+ * Signature skill icon of the first build with the name in the build navigation, found by its alternative text.
+ *
+ * @param page browser page.
+ * @param buildName build name.
+ * @param perkName perk name of the Signature skill.
+ */
+export const navSignatureSkillIcon = (page: Page, buildName: string, perkName: string) => buildNavItem(page, buildName)
+  .getByAltText(`Signature skill: ${perkName}`, { exact: true });
+
+/**
+ * Name of the first build with the name in the build navigation.
+ *
+ * @param page browser page.
+ * @param buildName build name.
+ */
+export const navBuildName = (page: Page, buildName: string) => buildNavItem(page, buildName).getByText(buildName, { exact: true });

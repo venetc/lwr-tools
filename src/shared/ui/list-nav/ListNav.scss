@@ -71,11 +71,14 @@ $row-height: $icon-size + $item-padding * 2;
   }
 }
 
+// Grows with the icons of the slot, laid out in a row.
 .icon {
   flex: none;
-  display: grid;
-  place-items: center;
-  width: $icon-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: $icon-size;
   height: $icon-size;
 }
 

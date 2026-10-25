@@ -14,3 +14,4 @@ export { default as MecMiniTree } from './ui/MecMiniTree.vue';
 export { default as OfficerRankBadge } from './ui/OfficerRankBadge.vue';
 export { default as ShivBuildTree } from './ui/ShivBuildTree.vue';
 export { default as ShivMiniTree } from './ui/ShivMiniTree.vue';
+export { default as SignatureSkillIcon } from './ui/SignatureSkillIcon.vue';

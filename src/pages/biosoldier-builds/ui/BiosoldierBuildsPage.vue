@@ -6,7 +6,7 @@ import { BIOSOLDIER_CLASSES } from '@entities/soldier';
 import { BuildRemovalDialog, useBuildRemoval } from '@features/manage-squads';
 import { Button } from '@shared/ui/button';
 import { DropdownMenu, DropdownMenuAction } from '@shared/ui/dropdown-menu';
-import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator, OfficerRankBadge, useBiosoldierBuildsStore } from '@widgets/build-calculator';
+import { BiosoldierBuildTree, BiosoldierClassIcon, BuildCalculator, OfficerRankBadge, SignatureSkillIcon, useBiosoldierBuildsStore } from '@widgets/build-calculator';
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
@@ -58,6 +58,7 @@ const { isDialogOpen, title, note, removeBuild, confirmRemoval } = useBuildRemov
 
     <template #nav-icon="{ build }">
       <BiosoldierClassIcon :build="build" :class="$style.navIcon" />
+      <SignatureSkillIcon :build="build" />
     </template>
 
     <template #nav-badge="{ build }">

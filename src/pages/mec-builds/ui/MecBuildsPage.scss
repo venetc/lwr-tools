@@ -7,9 +7,11 @@
   padding: 3px 12px;
 }
 
+// A square as high as the icon slot of the navigation.
 .navIcon {
-  width: 100%;
+  flex: none;
   height: 100%;
+  aspect-ratio: 1;
   color: colors.$accent;
 }
 

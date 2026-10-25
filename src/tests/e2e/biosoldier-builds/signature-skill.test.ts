@@ -1,7 +1,17 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { openBuildPanel, resetBuild, selectSignatureSkill, signatureSkillButton, signatureSkillDialog, signatureSkillTile } from '../utils/build-panel';
+import {
+  buildNavItem,
+  navBuildName,
+  navSignatureSkillIcon,
+  openBuildPanel,
+  resetBuild,
+  selectSignatureSkill,
+  signatureSkillButton,
+  signatureSkillDialog,
+  signatureSkillTile,
+} from '../utils/build-panel';
 import { seedBuilds } from '../utils/build-storage';
 import { centerOffset, pageOverflow } from '../utils/page-layout';
 import { exportCode, importCode, toolbarImport } from '../utils/share-code';
@@ -13,6 +23,7 @@ import {
   LONE_WOLF,
   LONE_WOLF_LABEL,
   LONG_NAME,
+  OTHER_BUILD_NAME,
   OUTDATED_BUILD,
   PAGE_PATH,
   PANEL_NAME,
@@ -40,6 +51,21 @@ const openPanelWithSignatureSkill = async (page: Page) => {
   await selectSignatureSkill(page, panel, LONE_WOLF);
 
   return panel;
+};
+
+/**
+ * How far the name of the first build with the name starts from the start of its item in the build navigation, in
+ * pixels; it does not depend on the column of the item.
+ *
+ * @param page browser page.
+ * @param buildName build name.
+ */
+const navNameOffset = async (page: Page, buildName: string) => {
+  const [item, name] = await Promise.all([buildNavItem(page, buildName).boundingBox(), navBuildName(page, buildName).boundingBox()]);
+
+  if (!item || !name) return Number.POSITIVE_INFINITY;
+
+  return name.x - item.x;
 };
 
 /**
@@ -197,6 +223,38 @@ test.describe('Signature skill button layout', () => {
   test('has no horizontal scroll with a long name on a phone', { tag: '@phone' }, async ({ page }) => {
     const panel = await openPanelWithSignatureSkill(page);
     await title(panel).fill(LONG_NAME);
+
+    const overflow = await pageOverflow(page);
+
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+});
+
+test.describe('Signature skill in the build navigation', () => {
+  test('shows the perk name as the tooltip of the icon', async ({ page }) => {
+    await openPanelWithSignatureSkill(page);
+
+    await expect(navSignatureSkillIcon(page, PANEL_NAME, LONE_WOLF)).toHaveAttribute('title', LONE_WOLF);
+  });
+
+  test('lines up the name of a build without a Signature skill', async ({ page }) => {
+    await openPanelWithSignatureSkill(page);
+
+    const [offset, otherOffset] = await Promise.all([navNameOffset(page, PANEL_NAME), navNameOffset(page, OTHER_BUILD_NAME)]);
+
+    expect(otherOffset).toBeCloseTo(offset, 0);
+  });
+
+  test('keeps the width of the name on a phone', { tag: '@phone' }, async ({ page }) => {
+    await openPanelWithSignatureSkill(page);
+
+    const [name, otherName] = await Promise.all([navBuildName(page, PANEL_NAME).boundingBox(), navBuildName(page, OTHER_BUILD_NAME).boundingBox()]);
+
+    expect(name?.width).toBeCloseTo(otherName?.width ?? 0, 0);
+  });
+
+  test('has no horizontal scroll on a phone', { tag: '@phone' }, async ({ page }) => {
+    await openPanelWithSignatureSkill(page);
 
     const overflow = await pageOverflow(page);
 

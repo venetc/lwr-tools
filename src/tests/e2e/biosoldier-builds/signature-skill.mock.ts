@@ -35,3 +35,6 @@ export const OUTDATED_BUILD = { id: 'outdated', code: OUTDATED_CODE, readonly: f
 
 /** Half the height of the Signature skill button, in pixels: the most its center may sit off the center of the name. */
 export const ROW_TOLERANCE = 14;
+
+/** Other build of the navigation, without a Signature skill. */
+export const OTHER_BUILD_NAME = 'Scout';

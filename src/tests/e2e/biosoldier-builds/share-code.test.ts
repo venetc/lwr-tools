@@ -285,6 +285,32 @@ test.describe('Share code with Outdated selections', () => {
 
     await expect(page.getByRole('textbox', { name: CODE_LABEL })).toBeHidden();
   });
+
+  test('keeps the code in the import form on Escape', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+    await outdatedDialog(page).waitFor();
+
+    await page.keyboard.press('Escape');
+
+    await expect(page.getByRole('textbox', { name: CODE_LABEL })).toHaveValue(OUTDATED_BUILD_CODE);
+  });
+
+  test('adds no build on Escape', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+    await outdatedDialog(page).waitFor();
+
+    await page.keyboard.press('Escape');
+
+    await expect(classPanels(page)).toHaveCount(1);
+  });
+
+  test('keeps the code in the import form on Close', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: 'Close', exact: true }).click();
+
+    await expect(page.getByRole('textbox', { name: CODE_LABEL })).toHaveValue(OUTDATED_BUILD_CODE);
+  });
 });
 
 test.describe('Build replaced with a Share code with Outdated selections', () => {

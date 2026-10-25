@@ -6,10 +6,11 @@ export const STORAGE_PREFIX = 'lwr-tools.biosoldier-builds.v1.';
 
 /**
  * Sniper build code from an older mod version: Sharpshooter on Lance Corporal, Advanced Perception on Brain, Psi
- * Mastery on Awakened and Cover Tactics on Lieutenant no longer fit their steps; Lone Wolf on Master Sergeant and Iron
- * Skin on Skin do.
+ * Mastery on Awakened and Cover Tactics on Lieutenant no longer fit their steps; Executioner on Sergeant, Precision
+ * Shot on Tech Sergeant, Vital Point Targeting on Gunnery Sergeant, Lone Wolf on Master Sergeant and Iron Skin on Skin
+ * do.
  */
-const OUTDATED_CODE = 'AQiIOh2FIRhqy-bIIErW8ChGzoAA1w';
+const OUTDATED_CODE = 'AQkAOh2wfC2pFIRhqy-bIIErW8ChGzoAAGU';
 
 /** Stored editable Outdated build of `OUTDATED_CODE`. */
 export const OUTDATED_BUILD = { id: 'outdated', code: OUTDATED_CODE, readonly: false };
@@ -45,6 +46,14 @@ export const MAGNUM = 'Magnum';
 
 /** Perk of Master Sergeant that the code keeps. */
 export const LONE_WOLF = 'Lone Wolf';
+
+/** Perks of the code on the ranks without Outdated selections. */
+export const KEPT_PERKS = [
+  { rank: 'Sergeant', perk: 'Executioner' },
+  { rank: 'Tech Sergeant', perk: 'Precision Shot' },
+  { rank: 'Gunnery Sergeant', perk: 'Vital Point Targeting' },
+  { rank: 'Master Sergeant', perk: LONE_WOLF },
+];
 
 export const OUTDATED_NOTE = 'Outdated selection: in this mod version Lance Corporal has Magnum here.';
 

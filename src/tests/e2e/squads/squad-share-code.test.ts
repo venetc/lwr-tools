@@ -5,6 +5,8 @@ import {
   addNewBuildUnit,
   importSquadCode,
   importUnitCode,
+  loadoutTile,
+  miniTreeStep,
   notifications,
   openAddUnit,
   openSquads,
@@ -18,23 +20,31 @@ import {
   BIOSOLDIER_PATH,
   BROKEN_SQUAD_CODE,
   CANCEL_LABEL,
+  CLEARED_STEP,
   COPIED_TOAST,
   IMPORT_LABEL,
   IMPORTED_TOAST,
   INVALID_CODE_ERROR,
+  KEPT_STEP,
   OFFICER_BUILD_NAME,
   ONE_OUTDATED_BUILD_SQUAD_CODE,
   OUTDATED_BUILD_NAME,
   OUTDATED_CARD_TEXTS,
   OUTDATED_GROUP_NAMES,
+  OUTDATED_SERAPH_REPLACED_LINE,
+  OUTDATED_SERAPH_SQUAD_CODE,
   OUTDATED_SQUAD_CODE,
   SERAPH_REPLACED_LINE,
+  SHIV,
+  SHIV_CLEARED_STEP,
+  SHIV_KEPT_STEP,
   SNIPER,
   SQUAD_CODE,
   SQUAD_CODE_CALCULATOR_HINT,
   SQUAD_CODE_UNIT_HINT,
   SQUAD_NAME,
   SQUAD_UNIT_COUNT,
+  TACTICAL_VEST_TILE,
   UNIT_CODE,
   UNIT_CODE_HINT,
 } from './squad-share-code.mock';
@@ -186,6 +196,36 @@ test.describe('Squad import with Outdated selections', () => {
     await expect(squadItem(page, SQUAD_NAME, SQUAD_UNIT_COUNT)).toHaveCount(0);
   });
 
+  test('keeps the code in the import dialog on Escape', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importSquadCode(page, OUTDATED_SQUAD_CODE);
+    await outdatedDialog(page).waitFor();
+
+    await page.keyboard.press('Escape');
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_SQUAD_CODE);
+  });
+
+  test('creates no Squad on Escape', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importSquadCode(page, OUTDATED_SQUAD_CODE);
+    await outdatedDialog(page).waitFor();
+
+    await page.keyboard.press('Escape');
+    await dialog.getByRole('button', { name: 'Close', exact: true }).click();
+
+    await expect(squadItem(page, SQUAD_NAME, SQUAD_UNIT_COUNT)).toHaveCount(0);
+  });
+
+  test('keeps the code in the import dialog on Close', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: 'Close', exact: true }).click();
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_SQUAD_CODE);
+  });
+
   test('opens the imported Squad on Import', async ({ page }) => {
     await openSquads(page);
     await importSquadCode(page, OUTDATED_SQUAD_CODE);
@@ -211,6 +251,60 @@ test.describe('Squad import with Outdated selections', () => {
     await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
 
     await expect(notifications(page)).toContainText(IMPORTED_TOAST);
+  });
+
+  test('leaves the outdated steps of a Build empty on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(miniTreeStep(unitCards(page, OUTDATED_BUILD_NAME).first(), CLEARED_STEP)).toBeVisible();
+  });
+
+  test('keeps the other selections of a Build on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(miniTreeStep(unitCards(page, OUTDATED_BUILD_NAME).first(), KEPT_STEP)).toBeVisible();
+  });
+
+  test('leaves the technology level of a SHIV collision empty on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(miniTreeStep(unitCards(page, SHIV), SHIV_CLEARED_STEP)).toBeVisible();
+  });
+
+  test('keeps the other perks of a SHIV build on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(miniTreeStep(unitCards(page, SHIV), SHIV_KEPT_STEP)).toBeVisible();
+  });
+
+  test('brings the Loadouts to the cleared Builds on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SERAPH_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(loadoutTile(unitCards(page, OUTDATED_BUILD_NAME), TACTICAL_VEST_TILE)).toBeVisible();
+  });
+
+  test('tells what the Unit check took off the cleared Builds on Import', async ({ page }) => {
+    await openSquads(page);
+    await importSquadCode(page, OUTDATED_SERAPH_SQUAD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(notifications(page)).toContainText(OUTDATED_SERAPH_REPLACED_LINE);
   });
 
   test('imports a Squad code without Outdated selections without the dialog', async ({ page }) => {

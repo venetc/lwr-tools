@@ -1,22 +1,25 @@
 import { expect, test } from '@playwright/test';
 
 import { importCode, outdatedDialog, toolbarImport } from '../utils/share-code';
-import { addNewBuildUnit, enterUnitCode, importUnitCode, loadoutTile, notifications, openSquads, unitCards } from '../utils/squads';
+import { addNewBuildUnit, enterUnitCode, importUnitCode, loadoutTile, miniTreeStep, notifications, openSquads, unitCards } from '../utils/squads';
 import {
   BIOSOLDIER_PATH,
   BROKEN_CODE,
   BUILD_CODES,
   CANCEL_LABEL,
+  CLEARED_STEP,
   COPIED_TOAST,
   IMPORT_LABEL,
   INVALID_CODE_ERROR,
   JAEGER,
   JAEGER_BUILD_CODE,
   JAEGER_TOAST,
+  KEPT_STEP,
   OFFICER_BUILD_NAME,
   OFFICER_UNIT_CODE,
   OUTDATED_BUILD_NAME,
   OUTDATED_CARD_COUNT,
+  OUTDATED_SERAPH_UNIT_CODE,
   OUTDATED_TOAST,
   OUTDATED_UNIT_CODE,
   RENAME_LABEL,
@@ -178,6 +181,36 @@ test.describe('Add Unit from a Share code with Outdated selections', () => {
     await expect(unitCards(page, OUTDATED_BUILD_NAME)).toHaveCount(0);
   });
 
+  test('keeps the code in the Add Unit dialog on Escape', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importUnitCode(page, OUTDATED_UNIT_CODE);
+    await outdatedDialog(page).waitFor();
+
+    await page.keyboard.press('Escape');
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_UNIT_CODE);
+  });
+
+  test('adds no Unit on Escape', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importUnitCode(page, OUTDATED_UNIT_CODE);
+    await outdatedDialog(page).waitFor();
+
+    await page.keyboard.press('Escape');
+    await dialog.getByRole('button', { name: 'Close', exact: true }).click();
+
+    await expect(unitCards(page, OUTDATED_BUILD_NAME)).toHaveCount(0);
+  });
+
+  test('keeps the code in the Add Unit dialog on Close', async ({ page }) => {
+    await openSquads(page);
+    const dialog = await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: 'Close', exact: true }).click();
+
+    await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_UNIT_CODE);
+  });
+
   test('adds the Unit on Import', async ({ page }) => {
     await openSquads(page);
     await importUnitCode(page, OUTDATED_UNIT_CODE);
@@ -194,6 +227,42 @@ test.describe('Add Unit from a Share code with Outdated selections', () => {
     await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
 
     await expect(notifications(page)).toContainText(OUTDATED_TOAST);
+  });
+
+  test('leaves the outdated steps of the Build empty on Import', async ({ page }) => {
+    await openSquads(page);
+    await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(miniTreeStep(unitCards(page, OUTDATED_BUILD_NAME), CLEARED_STEP)).toBeVisible();
+  });
+
+  test('keeps the other selections of the Build on Import', async ({ page }) => {
+    await openSquads(page);
+    await importUnitCode(page, OUTDATED_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(miniTreeStep(unitCards(page, OUTDATED_BUILD_NAME), KEPT_STEP)).toBeVisible();
+  });
+
+  test('brings the Loadout to the cleared Build on Import', async ({ page }) => {
+    await openSquads(page);
+    await importUnitCode(page, OUTDATED_SERAPH_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(loadoutTile(unitCards(page, OUTDATED_BUILD_NAME), TACTICAL_VEST_TILE)).toBeVisible();
+  });
+
+  test('tells what the Unit check took off the cleared Build on Import', async ({ page }) => {
+    await openSquads(page);
+    await importUnitCode(page, OUTDATED_SERAPH_UNIT_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(notifications(page)).toContainText(SERAPH_REPLACED);
   });
 });
 

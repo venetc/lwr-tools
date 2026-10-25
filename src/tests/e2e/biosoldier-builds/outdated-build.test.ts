@@ -10,6 +10,7 @@ import {
   CORPORAL,
   EXPORT_LABEL,
   IMPORT_LABEL,
+  KEPT_PERKS,
   LANCE_CORPORAL,
   LOCK_LABEL,
   LONE_WOLF,
@@ -220,13 +221,15 @@ test.describe('Update of an Outdated Biosoldier build', () => {
     await expect(stepCell(panel, LANCE_CORPORAL, SHARPSHOOTER)).toHaveCount(0);
   });
 
-  test('keeps the other selections on Update', async ({ page }) => {
-    const panel = await openSeededPanel(page, OUTDATED_BUILD);
+  for (const { rank, perk } of KEPT_PERKS) {
+    test(`keeps ${perk} on ${rank} on Update`, async ({ page }) => {
+      const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await updateBuild(page, panel);
+      await updateBuild(page, panel);
 
-    await expect(abilityCell(panel, LONE_WOLF)).toHaveAttribute('aria-pressed', 'true');
-  });
+      await expect(stepCell(panel, rank, perk)).toHaveAttribute('aria-pressed', 'true');
+    });
+  }
 
   test('makes the build editable on Update', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);

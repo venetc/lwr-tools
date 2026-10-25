@@ -10,6 +10,7 @@ import {
   COLLISION_NOTE,
   EXPORT_LABEL,
   HOLO_ROUNDS,
+  KEPT_PERKS,
   LOCK_LABEL,
   LOCK_N_LOAD,
   NAVIGATION,
@@ -50,12 +51,13 @@ const openSeededPanel = async (page: Page, build: SeededBuild) => {
 };
 
 /**
- * Cell of a perk on Basic Config, the technology level of the collision.
+ * Cell of a perk on the technology level, such as Basic Config of the collision.
  *
  * @param panel build panel.
+ * @param levelName technology level name.
  * @param perkName perk name.
  */
-const basicConfigCell = (panel: Locator, perkName: string) => panel.getByRole('group', { name: BASIC_CONFIG, exact: true }).getByRole('button', { name: perkName, exact: true });
+const technologyLevelCell = (panel: Locator, levelName: string, perkName: string) => panel.getByRole('group', { name: levelName, exact: true }).getByRole('button', { name: perkName, exact: true });
 
 /**
  * The «Update build» dialog.
@@ -98,37 +100,37 @@ test.describe('Outdated SHIV build', () => {
   test('marks the first perk of the collision OLD', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await expect(basicConfigCell(panel, LOCK_N_LOAD)).toContainText(OLD_LABEL);
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, LOCK_N_LOAD)).toContainText(OLD_LABEL);
   });
 
   test('marks the second perk of the collision OLD', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await expect(basicConfigCell(panel, REPAIR_SERVOS)).toContainText(OLD_LABEL);
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, REPAIR_SERVOS)).toContainText(OLD_LABEL);
   });
 
   test('shows the first perk of the collision selected', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await expect(basicConfigCell(panel, LOCK_N_LOAD)).toHaveAttribute('aria-pressed', 'true');
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, LOCK_N_LOAD)).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('shows the second perk of the collision selected', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await expect(basicConfigCell(panel, REPAIR_SERVOS)).toHaveAttribute('aria-pressed', 'true');
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, REPAIR_SERVOS)).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('leaves the other perk of the technology level unmarked', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await expect(basicConfigCell(panel, PLATFORM_STABILITY)).not.toContainText(OLD_LABEL);
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, PLATFORM_STABILITY)).not.toContainText(OLD_LABEL);
   });
 
   test('notes the collision in the description of a colliding perk', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await basicConfigCell(panel, REPAIR_SERVOS).focus();
+    await technologyLevelCell(panel, BASIC_CONFIG, REPAIR_SERVOS).focus();
 
     await expect(description(panel)).toContainText(COLLISION_NOTE);
   });
@@ -148,9 +150,9 @@ test.describe('Outdated SHIV build', () => {
   test('takes no selection', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await basicConfigCell(panel, PLATFORM_STABILITY).click({ force: true });
+    await technologyLevelCell(panel, BASIC_CONFIG, PLATFORM_STABILITY).click({ force: true });
 
-    await expect(basicConfigCell(panel, PLATFORM_STABILITY)).toHaveAttribute('aria-pressed', 'false');
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, PLATFORM_STABILITY)).toHaveAttribute('aria-pressed', 'false');
   });
 
   test('takes no new name', async ({ page }) => {
@@ -209,24 +211,26 @@ test.describe('Update of an Outdated SHIV build', () => {
 
     await updateBuild(page, panel);
 
-    await expect(basicConfigCell(panel, LOCK_N_LOAD)).toHaveAttribute('aria-pressed', 'false');
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, LOCK_N_LOAD)).toHaveAttribute('aria-pressed', 'false');
   });
 
-  test('keeps the other selections on Update', async ({ page }) => {
-    const panel = await openSeededPanel(page, OUTDATED_BUILD);
+  for (const { level, perk } of KEPT_PERKS) {
+    test(`keeps ${perk} on ${level} on Update`, async ({ page }) => {
+      const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await updateBuild(page, panel);
+      await updateBuild(page, panel);
 
-    await expect(abilityCell(panel, HOLO_ROUNDS)).toHaveAttribute('aria-pressed', 'true');
-  });
+      await expect(technologyLevelCell(panel, level, perk)).toHaveAttribute('aria-pressed', 'true');
+    });
+  }
 
   test('makes the build editable on Update', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
     await updateBuild(page, panel);
 
-    await basicConfigCell(panel, REPAIR_SERVOS).click();
+    await technologyLevelCell(panel, BASIC_CONFIG, REPAIR_SERVOS).click();
 
-    await expect(basicConfigCell(panel, REPAIR_SERVOS)).toHaveAttribute('aria-pressed', 'true');
+    await expect(technologyLevelCell(panel, BASIC_CONFIG, REPAIR_SERVOS)).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('saves the updated build', async ({ page }) => {

@@ -60,6 +60,28 @@ export const OUTDATED_BUILD_NAME = 'Sniper';
 /** Squad code of `Alpha` with a Unit of the outdated Sniper build `Sniper` and a Unit of `Field Sniper`. */
 export const ONE_OUTDATED_BUILD_SQUAD_CODE = 'BAi0qC2ODQwghg.AQiIOh2FIRhqy-bIIErW8ChGzoBg6AAAAAAr.AQiIOhHDsBGViM0srYyECm3NLgyuRQjZwAw9CgkNgWAAAAAALw';
 
+/** Steps of the mini-tree of the outdated Sniper build after the import: the outdated rank and a rank that fits. */
+export const CLEARED_STEP = 'Lance Corporal: Empty';
+
+export const KEPT_STEP = 'Master Sergeant: Lone Wolf';
+
+export const SHIV = 'SHIV';
+
+/** Steps of the mini-tree of the SHIV build after the import: the technology level of the collision and one that fits. */
+export const SHIV_CLEARED_STEP = 'Basic Config: Empty';
+
+export const SHIV_KEPT_STEP = 'Advancements I: Holo Rounds';
+
+/**
+ * Squad code of `Alpha` with a Unit of the outdated Sniper build `Sniper` in Seraph Armor: its only officer perk, Cover
+ * Tactics on Lieutenant, is an Outdated selection.
+ */
+export const OUTDATED_SERAPH_SQUAD_CODE = 'BAi0qC2ODQwghg.AQiIOh2FIRhqy-bIIErW8ChGzoBh6FBIbAsAAAAAcQ';
+
+export const OUTDATED_SERAPH_REPLACED_LINE = 'Sniper — Seraph Armor replaced with Tactical Vest: needs officer.';
+
+export const TACTICAL_VEST_TILE = 'Armor: Tactical Vest';
+
 export const CANCEL_LABEL = 'Cancel';
 
 export const IMPORT_LABEL = 'Import';

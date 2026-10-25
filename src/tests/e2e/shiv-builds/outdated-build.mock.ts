@@ -4,8 +4,11 @@ export const PANEL_NAME = 'SHIV';
 
 export const STORAGE_PREFIX = 'lwr-tools.shiv-builds.v1.';
 
-/** SHIV build code with Lock N' Load, Holo Rounds and Repair Servos: Lock N' Load and Repair Servos share Basic Config. */
-const COLLISION_CODE = 'AghVgiBATQ';
+/**
+ * SHIV build code with Lock N' Load, Repair Servos, Holo Rounds, Light 'Em Up and Fortified: Lock N' Load and Repair
+ * Servos share Basic Config.
+ */
+const COLLISION_CODE = 'AgiGgiBEFgBP';
 
 /** Stored editable Outdated build of `COLLISION_CODE`. */
 export const OUTDATED_BUILD = { id: 'outdated', code: COLLISION_CODE, readonly: false };
@@ -40,6 +43,13 @@ export const PLATFORM_STABILITY = 'Platform Stability';
 
 /** Perk of Advancements I that the code keeps. */
 export const HOLO_ROUNDS = 'Holo Rounds';
+
+/** Perks of the code on the technology levels without Outdated selections. */
+export const KEPT_PERKS = [
+  { level: 'Advancements I', perk: HOLO_ROUNDS },
+  { level: 'Advancements II', perk: 'Light \'Em Up' },
+  { level: 'Advancements IIIa', perk: 'Fortified' },
+];
 
 export const COLLISION_NOTE = 'Outdated selection: in this mod version Lock N\' Load and Repair Servos are both on Basic Config.';
 

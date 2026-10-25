@@ -98,6 +98,14 @@ test.describe('MEC Share code with Outdated selections', () => {
 
     await expect(abilityCell(classPanels(page).last(), SHARPSHOOTER)).toHaveAttribute('aria-pressed', 'false');
   });
+
+  test('closes the import form on Import', async ({ page }) => {
+    await importInCalculator(page, OUTDATED_BUILD_CODE);
+
+    await outdatedDialog(page).getByRole('button', { name: IMPORT_LABEL, exact: true }).click();
+
+    await expect(page.getByRole('textbox', { name: CODE_LABEL })).toBeHidden();
+  });
 });
 
 test.describe('MEC build replaced with a Share code with Outdated selections', () => {

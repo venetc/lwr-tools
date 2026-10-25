@@ -7,6 +7,7 @@ import { seedBuilds } from '../utils/build-storage';
 import {
   CANCEL_LABEL,
   EXPORT_LABEL,
+  KEPT_PERKS,
   LANCE_CORPORAL,
   LOCK_LABEL,
   LONE_WOLF,
@@ -145,6 +146,16 @@ test.describe('Update of an Outdated MEC build', () => {
 
     await expect(panel.getByText(OUTDATED_CHIP)).toBeVisible();
   });
+
+  for (const { rank, perk } of KEPT_PERKS) {
+    test(`keeps ${perk} on ${rank} on Update`, async ({ page }) => {
+      const panel = await openSeededPanel(page, OUTDATED_BUILD);
+
+      await updateBuild(page, panel);
+
+      await expect(rankCell(panel, rank, perk)).toHaveAttribute('aria-pressed', 'true');
+    });
+  }
 
   test('makes the build editable on Update', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);

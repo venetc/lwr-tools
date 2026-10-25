@@ -54,6 +54,17 @@ export const OUTDATED_BUILD_NAME = 'Sniper';
 
 export const OUTDATED_TOAST = 'Sniper added to Squad 1 and to Biosoldier builds.';
 
+/** Steps of the mini-tree of the outdated Sniper build after the import: the outdated rank and a rank that fits. */
+export const CLEARED_STEP = 'Lance Corporal: Empty';
+
+export const KEPT_STEP = 'Master Sergeant: Lone Wolf';
+
+/**
+ * Unit code of the outdated Sniper build `Sniper` with the Loadout of `OFFICER_UNIT_CODE`: its only officer perk, Cover
+ * Tactics on Lieutenant, is an Outdated selection.
+ */
+export const OUTDATED_SERAPH_UNIT_CODE = 'AQiIOh2FIRhqy-bIIErW8ChGzoBh6FBIbAsAAAAAcQ';
+
 export const CANCEL_LABEL = 'Cancel';
 
 export const IMPORT_LABEL = 'Import';

@@ -5,10 +5,10 @@ export const PANEL_NAME = 'Jaeger';
 export const STORAGE_PREFIX = 'lwr-tools.mec-builds.v1.';
 
 /**
- * Jaeger build code from an older mod version: Sharpshooter on Lance Corporal no longer fits its rank; Lone Wolf on
- * Gunnery Sergeant does.
+ * Jaeger build code from an older mod version: Sharpshooter on Lance Corporal no longer fits its rank; Aggression on
+ * Sergeant, Killer Instinct on Tech Sergeant, Lone Wolf on Gunnery Sergeant and Sprinter on Master Sergeant do.
  */
-const OUTDATED_CODE = 'AwiJOh2IQgBs';
+const OUTDATED_CODE = 'AwkBOh2oHB2ENPwAmg';
 
 /** Stored editable Outdated build of `OUTDATED_CODE`. */
 export const OUTDATED_BUILD = { id: 'outdated', code: OUTDATED_CODE, readonly: false };
@@ -41,6 +41,14 @@ export const RAPID_FIRE = 'Rapid Fire';
 
 /** Perk of Gunnery Sergeant that the code keeps. */
 export const LONE_WOLF = 'Lone Wolf';
+
+/** Perks of the code on the ranks without Outdated selections. */
+export const KEPT_PERKS = [
+  { rank: 'Sergeant', perk: 'Aggression' },
+  { rank: 'Tech Sergeant', perk: 'Killer Instinct' },
+  { rank: 'Gunnery Sergeant', perk: LONE_WOLF },
+  { rank: 'Master Sergeant', perk: 'Sprinter' },
+];
 
 export const OUTDATED_NOTE = 'Outdated selection: in this mod version Lance Corporal has Rapid Fire here.';
 

@@ -80,6 +80,13 @@ export const description = (panel: Locator) => panel.locator('[aria-live="polite
 export const removeBuild = (panel: Locator) => panel.getByRole('button', { name: 'Remove build', exact: true }).click({ delay: 700 });
 
 /**
+ * Resets the build of the panel by holding its reset button.
+ *
+ * @param panel build panel.
+ */
+export const resetBuild = (panel: Locator) => panel.getByRole('button', { name: 'Reset build', exact: true }).click({ delay: 700 });
+
+/**
  * Dialog that asks whether to delete a build standing in Squads.
  *
  * @param page browser page.

@@ -27,6 +27,8 @@ interface Emits {
 interface DefaultSlotProps {
   /** Class that styles a button like the bar's own actions. */
   actionClass: string[]
+  /** Class that styles a hold button like the bar's own actions, with its hold state. */
+  holdActionClass: string[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -44,7 +46,7 @@ defineSlots<{
 /** Whether editing is locked; the remove button is hidden while locked. */
 const locked = defineModel<boolean>('locked', { required: true });
 
-const { lockClass, secondaryClass, removeClass, lockIcon, isEditable, isRemovable } = useActionBar({
+const { lockClass, secondaryClass, holdClass, lockIcon, isEditable, isRemovable } = useActionBar({
   locked,
   removable: () => props.removable,
   style: useCssModule(),
@@ -57,11 +59,12 @@ const { lockClass, secondaryClass, removeClass, lockIcon, isEditable, isRemovabl
       v-if="isEditable"
       name="editable"
       :action-class="secondaryClass"
+      :hold-action-class="holdClass"
     />
 
     <HoldButton
       v-if="isRemovable"
-      :class="removeClass"
+      :class="holdClass"
       title="Hold to remove"
       @hold="emit('remove')"
     >
@@ -69,7 +72,7 @@ const { lockClass, secondaryClass, removeClass, lockIcon, isEditable, isRemovabl
       <span :class="$style.visuallyHidden">{{ props.removeLabel }}</span>
     </HoldButton>
 
-    <slot :action-class="secondaryClass" />
+    <slot :action-class="secondaryClass" :hold-action-class="holdClass" />
 
     <Toggle
       v-if="props.lockable"

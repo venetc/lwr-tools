@@ -1,3 +1,5 @@
+@use 'styles/colors';
+
 .button {
   position: relative;
   -webkit-touch-callout: none;
@@ -11,7 +13,7 @@
   height: 100%;
   rotate: -90deg;
   fill: none;
-  stroke: currentColor;
+  stroke: colors.$danger;
   stroke-width: 1.5;
   stroke-dasharray: 1;
   pointer-events: none;

@@ -1,7 +1,7 @@
 import type { Locator, Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
-import { abilityCell, addBuild, openBuildPanel } from '../utils/build-panel';
+import { abilityCell, addBuild, openBuildPanel, resetBuild } from '../utils/build-panel';
 import {
   COUNTERCHARGE,
   EXTRA_BUILD_COUNT,
@@ -85,13 +85,6 @@ test.describe('Build management', () => {
   });
 });
 
-/**
- * Resets the build.
- *
- * @param panel build panel.
- */
-const resetBuild = (panel: Locator) => panel.getByRole('button', { name: RESET_LABEL }).click();
-
 test.describe('Build reset', () => {
   test('clears the selected perks', async ({ page }) => {
     const panel = await openPanel(page);
@@ -129,6 +122,15 @@ test.describe('Build reset', () => {
     await resetBuild(panel);
 
     await expect(panel.getByRole('textbox', { name: RENAME_LABEL })).toHaveValue(NEW_NAME);
+  });
+
+  test('keeps the selected perks when clicked without holding', async ({ page }) => {
+    const panel = await openPanel(page);
+    await abilityCell(panel, MAGNUM).click();
+
+    await panel.getByRole('button', { name: RESET_LABEL }).click();
+
+    await expect(abilityCell(panel, MAGNUM)).toHaveAttribute('aria-pressed', 'true');
   });
 });
 

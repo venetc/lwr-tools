@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import { abilityCell, openBuildPanel } from '../utils/build-panel';
-import { ADD_LABEL, HOLO_ROUNDS, PAGE_PATH, PANEL_NAME, RESET_LABEL } from './build-management.mock';
+import { abilityCell, openBuildPanel, resetBuild } from '../utils/build-panel';
+import { ADD_LABEL, HOLO_ROUNDS, PAGE_PATH, PANEL_NAME } from './build-management.mock';
 
 test.describe('SHIV Build management', () => {
   test('adds a build with the add button', async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('SHIV Build management', () => {
     const panel = await openBuildPanel(page, PAGE_PATH, PANEL_NAME);
     await abilityCell(panel, HOLO_ROUNDS).click();
 
-    await panel.getByRole('button', { name: RESET_LABEL }).click();
+    await resetBuild(panel);
 
     await expect(abilityCell(panel, HOLO_ROUNDS)).toHaveAttribute('aria-pressed', 'false');
   });

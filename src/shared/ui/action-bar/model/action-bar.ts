@@ -24,7 +24,7 @@ export const useActionBar = (options: ActionBarOptions) => {
 
   const secondaryClass = [style.action, style.secondary];
 
-  const removeClass = [style.action, style.remove];
+  const holdClass = [style.action, style.hold];
 
   const lockIcon = computed(() => options.locked.value ? Lock : LockOpen);
 
@@ -32,5 +32,5 @@ export const useActionBar = (options: ActionBarOptions) => {
 
   const isRemovable = computed(() => toValue(options.removable) && isEditable.value);
 
-  return { lockClass, secondaryClass, removeClass, lockIcon, isEditable, isRemovable };
+  return { lockClass, secondaryClass, holdClass, lockIcon, isEditable, isRemovable };
 };

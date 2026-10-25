@@ -48,7 +48,7 @@
   color: colors.$text-tertiary;
 }
 
-.remove {
+.hold {
   &[data-state='idle'] {
     @include -dimmed;
     color: colors.$text-tertiary;

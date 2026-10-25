@@ -9,6 +9,7 @@ import { OutdatedSelectionsDialog, ShareCodeExport, ShareCodeImport, useOutdated
 import { ActionBar } from '@shared/ui/action-bar';
 import { Button } from '@shared/ui/button';
 import { EditableTitle } from '@shared/ui/editable-title';
+import { HoldButton } from '@shared/ui/hold-button';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
 import { TieredPicker, TieredPickerCell } from '@shared/ui/tiered-picker';
 
@@ -38,7 +39,7 @@ interface Emits {
   lock: [isReadonly: boolean]
   /** Requests replacing the build with imported data. */
   replace: [data: BuildDataByKind[Kind]]
-  /** Requests resetting the build to a new one; the name stays. */
+  /** Requests resetting the build to a new one once the reset button is held; the name stays. */
   reset: []
   /** Requests removal of the build. */
   remove: []
@@ -141,7 +142,7 @@ const {
         :lockable="isEditable"
         @remove="emit('remove')"
       >
-        <template v-if="isEditable" #editable="{ actionClass }">
+        <template v-if="isEditable" #editable="{ actionClass, holdActionClass }">
           <ShareCodeImport :kind="props.kind" @import="emit('replace', $event)">
             <template #trigger>
               <button :class="actionClass" type="button">
@@ -151,14 +152,14 @@ const {
             </template>
           </ShareCodeImport>
 
-          <button
-            :class="actionClass"
-            type="button"
-            @click="emit('reset')"
+          <HoldButton
+            :class="holdActionClass"
+            title="Hold to reset"
+            @hold="emit('reset')"
           >
             <RotateCcw :class="$style.actionIcon" aria-hidden="true" />
             <span :class="$style.visuallyHidden">Reset build</span>
-          </button>
+          </HoldButton>
         </template>
 
         <template v-if="isEditable" #default="{ actionClass }">

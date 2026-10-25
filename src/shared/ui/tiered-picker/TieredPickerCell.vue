@@ -31,6 +31,7 @@ const { getImageClass, getImageAlt } = useCellVariants({
       :class="getImageClass(variant)"
       :src="icon[variant]"
       :alt="getImageAlt(variant)"
+      loading="lazy"
       draggable="false"
     >
   </span>

@@ -7,7 +7,7 @@ import type { Locator, Page } from '@playwright/test';
  * @param panel build panel.
  */
 export const exportCode = async (page: Page, panel: Locator) => {
-  await panel.getByRole('button', { name: 'Export build' }).click();
+  await panel.getByRole('button', { name: 'Share build' }).click();
 
   const code = await page.getByRole('dialog').getByRole('textbox', { name: 'Code' }).inputValue();
 

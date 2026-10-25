@@ -49,6 +49,7 @@ defineSlots<{
   'tier'?: (props: TierSlotProps) => VNode[]
   'cell'?: (props: CellSlotProps) => VNode[]
   'item-name'?: (props: ItemNameSlotProps) => VNode[]
+  'footer'?: () => VNode[]
 }>();
 
 const {
@@ -181,6 +182,8 @@ const {
         </ul>
       </ScrollArea>
     </div>
+
+    <slot name="footer" />
   </section>
 </template>
 

@@ -14,9 +14,9 @@ import {
   NAVIGATION,
   OLD_LABEL,
   OUTDATED_BUILD,
-  OUTDATED_CHIP,
   OUTDATED_MARK,
   OUTDATED_NOTE,
+  OUTDATED_UPDATE_LABEL,
   PAGE_PATH,
   PANEL_NAME,
   RAPID_FIRE,
@@ -68,7 +68,7 @@ const updateDialog = (page: Page) => page.getByRole('dialog', { name: UPDATE_DIA
  *
  * @param panel build panel.
  */
-const openUpdate = (panel: Locator) => panel.getByRole('button', { name: UPDATE_LABEL, exact: true }).click();
+const openUpdate = (panel: Locator) => panel.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true }).click();
 
 /**
  * Opens the «Update build» dialog of the panel and confirms it.
@@ -91,7 +91,7 @@ test.describe('Outdated MEC build', () => {
   test('shows the count of its Outdated selections', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await expect(panel.getByText(OUTDATED_CHIP)).toBeVisible();
+    await expect(panel.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true })).toBeVisible();
   });
 
   test('shows the perk of the code in the cell of its variant marked OLD', async ({ page }) => {
@@ -144,7 +144,7 @@ test.describe('Update of an Outdated MEC build', () => {
 
     await updateDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
 
-    await expect(panel.getByText(OUTDATED_CHIP)).toBeVisible();
+    await expect(panel.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true })).toBeVisible();
   });
 
   for (const { rank, perk } of KEPT_PERKS) {
@@ -172,7 +172,7 @@ test.describe('Update of an Outdated MEC build', () => {
 
     const reopened = await openPanel(page);
 
-    await expect(reopened.getByText(OUTDATED_CHIP)).toHaveCount(0);
+    await expect(reopened.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true })).toHaveCount(0);
   });
 
   test('keeps a readonly build readonly', async ({ page }) => {

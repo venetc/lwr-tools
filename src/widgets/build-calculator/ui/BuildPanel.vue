@@ -1,15 +1,14 @@
 <script setup lang="ts" generic="Kind extends LoadoutUnitId, Group extends TieredPickerGroup<BuildTreeTier>">
-import { ClipboardPaste, RotateCcw, Share2, TriangleAlert } from '@lucide/vue';
+import { ClipboardPaste, RotateCcw, Share2, Trash2, TriangleAlert } from '@lucide/vue';
 import type { VNode } from 'vue';
 import { useCssModule } from 'vue';
 
 import type { LoadoutUnitId } from '@entities/loadout';
 import type { BuildDataByKind } from '@features/share-build';
 import { OutdatedSelectionsDialog, ShareCodeExport, ShareCodeImport, useOutdatedUpdate } from '@features/share-build';
-import { ActionBar } from '@shared/ui/action-bar';
-import { Button } from '@shared/ui/button';
+import { ActionBar, ActionBarButton, ActionBarHoldButton } from '@shared/ui/action-bar';
 import { EditableTitle } from '@shared/ui/editable-title';
-import { HoldButton } from '@shared/ui/hold-button';
+import { LockToggle } from '@shared/ui/lock-toggle';
 import type { TieredPickerGroup, TieredPickerItem } from '@shared/ui/tiered-picker';
 import { TieredPicker, TieredPickerCell } from '@shared/ui/tiered-picker';
 
@@ -81,16 +80,19 @@ defineSlots<{
 const {
   name,
   readonly,
-  isOutdated,
   isEditable,
   isTitleReadonly,
-  outdatedCountText,
+  hasEditActions,
+  isRemovable,
+  hasActions,
+  outdatedCount,
+  outdatedUpdateLabel,
   select,
   isTierHighlighted,
   isOutdatedCell,
   getCellClass,
   getCellIconClass,
-} = useBuildPanel(() => props.build, useCssModule(), {
+} = useBuildPanel(() => props.build, () => props.removable, useCssModule(), {
   onRename: value => emit('rename', value),
   onLock: isReadonly => emit('lock', isReadonly),
   onSelect: (groupId, tierIndex, itemId) => emit('select', groupId, tierIndex, itemId),
@@ -125,53 +127,71 @@ const {
           <slot name="badge" />
         </template>
       </EditableTitle>
-      <div v-if="isOutdated" :class="$style.outdated">
-        <span :class="$style.outdatedChip">
-          <TriangleAlert :class="$style.outdatedChipIcon" aria-hidden="true" />
-          {{ outdatedCountText }}
-        </span>
-        <Button variant="primary" @click="openUpdate">
-          <span :class="$style.buttonContent">Update</span>
-        </Button>
-      </div>
-      <ActionBar
-        v-model:locked="readonly"
-        remove-label="Remove build"
-        lock-label="Lock build"
-        :removable="props.removable"
-        :lockable="isEditable"
-        @remove="emit('remove')"
+
+      <LockToggle
+        v-if="isEditable"
+        v-model="readonly"
+        label="Lock build"
+      />
+
+      <button
+        v-else
+        :class="$style.update"
+        type="button"
+        :title="outdatedUpdateLabel"
+        @click="openUpdate"
       >
-        <template v-if="isEditable" #editable="{ actionClass, holdActionClass }">
-          <ShareCodeImport :kind="props.kind" @import="emit('replace', $event)">
-            <template #trigger>
-              <button :class="actionClass" type="button">
-                <ClipboardPaste :class="$style.actionIcon" aria-hidden="true" />
-                <span :class="$style.visuallyHidden">Import build</span>
-              </button>
-            </template>
-          </ShareCodeImport>
+        <TriangleAlert :class="$style.actionIcon" aria-hidden="true" />
+        <span :class="$style.updateCount" aria-hidden="true">{{ outdatedCount }}</span>
+        <span :class="$style.visuallyHidden">{{ outdatedUpdateLabel }}</span>
+      </button>
+    </template>
 
-          <HoldButton
-            :class="holdActionClass"
-            title="Hold to reset"
-            @hold="emit('reset')"
-          >
-            <RotateCcw :class="$style.actionIcon" aria-hidden="true" />
-            <span :class="$style.visuallyHidden">Reset build</span>
-          </HoldButton>
-        </template>
+    <template v-if="hasActions" #footer>
+      <ActionBar>
+        <ShareCodeImport
+          v-if="hasEditActions"
+          :kind="props.kind"
+          @import="emit('replace', $event)"
+        >
+          <template #trigger>
+            <ActionBarButton label="Import" aria-label="Import build">
+              <ClipboardPaste :class="$style.actionIcon" aria-hidden="true" />
+            </ActionBarButton>
+          </template>
+        </ShareCodeImport>
 
-        <template v-if="isEditable" #default="{ actionClass }">
-          <ShareCodeExport :kind="props.kind" :build="props.build">
-            <template #trigger>
-              <button :class="actionClass" type="button">
-                <Share2 :class="$style.actionIcon" aria-hidden="true" />
-                <span :class="$style.visuallyHidden">Export build</span>
-              </button>
-            </template>
-          </ShareCodeExport>
-        </template>
+        <ShareCodeExport
+          v-if="isEditable"
+          :kind="props.kind"
+          :build="props.build"
+        >
+          <template #trigger>
+            <ActionBarButton label="Share" aria-label="Share build">
+              <Share2 :class="$style.actionIcon" aria-hidden="true" />
+            </ActionBarButton>
+          </template>
+        </ShareCodeExport>
+
+        <ActionBarHoldButton
+          v-if="hasEditActions"
+          label="Reset"
+          aria-label="Reset build"
+          title="Hold to reset"
+          @hold="emit('reset')"
+        >
+          <RotateCcw :class="$style.actionIcon" aria-hidden="true" />
+        </ActionBarHoldButton>
+
+        <ActionBarHoldButton
+          v-if="isRemovable"
+          label="Remove"
+          aria-label="Remove build"
+          title="Hold to remove"
+          @hold="emit('remove')"
+        >
+          <Trash2 :class="$style.actionIcon" aria-hidden="true" />
+        </ActionBarHoldButton>
       </ActionBar>
     </template>
 

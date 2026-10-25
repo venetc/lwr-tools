@@ -6,6 +6,7 @@ import {
   COUNTERCHARGE,
   EXTRA_BUILD_COUNT,
   GENE_MODS_TAB,
+  IMPORT_LABEL,
   IRON_SKIN,
   LOCK_LABEL,
   MAGNUM,
@@ -18,6 +19,7 @@ import {
   REMOVE_LABEL,
   RENAME_LABEL,
   RESET_LABEL,
+  SHARE_LABEL,
 } from './build-management.mock';
 
 /**
@@ -197,5 +199,21 @@ test.describe('Locked build', () => {
     await lockBuild(panel);
 
     await expect(panel.getByRole('button', { name: RESET_LABEL })).toHaveCount(0);
+  });
+
+  test('cannot be replaced by an import', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await lockBuild(panel);
+
+    await expect(panel.getByRole('button', { name: IMPORT_LABEL })).toHaveCount(0);
+  });
+
+  test('can still be shared', async ({ page }) => {
+    const panel = await openPanel(page);
+
+    await lockBuild(panel);
+
+    await expect(panel.getByRole('button', { name: SHARE_LABEL })).toBeVisible();
   });
 });

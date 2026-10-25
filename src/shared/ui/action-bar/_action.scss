@@ -1,0 +1,39 @@
+@use 'styles/colors';
+@use 'styles/typography';
+@use 'styles/media';
+
+$icon-box-size: 26px;
+$label-block-size: 16px;
+
+// The button is only as tall as the icon box, so a hold ring circles the icon; the label hangs below it and stays a
+// part of the button for the tap.
+@mixin base {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  block-size: $icon-box-size;
+  margin-block-end: $label-block-size;
+  padding: 0;
+  background: none;
+  color: colors.$text-tertiary;
+  cursor: pointer;
+}
+
+@mixin hover {
+  @include media.with-hover {
+    &:hover {
+      color: colors.$text-primary;
+    }
+  }
+}
+
+@mixin label {
+  @include typography.caps-4;
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline: 0;
+  padding-block-start: 1px;
+  text-align: center;
+  white-space: nowrap;
+}

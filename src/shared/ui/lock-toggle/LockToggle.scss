@@ -1,0 +1,49 @@
+@use 'styles/colors';
+@use 'styles/media';
+
+.lock {
+  flex: none;
+  display: grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+
+  &[data-state='off'] {
+    color: colors.$text-tertiary;
+
+    @include media.with-hover {
+      &:not(:hover) {
+        opacity: 0.35;
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    @include media.with-touch {
+      opacity: 0.35;
+    }
+  }
+
+  &[data-state='on'] {
+    color: colors.$text-secondary;
+  }
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

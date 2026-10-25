@@ -34,7 +34,7 @@ export const RENAME_LABEL = 'Rename build';
 
 export const EXPORTED_NAME = 'Exported sniper';
 
-export const EXPORT_LABEL = 'Export build';
+export const EXPORT_LABEL = 'Share build';
 
 export const REPLACE_LABEL = 'Import build';
 

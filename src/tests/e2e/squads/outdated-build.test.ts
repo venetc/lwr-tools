@@ -27,10 +27,10 @@ import {
   LONE_WOLF_STEP,
   MEC_STORAGE_PREFIX,
   OUTDATED_CAPTION,
-  OUTDATED_CHIP,
   OUTDATED_JAEGER_BUILD,
   OUTDATED_SHIV_BUILD,
   OUTDATED_SNIPER_BUILD,
+  OUTDATED_UPDATE_LABEL,
   SEEDED_SQUAD_KEY,
   SERAPH_ARMOR_CODE,
   SERAPH_REPLACED,
@@ -215,13 +215,13 @@ test.describe('Build dialog of an Outdated build', () => {
 
     const dialog = await openBuildDialog(page, unitCards(page, SNIPER), SNIPER);
 
-    await expect(dialog.getByText(OUTDATED_CHIP)).toBeVisible();
+    await expect(dialog.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true })).toBeVisible();
   });
 
   test('checks the Unit once closed after the update', async ({ page }) => {
     await openSeededSquad(page, [SERAPH_SNIPER]);
     const dialog = await openBuildDialog(page, unitCards(page, SNIPER), SNIPER);
-    await dialog.getByRole('button', { name: UPDATE_LABEL, exact: true }).click();
+    await dialog.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true }).click();
     await confirmUpdate(page);
 
     await page.keyboard.press('Escape');
@@ -232,7 +232,7 @@ test.describe('Build dialog of an Outdated build', () => {
   test('tells what the check after the update took off', async ({ page }) => {
     await openSeededSquad(page, [SERAPH_SNIPER]);
     const dialog = await openBuildDialog(page, unitCards(page, SNIPER), SNIPER);
-    await dialog.getByRole('button', { name: UPDATE_LABEL, exact: true }).click();
+    await dialog.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true }).click();
     await confirmUpdate(page);
 
     await page.keyboard.press('Escape');
@@ -243,7 +243,7 @@ test.describe('Build dialog of an Outdated build', () => {
   test('brings back the caption of the Unit after the update', async ({ page }) => {
     await openSeededSquad(page, [SERAPH_SNIPER]);
     const dialog = await openBuildDialog(page, unitCards(page, SNIPER), SNIPER);
-    await dialog.getByRole('button', { name: UPDATE_LABEL, exact: true }).click();
+    await dialog.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true }).click();
     await confirmUpdate(page);
 
     await page.keyboard.press('Escape');
@@ -254,7 +254,7 @@ test.describe('Build dialog of an Outdated build', () => {
   test('clears the outdated step of the mini-tree after the update', async ({ page }) => {
     await openSeededSquad(page, [SERAPH_SNIPER]);
     const dialog = await openBuildDialog(page, unitCards(page, SNIPER), SNIPER);
-    await dialog.getByRole('button', { name: UPDATE_LABEL, exact: true }).click();
+    await dialog.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true }).click();
     await confirmUpdate(page);
 
     await page.keyboard.press('Escape');
@@ -267,7 +267,7 @@ test.describe('Outdated build updated in the Build calculator', () => {
   test('gets its Unit checked once the Squad opens', async ({ page }) => {
     await openSeededSquad(page, [SERAPH_SNIPER]);
     const panel = await openBuildPanel(page, BIOSOLDIER_PATH, SNIPER);
-    await panel.getByRole('button', { name: UPDATE_LABEL, exact: true }).click();
+    await panel.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true }).click();
     await confirmUpdate(page);
 
     await openSquads(page);

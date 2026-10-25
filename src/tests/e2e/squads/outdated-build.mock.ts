@@ -82,7 +82,7 @@ export const BIOSOLDIER_BUILDS = 'Biosoldier builds';
 
 export const UPDATE_HINT = 'Update the build first';
 
-export const OUTDATED_CHIP = '4 outdated selections';
+export const OUTDATED_UPDATE_LABEL = '4 outdated selections. Update build';
 
 export const UPDATE_LABEL = 'Update';
 

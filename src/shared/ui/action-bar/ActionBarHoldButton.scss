@@ -1,0 +1,18 @@
+@use 'styles/colors';
+@use './action';
+
+.action {
+  @include action.base;
+
+  &[data-state='idle'] {
+    @include action.hover;
+  }
+
+  &[data-state='holding'] {
+    color: colors.$danger;
+  }
+}
+
+.label {
+  @include action.label;
+}

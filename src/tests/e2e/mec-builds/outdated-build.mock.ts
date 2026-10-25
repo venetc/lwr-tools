@@ -20,7 +20,7 @@ export const NAVIGATION = 'Builds';
 
 export const OUTDATED_MARK = 'Outdated build';
 
-export const OUTDATED_CHIP = '1 outdated selection';
+export const OUTDATED_UPDATE_LABEL = '1 outdated selection. Update build';
 
 export const UPDATE_LABEL = 'Update';
 
@@ -52,7 +52,7 @@ export const KEPT_PERKS = [
 
 export const OUTDATED_NOTE = 'Outdated selection: in this mod version Lance Corporal has Rapid Fire here.';
 
-export const EXPORT_LABEL = 'Export build';
+export const EXPORT_LABEL = 'Share build';
 
 export const LOCK_LABEL = 'Lock build';
 

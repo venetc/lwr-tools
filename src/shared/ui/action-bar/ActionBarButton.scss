@@ -1,0 +1,10 @@
+@use './action';
+
+.action {
+  @include action.base;
+  @include action.hover;
+}
+
+.label {
+  @include action.label;
+}

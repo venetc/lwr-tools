@@ -15,35 +15,32 @@
   white-space: nowrap;
 }
 
-.outdated {
+.update {
+  position: relative;
   flex: none;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-}
-
-.outdatedChip {
-  @include typography.caps-4;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 6px;
-  border: 1px solid colors.$danger-muted;
-  border-radius: 2px;
+  display: grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  padding: 0;
+  background: none;
   color: colors.$danger;
+  cursor: pointer;
 }
 
-.outdatedChipIcon {
-  flex: none;
-  width: 14px;
-  height: 14px;
-}
-
-.buttonContent {
-  display: block;
-  padding: 3px 12px;
+.updateCount {
+  @include typography.caps-4;
+  position: absolute;
+  inset-block-start: 1px;
+  inset-inline-end: 0;
+  display: grid;
+  place-items: center;
+  min-inline-size: 14px;
+  block-size: 14px;
+  padding: 0 3px;
+  border-radius: 7px;
+  background: colors.$danger;
+  color: colors.$text-primary;
 }
 
 .cell {

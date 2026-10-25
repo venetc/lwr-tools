@@ -15,6 +15,10 @@ export const REMOVE_HOLD_TIME = 700;
 
 export const RESET_LABEL = 'Reset build';
 
+export const IMPORT_LABEL = 'Import build';
+
+export const SHARE_LABEL = 'Share build';
+
 export const NAVIGATION = 'Builds';
 
 export const GENE_MODS_TAB = /^Gene mods, /;

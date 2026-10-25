@@ -22,7 +22,7 @@ export const NAVIGATION = 'Builds';
 
 export const OUTDATED_MARK = 'Outdated build';
 
-export const OUTDATED_CHIP = '4 outdated selections';
+export const OUTDATED_UPDATE_LABEL = '4 outdated selections. Update build';
 
 export const UPDATE_LABEL = 'Update';
 
@@ -67,7 +67,7 @@ export const PSI_MASTERY = 'Psi Mastery';
 
 export const RENAME_LABEL = 'Rename build';
 
-export const EXPORT_LABEL = 'Export build';
+export const EXPORT_LABEL = 'Share build';
 
 export const LOCK_LABEL = 'Lock build';
 

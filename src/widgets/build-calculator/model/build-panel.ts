@@ -21,16 +21,21 @@ export interface BuildPanelRequests {
 }
 
 /**
- * Build panel: name and lock as writable values that show the build and turn edits into requests, item selection,
- * the tiers open for selection and the look of an Outdated build: frozen editing, the count of its Outdated selections
- * and its outdated cells.
+ * Build panel: name and lock as writable values that show the build and turn edits into requests, the actions on offer,
+ * item selection, the tiers open for selection and the look of an Outdated build: frozen editing, the count of its
+ * Outdated selections and its outdated cells.
+ *
+ * @description Locking hides the editing actions and removal. An Outdated build offers only the update and, unless
+ * locked, removal.
  *
  * @param build build of the panel.
+ * @param removable whether the panel offers removal of the build.
  * @param style CSS module of the panel.
  * @param requests requests to the panel owner.
  */
 export const useBuildPanel = (
   build: MaybeRefOrGetter<Readonly<SavedBuild<LoadoutUnitId>>>,
+  removable: MaybeRefOrGetter<boolean>,
   style: Record<string, string>,
   requests: BuildPanelRequests,
 ) => {
@@ -52,7 +57,15 @@ export const useBuildPanel = (
 
   const isTitleReadonly = computed(() => readonly.value || isOutdated.value);
 
+  const hasEditActions = computed(() => isEditable.value && !readonly.value);
+
+  const isRemovable = computed(() => toValue(removable) && !readonly.value);
+
+  const hasActions = computed(() => isEditable.value || isRemovable.value);
+
   const outdatedCountText = computed(() => `${outdatedCount.value} ${outdatedCount.value === 1 ? OUTDATED_SELECTION_WORDS.one : OUTDATED_SELECTION_WORDS.many}`);
+
+  const outdatedUpdateLabel = computed(() => `${outdatedCountText.value}. Update build`);
 
   /**
    * Checks whether the tier is open for selection.
@@ -88,10 +101,13 @@ export const useBuildPanel = (
   return {
     name,
     readonly,
-    isOutdated,
     isEditable,
     isTitleReadonly,
-    outdatedCountText,
+    hasEditActions,
+    isRemovable,
+    hasActions,
+    outdatedCount,
+    outdatedUpdateLabel,
     select: requests.onSelect,
     isTierHighlighted,
     isOutdatedCell,

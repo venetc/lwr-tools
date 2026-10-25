@@ -16,8 +16,8 @@ import {
   NAVIGATION,
   OLD_LABEL,
   OUTDATED_BUILD,
-  OUTDATED_CHIP,
   OUTDATED_MARK,
+  OUTDATED_UPDATE_LABEL,
   PAGE_PATH,
   PANEL_NAME,
   PLATFORM_STABILITY,
@@ -71,7 +71,7 @@ const updateDialog = (page: Page) => page.getByRole('dialog', { name: UPDATE_DIA
  *
  * @param panel build panel.
  */
-const openUpdate = (panel: Locator) => panel.getByRole('button', { name: UPDATE_LABEL, exact: true }).click();
+const openUpdate = (panel: Locator) => panel.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true }).click();
 
 /**
  * Opens the «Update build» dialog of the panel and confirms it.
@@ -94,7 +94,7 @@ test.describe('Outdated SHIV build', () => {
   test('shows the count of its Outdated selections', async ({ page }) => {
     const panel = await openSeededPanel(page, OUTDATED_BUILD);
 
-    await expect(panel.getByText(OUTDATED_CHIP)).toBeVisible();
+    await expect(panel.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true })).toBeVisible();
   });
 
   test('marks the first perk of the collision OLD', async ({ page }) => {
@@ -203,7 +203,7 @@ test.describe('Update of an Outdated SHIV build', () => {
 
     await updateDialog(page).getByRole('button', { name: CANCEL_LABEL, exact: true }).click();
 
-    await expect(panel.getByText(OUTDATED_CHIP)).toBeVisible();
+    await expect(panel.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true })).toBeVisible();
   });
 
   test('clears the perks of the collision on Update', async ({ page }) => {
@@ -239,7 +239,7 @@ test.describe('Update of an Outdated SHIV build', () => {
 
     const reopened = await openPanel(page);
 
-    await expect(reopened.getByText(OUTDATED_CHIP)).toHaveCount(0);
+    await expect(reopened.getByRole('button', { name: OUTDATED_UPDATE_LABEL, exact: true })).toHaveCount(0);
   });
 
   test('keeps a readonly build readonly', async ({ page }) => {

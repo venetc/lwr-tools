@@ -20,7 +20,7 @@ export const NAVIGATION = 'Builds';
 
 export const OUTDATED_MARK = 'Outdated build';
 
-export const OUTDATED_CHIP = '2 outdated selections';
+export const OUTDATED_UPDATE_LABEL = '2 outdated selections. Update build';
 
 export const UPDATE_LABEL = 'Update';
 
@@ -55,7 +55,7 @@ export const COLLISION_NOTE = 'Outdated selection: in this mod version Lock N\' 
 
 export const REMOVED_NOTE = 'removed from the SHIV tree';
 
-export const EXPORT_LABEL = 'Export build';
+export const EXPORT_LABEL = 'Share build';
 
 export const LOCK_LABEL = 'Lock build';
 

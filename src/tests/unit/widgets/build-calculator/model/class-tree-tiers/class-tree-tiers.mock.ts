@@ -1,5 +1,12 @@
 import type { classTree, ClassTreeRank, SoldierClass, TreeAbility } from '@entities/soldier';
+import type { AbilityIconPlaceholder } from '@entities/soldier/model/abilities';
 import type { ClassTreeBuild } from '@widgets/build-calculator/model/class-tree-tiers';
+
+const PLACEHOLDER: AbilityIconPlaceholder = {
+  selected: { backdrop: '#000000', glyph: '#ffffff' },
+  available: { backdrop: '#000000', glyph: '#888888' },
+  disabled: { backdrop: '#222222', glyph: '#444444' },
+};
 
 /**
  * Tree ability with placeholder texts and icons.
@@ -11,7 +18,7 @@ const treeAbilityMock = (id: string, grants: TreeAbility[] = []): TreeAbility =>
   id,
   name: id,
   description: `${id} description`,
-  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png`, placeholder: PLACEHOLDER },
   grants,
 });
 

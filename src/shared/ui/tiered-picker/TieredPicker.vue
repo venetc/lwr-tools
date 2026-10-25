@@ -1,6 +1,7 @@
 <script setup lang="ts" generic="Group extends TieredPickerGroup">
 import type { VNode } from 'vue';
 
+import { LoadingImage } from '@shared/ui/loading-image';
 import { ScrollArea } from '@shared/ui/scroll-area';
 import { Tabs } from '@shared/ui/tabs';
 
@@ -168,11 +169,12 @@ const {
             :class="$style.relatedItem"
           >
             <span :class="$style.relatedTitle">
-              <img
+              <LoadingImage
                 :class="$style.relatedIcon"
                 :src="relatedItem.icon.selected"
+                :placeholder="relatedItem.icon.placeholder.selected"
                 alt=""
-              >
+              />
               <span :class="$style.relatedName">{{ relatedItem.name }}</span>
             </span>
             <p :class="$style.relatedText">

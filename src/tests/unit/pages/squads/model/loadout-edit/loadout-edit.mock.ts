@@ -1,5 +1,7 @@
 import type { Armor, Equipment, Loadout, LoadoutCatalogItem, LoadoutFit, LoadoutItemId, LoadoutWearer, UtilitySlotSources, Weapon } from '@entities/loadout';
 
+const ICON_PLACEHOLDER = { backdrop: 'transparent', glyph: '#ffffff' };
+
 /**
  * Biosoldier armor with zero stats besides the given fields.
  *
@@ -24,6 +26,7 @@ const armorMock = (armor: Pick<Armor, 'id' | 'name'> & Partial<Armor>): Armor =>
   requires: null,
   info: '',
   icon: '',
+  iconPlaceholder: ICON_PLACEHOLDER,
   grants: [],
   ...armor,
 });
@@ -55,6 +58,7 @@ const weaponMock = (weapon: Pick<Weapon, 'id' | 'name' | 'type' | 'slot'> & Part
   vsMechanical: null,
   info: '',
   icon: '',
+  iconPlaceholder: ICON_PLACEHOLDER,
   grants: [],
   ...weapon,
 });
@@ -78,6 +82,7 @@ const equipmentMock = (equipment: Pick<Equipment, 'id' | 'name'> & Partial<Equip
   stats: [],
   info: null,
   icon: '',
+  iconPlaceholder: ICON_PLACEHOLDER,
   grants: [],
   ...equipment,
 });

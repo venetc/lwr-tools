@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useCssModule } from 'vue';
 
+import { LoadingImage } from '@shared/ui/loading-image';
+
 import { ICON_VARIANTS } from './config/constants';
 import { useCellVariants } from './model/cell-variants';
 import type { TieredPickerAppearance, TieredPickerIcon } from './model/tiered-picker';
@@ -25,15 +27,16 @@ const { getImageClass, getImageAlt } = useCellVariants({
 
 <template>
   <span :class="$style.cell">
-    <img
+    <LoadingImage
       v-for="variant in ICON_VARIANTS"
       :key="variant"
       :class="getImageClass(variant)"
       :src="icon[variant]"
+      :placeholder="icon.placeholder[variant]"
       :alt="getImageAlt(variant)"
       loading="lazy"
       draggable="false"
-    >
+    />
   </span>
 </template>
 

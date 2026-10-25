@@ -4,6 +4,28 @@ import type abilitiesJson from '../config/data/abilities.json';
 
 export type AbilityId = keyof typeof abilitiesJson;
 
+/**
+ * Colours of an icon variant, shown as a placeholder while the image loads.
+ */
+export interface AbilityIconColors {
+  /** Background of the icon. */
+  backdrop: string
+  /** Main colour of the icon glyph. */
+  glyph: string
+}
+
+/**
+ * Placeholder colours of the icon variants; shared by every icon of one tint.
+ */
+export interface AbilityIconPlaceholder {
+  /** Colours of the selected icon. */
+  selected: AbilityIconColors
+  /** Colours of the available icon. */
+  available: AbilityIconColors
+  /** Colours of the disabled icon. */
+  disabled: AbilityIconColors
+}
+
 export interface AbilityIcon {
   /** Icon of a selected ability. */
   selected: string
@@ -11,6 +33,8 @@ export interface AbilityIcon {
   available: string
   /** Icon of an ability that is locked, not selected or blocked. */
   disabled: string
+  /** Colours of each variant for the placeholder shown until the image loads. */
+  placeholder: AbilityIconPlaceholder
 }
 
 /**

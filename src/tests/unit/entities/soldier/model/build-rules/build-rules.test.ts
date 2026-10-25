@@ -26,7 +26,7 @@ vi.mock('@entities/soldier/config/constants/officer-rank-content', async () => (
   OFFICER_RANK_CONTENT: (await import('./build-rules.mock')).OFFICER_RANK_CONTENT_MOCK,
 }));
 
-vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {} }));
+vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {}, OFFICER_RANK_MEDAL_PLACEHOLDER: {} }));
 
 vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 

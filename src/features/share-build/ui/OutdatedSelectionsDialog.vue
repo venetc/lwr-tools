@@ -3,6 +3,7 @@ import { ArrowRight } from '@lucide/vue';
 
 import { Button } from '@shared/ui/button';
 import { Dialog, DialogClose } from '@shared/ui/dialog';
+import { LoadingImage } from '@shared/ui/loading-image';
 
 import type { OutdatedSelectionGroup } from '../model/outdated-selection-cards';
 import type { OutdatedSelectionsDialogMode } from '../model/outdated-selections-dialog';
@@ -59,12 +60,13 @@ const { text } = useOutdatedSelectionsDialog(() => props.mode);
                 :class="$style.stepIcon"
                 aria-hidden="true"
               />
-              <img
+              <LoadingImage
                 v-else-if="card.stepImage"
                 :class="$style.stepIcon"
-                :src="card.stepImage"
+                :src="card.stepImage.src"
+                :placeholder="card.stepImage.placeholder"
                 alt=""
-              >
+              />
               <span :class="$style.stepText">
                 <span :class="$style.section">{{ card.section }}</span>
                 <span v-if="card.stepName">{{ card.stepName }}</span>
@@ -77,11 +79,12 @@ const { text } = useOutdatedSelectionsDialog(() => props.mode);
                 :key="ability.id"
                 :class="$style.figure"
               >
-                <img
+                <LoadingImage
                   :class="$style.icon"
                   :src="ability.icon"
+                  :placeholder="ability.iconPlaceholder"
                   alt=""
-                >
+                />
                 <figcaption :class="$style.caption">
                   {{ ability.name }}
                 </figcaption>
@@ -90,11 +93,12 @@ const { text } = useOutdatedSelectionsDialog(() => props.mode);
               <ArrowRight :class="$style.arrow" aria-hidden="true" />
 
               <figure v-if="card.current" :class="$style.figure">
-                <img
+                <LoadingImage
                   :class="$style.icon"
                   :src="card.current.icon"
+                  :placeholder="card.current.iconPlaceholder"
                   alt=""
-                >
+                />
                 <figcaption :class="$style.caption">
                   {{ card.current.name }}
                 </figcaption>

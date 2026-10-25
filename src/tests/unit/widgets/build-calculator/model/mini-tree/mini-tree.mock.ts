@@ -1,13 +1,19 @@
-import type { TieredPickerItem, TieredPickerTierState } from '@shared/ui/tiered-picker/model/tiered-picker';
+import type { TieredPickerIcon, TieredPickerItem, TieredPickerTierState } from '@shared/ui/tiered-picker/model/tiered-picker';
 import type { BiosoldierBuild } from '@widgets/build-calculator/model/biosoldier-builds';
 import type { MiniTreeRow } from '@widgets/build-calculator/model/mini-tree';
 import type { BuildTreeTier } from '@widgets/build-calculator/model/saved-tree';
+
+const PLACEHOLDER: TieredPickerIcon['placeholder'] = {
+  selected: { backdrop: '#000000', glyph: '#ffffff' },
+  available: { backdrop: '#000000', glyph: '#888888' },
+  disabled: { backdrop: '#222222', glyph: '#444444' },
+};
 
 export const LEFT_ITEM: TieredPickerItem = {
   id: 'left',
   name: 'Left',
   description: 'Left choice.',
-  icon: { selected: 'left-selected.png', available: 'left-available.png', disabled: 'left-disabled.png' },
+  icon: { selected: 'left-selected.png', available: 'left-available.png', disabled: 'left-disabled.png', placeholder: PLACEHOLDER },
   related: [],
 };
 
@@ -15,7 +21,7 @@ export const RIGHT_ITEM: TieredPickerItem = {
   id: 'right',
   name: 'Right',
   description: 'Right choice.',
-  icon: { selected: 'right-selected.png', available: 'right-available.png', disabled: 'right-disabled.png' },
+  icon: { selected: 'right-selected.png', available: 'right-available.png', disabled: 'right-disabled.png', placeholder: PLACEHOLDER },
   related: [],
 };
 

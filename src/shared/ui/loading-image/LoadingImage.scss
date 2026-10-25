@@ -1,0 +1,5 @@
+// Placeholder: the image background with a soft glow of its main colour.
+.loading {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--placeholder-glyph) 35%, transparent), transparent)
+    var(--placeholder-backdrop);
+}

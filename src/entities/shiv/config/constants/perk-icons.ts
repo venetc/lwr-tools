@@ -1,6 +1,6 @@
 import type { DeepReadonly } from '@shared/lib/object';
 
-import type { ShivPerkIcon, ShivPerkId } from '../../model/perks';
+import type { ShivPerkIcon, ShivPerkIconPlaceholder, ShivPerkId } from '../../model/perks';
 import assaultBringthemonOriginalIcon from '../icons/perks/assault_bringthemon/assault_bringthemon@4x.png';
 import assaultBringthemonAvailableIcon from '../icons/perks/assault_bringthemon/assault_bringthemon@4x_available.png';
 import assaultBringthemonDisabledIcon from '../icons/perks/assault_bringthemon/assault_bringthemon@4x_disabled.png';
@@ -47,21 +47,28 @@ import supportDeeppocketsOriginalIcon from '../icons/perks/support_deeppockets/s
 import supportDeeppocketsAvailableIcon from '../icons/perks/support_deeppockets/support_deeppockets@4x_available.png';
 import supportDeeppocketsDisabledIcon from '../icons/perks/support_deeppockets/support_deeppockets@4x_disabled.png';
 
-const assaultBringthemonIcon: ShivPerkIcon = { selected: assaultBringthemonOriginalIcon, available: assaultBringthemonAvailableIcon, disabled: assaultBringthemonDisabledIcon };
-const assaultClosecombatIcon: ShivPerkIcon = { selected: assaultClosecombatOriginalIcon, available: assaultClosecombatAvailableIcon, disabled: assaultClosecombatDisabledIcon };
-const assaultResillienceIcon: ShivPerkIcon = { selected: assaultResillienceOriginalIcon, available: assaultResillienceAvailableIcon, disabled: assaultResillienceDisabledIcon };
-const defendersMedal2Eu2012Icon: ShivPerkIcon = { selected: defendersMedal2Eu2012OriginalIcon, available: defendersMedal2Eu2012AvailableIcon, disabled: defendersMedal2Eu2012DisabledIcon };
-const heavyBulletswarmIcon: ShivPerkIcon = { selected: heavyBulletswarmOriginalIcon, available: heavyBulletswarmAvailableIcon, disabled: heavyBulletswarmDisabledIcon };
-const heavyHoloIcon: ShivPerkIcon = { selected: heavyHoloOriginalIcon, available: heavyHoloAvailableIcon, disabled: heavyHoloDisabledIcon };
-const heavyShredderIcon: ShivPerkIcon = { selected: heavyShredderOriginalIcon, available: heavyShredderAvailableIcon, disabled: heavyShredderDisabledIcon };
-const lwrCriticalSystemTargetingIcon: ShivPerkIcon = { selected: lwrCriticalSystemTargetingOriginalIcon, available: lwrCriticalSystemTargetingAvailableIcon, disabled: lwrCriticalSystemTargetingDisabledIcon };
-const mecAbsortionFieldsIcon: ShivPerkIcon = { selected: mecAbsortionFieldsOriginalIcon, available: mecAbsortionFieldsAvailableIcon, disabled: mecAbsortionFieldsDisabledIcon };
-const mecDamageControlIcon: ShivPerkIcon = { selected: mecDamageControlOriginalIcon, available: mecDamageControlAvailableIcon, disabled: mecDamageControlDisabledIcon };
-const mecPlatformStabilityIcon: ShivPerkIcon = { selected: mecPlatformStabilityOriginalIcon, available: mecPlatformStabilityAvailableIcon, disabled: mecPlatformStabilityDisabledIcon };
-const mecReactiveTargetingSensorsIcon: ShivPerkIcon = { selected: mecReactiveTargetingSensorsOriginalIcon, available: mecReactiveTargetingSensorsAvailableIcon, disabled: mecReactiveTargetingSensorsDisabledIcon };
-const mecRepairServosIcon: ShivPerkIcon = { selected: mecRepairServosOriginalIcon, available: mecRepairServosAvailableIcon, disabled: mecRepairServosDisabledIcon };
-const mecVitalPointTargetingIcon: ShivPerkIcon = { selected: mecVitalPointTargetingOriginalIcon, available: mecVitalPointTargetingAvailableIcon, disabled: mecVitalPointTargetingDisabledIcon };
-const supportDeeppocketsIcon: ShivPerkIcon = { selected: supportDeeppocketsOriginalIcon, available: supportDeeppocketsAvailableIcon, disabled: supportDeeppocketsDisabledIcon };
+/** Placeholder colours of a SHIV perk icon: cyan original, dim green tile when available, green glyph when disabled. */
+const PERK_ICON_PLACEHOLDER: DeepReadonly<ShivPerkIconPlaceholder> = {
+  selected: { backdrop: '#000000', glyph: '#6be7ef' },
+  available: { backdrop: '#1f3221', glyph: '#346533' },
+  disabled: { backdrop: '#000000', glyph: '#5bc252' },
+};
+
+const assaultBringthemonIcon: ShivPerkIcon = { selected: assaultBringthemonOriginalIcon, available: assaultBringthemonAvailableIcon, disabled: assaultBringthemonDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const assaultClosecombatIcon: ShivPerkIcon = { selected: assaultClosecombatOriginalIcon, available: assaultClosecombatAvailableIcon, disabled: assaultClosecombatDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const assaultResillienceIcon: ShivPerkIcon = { selected: assaultResillienceOriginalIcon, available: assaultResillienceAvailableIcon, disabled: assaultResillienceDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const defendersMedal2Eu2012Icon: ShivPerkIcon = { selected: defendersMedal2Eu2012OriginalIcon, available: defendersMedal2Eu2012AvailableIcon, disabled: defendersMedal2Eu2012DisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const heavyBulletswarmIcon: ShivPerkIcon = { selected: heavyBulletswarmOriginalIcon, available: heavyBulletswarmAvailableIcon, disabled: heavyBulletswarmDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const heavyHoloIcon: ShivPerkIcon = { selected: heavyHoloOriginalIcon, available: heavyHoloAvailableIcon, disabled: heavyHoloDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const heavyShredderIcon: ShivPerkIcon = { selected: heavyShredderOriginalIcon, available: heavyShredderAvailableIcon, disabled: heavyShredderDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const lwrCriticalSystemTargetingIcon: ShivPerkIcon = { selected: lwrCriticalSystemTargetingOriginalIcon, available: lwrCriticalSystemTargetingAvailableIcon, disabled: lwrCriticalSystemTargetingDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const mecAbsortionFieldsIcon: ShivPerkIcon = { selected: mecAbsortionFieldsOriginalIcon, available: mecAbsortionFieldsAvailableIcon, disabled: mecAbsortionFieldsDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const mecDamageControlIcon: ShivPerkIcon = { selected: mecDamageControlOriginalIcon, available: mecDamageControlAvailableIcon, disabled: mecDamageControlDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const mecPlatformStabilityIcon: ShivPerkIcon = { selected: mecPlatformStabilityOriginalIcon, available: mecPlatformStabilityAvailableIcon, disabled: mecPlatformStabilityDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const mecReactiveTargetingSensorsIcon: ShivPerkIcon = { selected: mecReactiveTargetingSensorsOriginalIcon, available: mecReactiveTargetingSensorsAvailableIcon, disabled: mecReactiveTargetingSensorsDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const mecRepairServosIcon: ShivPerkIcon = { selected: mecRepairServosOriginalIcon, available: mecRepairServosAvailableIcon, disabled: mecRepairServosDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const mecVitalPointTargetingIcon: ShivPerkIcon = { selected: mecVitalPointTargetingOriginalIcon, available: mecVitalPointTargetingAvailableIcon, disabled: mecVitalPointTargetingDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
+const supportDeeppocketsIcon: ShivPerkIcon = { selected: supportDeeppocketsOriginalIcon, available: supportDeeppocketsAvailableIcon, disabled: supportDeeppocketsDisabledIcon, placeholder: PERK_ICON_PLACEHOLDER };
 
 /** Icon variants by SHIV perk id: wiki icons upscaled and tinted green as on the game's SHIV screen. */
 export const SHIV_PERK_ICON: DeepReadonly<Record<ShivPerkId, ShivPerkIcon>> = {

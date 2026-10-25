@@ -2,7 +2,7 @@ import type { MaybeRefOrGetter } from 'vue';
 import { computed, toValue } from 'vue';
 
 import type { SvgIcon } from '@shared/ui/svg-icon';
-import type { TieredPickerGroup } from '@shared/ui/tiered-picker';
+import type { TieredPickerGroup, TieredPickerTierImage } from '@shared/ui/tiered-picker';
 
 import { BIOSOLDIER_BRANCH_TITLE } from '../config/constants';
 import type { BiosoldierBranch, BiosoldierBranchTiers, BiosoldierBuildTier } from './biosoldier-branches';
@@ -17,7 +17,7 @@ export interface BiosoldierTierLabel {
   /** Rank icon; null for other tiers. */
   icon: SvgIcon | null
   /** Officer rank medal; null for other tiers. */
-  image: string | null
+  image: TieredPickerTierImage | null
   /** Whether the medal is faded: the officer rank is locked. */
   faded: boolean
   /** Tier name. */
@@ -99,7 +99,9 @@ export const useBiosoldierBuildGroups = (build: MaybeRefOrGetter<Readonly<Biosol
  */
 export const tierLabel = (tier: BiosoldierBuildTier): BiosoldierTierLabel => {
   if ('officerRank' in tier) {
-    return { icon: null, image: tier.officerRank.medal, faded: tier.state === 'locked', name: tier.name };
+    const { medal, medalPlaceholder } = tier.officerRank;
+
+    return { icon: null, image: { src: medal, placeholder: medalPlaceholder }, faded: tier.state === 'locked', name: tier.name };
   }
 
   return { icon: 'rank' in tier ? tier.rank.icon : null, image: null, faded: false, name: tier.name };

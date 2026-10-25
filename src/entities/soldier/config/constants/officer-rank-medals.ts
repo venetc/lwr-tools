@@ -1,6 +1,6 @@
 import type { DeepReadonly } from '@shared/lib/object';
 
-import type { OfficerRankId } from '../../model/officer-ranks';
+import type { OfficerRankId, OfficerRankMedalPlaceholder } from '../../model/officer-ranks';
 import captainMedal from '../icons/officer-ranks/captain.png';
 import colonelMedal from '../icons/officer-ranks/colonel.png';
 import fieldCommanderMedal from '../icons/officer-ranks/field-commander.png';
@@ -15,3 +15,6 @@ export const OFFICER_RANK_MEDAL: DeepReadonly<Record<OfficerRankId, string>> = {
   'colonel': colonelMedal,
   'field-commander': fieldCommanderMedal,
 };
+
+/** Placeholder colours of a medal image: teal on a transparent background. */
+export const OFFICER_RANK_MEDAL_PLACEHOLDER: DeepReadonly<OfficerRankMedalPlaceholder> = { backdrop: 'transparent', glyph: '#5ba9a4' };

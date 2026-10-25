@@ -1,9 +1,11 @@
+import { ITEM_ICON_PLACEHOLDER } from '../config/constants/icon-placeholders';
 import { WEAPON_SLOTS, WEAPON_TIERS, WEAPON_TYPES } from '../config/constants/weapon-categories';
 import { WEAPON_CONTENT } from '../config/constants/weapon-content';
 import { WEAPON_ICON } from '../config/constants/weapon-icons';
 import type weaponsJson from '../config/data/weapons.json';
 import type { LoadoutAbility } from './loadout-abilities';
 import { isLoadoutAbilityId, loadoutAbilityById } from './loadout-abilities';
+import type { LoadoutIconPlaceholder } from './loadout-icons';
 import type { LoadoutUnitId } from './loadout-units';
 import { isLoadoutUnitId } from './loadout-units';
 
@@ -101,6 +103,8 @@ export interface Weapon extends Required<Omit<WeaponContent, 'unit' | 'tier' | '
   vsMechanical: WeaponMechanicalBonus | null
   /** Weapon image URL. */
   icon: string
+  /** Colours of the weapon image placeholder shown until the image loads. */
+  iconPlaceholder: LoadoutIconPlaceholder
   /** Non-perk abilities the weapon grants. */
   grants: LoadoutAbility[]
 }
@@ -160,6 +164,7 @@ export const weaponsFromEntry = (entry: [WeaponId, WeaponContent]): Weapon[] => 
     canCrit: content.canCrit ?? true,
     vsMechanical: content.vsMechanical ?? null,
     icon: WEAPON_ICON[id],
+    iconPlaceholder: ITEM_ICON_PLACEHOLDER,
     grants: (content.grants ?? []).filter(isLoadoutAbilityId).map(loadoutAbilityById),
   }];
 };

@@ -1,5 +1,6 @@
 import type { Loadout, LoadoutItemId, LoadoutSlot, LoadoutWearer, UtilitySlotKind } from '@entities/loadout';
 import { findLoadoutItem, loadoutSlots } from '@entities/loadout';
+import type { ImagePlaceholder } from '@shared/ui/loading-image';
 
 import {
   ARMOR_SLOT_CAPTION,
@@ -18,6 +19,8 @@ export interface LoadoutTileItem {
   name: string
   /** Item image URL. */
   icon: string
+  /** Placeholder colours shown until the image loads. */
+  iconPlaceholder: ImagePlaceholder
 }
 
 /**
@@ -50,7 +53,7 @@ const tileItem = (id: LoadoutItemId | null): LoadoutTileItem | null => {
 
   if (!found) return null;
 
-  return { name: found.item.name, icon: found.item.icon };
+  return { name: found.item.name, icon: found.item.icon, iconPlaceholder: found.item.iconPlaceholder };
 };
 
 /**

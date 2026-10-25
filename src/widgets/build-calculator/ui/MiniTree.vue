@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useCssModule } from 'vue';
 
+import { LoadingImage } from '@shared/ui/loading-image';
+
 import type { MiniTreeRow } from '../model/mini-tree';
 import { useMiniTreeViews } from '../model/mini-tree-views';
 
@@ -31,13 +33,14 @@ const rowViews = useMiniTreeViews(() => props.rows, useCssModule());
           :aria-label="stepView.step.label"
         >
           <span :class="stepView.cellClass" aria-hidden="true">
-            <img
+            <LoadingImage
               v-if="stepView.step.icon"
               :class="stepView.iconClass"
-              :src="stepView.step.icon"
+              :src="stepView.step.icon.src"
+              :placeholder="stepView.step.icon.placeholder"
               alt=""
               draggable="false"
-            >
+            />
           </span>
           <span :class="$style.caption" aria-hidden="true">{{ stepView.step.caption }}</span>
         </li>

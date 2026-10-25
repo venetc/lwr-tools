@@ -1,9 +1,11 @@
 import { ARMOR_CATEGORIES } from '../config/constants/armor-categories';
 import { ARMOR_CONTENT } from '../config/constants/armor-content';
 import { ARMOR_ICON } from '../config/constants/armor-icons';
+import { ITEM_ICON_PLACEHOLDER } from '../config/constants/icon-placeholders';
 import type armorsJson from '../config/data/armors.json';
 import type { LoadoutAbility } from './loadout-abilities';
 import { isLoadoutAbilityId, loadoutAbilityById } from './loadout-abilities';
+import type { LoadoutIconPlaceholder } from './loadout-icons';
 import type { LoadoutRequirement } from './loadout-requirements';
 import { isLoadoutRequirement } from './loadout-requirements';
 import type { LoadoutUnitId } from './loadout-units';
@@ -71,6 +73,8 @@ export interface Armor extends Omit<ArmorContent, 'unit' | 'category' | 'require
   requires: LoadoutRequirement | null
   /** Armor image URL. */
   icon: string
+  /** Colours of the armor image placeholder shown until the image loads. */
+  iconPlaceholder: LoadoutIconPlaceholder
   /** Non-perk abilities the armor grants. */
   grants: LoadoutAbility[]
 }
@@ -110,6 +114,7 @@ export const armorsFromEntry = (entry: [ArmorId, ArmorContent]): Armor[] => {
     category: content.category,
     requires,
     icon: ARMOR_ICON[id],
+    iconPlaceholder: ITEM_ICON_PLACEHOLDER,
     grants: (content.grants ?? []).filter(isLoadoutAbilityId).map(loadoutAbilityById),
   }];
 };

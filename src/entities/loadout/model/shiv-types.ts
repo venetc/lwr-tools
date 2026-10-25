@@ -1,8 +1,10 @@
+import { ITEM_ICON_PLACEHOLDER } from '../config/constants/icon-placeholders';
 import { SHIV_TYPE_CONTENT } from '../config/constants/shiv-type-content';
 import { SHIV_TYPE_ICON } from '../config/constants/shiv-type-icons';
 import type shivTypesJson from '../config/data/shiv-types.json';
 import type { LoadoutAbility } from './loadout-abilities';
 import { isLoadoutAbilityId, loadoutAbilityById } from './loadout-abilities';
+import type { LoadoutIconPlaceholder } from './loadout-icons';
 
 export type ShivTypeId = keyof typeof shivTypesJson;
 
@@ -44,6 +46,8 @@ export interface ShivType extends Omit<ShivTypeContent, 'grants'> {
   id: ShivTypeId
   /** SHIV type image URL. */
   icon: string
+  /** Colours of the SHIV type image placeholder shown until the image loads. */
+  iconPlaceholder: LoadoutIconPlaceholder
   /** Non-perk abilities the SHIV type grants. */
   grants: LoadoutAbility[]
 }
@@ -67,6 +71,7 @@ export const shivTypeFromEntry = (entry: [ShivTypeId, ShivTypeContent]): ShivTyp
     ...content,
     id,
     icon: SHIV_TYPE_ICON[id],
+    iconPlaceholder: ITEM_ICON_PLACEHOLDER,
     grants: (content.grants ?? []).filter(isLoadoutAbilityId).map(loadoutAbilityById),
   };
 };

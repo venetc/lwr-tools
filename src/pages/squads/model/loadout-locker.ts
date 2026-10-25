@@ -18,6 +18,7 @@ import type {
 } from '@entities/loadout';
 import { blockReasons, findLoadoutItem, itemCarriers, itemRules, slotItemId, slotItems } from '@entities/loadout';
 import type { DeepReadonly } from '@shared/lib/object';
+import type { ImagePlaceholder } from '@shared/ui/loading-image';
 
 import {
   ALTERNATIVE_SEPARATOR,
@@ -51,6 +52,8 @@ export interface LockerItem {
   name: string
   /** Item image URL. */
   icon: string
+  /** Placeholder colours shown until the image loads. */
+  iconPlaceholder: ImagePlaceholder
   /** Stats of the item in one line. */
   summary: string
   /** Why the item does not fit the slot, in rule order; empty if it fits. */
@@ -75,6 +78,8 @@ export interface ItemDetails {
   name: string
   /** Item image URL. */
   icon: string
+  /** Placeholder colours shown until the image loads. */
+  iconPlaceholder: ImagePlaceholder
   /** Item type, such as `Light Armor` or `Assault Rifle · Laser`. */
   type: string
   /** Stat line. */
@@ -99,6 +104,8 @@ interface ItemDescription {
   name: string
   /** Item image URL. */
   icon: string
+  /** Placeholder colours shown until the image loads. */
+  iconPlaceholder: ImagePlaceholder
   /** Item type. */
   type: string
   /** Stat line. */
@@ -175,6 +182,7 @@ const describeArmor = (armor: DeepReadonly<Armor>): ItemDescription => {
   return {
     name: armor.name,
     icon: armor.icon,
+    iconPlaceholder: armor.iconPlaceholder,
     type: `${ARMOR_CATEGORY_NAME[armor.category]} ${ARMOR_SLOT_CAPTION[armor.unit]}`,
     stats: statLine([
       [STAT_NAME.hp, armor.hp, signed(armor.hp), true],
@@ -202,6 +210,7 @@ const describeArmor = (armor: DeepReadonly<Armor>): ItemDescription => {
 const describeShivType = (shivType: DeepReadonly<ShivType>): ItemDescription => ({
   name: shivType.name,
   icon: shivType.icon,
+  iconPlaceholder: shivType.iconPlaceholder,
   type: ARMOR_SLOT_CAPTION.shiv,
   stats: statLine([
     [STAT_NAME.hp, shivType.hp, `${shivType.hp}`, true],
@@ -226,6 +235,7 @@ const describeShivType = (shivType: DeepReadonly<ShivType>): ItemDescription => 
 const describeWeapon = (weapon: DeepReadonly<Weapon>): ItemDescription => ({
   name: weapon.name,
   icon: weapon.icon,
+  iconPlaceholder: weapon.iconPlaceholder,
   type: [WEAPON_TYPE_NAME[weapon.type], WEAPON_TIER_NAME[weapon.tier]].join(DETAIL_SEPARATOR),
   stats: statLine([
     [STAT_NAME.damage, weapon.damage, upgraded(weapon.damage, weapon.damageUpgrade), true],
@@ -304,6 +314,7 @@ const equipmentType = (equipment: DeepReadonly<Equipment>) => {
 const describeEquipment = (equipment: DeepReadonly<Equipment>): ItemDescription => ({
   name: equipment.name,
   icon: equipment.icon,
+  iconPlaceholder: equipment.iconPlaceholder,
   type: equipmentType(equipment),
   stats: equipment.stats.map(stat => ({ name: stat.name, value: stat.value })),
   carriers: itemCarriers(equipment),
@@ -386,6 +397,7 @@ export const lockerItems = (slot: LoadoutSlot, loadout: Loadout, wearer: Loadout
       id,
       name: description.name,
       icon: description.icon,
+      iconPlaceholder: description.iconPlaceholder,
       summary: description.stats.map(stat => (stat.value ? `${stat.name} ${stat.value}` : stat.name)).join(DETAIL_SEPARATOR),
       reasons,
       reasonLabel,

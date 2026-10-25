@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { SHIV_BUILD_NAME } from '@entities/shiv';
+import { LoadingImage } from '@shared/ui/loading-image';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
 import { REMOVED_SHIV_PERK_NOTE } from '../config/constants';
@@ -68,11 +69,12 @@ const { rename, lock, replace, reset, update, select } = useBuildEditor(() => pr
         :key="perk.id"
         :class="$style.removedPerk"
       >
-        <img
+        <LoadingImage
           :class="$style.removedIcon"
           :src="perk.icon.disabled"
+          :placeholder="perk.icon.placeholder.disabled"
           alt=""
-        >
+        />
         <span :class="$style.removedName">{{ perk.name }}</span>
         <span :class="$style.removedNote">{{ REMOVED_SHIV_PERK_NOTE }}</span>
       </li>

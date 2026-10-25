@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { useCssModule } from 'vue';
 
+import { LoadingImage } from '@shared/ui/loading-image';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
 import { useTierLabelClasses } from './model/tier-label';
+import type { TieredPickerTierImage } from './model/tiered-picker';
 
 interface Props {
   /** Tier icon; null for a label without one. */
   icon?: SvgIcon | null
   /** Tier image shown in place of an icon, such as a medal; null for a label without one. */
-  image?: string | null
+  image?: TieredPickerTierImage | null
   /** Whether the image is faded, such as on a locked tier. */
   faded?: boolean
   /** Tier name. */
@@ -40,12 +42,13 @@ const { iconClass, imageClass } = useTierLabelClasses({
       :class="iconClass"
       aria-hidden="true"
     />
-    <img
+    <LoadingImage
       v-if="props.image"
-      :src="props.image"
+      :src="props.image.src"
+      :placeholder="props.image.placeholder"
       :class="imageClass"
       alt=""
-    >
+    />
     <span :class="$style.text">
       <span :class="$style.name">{{ props.name }}</span>
     </span>

@@ -1,4 +1,4 @@
-import { OFFICER_RANK_MEDAL } from '../config/constants/officer-rank-medals';
+import { OFFICER_RANK_MEDAL, OFFICER_RANK_MEDAL_PLACEHOLDER } from '../config/constants/officer-rank-medals';
 import { SOLDIER_RANKS } from '../config/constants/soldier-ranks';
 import type officerRanksJson from '../config/data/officer-ranks.json';
 import type { AbilityId } from './abilities';
@@ -20,6 +20,16 @@ export interface OfficerRankContent {
   perks: readonly string[]
 }
 
+/**
+ * Colours of a medal image, shown as a placeholder while the image loads.
+ */
+export interface OfficerRankMedalPlaceholder {
+  /** Background of the medal image. */
+  backdrop: string
+  /** Main colour of the medal. */
+  glyph: string
+}
+
 export interface OfficerRank {
   /** Officer rank id. */
   id: OfficerRankId
@@ -33,6 +43,8 @@ export interface OfficerRank {
   perks: AbilityId[]
   /** Medal image of the officer rank. */
   medal: string
+  /** Colours of the medal placeholder shown until the image loads. */
+  medalPlaceholder: OfficerRankMedalPlaceholder
 }
 
 /**
@@ -56,5 +68,6 @@ export const createOfficerRank = (id: OfficerRankId, content: OfficerRankContent
     requiredRankName: requiredRank?.name ?? content.requiredRank,
     perks: content.perks.filter(isAbilityId),
     medal: OFFICER_RANK_MEDAL[id],
+    medalPlaceholder: OFFICER_RANK_MEDAL_PLACEHOLDER,
   };
 };

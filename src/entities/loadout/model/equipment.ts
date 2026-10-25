@@ -1,9 +1,11 @@
 import { EQUIPMENT_SLOTS, EQUIPMENT_STACK_GROUPS } from '../config/constants/equipment-categories';
 import { EQUIPMENT_CONTENT } from '../config/constants/equipment-content';
 import { EQUIPMENT_ICON } from '../config/constants/equipment-icons';
+import { ITEM_ICON_PLACEHOLDER } from '../config/constants/icon-placeholders';
 import type equipmentJson from '../config/data/equipment.json';
 import type { LoadoutAbility } from './loadout-abilities';
 import { isLoadoutAbilityId, loadoutAbilityById } from './loadout-abilities';
+import type { LoadoutIconPlaceholder } from './loadout-icons';
 import type { LoadoutRequirement } from './loadout-requirements';
 import { isLoadoutRequirement } from './loadout-requirements';
 import type { LoadoutUnitId } from './loadout-units';
@@ -89,6 +91,8 @@ export interface Equipment extends Omit<EquipmentContent, 'units' | 'slot' | 'cl
   info: string | null
   /** Item image URL. */
   icon: string
+  /** Colours of the equipment image placeholder shown until the image loads. */
+  iconPlaceholder: LoadoutIconPlaceholder
   /** Non-perk abilities the item grants. */
   grants: LoadoutAbility[]
 }
@@ -154,6 +158,7 @@ export const equipmentFromEntry = (entry: [EquipmentId, EquipmentContent]): Equi
     requiredModule,
     info: content.info ?? null,
     icon: EQUIPMENT_ICON[id],
+    iconPlaceholder: ITEM_ICON_PLACEHOLDER,
     grants: (content.grants ?? []).filter(isLoadoutAbilityId).map(loadoutAbilityById),
   }];
 };

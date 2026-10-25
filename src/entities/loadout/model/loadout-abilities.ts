@@ -1,6 +1,8 @@
+import { ABILITY_ICON_PLACEHOLDER } from '../config/constants/icon-placeholders';
 import { LOADOUT_ABILITY_CONTENT } from '../config/constants/loadout-ability-content';
 import { LOADOUT_ABILITY_ICON } from '../config/constants/loadout-ability-icons';
 import type abilitiesJson from '../config/data/abilities.json';
+import type { LoadoutIconPlaceholder } from './loadout-icons';
 
 export type LoadoutAbilityId = keyof typeof abilitiesJson;
 
@@ -22,6 +24,8 @@ export interface LoadoutAbility extends LoadoutAbilityContent {
   id: LoadoutAbilityId
   /** Upscaled ability icon URL; the placeholder icon if the ability has no original icon. */
   icon: string
+  /** Colours of the ability icon placeholder shown until the image loads. */
+  iconPlaceholder: LoadoutIconPlaceholder
 }
 
 /**
@@ -40,4 +44,5 @@ export const loadoutAbilityById = (id: LoadoutAbilityId): LoadoutAbility => ({
   ...LOADOUT_ABILITY_CONTENT[id],
   id,
   icon: LOADOUT_ABILITY_ICON[id],
+  iconPlaceholder: ABILITY_ICON_PLACEHOLDER,
 });

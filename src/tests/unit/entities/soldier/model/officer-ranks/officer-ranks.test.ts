@@ -17,7 +17,7 @@ vi.mock('@entities/soldier/config/constants/soldier-rank-content', async () => (
 
 vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 
-vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {} }));
+vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {}, OFFICER_RANK_MEDAL_PLACEHOLDER: {} }));
 
 describe('createOfficerRank', () => {
   it('names the rank the game requires for the officer rank', () => {

@@ -15,7 +15,7 @@ describe('miniTreeStep', () => {
   it('shows the selected icon of the item chosen on the tier', () => {
     const step = miniTreeStep(createTierMock('completed', 'right'), CAPTION);
 
-    expect(step.icon).toBe('right-selected.png');
+    expect(step.icon?.src).toBe('right-selected.png');
   });
 
   it('marks a tier with a selection as selected', () => {
@@ -75,7 +75,7 @@ describe('miniTreeStep', () => {
   it('shows the selected icon of an Outdated selection', () => {
     const step = miniTreeStep(createTierMock('completed', 'right', ['right']), CAPTION);
 
-    expect(step.icon).toBe('right-selected.png');
+    expect(step.icon?.src).toBe('right-selected.png');
   });
 
   it('names the tier and its Outdated selection', () => {

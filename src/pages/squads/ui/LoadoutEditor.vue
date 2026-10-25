@@ -3,6 +3,7 @@ import { useCssModule, useTemplateRef } from 'vue';
 
 import { createId } from '@shared/lib/id';
 import { Button } from '@shared/ui/button';
+import { LoadingImage } from '@shared/ui/loading-image';
 
 import { useLoadoutEditor } from '../model/loadout-editor';
 import type { UnitCard } from '../model/unit-cards';
@@ -73,13 +74,14 @@ const lockerHeadingId = createId();
           :aria-pressed="row.isSelected"
           @click="selectSlot(row.tile)"
         >
-          <img
+          <LoadingImage
             v-if="row.tile.item"
             :class="$style.rowImage"
             :src="row.tile.item.icon"
+            :placeholder="row.tile.item.iconPlaceholder"
             alt=""
             aria-hidden="true"
-          >
+          />
           <span
             v-else
             :class="$style.rowPlaceholder"
@@ -122,12 +124,13 @@ const lockerHeadingId = createId();
             @click="pickItem(view.item)"
             @dblclick="equipItem(view.item)"
           >
-            <img
+            <LoadingImage
               :class="$style.itemImage"
               :src="view.item.icon"
+              :placeholder="view.item.iconPlaceholder"
               alt=""
               aria-hidden="true"
-            >
+            />
             <span :class="$style.itemText" aria-hidden="true">
               <span :class="$style.itemName">{{ view.item.name }}</span>
               <span :class="$style.itemSummary">{{ view.item.summary }}</span>
@@ -144,12 +147,13 @@ const lockerHeadingId = createId();
       <section :class="$style.details" aria-label="Item details">
         <template v-if="details">
           <div :class="$style.detailsTop">
-            <img
+            <LoadingImage
               :class="$style.detailsImage"
               :src="details.icon"
+              :placeholder="details.iconPlaceholder"
               alt=""
               aria-hidden="true"
-            >
+            />
             <div>
               <h4 :class="$style.detailsName">
                 {{ details.name }}
@@ -200,12 +204,13 @@ const lockerHeadingId = createId();
               :key="ability.id"
               :class="$style.grant"
             >
-              <img
+              <LoadingImage
                 :class="$style.grantIcon"
                 :src="ability.icon"
+                :placeholder="ability.iconPlaceholder"
                 alt=""
                 aria-hidden="true"
-              >
+              />
               {{ ability.name }}
             </li>
           </ul>

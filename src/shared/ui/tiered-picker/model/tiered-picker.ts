@@ -1,3 +1,20 @@
+import type { ImagePlaceholder } from '@shared/ui/loading-image';
+
+/**
+ * Look of an item cell: selected, available to pick, or disabled.
+ */
+export type TieredPickerAppearance = 'selected' | 'available' | 'disabled';
+
+/**
+ * Image of a tier label, such as a medal, with its placeholder colours.
+ */
+export interface TieredPickerTierImage {
+  /** Image URL. */
+  src: string
+  /** Placeholder colours shown until the image loads. */
+  placeholder: ImagePlaceholder
+}
+
 export interface TieredPickerIcon {
   /** Icon of a selected item. */
   selected: string
@@ -5,6 +22,8 @@ export interface TieredPickerIcon {
   available: string
   /** Icon of an item that is locked, not selected or blocked. */
   disabled: string
+  /** Colours of each variant for the placeholder shown until the image loads. */
+  placeholder: Record<TieredPickerAppearance, ImagePlaceholder>
 }
 
 export interface TieredPickerItem {
@@ -19,11 +38,6 @@ export interface TieredPickerItem {
   /** Items described together with this one, below its description. */
   related: readonly TieredPickerItem[]
 }
-
-/**
- * Look of an item cell: selected, available to pick, or disabled.
- */
-export type TieredPickerAppearance = keyof TieredPickerIcon;
 
 /**
  * Item of a tier in the current build state; the item itself is shared and never copied per state.

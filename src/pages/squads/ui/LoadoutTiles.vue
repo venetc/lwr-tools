@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useCssModule } from 'vue';
 
+import { LoadingImage } from '@shared/ui/loading-image';
+
 import { useLoadoutTileViews } from '../model/loadout-tile-views';
 import type { LoadoutTile } from '../model/loadout-tiles';
 import SlotCaption from './SlotCaption.vue';
@@ -40,13 +42,14 @@ const tileViews = useLoadoutTileViews(() => props.tiles, useCssModule());
         :aria-disabled="props.disabled"
         @click="emit('select', view.tile)"
       >
-        <img
+        <LoadingImage
           v-if="view.tile.item"
           :class="view.imageClass"
           :src="view.tile.item.icon"
+          :placeholder="view.tile.item.iconPlaceholder"
           alt=""
           aria-hidden="true"
-        >
+        />
         <span
           v-else
           :class="$style.plus"

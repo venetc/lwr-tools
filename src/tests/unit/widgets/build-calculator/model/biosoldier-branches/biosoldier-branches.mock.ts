@@ -8,7 +8,14 @@ import type {
   SoldierOutdatedSelection,
   TreeAbility,
 } from '@entities/soldier';
+import type { AbilityIconPlaceholder } from '@entities/soldier/model/abilities';
 import type { BiosoldierBuild } from '@widgets/build-calculator/model/biosoldier-builds';
+
+const PLACEHOLDER: AbilityIconPlaceholder = {
+  selected: { backdrop: '#000000', glyph: '#ffffff' },
+  available: { backdrop: '#000000', glyph: '#888888' },
+  disabled: { backdrop: '#222222', glyph: '#444444' },
+};
 
 /**
  * Stub of `treeAbility`: a tree ability with placeholder texts and icons, without grants.
@@ -19,7 +26,7 @@ export const treeAbilityStub = (id: string): TreeAbility => ({
   id,
   name: id,
   description: `${id} description`,
-  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png`, placeholder: PLACEHOLDER },
   grants: [],
 });
 

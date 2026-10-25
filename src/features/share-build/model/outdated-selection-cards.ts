@@ -3,6 +3,7 @@ import type { ShivOutdatedSelection, ShivPerkId } from '@entities/shiv';
 import { shivPerkById, TECHNOLOGY_LEVELS } from '@entities/shiv';
 import type { AbilityId, SoldierOutdatedSelection } from '@entities/soldier';
 import { abilityById, BODY_PARTS, OFFICER_RANKS, PSI_LEVELS, SOLDIER_RANKS } from '@entities/soldier';
+import type { ImagePlaceholder } from '@shared/ui/loading-image';
 import type { SvgIcon } from '@shared/ui/svg-icon';
 
 import { EMPTY_STEP_NOTE, REMOVED_FROM_SHIV_TREE_NOTE, SHIV_TREE_SECTION, SOLDIER_STEP_SECTION } from '../config/constants';
@@ -19,6 +20,18 @@ export interface OutdatedCardAbility {
   name: string
   /** Icon of the ability available to select. */
   icon: string
+  /** Placeholder colours shown until the icon loads. */
+  iconPlaceholder: ImagePlaceholder
+}
+
+/**
+ * Image of a step on an Outdated selection card, such as an Officer rank medal.
+ */
+export interface OutdatedCardImage {
+  /** Image URL. */
+  src: string
+  /** Placeholder colours shown until the image loads. */
+  placeholder: ImagePlaceholder
 }
 
 /**
@@ -35,7 +48,7 @@ export interface OutdatedSelectionCard {
   /** Rank icon of the step; null for none. */
   stepIcon: SvgIcon | null
   /** Image of the step, such as an Officer rank medal; null for none. */
-  stepImage: string | null
+  stepImage: OutdatedCardImage | null
   /** Abilities of the code on the step; two or more for a SHIV collision. */
   codeAbilities: OutdatedCardAbility[]
   /** Ability of the current tree at the same place; null for an empty cell. */
@@ -64,7 +77,7 @@ export interface OutdatedSelectionGroup {
 const shivCardAbility = (perkId: ShivPerkId): OutdatedCardAbility => {
   const perk = shivPerkById(perkId);
 
-  return { id: perk.id, name: perk.name, icon: perk.icon.available };
+  return { id: perk.id, name: perk.name, icon: perk.icon.available, iconPlaceholder: perk.icon.placeholder.available };
 };
 
 /**
@@ -117,7 +130,7 @@ const shivOutdatedCards = (outdated: readonly ShivOutdatedSelection[]): Outdated
 const soldierCardAbility = (abilityId: AbilityId): OutdatedCardAbility => {
   const ability = abilityById(abilityId);
 
-  return { id: ability.id, name: ability.name, icon: ability.icon.available };
+  return { id: ability.id, name: ability.name, icon: ability.icon.available, iconPlaceholder: ability.icon.placeholder.available };
 };
 
 /**
@@ -142,7 +155,11 @@ const soldierCardStep = (selection: SoldierOutdatedSelection): Pick<OutdatedSele
     case 'officer-rank': {
       const officerRank = OFFICER_RANKS[selection.stepIndex];
 
-      return { stepName: officerRank?.name ?? null, stepIcon: null, stepImage: officerRank?.medal ?? null };
+      if (!officerRank) return { stepName: null, stepIcon: null, stepImage: null };
+
+      const stepImage = { src: officerRank.medal, placeholder: officerRank.medalPlaceholder };
+
+      return { stepName: officerRank.name, stepIcon: null, stepImage };
     }
   }
 };

@@ -1,5 +1,7 @@
 import type { Armor, Equipment, Loadout, LoadoutCatalogItem, LoadoutItemId, LoadoutSlots, LoadoutWearer, Weapon } from '@entities/loadout';
 
+const ICON_PLACEHOLDER = { backdrop: 'transparent', glyph: '#ffffff' };
+
 /**
  * Biosoldier armor with zero stats besides the given fields.
  *
@@ -24,6 +26,7 @@ const armorMock = (armor: Pick<Armor, 'id' | 'name'> & Partial<Armor>): Armor =>
   requires: null,
   info: '',
   icon: '',
+  iconPlaceholder: ICON_PLACEHOLDER,
   grants: [],
   ...armor,
 });
@@ -55,6 +58,7 @@ const weaponMock = (weapon: Pick<Weapon, 'id' | 'name' | 'type' | 'slot'> & Part
   vsMechanical: null,
   info: '',
   icon: '',
+  iconPlaceholder: ICON_PLACEHOLDER,
   grants: [],
   ...weapon,
 });
@@ -78,6 +82,7 @@ const equipmentMock = (equipment: Pick<Equipment, 'id' | 'name'> & Partial<Equip
   stats: [],
   info: null,
   icon: '',
+  iconPlaceholder: ICON_PLACEHOLDER,
   grants: [],
   ...equipment,
 });
@@ -149,4 +154,4 @@ export const ROCKETEER_LOADOUT = createLoadoutMock({ secondary: 'rocket-launcher
 
 export const MEDIKIT_LOADOUT = createLoadoutMock({ utility: ['medikit', null, null] });
 
-export const VEST_TILE_ITEM = { name: 'Vest', icon: 'vest.png' };
+export const VEST_TILE_ITEM = { name: 'Vest', icon: 'vest.png', iconPlaceholder: ICON_PLACEHOLDER };

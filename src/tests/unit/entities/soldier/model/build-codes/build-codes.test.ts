@@ -78,7 +78,7 @@ vi.mock('@entities/soldier/config/constants/biosoldier-class-icons', () => ({ BI
 
 vi.mock('@entities/soldier/config/constants/mec-class-icons', () => ({ MEC_CLASS_ICON: {} }));
 
-vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {} }));
+vi.mock('@entities/soldier/config/constants/officer-rank-medals', () => ({ OFFICER_RANK_MEDAL: {}, OFFICER_RANK_MEDAL_PLACEHOLDER: {} }));
 
 vi.mock('@entities/soldier/config/constants/soldier-rank-icons', () => ({ SOLDIER_RANK_ICON: {} }));
 

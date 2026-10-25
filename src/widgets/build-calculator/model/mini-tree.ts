@@ -1,6 +1,8 @@
 import type { MaybeRefOrGetter } from 'vue';
 import { computed } from 'vue';
 
+import type { ImagePlaceholder } from '@shared/ui/loading-image';
+
 import {
   BIOSOLDIER_BRANCH_TITLE,
   MEC_TREE_GROUP_ID,
@@ -29,6 +31,16 @@ import type { ShivBuild } from './shiv-builds';
 export type MiniTreeStepState = 'selected' | 'outdated' | 'open' | 'locked';
 
 /**
+ * Icon of a mini-tree step with its placeholder colours.
+ */
+export interface MiniTreeStepIcon {
+  /** Icon URL. */
+  src: string
+  /** Placeholder colours shown until the icon loads. */
+  placeholder: ImagePlaceholder
+}
+
+/**
  * Step of a mini-tree: a rank, a body part, a psi level or a technology level.
  */
 export interface MiniTreeStep {
@@ -39,7 +51,7 @@ export interface MiniTreeStep {
   /** Accessible name: the step and its ability, such as `Sergeant: Lightning Reflexes`. */
   label: string
   /** Icon of the selected ability in its selected look; null for an empty step. */
-  icon: string | null
+  icon: MiniTreeStepIcon | null
   /** Look of the step. */
   state: MiniTreeStepState
 }
@@ -83,12 +95,14 @@ const outdatedStepLabel = (tier: BuildTreeTier) => {
 export const miniTreeStep = (tier: BuildTreeTier, caption: string): MiniTreeStep => {
   const selectedItem = tier.options.find(({ item }) => item.id === tier.selectedId)?.item;
 
+  const icon = selectedItem ? { src: selectedItem.icon.selected, placeholder: selectedItem.icon.placeholder.selected } : null;
+
   if (selectedItem && tier.outdatedItemIds.includes(selectedItem.id)) {
-    return { id: tier.id, caption, label: outdatedStepLabel(tier), icon: selectedItem.icon.selected, state: 'outdated' };
+    return { id: tier.id, caption, label: outdatedStepLabel(tier), icon, state: 'outdated' };
   }
 
   if (selectedItem) {
-    return { id: tier.id, caption, label: `${tier.name}: ${selectedItem.name}`, icon: selectedItem.icon.selected, state: 'selected' };
+    return { id: tier.id, caption, label: `${tier.name}: ${selectedItem.name}`, icon, state: 'selected' };
   }
 
   const state = tier.state === 'available' ? 'open' : 'locked';

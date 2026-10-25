@@ -1,7 +1,13 @@
-import type { AbilityContent, TreeAbility } from '@entities/soldier/model/abilities';
+import type { AbilityContent, AbilityIconPlaceholder, TreeAbility } from '@entities/soldier/model/abilities';
 import type { ClassTree } from '@entities/soldier/model/class-tree';
 import type { SoldierClass } from '@entities/soldier/model/classes';
 import type { SoldierRankContent } from '@entities/soldier/model/ranks';
+
+const PLACEHOLDER: AbilityIconPlaceholder = {
+  selected: { backdrop: '#000000', glyph: '#ffffff' },
+  available: { backdrop: '#000000', glyph: '#888888' },
+  disabled: { backdrop: '#222222', glyph: '#444444' },
+};
 
 /**
  * Tree perk without grants.
@@ -12,7 +18,7 @@ const perk = (id: string): TreeAbility => ({
   id,
   name: id,
   description: `${id} description`,
-  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png` },
+  icon: { selected: `${id}.png`, available: `${id}_available.png`, disabled: `${id}_disabled.png`, placeholder: PLACEHOLDER },
   grants: [],
 });
 

@@ -13,9 +13,7 @@ import { FIELD_COMMANDER, MAGNUM, NAVIGATION, OFFICER_TAB, PAGE_PATH, PANEL_NAME
  */
 const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
 
-test.describe('Biosoldier calculator on a phone', () => {
-  test.skip(({ isMobile }) => !isMobile, 'Phone layout only');
-
+test.describe('Biosoldier calculator on a phone', { tag: '@phone' }, () => {
   test('fits the build panel tabs in one line', async ({ page }) => {
     const panel = await openPanel(page);
 

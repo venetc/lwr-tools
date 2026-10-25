@@ -196,7 +196,7 @@ test.describe('Squad import with Outdated selections', () => {
     await expect(squadItem(page, SQUAD_NAME, SQUAD_UNIT_COUNT)).toHaveCount(0);
   });
 
-  test('keeps the code in the import dialog on Escape', async ({ page }) => {
+  test('keeps the code in the import dialog on Escape', { tag: '@desktop' }, async ({ page }) => {
     await openSquads(page);
     const dialog = await importSquadCode(page, OUTDATED_SQUAD_CODE);
     await outdatedDialog(page).waitFor();
@@ -206,7 +206,7 @@ test.describe('Squad import with Outdated selections', () => {
     await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_SQUAD_CODE);
   });
 
-  test('creates no Squad on Escape', async ({ page }) => {
+  test('creates no Squad on Escape', { tag: '@desktop' }, async ({ page }) => {
     await openSquads(page);
     const dialog = await importSquadCode(page, OUTDATED_SQUAD_CODE);
     await outdatedDialog(page).waitFor();

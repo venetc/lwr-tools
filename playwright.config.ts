@@ -16,8 +16,23 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   projects: [
-    { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 }, permissions: ['clipboard-read', 'clipboard-write'] } },
-    { name: 'phone', use: { ...devices['iPhone 16'], viewport: { width: 393, height: 852 } } },
+    {
+      name: 'desktop',
+      grepInvert: /@phone/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1920, height: 1080 },
+        permissions: ['clipboard-read', 'clipboard-write'],
+      },
+    },
+    {
+      name: 'phone',
+      grepInvert: /@desktop/,
+      use: {
+        ...devices['iPhone 16'],
+        viewport: { width: 393, height: 852 },
+      },
+    },
   ],
   webServer: {
     command: `npx vite build && npx vite preview --port ${PORT} --strictPort`,

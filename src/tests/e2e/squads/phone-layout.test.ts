@@ -4,9 +4,7 @@ import { pageOverflow } from '../utils/page-layout';
 import { addSavedUnit, addSquad, openAddUnit, openBuildDialog, openLoadoutDialog, openSquads, unitCards } from '../utils/squads';
 import { ARMOR_TILE, BIOSOLDIER_BUILDS, MEC_BUILDS, ROCKETEER, SHIV, SHIV_BUILDS, SHOGUN, SQUAD_COUNT } from './phone-layout.mock';
 
-test.describe('Squad planner on a phone', () => {
-  test.skip(({ isMobile }) => !isMobile, 'Phone layout only');
-
+test.describe('Squad planner on a phone', { tag: '@phone' }, () => {
   test('has no horizontal scroll', async ({ page }) => {
     await openSquads(page);
     for (let index = 1; index < SQUAD_COUNT; index++) await addSquad(page);

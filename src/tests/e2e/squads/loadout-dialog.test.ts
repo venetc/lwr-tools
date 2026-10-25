@@ -406,9 +406,7 @@ test.describe('Seraph Armor of an Officer', () => {
   });
 });
 
-test.describe('Loadout dialog on a phone', () => {
-  test.skip(({ isMobile }) => !isMobile, 'Phone layout only');
-
+test.describe('Loadout dialog on a phone', { tag: '@phone' }, () => {
   test('shows INVENTORY first', async ({ page }) => {
     await openSquads(page);
     await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);

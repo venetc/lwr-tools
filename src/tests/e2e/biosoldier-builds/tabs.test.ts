@@ -29,7 +29,7 @@ const openPanel = (page: Page) => openBuildPanel(page, PAGE_PATH, PANEL_NAME);
  */
 const panelHeight = async (panel: Locator) => (await panel.boundingBox())?.height ?? 0;
 
-test.describe('Build panel tabs from the keyboard', () => {
+test.describe('Build panel tabs from the keyboard', { tag: '@desktop' }, () => {
   test('move to the next tab with the right arrow', async ({ page }) => {
     const panel = await openPanel(page);
 

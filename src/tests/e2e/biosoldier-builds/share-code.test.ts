@@ -286,7 +286,7 @@ test.describe('Share code with Outdated selections', () => {
     await expect(page.getByRole('textbox', { name: CODE_LABEL })).toBeHidden();
   });
 
-  test('keeps the code in the import form on Escape', async ({ page }) => {
+  test('keeps the code in the import form on Escape', { tag: '@desktop' }, async ({ page }) => {
     await importInCalculator(page, OUTDATED_BUILD_CODE);
     await outdatedDialog(page).waitFor();
 
@@ -295,7 +295,7 @@ test.describe('Share code with Outdated selections', () => {
     await expect(page.getByRole('textbox', { name: CODE_LABEL })).toHaveValue(OUTDATED_BUILD_CODE);
   });
 
-  test('adds no build on Escape', async ({ page }) => {
+  test('adds no build on Escape', { tag: '@desktop' }, async ({ page }) => {
     await importInCalculator(page, OUTDATED_BUILD_CODE);
     await outdatedDialog(page).waitFor();
 

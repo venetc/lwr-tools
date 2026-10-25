@@ -100,7 +100,7 @@ test.describe('Psionic tab', () => {
     await expect(abilityCell(panel, MIND_FRAY)).toHaveAttribute('aria-disabled', 'true');
   });
 
-  test('describes a psionic ability blocked by Neural Damping with its note on hover', async ({ page }) => {
+  test('describes a psionic ability blocked by Neural Damping with its note on hover', { tag: '@desktop' }, async ({ page }) => {
     const panel = await openPanel(page);
     await selectAbility(panel, GENE_MODS_TAB, NEURAL_DAMPING);
     await panel.getByRole('tab', { name: PSIONIC_TAB }).click();
@@ -120,8 +120,7 @@ test.describe('Psionic tab', () => {
     await expect(description(panel).getByText(MIND_FRAY, { exact: true })).toBeVisible();
   });
 
-  test('describes Neural Damping blocked by psionic abilities with its note on tap', async ({ page, hasTouch }) => {
-    test.skip(!hasTouch, 'Tap needs a touch screen');
+  test('describes Neural Damping blocked by psionic abilities with its note on tap', { tag: '@phone' }, async ({ page }) => {
     const panel = await openPanel(page);
     await selectAbility(panel, PSIONIC_TAB, COUNTERCHARGE);
     await selectAbility(panel, GENE_MODS_TAB, IRON_SKIN);

@@ -181,7 +181,7 @@ test.describe('Add Unit from a Share code with Outdated selections', () => {
     await expect(unitCards(page, OUTDATED_BUILD_NAME)).toHaveCount(0);
   });
 
-  test('keeps the code in the Add Unit dialog on Escape', async ({ page }) => {
+  test('keeps the code in the Add Unit dialog on Escape', { tag: '@desktop' }, async ({ page }) => {
     await openSquads(page);
     const dialog = await importUnitCode(page, OUTDATED_UNIT_CODE);
     await outdatedDialog(page).waitFor();
@@ -191,7 +191,7 @@ test.describe('Add Unit from a Share code with Outdated selections', () => {
     await expect(dialog.getByRole('textbox', { name: 'Share code' })).toHaveValue(OUTDATED_UNIT_CODE);
   });
 
-  test('adds no Unit on Escape', async ({ page }) => {
+  test('adds no Unit on Escape', { tag: '@desktop' }, async ({ page }) => {
     await openSquads(page);
     const dialog = await importUnitCode(page, OUTDATED_UNIT_CODE);
     await outdatedDialog(page).waitFor();

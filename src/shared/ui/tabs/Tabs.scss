@@ -41,16 +41,8 @@
   }
 }
 
-// Every panel stays rendered in one grid cell, so the tabs take the height of the tallest panel and switching tabs
-// never moves what follows them.
-.panels {
-  display: grid;
-}
-
+// Only the active panel is rendered. A place of use that must not move what follows the tabs on switching sets
+// `--tabs-panel-min-block-size` to the height of its tallest panel.
 .panel {
-  grid-area: 1 / 1;
-
-  &[data-state='inactive'] {
-    visibility: hidden;
-  }
+  min-block-size: var(--tabs-panel-min-block-size, auto);
 }

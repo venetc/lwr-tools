@@ -43,17 +43,14 @@ const activeId = defineModel<StringOrNumber>({ required: true });
       </TabsTrigger>
     </TabsList>
 
-    <div :class="$style.panels">
-      <TabsContent
-        v-for="item in props.items"
-        :key="item.id"
-        :class="$style.panel"
-        :value="item.id"
-        force-mount
-      >
-        <slot name="panel" :item="item" />
-      </TabsContent>
-    </div>
+    <TabsContent
+      v-for="item in props.items"
+      :key="item.id"
+      :class="$style.panel"
+      :value="item.id"
+    >
+      <slot name="panel" :item="item" />
+    </TabsContent>
   </TabsRoot>
 </template>
 

@@ -2,6 +2,14 @@
 @use 'styles/typography';
 @use './branches';
 
+// Class tree, the tallest tab: seven Rank tiers of 50px with 5px gaps.
+$tallest-tab-block-size: 380px;
+
+.tree {
+  --tabs-panel-min-block-size: #{$tallest-tab-block-size};
+  display: contents;
+}
+
 .classIcon {
   flex: none;
   width: 34px;

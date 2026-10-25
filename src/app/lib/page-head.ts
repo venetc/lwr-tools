@@ -10,7 +10,7 @@ import { PAGE_ROUTES, PAGE_SITE } from '../config/constants';
  *
  * @param route current route.
  */
-export const pagePath = (route: Pick<RouteLocationNormalized, 'matched'>) => route.matched.at(-1)?.path ?? null;
+const pagePath = (route: Pick<RouteLocationNormalized, 'matched'>) => route.matched.at(-1)?.path ?? null;
 
 /**
  * Writes the head of the page the router arrived at to the document. Every tag of the previous head is removed

@@ -2,13 +2,11 @@ import type { Page } from '@playwright/test';
 import { expect, test } from '@playwright/test';
 
 import {
-  BIOSOLDIER_LEAD,
   BIOSOLDIER_LINK,
   BIOSOLDIER_TITLE,
   BIOSOLDIER_URL,
   BUILDS_LINK,
   BUILDS_URL,
-  ROOT_LEAD,
   ROOT_PATH,
   ROOT_TITLE,
   ROOT_URL,
@@ -46,12 +44,6 @@ test.describe('Home head', () => {
 
     await expect(page).toHaveTitle(ROOT_TITLE);
   });
-
-  test('shows the lead paragraph', async ({ page }) => {
-    await page.goto(ROOT_PATH);
-
-    await expect(page.getByText(ROOT_LEAD, { exact: true })).toBeVisible();
-  });
 });
 
 test.describe('Head after navigation', () => {
@@ -61,25 +53,11 @@ test.describe('Head after navigation', () => {
     await expect(page).toHaveTitle(BIOSOLDIER_TITLE);
   });
 
-  test('shows the lead of the calculator', async ({ page }) => {
-    await openBiosoldierFromHome(page);
-
-    await expect(page.getByText(BIOSOLDIER_LEAD, { exact: true })).toBeVisible();
-  });
-
   test('titles the tab of the home page again on return', async ({ page }) => {
     await openBiosoldierFromHome(page);
 
     await returnHome(page);
 
     await expect(page).toHaveTitle(ROOT_TITLE);
-  });
-
-  test('shows the lead of the home page again on return', async ({ page }) => {
-    await openBiosoldierFromHome(page);
-
-    await returnHome(page);
-
-    await expect(page.getByText(ROOT_LEAD, { exact: true })).toBeVisible();
   });
 });

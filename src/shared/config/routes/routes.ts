@@ -3,7 +3,7 @@ import type { RouteRecordInfo } from 'vue-router';
 /**
  * Names, paths, titles and descriptions of app routes, importable from any layer. Paths are absolute, nested routes
  * included. A title labels the route in breadcrumbs, route menus and the document title; the home page has none.
- * A description is the meta description of the page and its lead paragraph.
+ * A description is the meta description of the page and its link preview description.
  */
 export const ROUTES = {
   HOME: {

@@ -10,10 +10,12 @@ export default defineConfig({
   testDir: './src/tests/e2e',
   testMatch: '**/*.test.ts',
   fullyParallel: true,
+  retries: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: `http://localhost:${PORT}`,
-    trace: 'retain-on-failure',
+    trace: 'on-first-retry',
+    reducedMotion: 'reduce',
   },
   projects: [
     {

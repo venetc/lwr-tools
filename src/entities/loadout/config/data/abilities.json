@@ -61,7 +61,7 @@
   },
   "bulletstorm": {
     "name": "Bulletstorm",
-    "description": "Spray fire across a 30 degree cone out to 18 tiles. Every enemy in the cone has 2x 20% chances (15% with an LMG) to take Standard Shot Damage. Requires 2 ammo."
+    "description": "Spray fire across a 30 degree cone out to 18 tiles. Every enemy in the cone has 2x 20% chances (10% with an LMG) to take Standard Shot Damage. Requires 2 ammo."
   },
   "shredder": {
     "name": "Shredder",
@@ -87,13 +87,13 @@
     "name": "Stun",
     "description": "Non-lethal, short-range arc attack that has a chance to stun biological targets. Any target at or below 4 HP that resists the stun will be maimed instead. Stun chance increases if target is at low HP."
   },
-  "ether-shredder": {
-    "name": "Ether Shredder",
-    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) to any unit with distortion for the remainder of the battle."
+  "personnel-shredder": {
+    "name": "Personnel Shredder",
+    "description": "Primary weapon attacks apply Shred equal to the damage dealt as a percent of the target's max HP (which increases subsequent damage the target receives by the amount of Shred) to any unhardened biologic unit for the remainder of the battle."
   },
   "sublimator": {
     "name": "Sublimator",
-    "description": "Grants +10 penetration vs hardened targets and deals triple damage to Plasma Shields."
+    "description": "Grants +10 penetration vs hardened targets, deals triple damage to Plasma Shields, and increases distortion maluses by 50%."
   },
   "panzer-shredder": {
     "name": "Panzer Shredder",
@@ -254,5 +254,9 @@
   "eye-of-the-storm": {
     "name": "Eye of the Storm",
     "description": "Reduces accumulation of fatigue by 50%."
+  },
+  "ripper": {
+    "name": "Ripper",
+    "description": "Primary weapon attacks gain +35 penetration against melee units (Chryssalids, Zombies, and Berserkers)."
   }
 }

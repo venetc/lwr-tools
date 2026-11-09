@@ -692,7 +692,7 @@
     "stats": [
       {
         "name": "Ammo",
-        "value": "+3"
+        "value": "+2"
       },
       {
         "name": "Weight",
@@ -739,13 +739,20 @@
       "laser",
       "pulse"
     ],
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg",
+      "shotgun"
+    ],
     "stats": [
       {
         "name": "Weight",
         "value": "0.6"
       }
     ],
-    "info": "Harder-hitting, graze-proof close-range rounds for laser and pulse tiers of weapons. Applies to primary weapons only. Cannot be combined with Reaper Ammo. Requires a laser or pulse primary weapon.",
+    "info": "Harder-hitting, graze-proof close-range rounds for laser and pulse tiers of weapons. Applies to primary weapons only. Cannot be combined with Reaper Ammo. Requires a laser or pulse assault rifle, carbine, battle rifle, SMG, or shotgun.",
     "grants": [
       "breach"
     ]
@@ -853,35 +860,35 @@
       "psiscopic-vision"
     ]
   },
-  "shredder-ammo": {
+  "ripper-ammo": {
     "code": 31,
     "units": [
       "biosoldier"
     ],
     "slot": "utility",
-    "name": "Shredder Ammo",
-    "classes": [
-      "scout",
-      "infantry",
-      "assault",
-      "medic",
-      "engineer"
-    ],
+    "name": "Ripper Ammo",
     "isPassive": true,
     "stackGroup": "ammo-type",
     "primaryTiers": [
       "ballistic",
       "gauss"
     ],
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg",
+      "shotgun"
+    ],
     "stats": [
       {
         "name": "Weight",
-        "value": "1.3"
+        "value": "0.6"
       }
     ],
-    "info": "Increases damage enemies hit from primary weapon receive. Targets hit become shredded. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only.",
+    "info": "Enhanced penetration against melee units. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only. Requires a ballistic or gauss assault rifle, carbine, battle rifle, SMG, or shotgun.",
     "grants": [
-      "shredder"
+      "ripper"
     ]
   },
   "psi-defender": {
@@ -1311,9 +1318,7 @@
   "reaper-ammo": {
     "code": 48,
     "units": [
-      "biosoldier",
-      "mec",
-      "shiv"
+      "biosoldier"
     ],
     "slot": "utility",
     "name": "Reaper Ammo",
@@ -1322,6 +1327,13 @@
     "primaryTiers": [
       "laser",
       "pulse"
+    ],
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg",
+      "shotgun"
     ],
     "stats": [
       {
@@ -1337,7 +1349,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Provides increased critical damage for laser and pulse tiers of weapons. Doubles the weapon range penalty for shotguns, strike and sniper rifles. Applies to primary weapons only. Cannot be combined with Breaching Ammo. Requires a laser or pulse primary weapon."
+    "info": "Provides increased critical damage for laser and pulse tiers of weapons. Applies to primary weapons only. Cannot be combined with Breaching Ammo. Requires a laser or pulse assault rifle, carbine, battle rifle, SMG, or shotgun."
   },
   "alloy-enhanced-rounds": {
     "code": 49,
@@ -1461,9 +1473,7 @@
   "armor-piercing-ammo": {
     "code": 53,
     "units": [
-      "biosoldier",
-      "mec",
-      "shiv"
+      "biosoldier"
     ],
     "slot": "utility",
     "name": "Armor Piercing Ammo",
@@ -1478,14 +1488,7 @@
       "battle-rifle",
       "carbine",
       "smg",
-      "shotgun",
-      "saw",
-      "lmg",
-      "mec-weapon",
-      "autocannon",
-      "vulcan-cannon",
-      "arc-rifle",
-      "stun-rifle"
+      "shotgun"
     ],
     "stats": [
       {
@@ -1493,7 +1496,7 @@
         "value": "0.6"
       }
     ],
-    "info": "Enhanced penetration for ballistic and gauss tiers of weapons. Applies to assault rifles, carbines, battle rifles, shotguns, SAWs, LMGs, and SMGs. Applies to MEC/SHIV weapons.",
+    "info": "Enhanced penetration for ballistic and gauss tiers of weapons. Affects primary weapons only. Requires a ballistic or gauss assault rifle, carbine, battle rifle, SMG, or shotgun.",
     "grants": [
       "penetrator"
     ]
@@ -1527,9 +1530,7 @@
   "flak-ammo": {
     "code": 55,
     "units": [
-      "biosoldier",
-      "mec",
-      "shiv"
+      "biosoldier"
     ],
     "slot": "utility",
     "name": "Flak Ammo",
@@ -1539,13 +1540,20 @@
       "ballistic",
       "gauss"
     ],
+    "primaryTypes": [
+      "assault-rifle",
+      "battle-rifle",
+      "carbine",
+      "smg",
+      "shotgun"
+    ],
     "stats": [
       {
         "name": "Weight",
         "value": "0.6"
       }
     ],
-    "info": "Defense mitigation against flying targets. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only.",
+    "info": "Defense mitigation against flying targets. Applies to ballistic and gauss tiers of weapons. Affects primary weapons only. Requires a ballistic or gauss assault rifle, carbine, battle rifle, SMG, or shotgun.",
     "grants": [
       "flak"
     ]

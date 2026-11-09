@@ -53,7 +53,7 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'light-volume-fire': PLACEHOLDER_ICON.cyan,
   'overload': overloadIcon,
   'stun': stunIcon,
-  'ether-shredder': shredderIcon,
+  'personnel-shredder': shredderIcon,
   'sublimator': sublimatorIcon,
   'panzer-shredder': shredderIcon,
   'aerial-shredder': shredderIcon,
@@ -95,4 +95,5 @@ export const LOADOUT_ABILITY_ICON: DeepReadonly<Record<LoadoutAbilityId, string>
   'gravity-well': PLACEHOLDER_ICON.cyan,
   'mist': PLACEHOLDER_ICON.cyan,
   'eye-of-the-storm': PLACEHOLDER_ICON.cyan,
+  'ripper': PLACEHOLDER_ICON.cyan,
 };

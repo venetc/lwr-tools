@@ -54,7 +54,7 @@ import respiratorImplantIcon from '../icons/equipment/respirator_implant_long_wa
 import restorativeMistIcon from '../icons/equipment/restorative_mist_long_war.png';
 import airburstActuatorsIcon from '../icons/equipment/rocket_long_war.png';
 import scopeIcon from '../icons/equipment/scope_long_war.png';
-import shredderAmmoIcon from '../icons/equipment/shredder_ammo.png';
+import ripperAmmoIcon from '../icons/equipment/shredder_ammo.png';
 import javelinRocketIcon from '../icons/equipment/shredder_rocket_long_war.png';
 import smokeGrenadeIcon from '../icons/equipment/smoke_grenade_long_war.png';
 import proximitySensorIcon from '../icons/equipment/tactical_sensors_long_war.png';
@@ -94,7 +94,7 @@ export const EQUIPMENT_ICON: DeepReadonly<Record<EquipmentId, string>> = {
   'proximity-sensor': proximitySensorIcon,
   'walker-servos': walkerServosIcon,
   'neural-scope': neuralScopeIcon,
-  'shredder-ammo': shredderAmmoIcon,
+  'ripper-ammo': ripperAmmoIcon,
   'psi-defender': psiDefenderIcon,
   'conduit': conduitIcon,
   'reinforced-plating': reinforcedPlatingIcon,

@@ -182,7 +182,7 @@
   "mayhem": {
     "code": 37,
     "name": "Mayhem",
-    "description": "Suppression damages enemies immediately with a round of suppressive fire and has its cooldown reduced by 1. Suppressive Fire can cause bleeding."
+    "description": "Suppression damages enemies immediately with a round of suppressive fire. Suppressive Fire gains +1 damage and can cause bleeding."
   },
   "mechanic": {
     "code": 38,
@@ -231,7 +231,7 @@
   "raking-fire": {
     "code": 46,
     "name": "Raking Fire",
-    "description": "Fire 2 additional reaction shots during overwatch. Reaction Fire and Bulletstorm shots that miss have a 35% chance to take suppressive fire. [Suppressive Fire deals 40% standard shot damage]"
+    "description": "Fire 2 additional reaction shots during overwatch. Reaction Fire and Bulletstorm attacks that miss have a 30% chance to take suppressive fire. [Suppressive Fire deals 40% standard shot damage]"
   },
   "ranger": {
     "code": 47,
@@ -282,7 +282,7 @@
   "sapper": {
     "code": 55,
     "name": "Sapper",
-    "description": "Explosives are more effective against solid structures. They gain +1 damage, +20 penetration, and double environmental damage."
+    "description": "Explosives are more effective against solid structures. They gain +1 damage, +20 penetration, and double environmental damage. Once per mission, can place a Demo Charge on an adjacent wall or object that blows it open at the start of the next turn."
   },
   "savior": {
     "code": 56,
@@ -467,7 +467,7 @@
   "reactive-targeting-sensors": {
     "code": 89,
     "name": "Reactive Targeting Sensors",
-    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit gains +20% DR against that attack, returns fire with a +20 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
+    "description": "Once per enemy turn, if this unit is idle or on overwatch and is targeted by a standard attack (shot or melee): this unit returns fire with a +20 aim reaction shot, and then enters One For All (if able). [Basic reaction shots lower cover DR/def by half and cannot crit]"
   },
   "repair-servos": {
     "code": 90,

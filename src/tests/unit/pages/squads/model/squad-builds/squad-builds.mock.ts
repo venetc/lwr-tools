@@ -92,6 +92,7 @@ export const BUILD_CALCULATOR_MOCK = {
   OfficerRankBadge: {},
   ShivBuildTree: {},
   ShivMiniTree: {},
+  SignatureSkillIcon: {},
 };
 
 export const SNIPER_OPTION = { id: 'sniper', kind: 'biosoldier', name: 'Sniper', icon: {}, soldierClass: SNIPER } as NewBuildOption;

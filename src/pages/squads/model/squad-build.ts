@@ -86,6 +86,15 @@ export const squadBuildClassIcon = <Kind extends LoadoutUnitId>(squadBuild: Squa
 };
 
 /**
+ * Perk of the Signature skill of the build; null without one, and always for a SHIV.
+ *
+ * @param squadBuild build of the Unit, saved or not yet.
+ */
+export const squadBuildSignatureSkill = <Kind extends LoadoutUnitId>(squadBuild: SquadBuildDataOf<Kind>) => {
+  return SQUAD_BUILD_KINDS[squadBuild.kind].signatureSkill(squadBuild.build);
+};
+
+/**
  * Key of the build a Unit refers to, unique across the Build calculators.
  *
  * @param build kind and id of the build.

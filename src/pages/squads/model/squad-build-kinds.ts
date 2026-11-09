@@ -2,8 +2,8 @@ import type { Component } from 'vue';
 import { markRaw } from 'vue';
 
 import type { LoadoutUnitId, LoadoutWearer } from '@entities/loadout';
-import type { SoldierClass } from '@entities/soldier';
-import { BIOSOLDIER_CLASSES, biosoldierBuildTraits, MEC_CLASSES } from '@entities/soldier';
+import type { SoldierClass, TreeAbility } from '@entities/soldier';
+import { BIOSOLDIER_CLASSES, biosoldierBuildTraits, MEC_CLASSES, soldierBuildSignatureSkill } from '@entities/soldier';
 import type { BuildDataByKind } from '@features/share-build';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { SvgIcon } from '@shared/ui/svg-icon';
@@ -16,6 +16,7 @@ import {
   OfficerRankBadge,
   ShivBuildTree,
   ShivMiniTree,
+  SignatureSkillIcon,
   useBiosoldierBuildsStore,
   useMecBuildsStore,
   useShivBuildsStore,
@@ -50,6 +51,10 @@ export interface SquadBuildKind<Build, Data> {
   classIcon: (build: Readonly<Data>) => SvgIcon | null
   /** Badge of the senior officer rank of the build; null for a kind without officers. */
   officerRankBadge: Component | null
+  /** Perk of the Signature skill of the build, saved or not; null without one or for a kind without Signature skills. */
+  signatureSkill: (build: Readonly<Data>) => TreeAbility | null
+  /** Icon of the Signature skill of the build, saved or not, in a list; null for a kind without Signature skills. */
+  signatureSkillIcon: Component | null
 }
 
 /**
@@ -72,6 +77,8 @@ export const SQUAD_BUILD_KINDS: { readonly [Kind in LoadoutUnitId]: Readonly<Squ
     buildIcon: markRaw(BiosoldierClassIcon),
     classIcon: () => null,
     officerRankBadge: markRaw(OfficerRankBadge),
+    signatureSkill: soldierBuildSignatureSkill,
+    signatureSkillIcon: markRaw(SignatureSkillIcon),
   },
   mec: {
     builds: () => useMecBuildsStore().builds,
@@ -85,6 +92,8 @@ export const SQUAD_BUILD_KINDS: { readonly [Kind in LoadoutUnitId]: Readonly<Squ
     buildIcon: null,
     classIcon: build => build.soldierClass.icon,
     officerRankBadge: null,
+    signatureSkill: soldierBuildSignatureSkill,
+    signatureSkillIcon: markRaw(SignatureSkillIcon),
   },
   shiv: {
     builds: () => useShivBuildsStore().builds,
@@ -98,5 +107,7 @@ export const SQUAD_BUILD_KINDS: { readonly [Kind in LoadoutUnitId]: Readonly<Squ
     buildIcon: null,
     classIcon: () => null,
     officerRankBadge: null,
+    signatureSkill: () => null,
+    signatureSkillIcon: null,
   },
 };

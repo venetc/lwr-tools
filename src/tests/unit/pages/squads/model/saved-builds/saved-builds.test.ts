@@ -1,8 +1,25 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { matchingBuilds, savedBuildFilters, savedBuildGroups } from '@pages/squads/model/saved-builds';
 
-import { ALLOY_SUPPORT, BUILDS, FIELD_MEDIC, FILTER_COUNTS, FILTER_NAMES, GROUP_TITLES, IN_SQUAD_COUNTS, OLD_SUPPORT, UNITS } from './saved-builds.mock';
+import {
+  ALLOY_SUPPORT,
+  BUILDS,
+  FIELD_MEDIC,
+  FILTER_COUNTS,
+  FILTER_NAMES,
+  GROUP_TITLES,
+  IN_SQUAD_COUNTS,
+  LONE_SCOUT,
+  LONE_SHIV,
+  OLD_SUPPORT,
+  UNITS,
+} from './saved-builds.mock';
+
+vi.mock('@entities/soldier', async importOriginal => ({
+  ...await importOriginal<typeof import('@entities/soldier')>(),
+  soldierBuildSignatureSkill: (await import('./saved-builds.mock')).soldierBuildSignatureSkillStub,
+}));
 
 describe('matchingBuilds', () => {
   it('finds a build by its name in any case', () => {
@@ -15,6 +32,24 @@ describe('matchingBuilds', () => {
     const builds = matchingBuilds(BUILDS, ' Goliath ');
 
     expect(builds.map(item => item.build.name)).toEqual(['Goliath Wall']);
+  });
+
+  it('finds a build by its Signature skill in any case', () => {
+    const builds = matchingBuilds(BUILDS, 'IN THE zone');
+
+    expect(builds.map(item => item.build.name)).toEqual(['Overwatch Sniper']);
+  });
+
+  it('does not find a build without a Signature skill by a selected perk', () => {
+    const builds = matchingBuilds([LONE_SCOUT], 'lone wolf');
+
+    expect(builds).toEqual([]);
+  });
+
+  it('does not find a SHIV build by a Signature skill', () => {
+    const builds = matchingBuilds([LONE_SHIV], 'lone wolf');
+
+    expect(builds).toEqual([]);
   });
 
   it('finds a SHIV build by the unit name', () => {
@@ -73,6 +108,12 @@ describe('savedBuildGroups', () => {
     const groups = savedBuildGroups(BUILDS, 'biosoldier', []);
 
     expect(groups[0].rows.map(row => row.className)).toEqual(['Sniper', 'Medic']);
+  });
+
+  it('names the Signature skill of each build', () => {
+    const groups = savedBuildGroups(BUILDS, 'biosoldier', []);
+
+    expect(groups[0].rows.map(row => row.signatureSkill)).toEqual(['In The Zone', null]);
   });
 
   it('marks an Outdated build', () => {

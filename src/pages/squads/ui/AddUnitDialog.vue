@@ -14,6 +14,7 @@ import { useAddUnit } from '../model/add-unit';
 import OutdatedNote from './OutdatedNote.vue';
 import UnitBuildIcon from './UnitBuildIcon.vue';
 import UnitOfficerRankBadge from './UnitOfficerRankBadge.vue';
+import UnitSignatureSkillIcon from './UnitSignatureSkillIcon.vue';
 
 const {
   isOpen,
@@ -65,7 +66,7 @@ const {
             v-model="query"
             :class="$style.search"
             aria-label="Search builds"
-            placeholder="Search by name or Class"
+            placeholder="Search by name, Class or Signature skill"
           />
 
           <ToggleGroup
@@ -107,6 +108,7 @@ const {
                   @click="addSavedBuild(row)"
                 >
                   <UnitBuildIcon :class="$style.rowIcon" :squad-build="row.squadBuild" />
+                  <UnitSignatureSkillIcon :squad-build="row.squadBuild" aria-hidden="true" />
                   <span :class="$style.rowTitle">
                     <span :class="$style.rowName">{{ row.squadBuild.build.name }}</span>
                     <UnitOfficerRankBadge :squad-build="row.squadBuild" />
@@ -116,6 +118,7 @@ const {
                     {{ OUTDATED_BUILD_ROW_HINT }}
                   </OutdatedNote>
                   <span v-else :class="$style.rowClass">{{ row.className }}</span>
+                  <span v-if="row.signatureSkill" :class="$style.visuallyHidden">Signature skill: {{ row.signatureSkill }}</span>
                 </button>
               </li>
             </ul>
@@ -179,6 +182,7 @@ const {
           <output :class="$style.preview" aria-label="Preview">
             <span v-if="codePreview" :class="$style.previewRow">
               <UnitBuildIcon :class="$style.rowIcon" :squad-build="codePreview.squadBuild" />
+              <UnitSignatureSkillIcon :squad-build="codePreview.squadBuild" />
               <span :class="$style.previewName">{{ codePreview.name }}</span>
               <span :class="$style.rowClass">{{ codePreview.caption }}</span>
             </span>

@@ -7,8 +7,8 @@ import { squadBuildClassIcon } from './squad-build';
 import { SQUAD_BUILD_KINDS } from './squad-build-kinds';
 
 /**
- * How a Unit card shows the build of its kind: the mini-tree, the tree of the Build dialog, the class icon and the
- * officer rank badge.
+ * How a Unit card shows the build of its kind: the mini-tree, the tree of the Build dialog, the class icon, the officer
+ * rank badge and the Signature skill icon.
  *
  * @param squadBuild build of the Unit, saved or not yet.
  */
@@ -23,7 +23,9 @@ export const useSquadBuildViews = (squadBuild: MaybeRefOrGetter<SquadBuildData>)
 
   const officerRankBadge = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].officerRankBadge);
 
-  return { miniTree, buildTree, buildIcon, classIcon, officerRankBadge };
+  const signatureSkillIcon = computed(() => SQUAD_BUILD_KINDS[toValue(squadBuild).kind].signatureSkillIcon);
+
+  return { miniTree, buildTree, buildIcon, classIcon, officerRankBadge, signatureSkillIcon };
 };
 
 /**

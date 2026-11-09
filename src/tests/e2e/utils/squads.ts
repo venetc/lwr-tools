@@ -99,6 +99,14 @@ export const savedBuildRow = (dialog: Locator, buildList: string, buildName: str
 );
 
 /**
+ * Signature skill icon inside the element, found by its alternative text.
+ *
+ * @param container element with the icon: a Unit card, a row of a saved build or the preview of a Share code.
+ * @param perkName perk name of the Signature skill.
+ */
+export const signatureSkillIcon = (container: Locator, perkName: string) => container.getByAltText(`Signature skill: ${perkName}`, { exact: true });
+
+/**
  * Adds a Unit of a saved build through the Add Unit dialog.
  *
  * @param page browser page.

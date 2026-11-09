@@ -4,7 +4,7 @@ import type { SquadUnit } from '@features/manage-squads';
 
 import { ALL_BUILDS_FILTER_NAME } from '../config/constants';
 import type { SquadBuild } from './squad-build';
-import { buildListName, squadBuildClassName, squadBuildKey } from './squad-build';
+import { buildListName, squadBuildClassName, squadBuildKey, squadBuildSignatureSkill } from './squad-build';
 
 /** Unit type the saved builds are filtered by, or all of them. */
 export type SavedBuildKind = LoadoutUnitId | 'all';
@@ -31,6 +31,8 @@ export interface SavedBuildRow {
   squadBuild: SquadBuild
   /** Class name of the build. */
   className: string
+  /** Perk name of the Signature skill of the build, told after the build name; null without one. */
+  signatureSkill: string | null
   /** Number of Units of the build in the Squad. */
   inSquadCount: number
   /** Whether the build is an Outdated build: no Unit of it can be added until the update. */
@@ -50,7 +52,7 @@ export interface SavedBuildGroup {
 }
 
 /**
- * Builds whose name or class contains the query, in any case; a blank query keeps every build.
+ * Builds whose name, class or Signature skill contains the query, in any case; a blank query keeps every build.
  *
  * @param builds saved builds.
  * @param query search query.
@@ -61,7 +63,9 @@ export const matchingBuilds = (builds: readonly SquadBuild[], query: string) => 
   if (!text) return builds;
 
   return builds.filter(squadBuild => (
-    squadBuild.build.name.toLowerCase().includes(text) || squadBuildClassName(squadBuild).toLowerCase().includes(text)
+    squadBuild.build.name.toLowerCase().includes(text)
+    || squadBuildClassName(squadBuild).toLowerCase().includes(text)
+    || squadBuildSignatureSkill(squadBuild)?.name.toLowerCase().includes(text)
   ));
 };
 
@@ -85,7 +89,7 @@ export const savedBuildFilters = (builds: readonly SquadBuild[]): SavedBuildFilt
 
 /**
  * Builds of the chosen unit type grouped by Build calculator in unit type order, without empty groups; each build
- * counts its Units in the Squad and tells whether it is an Outdated build.
+ * names its Signature skill, counts its Units in the Squad and tells whether it is an Outdated build.
  *
  * @param builds builds to group.
  * @param kind unit type to keep, or all.
@@ -110,6 +114,7 @@ export const savedBuildGroups = (builds: readonly SquadBuild[], kind: SavedBuild
         id,
         squadBuild,
         className: squadBuildClassName(squadBuild),
+        signatureSkill: squadBuildSignatureSkill(squadBuild)?.name ?? null,
         inSquadCount: unitCountByBuild.get(id) ?? 0,
         isOutdated: squadBuild.build.outdated !== null,
       };

@@ -11,6 +11,7 @@ import UnitBuild from './UnitBuild.vue';
 import UnitBuildIcon from './UnitBuildIcon.vue';
 import UnitLoadout from './UnitLoadout.vue';
 import UnitOfficerRankBadge from './UnitOfficerRankBadge.vue';
+import UnitSignatureSkillIcon from './UnitSignatureSkillIcon.vue';
 
 interface Props {
   /** Unit to show. */
@@ -39,6 +40,7 @@ const headingId = createId();
   <article :class="$style.card" :aria-labelledby="headingId">
     <header :class="$style.header">
       <UnitBuildIcon :class="$style.icon" :squad-build="props.card.squadBuild" />
+      <UnitSignatureSkillIcon :squad-build="props.card.squadBuild" />
 
       <div :class="$style.heading">
         <div :class="$style.title">

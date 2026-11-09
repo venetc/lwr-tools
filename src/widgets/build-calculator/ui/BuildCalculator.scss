@@ -1,5 +1,6 @@
 @use 'styles/colors';
 @use 'styles/layout';
+@use 'styles/shape';
 
 .page {
   flex: 1;
@@ -19,6 +20,8 @@
 }
 
 .build {
+  @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
+  padding: 6px 14px 18px;
   scroll-margin-block-start: calc(#{layout.$site-header-height} + 16px);
 }
 

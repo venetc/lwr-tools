@@ -1,3 +1,4 @@
+@use 'styles/a11y';
 @use 'styles/colors';
 @use 'styles/layers';
 @use 'styles/media';
@@ -42,6 +43,13 @@
   }
 }
 
+.fit {
+  @include media.wider-than-phone {
+    width: fit-content;
+    max-width: calc(100vw - 32px);
+  }
+}
+
 .frame {
   display: flex;
   flex-direction: column;
@@ -73,33 +81,6 @@
   color: colors.$text-primary;
 }
 
-.close {
-  display: grid;
-  place-items: center;
-  padding: 6px;
-  background: none;
-  cursor: pointer;
-
-  @include media.with-hover {
-    &:not(:hover) {
-      color: colors.$text-secondary;
-    }
-
-    &:hover {
-      color: colors.$text-primary;
-    }
-  }
-
-  @include media.with-touch {
-    color: colors.$text-secondary;
-  }
-}
-
-.closeIcon {
-  width: 20px;
-  height: 20px;
-}
-
 .body {
   display: flex;
   flex-direction: column;
@@ -107,4 +88,10 @@
   min-block-size: 0;
   padding: 14px 16px 16px;
   overflow-y: auto;
+  // The body scrolls on its own, so sticky content in it sticks to its top edge, not under the site header.
+  --sticky-inset-block-start: 0px;
+}
+
+.visuallyHidden {
+  @include a11y.visually-hidden;
 }

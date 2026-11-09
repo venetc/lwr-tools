@@ -7,6 +7,13 @@
   height: 18px;
 }
 
+.headerEnd {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .visuallyHidden {
   @include a11y.visually-hidden;
 }

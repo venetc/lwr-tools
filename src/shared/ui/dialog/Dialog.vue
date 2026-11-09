@@ -1,22 +1,26 @@
 <script setup lang="ts">
-import { X } from '@lucide/vue';
-import { DialogClose, DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui';
+import { DialogContent, DialogOverlay, DialogPortal, DialogRoot, DialogTitle } from 'reka-ui';
 import { useCssModule } from 'vue';
 
-import { useDialogContentClass } from './model/dialog';
+import DialogCloseButton from './DialogCloseButton.vue';
+import type { DialogWidth } from './model/dialog';
+import { useDialog } from './model/dialog';
 
 interface Props {
   /** Dialog title, also its accessible name. */
   title: string
-  /** Whether the dialog is wide, for content laid out in columns; on a phone every dialog takes the whole screen. */
-  wide?: boolean
+  /** Width of the dialog beyond a phone; on a phone every dialog takes the whole screen. */
+  width?: DialogWidth
+  /** Whether the dialog draws no header: the title is only its accessible name, and the content brings its own header with a `DialogCloseButton`. */
+  headerless?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  wide: false,
+  width: 'regular',
+  headerless: false,
 });
 
-const contentClass = useDialogContentClass(() => props.wide, useCssModule());
+const { contentClass, focusOnOpen } = useDialog(() => props.width, () => props.headerless, useCssModule());
 
 /** Whether the dialog is open. */
 const open = defineModel<boolean>('open', { default: false });
@@ -27,16 +31,22 @@ const open = defineModel<boolean>('open', { default: false });
     <DialogPortal>
       <DialogOverlay :class="$style.overlay" />
 
-      <DialogContent :class="contentClass" :aria-describedby="undefined">
+      <DialogContent
+        :class="contentClass"
+        :aria-describedby="undefined"
+        @open-auto-focus="focusOnOpen"
+      >
         <div :class="$style.frame">
-          <header :class="$style.header">
+          <DialogTitle v-if="props.headerless" :class="$style.visuallyHidden">
+            {{ props.title }}
+          </DialogTitle>
+
+          <header v-else :class="$style.header">
             <DialogTitle :class="$style.title">
               {{ props.title }}
             </DialogTitle>
 
-            <DialogClose :class="$style.close" aria-label="Close">
-              <X :class="$style.closeIcon" aria-hidden="true" />
-            </DialogClose>
+            <DialogCloseButton />
           </header>
 
           <div :class="$style.body">

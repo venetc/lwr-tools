@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { VNode } from 'vue';
 import { useCssModule } from 'vue';
 
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
@@ -32,6 +33,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  'header-end'?: () => VNode[]
+}>();
 
 const biosoldierBuildsStore = useBiosoldierBuildsStore();
 
@@ -79,6 +84,10 @@ const { getBranchClasses } = useBiosoldierBranchClasses(useCssModule());
           <span>{{ group.title }}</span>
           <span :class="getBranchClasses(group).counter">{{ group.counter }}</span>
         </span>
+      </template>
+
+      <template #header-end>
+        <slot name="header-end" />
       </template>
 
       <template #tier="{ tier, highlighted }">

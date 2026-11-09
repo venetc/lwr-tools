@@ -1,0 +1,30 @@
+@use 'styles/colors';
+@use 'styles/media';
+
+.close {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  background: none;
+  cursor: pointer;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      color: colors.$text-secondary;
+    }
+
+    &:hover {
+      color: colors.$text-primary;
+    }
+  }
+
+  @include media.with-touch {
+    color: colors.$text-secondary;
+  }
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}

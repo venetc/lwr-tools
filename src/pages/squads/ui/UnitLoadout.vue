@@ -26,7 +26,7 @@ const { isOpen, slotId, openSlot } = useUnitLoadout(() => props.card.isOutdated)
   <Dialog
     v-model:open="isOpen"
     title="Loadout"
-    wide
+    width="wide"
   >
     <LoadoutEditor :card="props.card" :initial-slot-id="slotId" />
   </Dialog>

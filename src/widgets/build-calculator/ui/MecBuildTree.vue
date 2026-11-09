@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VNode } from 'vue';
+
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
 
 import { useSoldierBuildEditor } from '../model/build-editor';
@@ -27,6 +29,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  'header-end'?: () => VNode[]
+}>();
 
 const mecBuildsStore = useMecBuildsStore();
 
@@ -64,6 +70,10 @@ const { rename, lock, replace, reset, update, select, selectSignatureSkill } = u
         aria-hidden="true"
       />
       <SignatureSkillButton :build="props.build" @select="selectSignatureSkill" />
+    </template>
+
+    <template #header-end>
+      <slot name="header-end" />
     </template>
 
     <template #tier="{ tier, highlighted }">

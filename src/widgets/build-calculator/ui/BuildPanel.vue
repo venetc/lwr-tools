@@ -71,6 +71,7 @@ const emit = defineEmits<Emits>();
 
 defineSlots<{
   'icon'?: () => VNode[]
+  'header-end'?: () => VNode[]
   'badge'?: () => VNode[]
   'tier'?: (props: TierSlotProps) => VNode[]
   'tab'?: (props: GroupSlotProps) => VNode[]
@@ -128,23 +129,27 @@ const {
         </template>
       </EditableTitle>
 
-      <LockToggle
-        v-if="isEditable"
-        v-model="readonly"
-        label="Lock build"
-      />
+      <div :class="$style.headerEnd">
+        <LockToggle
+          v-if="isEditable"
+          v-model="readonly"
+          label="Lock build"
+        />
 
-      <button
-        v-else
-        :class="$style.update"
-        type="button"
-        :title="outdatedUpdateLabel"
-        @click="openUpdate"
-      >
-        <TriangleAlert :class="$style.actionIcon" aria-hidden="true" />
-        <span :class="$style.updateCount" aria-hidden="true">{{ outdatedCount }}</span>
-        <span :class="$style.visuallyHidden">{{ outdatedUpdateLabel }}</span>
-      </button>
+        <button
+          v-else
+          :class="$style.update"
+          type="button"
+          :title="outdatedUpdateLabel"
+          @click="openUpdate"
+        >
+          <TriangleAlert :class="$style.actionIcon" aria-hidden="true" />
+          <span :class="$style.updateCount" aria-hidden="true">{{ outdatedCount }}</span>
+          <span :class="$style.visuallyHidden">{{ outdatedUpdateLabel }}</span>
+        </button>
+
+        <slot name="header-end" />
+      </div>
     </template>
 
     <template v-if="hasActions" #footer>

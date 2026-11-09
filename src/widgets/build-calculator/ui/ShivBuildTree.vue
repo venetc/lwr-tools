@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { VNode } from 'vue';
+
 import { SHIV_BUILD_NAME } from '@entities/shiv';
 import { LoadingImage } from '@shared/ui/loading-image';
 import { TieredPickerTierLabel } from '@shared/ui/tiered-picker';
@@ -30,6 +32,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+defineSlots<{
+  'header-end'?: () => VNode[]
+}>();
+
 const shivBuildsStore = useShivBuildsStore();
 
 const { groups, removedPerks, hasRemovedPerks, select: selectItem } = useShivBuildGroups(() => props.build);
@@ -54,6 +60,10 @@ const { rename, lock, replace, reset, update, select } = useBuildEditor(() => pr
       @remove="emit('remove', props.build.id)"
       @select="select"
     >
+      <template #header-end>
+        <slot name="header-end" />
+      </template>
+
       <template #tier="{ tier, highlighted }">
         <TieredPickerTierLabel
           :icon="tier.level.icon"

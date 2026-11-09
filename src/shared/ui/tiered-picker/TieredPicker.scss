@@ -1,22 +1,29 @@
 @use 'styles/colors';
 @use 'styles/typography';
-@use 'styles/shape';
+
+$header-padding-block: 6px;
 
 .panel {
-  @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
   display: flex;
   flex-direction: column;
   gap: 12px;
   width: 100%;
   max-width: 440px;
-  padding: 12px 14px 18px;
+  background: colors.$surface-1;
 }
 
+// Sticks to the top of the scroll, so the header controls stay at hand in a tall picker.
 .header {
+  position: sticky;
+  inset-block-start: var(--sticky-inset-block-start);
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-block-end: -$header-padding-block;
+  padding-block: $header-padding-block;
+  background: colors.$surface-1;
 }
 
 .description {

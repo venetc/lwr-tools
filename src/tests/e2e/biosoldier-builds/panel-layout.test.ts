@@ -7,12 +7,14 @@ import { centerOffset, overhang, pageOverflow, textOverflow } from '../utils/pag
 import {
   ACTIONS,
   LOCK_LABEL,
+  LOW_PHONE_VIEWPORT,
   OUTDATED_BUILD,
   OUTDATED_COUNT,
   OUTDATED_UPDATE_LABEL,
   PAGE_PATH,
   PANEL_NAME,
   REMOVE_LABEL,
+  SHARE_LABEL,
   STORAGE_PREFIX,
   TOUCH_SIZE,
 } from './panel-layout.mock';
@@ -122,6 +124,16 @@ test.describe('Build panel layout of an Outdated build', () => {
 });
 
 test.describe('Build panel layout of an editable build', () => {
+  test('keeps the lock below the site header once the page is scrolled down', { tag: '@phone' }, async ({ page }) => {
+    await page.setViewportSize(LOW_PHONE_VIEWPORT);
+    const panel = await openPanel(page);
+    await panel.getByRole('button', { name: SHARE_LABEL, exact: true }).scrollIntoViewIfNeeded();
+
+    const [lock, header] = await Promise.all([panel.getByRole('button', { name: LOCK_LABEL }).boundingBox(), page.getByRole('banner').boundingBox()]);
+
+    expect(lock?.y).toBeGreaterThanOrEqual((header?.y ?? 0) + (header?.height ?? 0));
+  });
+
   test('shows the lock on the row of the name', async ({ page }) => {
     const panel = await openPanel(page);
 

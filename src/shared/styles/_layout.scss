@@ -1,2 +1,4 @@
 // Fixed site header height; sticky elements below the header are offset by it.
 $site-header-height: 40px;
+
+// Sticky elements stick at var(--sticky-inset-block-start): under the site header on a page, 0 in a container that scrolls on its own.

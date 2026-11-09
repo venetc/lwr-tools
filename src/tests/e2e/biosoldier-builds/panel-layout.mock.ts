@@ -29,3 +29,8 @@ export const ACTIONS = [
   { name: 'Reset build', label: 'Reset' },
   { name: 'Remove build', label: 'Remove' },
 ];
+
+export const SHARE_LABEL = 'Share build';
+
+/** Phone viewport too low for the whole panel, so the page scrolls. */
+export const LOW_PHONE_VIEWPORT = { width: 393, height: 480 };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Dialog } from '@shared/ui/dialog';
+import { Dialog, DialogCloseButton } from '@shared/ui/dialog';
 
 import type { SquadBuild } from '../model/squad-build';
 import { useUnitBuild } from '../model/unit-build';
@@ -42,13 +42,22 @@ const { miniTree, buildTree, isOpen, openBuild, closeNoteAnnouncement } = useUni
     </button>
   </div>
 
-  <Dialog v-model:open="isOpen" title="Build">
+  <Dialog
+    v-model:open="isOpen"
+    title="Build"
+    width="fit"
+    headerless
+  >
     <div :class="$style.panel">
       <component
         :is="buildTree"
         :build="props.squadBuild.build"
         @change="emit('change')"
-      />
+      >
+        <template #header-end>
+          <DialogCloseButton />
+        </template>
+      </component>
     </div>
 
     <p :class="$style.visuallyHidden" aria-live="polite">

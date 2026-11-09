@@ -32,9 +32,10 @@
   }
 }
 
+// Width of the Build panel inside its frame on the calculator pages: the 440px column less 14px paddings; the dialog hugs it, and on a phone, where the dialog takes the whole screen, the panel stands in the middle.
 .panel {
-  display: flex;
-  justify-content: center;
+  align-self: center;
+  inline-size: min(412px, 100vw - 32px);
 }
 
 .visuallyHidden {

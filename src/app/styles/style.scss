@@ -1,4 +1,5 @@
 @use 'styles/colors';
+@use 'styles/layout';
 @use 'styles/typography';
 
 @layer reset, base, components, utilities;
@@ -74,6 +75,7 @@
 
 @layer base {
   :root {
+    --sticky-inset-block-start: #{layout.$site-header-height};
     color-scheme: dark;
     overflow-y: scroll;
     scrollbar-width: thin;

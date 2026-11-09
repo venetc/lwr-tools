@@ -135,7 +135,7 @@ test.describe('Squad import in the toolbar', () => {
     await expect(dialog.getByRole('alert')).toHaveCount(0);
   });
 
-  test('tells to add a Unit code through an empty cell', async ({ page }) => {
+  test('tells to add a Unit code through Add Unit', async ({ page }) => {
     await openSquads(page);
 
     const dialog = await importSquadCode(page, UNIT_CODE);

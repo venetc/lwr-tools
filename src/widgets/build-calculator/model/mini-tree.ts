@@ -124,19 +124,29 @@ const biosoldierStepCaption = (tier: BiosoldierBuildTier): string => {
 };
 
 /**
- * Mini-tree of a biosoldier build: a row for each branch of the saved tree, even when empty.
+ * Whether a mini-tree row shows a selection: a selected ability or an Outdated selection.
+ *
+ * @param row mini-tree row.
+ */
+const hasSelection = (row: MiniTreeRow) => row.steps.some(step => step.state === 'selected' || step.state === 'outdated');
+
+/**
+ * Mini-tree of a biosoldier build: a row for each branch of the saved tree that shows a selection, an Outdated
+ * selection included; the class tree always, even when empty.
  *
  * @param build biosoldier build.
  */
 export const useBiosoldierMiniTree = (build: MaybeRefOrGetter<Readonly<BiosoldierBuild>>) => {
   const { branches } = useBiosoldierBranches(build);
 
-  return computed(() => branches.value.map((branch): MiniTreeRow => ({
-    id: branch.id,
-    title: BIOSOLDIER_BRANCH_TITLE[branch.id],
-    tone: branch.id,
-    steps: branch.tiers.map(tier => miniTreeStep(tier, biosoldierStepCaption(tier))),
-  })));
+  return computed(() => branches.value
+    .map((branch): MiniTreeRow => ({
+      id: branch.id,
+      title: BIOSOLDIER_BRANCH_TITLE[branch.id],
+      tone: branch.id,
+      steps: branch.tiers.map(tier => miniTreeStep(tier, biosoldierStepCaption(tier))),
+    }))
+    .filter(row => row.id === 'class-tree' || hasSelection(row)));
 };
 
 /**

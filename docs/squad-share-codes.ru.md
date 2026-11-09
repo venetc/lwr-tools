@@ -34,7 +34,7 @@
 
 | Место | Код Squad | Код Unit или Build | Битый код |
 |---|---|---|---|
-| Import в тулбаре Squad planner | новый Squad, открывается | под полем: «This is a Unit code. Add it through an empty cell.» | под полем: «Invalid code. Copy the Share code again and paste it whole.» |
+| Import в тулбаре Squad planner | новый Squad, открывается | под полем: «This is a Unit code. Add it through Add Unit.» | под полем: «Invalid code. Copy the Share code again and paste it whole.» |
 | Вкладка Share code в Add Unit | под полем: «This is a Squad code. Use Import in the toolbar.» | новый Unit | та же ошибка |
 | Import калькулятора | тост «This is a Squad code. Import it in the Squad planner.» | Build своего вида | «Invalid code» |
 

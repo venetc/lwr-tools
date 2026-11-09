@@ -3,6 +3,10 @@
 @use 'styles/media';
 @use 'styles/shape';
 @use 'styles/typography';
+@use 'unit-card-media';
+
+$header-width: 176px;
+$column-gap: 16px;
 
 @mixin -header-button {
   flex: none;
@@ -38,18 +42,51 @@
 
 .card {
   @include shape.frame(shape.$cut-lg, 2px, colors.$accent, colors.$surface-1);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
   min-inline-size: 0;
   padding: 12px 14px 16px;
+
+  @include unit-card-media.stacked {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  // The columns stretch to the card height, so the dividers between them run from top to bottom.
+  @include unit-card-media.in-row {
+    display: grid;
+    grid-template-columns: $header-width max-content minmax(0, 1fr);
+    grid-template-areas: 'header build loadout';
+    column-gap: $column-gap;
+  }
 }
 
 .header {
+  min-inline-size: 0;
+
+  @include unit-card-media.stacked {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  @include unit-card-media.in-row {
+    display: grid;
+    grid-area: header;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'icons actions'
+      'heading heading';
+    align-self: start;
+    gap: 8px 4px;
+  }
+}
+
+.icons {
+  flex: none;
   display: flex;
+  grid-area: icons;
   align-items: center;
   gap: 10px;
-  min-inline-size: 0;
 }
 
 .icon {
@@ -60,6 +97,7 @@
 
 .heading {
   flex: 1;
+  grid-area: heading;
   min-inline-size: 0;
 }
 
@@ -73,10 +111,17 @@
 .name {
   @include typography.heading-4;
   margin: 0;
-  overflow: hidden;
   color: colors.$text-primary;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+
+  @include unit-card-media.stacked {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @include unit-card-media.in-row {
+    overflow-wrap: anywhere;
+  }
 }
 
 .caption {
@@ -87,6 +132,14 @@
 
 .outdatedCaption {
   margin: 0;
+}
+
+.actions {
+  flex: none;
+  display: flex;
+  grid-area: actions;
+  align-items: center;
+  gap: 10px;
 }
 
 .copy {
@@ -112,6 +165,24 @@
 
 .removeIcon {
   @include -header-icon;
+}
+
+.build,
+.loadout {
+  min-inline-size: 0;
+
+  @include unit-card-media.in-row {
+    padding-inline-start: $column-gap;
+    border-inline-start: 1px solid colors.$border-subtle;
+  }
+}
+
+.build {
+  grid-area: build;
+}
+
+.loadout {
+  grid-area: loadout;
 }
 
 .visuallyHidden {

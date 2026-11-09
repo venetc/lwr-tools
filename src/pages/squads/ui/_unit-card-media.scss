@@ -1,0 +1,15 @@
+// Widths where Unit cards stack their parts or lay them out in a row: mutually exclusive, so a rule for one never
+// overrides the other.
+$stacked-max-width: 866.98px;
+
+@mixin stacked {
+  @media (max-width: $stacked-max-width) {
+    @content;
+  }
+}
+
+@mixin in-row {
+  @media (min-width: $stacked-max-width + 0.02px) {
+    @content;
+  }
+}

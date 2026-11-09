@@ -15,17 +15,11 @@ export const SHIV = 'SHIV';
 /** Accessible names of the mini-tree rows of any unit type. */
 export const MINI_TREE_ROWS = /^(Class tree|Gene mods|Psionic|Officer|SHIV tree)$/;
 
-export const SNIPER_ROWS = `
-- list "Class tree"
-- list "Gene mods":
-  - 'listitem "Brain: Empty"'
-- list "Psionic"
-- list "Officer":
-  - 'listitem "Lieutenant: Empty"'
-- list "Loadout"
-`;
+/** Rows of the branches of a Default build of a Sniper: nothing selected in them. */
+export const EMPTY_BRANCH_ROWS = /^(Gene mods|Psionic|Officer)$/;
 
-export const MEC_ROW = 'Class tree';
+/** Class tree row of a biosoldier or a MEC. */
+export const CLASS_TREE_ROW = 'Class tree';
 
 export const SHIV_ROW = 'SHIV tree';
 
@@ -59,6 +53,3 @@ export const OFFICER_ROW = 'Officer';
 export const OFFICER_CAPTIONS = ['LT', 'CAPT', 'MAJ', 'COL', 'CMDR'];
 
 export const STRENGTH_IN_NUMBERS_STEP = 'Lieutenant: Strength in Numbers';
-
-/** Lieutenant of an editable build, open at any rank of the Class tree. */
-export const OPEN_LIEUTENANT_STEP = 'Lieutenant: Empty';

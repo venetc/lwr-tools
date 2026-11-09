@@ -14,7 +14,7 @@ import { importUnits, squadImportToast } from './unit-import';
  * opens; Units of one build share one new build, and their Loadouts are brought to the rules by the Unit check. A Squad
  * code with Outdated selections first opens the Outdated selections dialog over the import dialog: its confirmation
  * imports the builds without them, its cancel imports nothing and keeps the code. A Unit code or a build code is sent
- * to an empty cell and an invalid code shows the error, both under the field.
+ * to Add Unit and an invalid code shows the error, both under the field.
  */
 export const useSquadImport = () => {
   const squadsStore = useSquadsStore();

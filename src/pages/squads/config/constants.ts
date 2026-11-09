@@ -67,7 +67,7 @@ export const INVALID_SHARE_CODE_TEXT = 'Invalid code. Copy the Share code again 
 export const SQUAD_CODE_IN_ADD_UNIT_TEXT = 'This is a Squad code. Use Import in the toolbar.';
 
 /** Message of a Unit code or a build code entered in the Squad import. */
-export const UNIT_CODE_IN_SQUAD_IMPORT_TEXT = 'This is a Unit code. Add it through an empty cell.';
+export const UNIT_CODE_IN_SQUAD_IMPORT_TEXT = 'This is a Unit code. Add it through Add Unit.';
 
 /** Default builds of the New build tab by Build calculator, in unit type order. */
 export const NEW_BUILD_GROUPS: DeepReadonly<NewBuildGroup[]> = LOADOUT_UNITS.map(newBuildGroup);

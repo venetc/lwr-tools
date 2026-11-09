@@ -39,8 +39,10 @@ const headingId = createId();
 <template>
   <article :class="$style.card" :aria-labelledby="headingId">
     <header :class="$style.header">
-      <UnitBuildIcon :class="$style.icon" :squad-build="props.card.squadBuild" />
-      <UnitSignatureSkillIcon :squad-build="props.card.squadBuild" />
+      <div :class="$style.icons">
+        <UnitBuildIcon :class="$style.icon" :squad-build="props.card.squadBuild" />
+        <UnitSignatureSkillIcon :squad-build="props.card.squadBuild" />
+      </div>
 
       <div :class="$style.heading">
         <div :class="$style.title">
@@ -57,34 +59,40 @@ const headingId = createId();
         </p>
       </div>
 
-      <button
-        :class="$style.copy"
-        type="button"
-        title="Copy Share code"
-        @click="emit('copyCode')"
-      >
-        <Copy :class="$style.copyIcon" aria-hidden="true" />
-        <span :class="$style.visuallyHidden">Copy Share code of {{ props.card.squadBuild.build.name }}</span>
-      </button>
+      <div :class="$style.actions">
+        <button
+          :class="$style.copy"
+          type="button"
+          title="Copy Share code"
+          @click="emit('copyCode')"
+        >
+          <Copy :class="$style.copyIcon" aria-hidden="true" />
+          <span :class="$style.visuallyHidden">Copy Share code of {{ props.card.squadBuild.build.name }}</span>
+        </button>
 
-      <HoldButton
-        :class="$style.remove"
-        title="Hold to remove"
-        @hold="emit('remove')"
-      >
-        <Trash2 :class="$style.removeIcon" aria-hidden="true" />
-        <span :class="$style.visuallyHidden">Remove {{ props.card.squadBuild.build.name }}</span>
-      </HoldButton>
+        <HoldButton
+          :class="$style.remove"
+          title="Hold to remove"
+          @hold="emit('remove')"
+        >
+          <Trash2 :class="$style.removeIcon" aria-hidden="true" />
+          <span :class="$style.visuallyHidden">Remove {{ props.card.squadBuild.build.name }}</span>
+        </HoldButton>
+      </div>
     </header>
 
-    <UnitBuild
-      :squad-build="props.card.squadBuild"
-      :close-note="props.card.closeNote"
-      @change="emit('buildChange')"
-      @close="emit('buildClose')"
-    />
+    <div :class="$style.build">
+      <UnitBuild
+        :squad-build="props.card.squadBuild"
+        :close-note="props.card.closeNote"
+        @change="emit('buildChange')"
+        @close="emit('buildClose')"
+      />
+    </div>
 
-    <UnitLoadout :card="props.card" />
+    <div :class="$style.loadout">
+      <UnitLoadout :card="props.card" />
+    </div>
   </article>
 </template>
 

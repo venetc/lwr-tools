@@ -5,25 +5,34 @@
 $cell-size: 28px;
 // One width for the steps of every row, so the steps line up in columns; a longer caption overflows its step.
 $step-size: 40px;
+$step-gap: 4px;
+$title-width: 56px;
+$title-gap: 4px;
+// Steps of the longest branch: the ranks of a class tree.
+$longest-branch-steps: 7;
 
 .tree {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  // Every mini-tree is as wide as the longest branch in one line, so mini-trees side by side line up; a narrower
+  // container wraps the steps.
+  inline-size: $title-width + $title-gap + $longest-branch-steps * $step-size + ($longest-branch-steps - 1) * $step-gap;
+  max-inline-size: 100%;
   min-inline-size: 0;
 }
 
 .row {
   display: flex;
   align-items: flex-start;
-  gap: 4px;
+  gap: $title-gap;
   min-inline-size: 0;
 }
 
 .title {
   @include typography.caps-4;
   flex: none;
-  inline-size: 56px;
+  inline-size: $title-width;
   padding-block-start: 6px;
   font-size: 0.5625rem;
 }
@@ -44,7 +53,7 @@ $step-size: 40px;
   display: grid;
   flex: 1;
   grid-template-columns: repeat(auto-fill, $step-size);
-  gap: 2px 4px;
+  gap: 2px $step-gap;
   min-inline-size: 0;
   margin: 0;
   padding: 0;

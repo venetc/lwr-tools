@@ -5,6 +5,8 @@ import { addSavedUnit, miniTreeStep, openBuildDialog, openSquads, unitCards } fr
 import {
   BIOSOLDIER_BUILDS,
   BIOSOLDIER_PATH,
+  CLASS_TREE_ROW,
+  EMPTY_BRANCH_ROWS,
   JAEGER,
   LOCK_LABEL,
   LOCKED_RANK_STEP,
@@ -12,30 +14,35 @@ import {
   MAGNUM_STEP,
   MEC_BUILDS,
   MEC_PATH,
-  MEC_ROW,
   MINI_TREE_ROWS,
   OFFICER_CAPTIONS,
   OFFICER_ROW,
   OFFICER_TAB,
-  OPEN_LIEUTENANT_STEP,
   OPEN_RANK_STEP,
   SHIV,
   SHIV_BUILDS,
   SHIV_ROW,
   SNIPER,
-  SNIPER_ROWS,
   SQUADSIGHT_STEP,
   STRENGTH_IN_NUMBERS,
   STRENGTH_IN_NUMBERS_STEP,
 } from './mini-tree.mock';
 
 test.describe('Mini-tree of a Unit card', () => {
-  test('shows the four branches of a biosoldier even when empty', async ({ page }) => {
+  test('hides the branches of a biosoldier with nothing selected', async ({ page }) => {
     await openSquads(page);
 
     await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
 
-    await expect(unitCards(page, SNIPER)).toMatchAriaSnapshot(SNIPER_ROWS);
+    await expect(unitCards(page, SNIPER).getByRole('list', { name: EMPTY_BRANCH_ROWS })).toHaveCount(0);
+  });
+
+  test('keeps the Class tree of a biosoldier', async ({ page }) => {
+    await openSquads(page);
+
+    await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
+
+    await expect(unitCards(page, SNIPER).getByRole('list', { name: CLASS_TREE_ROW, exact: true })).toBeVisible();
   });
 
   test('shows one row of a MEC', async ({ page }) => {
@@ -43,7 +50,7 @@ test.describe('Mini-tree of a Unit card', () => {
 
     await addSavedUnit(page, MEC_BUILDS, JAEGER);
 
-    await expect(unitCards(page, JAEGER).getByRole('list', { name: MINI_TREE_ROWS })).toHaveAccessibleName(MEC_ROW);
+    await expect(unitCards(page, JAEGER).getByRole('list', { name: MINI_TREE_ROWS })).toHaveAccessibleName(CLASS_TREE_ROW);
   });
 
   test('shows one row of a SHIV', async ({ page }) => {
@@ -97,19 +104,13 @@ test.describe('Mini-tree of a Unit card', () => {
   });
 
   test('captions the officer steps with the officer rank abbreviations', async ({ page }) => {
+    const panel = await openBuildPanel(page, BIOSOLDIER_PATH, SNIPER);
+    await selectAbility(panel, OFFICER_TAB, STRENGTH_IN_NUMBERS);
     await openSquads(page);
 
     await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
 
     await expect(unitCards(page, SNIPER).getByRole('list', { name: OFFICER_ROW, exact: true }).getByRole('listitem')).toHaveText(OFFICER_CAPTIONS);
-  });
-
-  test('opens Lieutenant with only the base perk in the Class tree', async ({ page }) => {
-    await openSquads(page);
-
-    await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);
-
-    await expect(miniTreeStep(unitCards(page, SNIPER), OPEN_LIEUTENANT_STEP)).toBeVisible();
   });
 
   test('shows the selected officer perk of an officer rank', async ({ page }) => {

@@ -58,9 +58,9 @@ const createBranchTierMock = (id: string, state: TieredPickerTierState, selected
   ...fields,
 });
 
-export const CLASS_TREE_TIERS_MOCK = [createBranchTierMock('specialist', 'completed', 'right', { rank: { id: 'specialist' } })];
+export const CLASS_TREE_TIERS_MOCK = [createBranchTierMock('specialist', 'available', null, { rank: { id: 'specialist' } })];
 
-export const GENE_MOD_TIERS_MOCK = [{ ...createBranchTierMock('head', 'available', null, {}), name: 'Head' }];
+export const GENE_MOD_TIERS_MOCK = [{ ...createBranchTierMock('head', 'completed', 'right', { outdatedItemIds: ['right'] }), name: 'Head' }];
 
 export const PSIONIC_TIERS_MOCK = [createBranchTierMock('awakening', 'locked', null, {})];
 

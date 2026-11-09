@@ -34,7 +34,7 @@ The name is cut to 31 bytes. A header without `NAME` is invalid; unknown section
 
 | Place | Squad code | Unit or build code | Broken code |
 |---|---|---|---|
-| Import in the Squad planner toolbar | a new Squad, opened | under the field: "This is a Unit code. Add it through an empty cell." | under the field: "Invalid code. Copy the Share code again and paste it whole." |
+| Import in the Squad planner toolbar | a new Squad, opened | under the field: "This is a Unit code. Add it through Add Unit." | under the field: "Invalid code. Copy the Share code again and paste it whole." |
 | Share code tab of Add Unit | under the field: "This is a Squad code. Use Import in the toolbar." | a new Unit | the same error |
 | Import of a Build calculator | toast "This is a Squad code. Import it in the Squad planner." | the build of its kind | "Invalid code" |
 

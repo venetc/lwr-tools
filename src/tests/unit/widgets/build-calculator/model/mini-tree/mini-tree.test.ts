@@ -98,10 +98,28 @@ describe('miniTreeStep', () => {
 });
 
 describe('useBiosoldierMiniTree', () => {
-  it('shows the class tree, the gene mods, the psionic abilities and the officer tree as rows', () => {
+  it('shows the branches with selections as rows in branch order, the class tree first', () => {
     const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
 
-    expect(rows.value.map(({ id }) => id)).toEqual(['class-tree', 'gene-mods', 'psionic', 'officer']);
+    expect(rows.value.map(({ id }) => id)).toEqual(['class-tree', 'gene-mods', 'officer']);
+  });
+
+  it('hides a branch with nothing selected', () => {
+    const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
+
+    expect(branchRow(rows.value, 'psionic')).toBeUndefined();
+  });
+
+  it('keeps the class tree with nothing selected', () => {
+    const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
+
+    expect(branchRow(rows.value, 'class-tree')).toBeDefined();
+  });
+
+  it('keeps a branch whose only selection is an Outdated selection', () => {
+    const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
+
+    expect(branchRow(rows.value, 'gene-mods')).toBeDefined();
   });
 
   it('captions officer steps with the abbreviations of their officer ranks', () => {
@@ -131,6 +149,6 @@ describe('useBiosoldierMiniTree', () => {
   it('titles each row as its branch', () => {
     const rows = useBiosoldierMiniTree(BIOSOLDIER_BUILD_MOCK);
 
-    expect(rows.value.map(({ title }) => title)).toEqual(['Class tree', 'Gene mods', 'Psionic', 'Officer']);
+    expect(rows.value.map(({ title }) => title)).toEqual(['Class tree', 'Gene mods', 'Officer']);
   });
 });

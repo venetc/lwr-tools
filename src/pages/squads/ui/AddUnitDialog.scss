@@ -4,6 +4,7 @@
 @use 'styles/media';
 @use 'styles/shape';
 @use 'styles/typography';
+@use 'unit-card-media';
 
 @mixin -hoverable($idle-background: none) {
   @include media.with-hover {
@@ -28,16 +29,24 @@ $add-cell-border: 1px dashed colors.$accent;
   @include typography.caps-3;
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-block-size: 160px;
   border: $add-cell-border;
   color: colors.$text-accent;
   clip-path: shape.cut-polygon($add-cell-cut);
   cursor: pointer;
   @include -hoverable;
+
+  @include unit-card-media.stacked {
+    flex-direction: column;
+    min-block-size: 160px;
+  }
+
+  @include unit-card-media.in-row {
+    flex-direction: row;
+    min-block-size: 56px;
+  }
 
   // The cut corners clip the border away, so each cut edge gets its own dashed line, drawn inwards from the edge.
   &::before,
@@ -64,8 +73,15 @@ $add-cell-border: 1px dashed colors.$accent;
 }
 
 .addCellIcon {
-  width: 32px;
-  height: 32px;
+  @include unit-card-media.stacked {
+    width: 32px;
+    height: 32px;
+  }
+
+  @include unit-card-media.in-row {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .panel {

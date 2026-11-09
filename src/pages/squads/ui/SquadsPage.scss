@@ -1,8 +1,10 @@
 @use 'styles/colors';
 @use 'styles/typography';
+@use 'unit-card-media';
 
-// Widest Unit card: two of them with the gap make the widest grid.
-$card-max-width: 488px;
+$content-max-width: 1200px;
+$page-padding-inline: 16px;
+// Narrowest stacked Unit card: two of them side by side fit only at the widest stacked widths.
 $card-min-width: 400px;
 $grid-gap: 24px;
 
@@ -18,9 +20,9 @@ $grid-gap: 24px;
   flex-direction: column;
   gap: 16px;
   inline-size: 100%;
-  max-inline-size: $card-max-width * 2 + $grid-gap + 32px;
+  max-inline-size: $content-max-width + $page-padding-inline * 2;
   margin-inline: auto;
-  padding: 24px 16px;
+  padding: 24px $page-padding-inline;
 }
 
 .header {
@@ -39,9 +41,17 @@ $grid-gap: 24px;
 
 .units {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, $card-min-width), 1fr));
   align-items: start;
-  gap: $grid-gap;
+
+  @include unit-card-media.stacked {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, $card-min-width), 1fr));
+    gap: $grid-gap;
+  }
+
+  @include unit-card-media.in-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
 }
 
 .newContent {

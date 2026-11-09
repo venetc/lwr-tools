@@ -28,7 +28,7 @@ export const IMPORTED_TOAST = 'Alpha opened with new Builds: 2 in Biosoldier bui
 
 export const SERAPH_REPLACED_LINE = 'Seraph Sniper — Seraph Armor replaced with Tactical Vest: needs officer.';
 
-export const UNIT_CODE_HINT = 'This is a Unit code. Add it through an empty cell.';
+export const UNIT_CODE_HINT = 'This is a Unit code. Add it through Add Unit.';
 
 export const SQUAD_CODE_UNIT_HINT = 'This is a Squad code. Use Import in the toolbar.';
 

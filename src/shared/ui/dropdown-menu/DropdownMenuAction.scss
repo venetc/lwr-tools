@@ -1,10 +1,22 @@
-@use './item';
+@use 'styles/colors';
+@use 'styles/typography';
 
 .action {
-  @include item.base;
-  @include item.selectable;
+  @include typography.caps-3;
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+
+  &:not([data-highlighted]) {
+    color: colors.$text-secondary;
+  }
+
+  &[data-highlighted] {
+    background: colors.$surface-3;
+    color: colors.$accent-hover;
+  }
 }

@@ -1,8 +1,19 @@
 import type { Locator, Page, Route } from '@playwright/test';
 
+import { SITE_MARK_PATH } from './image-loading.mock';
+
 /**
- * Holds every image request of the page, so its images stay loading, until the returned function releases them;
- * requests made after the release go through. Call it before opening the page.
+ * Whether the request loads a content image: any image but the site mark of the header, which is not content and
+ * loads as usual.
+ *
+ * @param route intercepted request.
+ */
+const isContentImage = (route: Route) => route.request().resourceType() === 'image'
+  && new URL(route.request().url()).pathname !== SITE_MARK_PATH;
+
+/**
+ * Holds every content image request of the page, so its images stay loading, until the returned function releases
+ * them; requests made after the release go through. Call it before opening the page.
  *
  * @param page browser page.
  */
@@ -11,7 +22,7 @@ export const holdImages = async (page: Page) => {
   let isHolding = true;
 
   await page.route('**/*', async (route) => {
-    if (!isHolding || route.request().resourceType() !== 'image') return route.continue();
+    if (!isHolding || !isContentImage(route)) return route.continue();
 
     heldRoutes.push(route);
   });

@@ -7,8 +7,8 @@ Menus of links built from route records: a route shows up in a menu by its `meta
 ## Usage
 
 ```ts
-const items = routeMenuItems(router.options.routes, route);
-// [{ label: 'Home', to: '/home', isCurrent: true }]
+const items = routeMenuItems(router.options.routes);
+// [{ label: 'Home', to: '/home' }]
 ```
 
 ```ts
@@ -25,18 +25,18 @@ const { items } = useTopLevelRoutes();
 
 | Function / type | Arguments | Result |
 |---|---|---|
-| `routeMenuItems(records, route)` | route records, current route | `RouteMenuItem[]` of the records with `meta.title`, in their order |
+| `routeMenuItems(records)` | route records | `RouteMenuItem[]` of the records with `meta.title`, in their order |
 | `useSiblingRoutes()` | — | `{ parentTitle, items }`: computed title of the parent route and menu items of its children |
-| `useTopLevelRoutes()` | — | `{ items }`: computed menu items of the top-level routes of the router |
-| `RouteMenuItem` | — | `{ label, to, isCurrent }` |
+| `useTopLevelRoutes()` | — | `{ items }`: menu items of the top-level routes of the router |
+| `RouteMenuItem` | — | `{ label, to }` |
 
 ## Behavior
 
 - Records without `meta.title` are skipped: an index page of a section usually has none and is reached through its parent.
-- `isCurrent` is the exact page: the item path equals the path of the deepest matched record. A parent is not current on its child pages.
 - For a top-level route `useSiblingRoutes` gives an empty title and no items.
 
 ## Limitations
 
-- Paths are compared as written in the records, so records need absolute paths; a relative child path never matches.
+- Items link to the paths as written in the records, so records need absolute paths; a relative child path does not lead to the page.
+- `useTopLevelRoutes` builds its items once: routes added to the router later are not listed.
 - One level only: children of children are not listed.

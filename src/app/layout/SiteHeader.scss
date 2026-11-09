@@ -1,15 +1,120 @@
+@use 'styles/a11y';
 @use 'styles/colors';
 @use 'styles/layout';
+@use 'styles/media';
+@use 'styles/typography';
+@use 'separator';
 
 .header {
   position: sticky;
   inset-block-start: 0;
   z-index: 5;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   block-size: layout.$site-header-height;
-  padding: 8px 16px;
+  padding-inline: 16px;
   background: colors.$surface-translucent;
   backdrop-filter: blur(8px);
   border-block-end: 1px solid colors.$border-subtle;
+}
+
+.brand {
+  @include typography.caps-3;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin-inline: -8px;
+  padding-inline: 8px;
+  text-decoration: none;
+
+  @include media.with-hover {
+    &:not(:hover) {
+      color: colors.$text-primary;
+    }
+
+    &:hover {
+      color: colors.$accent-hover;
+    }
+  }
+
+  @include media.with-touch {
+    color: colors.$text-primary;
+  }
+}
+
+.mark {
+  flex: none;
+  inline-size: 20px;
+  block-size: 20px;
+}
+
+.name {
+  @include media.phone {
+    @include a11y.visually-hidden;
+  }
+}
+
+.nav {
+  display: flex;
+
+  @include media.wider-than-phone {
+    @include typography.caps-3;
+  }
+
+  // In caps-3 four links fit a 360px phone with 5px to spare in Oxanium and are cut by up to 3px in a fallback font.
+  @include media.phone {
+    @include typography.caps-4;
+  }
+}
+
+.group {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &:not(:first-child)::before {
+    @include separator.separator('│');
+    align-self: center;
+    padding-inline: 8px;
+  }
+}
+
+.item {
+  display: flex;
+  white-space: nowrap;
+
+  &:not(:first-child)::before {
+    @include separator.separator;
+    align-self: center;
+  }
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  padding-inline: 6px;
+  text-decoration: none;
+
+  &:not(.current) {
+    @include media.with-hover {
+      &:not(:hover) {
+        color: colors.$text-secondary;
+      }
+
+      &:hover {
+        color: colors.$accent-hover;
+      }
+    }
+
+    @include media.with-touch {
+      color: colors.$text-secondary;
+    }
+  }
+}
+
+.current {
+  color: colors.$text-accent;
 }

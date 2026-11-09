@@ -1,4 +1,4 @@
-/** Site name: the first breadcrumb of every trail and the title of the home page. */
+/** Site name: the brand of the site header, the title of the home page, the end of every other title and the root of the `BreadcrumbList` chain. */
 export const SITE_NAME = 'LWR Tools';
 
 /** Tagline after the site name in the document title of the home page. */

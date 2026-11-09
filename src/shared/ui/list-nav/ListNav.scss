@@ -1,3 +1,4 @@
+@use 'styles/a11y';
 @use 'styles/colors';
 @use 'styles/typography';
 @use 'styles/media';
@@ -155,10 +156,5 @@ $row-height: $icon-size + $item-padding * 2;
 }
 
 .visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  @include a11y.visually-hidden;
 }

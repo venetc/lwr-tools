@@ -1,0 +1,9 @@
+@use 'styles/colors';
+
+// Separator between links, drawn in `::before`: seen, not read out. The first `content` is for browsers without
+// alt text in `content`: they drop the second one and show the symbol, read out by screen readers.
+@mixin separator($symbol: '·') {
+  content: $symbol;
+  content: $symbol / '';
+  color: colors.$text-tertiary;
+}

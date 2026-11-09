@@ -2,7 +2,8 @@ import type { RouteRecordInfo } from 'vue-router';
 
 /**
  * Names, paths, titles and descriptions of app routes, importable from any layer. Paths are absolute, nested routes
- * included. A title labels the route in breadcrumbs, route menus and the document title; the home page has none.
+ * included. A title names the route in the document title, the `BreadcrumbList` chain of the page head and route
+ * menus; the home page has none.
  * A description is the meta description of the page and its link preview description.
  */
 export const ROUTES = {
@@ -56,7 +57,7 @@ declare module 'vue-router' {
   }
 
   interface RouteMeta {
-    /** Label of the route in the site header breadcrumbs and route menus; routes without it are skipped. */
+    /** Name of the route in the document title, the `BreadcrumbList` chain of the page head and route menus; routes without it are skipped. */
     title?: string
   }
 }

@@ -1,0 +1,10 @@
+// Hides the element from the eye but keeps it for screen readers: a label of an icon-only control, a heading
+// of a section that is plain on screen.
+@mixin visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

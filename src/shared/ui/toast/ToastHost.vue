@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { X } from '@lucide/vue';
 import { ToastClose, ToastDescription, ToastProvider, ToastRoot, ToastTitle, ToastViewport } from 'reka-ui';
+import { useTemplateRef } from 'vue';
 
 import { useToastHost } from './model/toast-host';
 
-const { messages, onOpenChange, onAnimationEnd } = useToastHost();
+const viewport = useTemplateRef('viewport');
+
+const { messages, onEscapeKeyDown, onOpenChange, onAnimationEnd } = useToastHost(viewport);
 </script>
 
 <template>
@@ -15,6 +18,7 @@ const { messages, onOpenChange, onAnimationEnd } = useToastHost();
       :class="$style.toast"
       :open="message.isOpen"
       :duration="message.duration"
+      @escape-key-down="onEscapeKeyDown(message.id, $event)"
       @update:open="onOpenChange(message.id, $event)"
       @animationend="onAnimationEnd(message.id, $event)"
     >
@@ -29,7 +33,7 @@ const { messages, onOpenChange, onAnimationEnd } = useToastHost();
       </ToastClose>
     </ToastRoot>
 
-    <ToastViewport :class="$style.viewport" />
+    <ToastViewport ref="viewport" :class="$style.viewport" />
   </ToastProvider>
 </template>
 

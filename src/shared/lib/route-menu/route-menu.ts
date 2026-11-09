@@ -1,5 +1,5 @@
 import { computed } from 'vue';
-import type { RouteLocationNormalizedLoaded, RouteLocationRaw, RouteRecordRaw } from 'vue-router';
+import type { RouteLocationRaw, RouteRecordRaw } from 'vue-router';
 import { useRoute, useRouter } from 'vue-router';
 
 export interface RouteMenuItem {
@@ -7,31 +7,20 @@ export interface RouteMenuItem {
   label: string
   /** Link target: path of the route. */
   to: RouteLocationRaw
-  /** Whether the item leads to the current page. */
-  isCurrent: boolean
 }
 
 /**
- * Menu items of the routes with `meta.title`, in their order. An item is current if its path is the path
- * of the deepest matched record; paths are compared as written, so records need absolute paths.
+ * Menu items of the routes with `meta.title`, in their order.
  *
  * @param records route records.
- * @param route current route.
  */
-export const routeMenuItems = (
-  records: readonly RouteRecordRaw[],
-  route: Pick<RouteLocationNormalizedLoaded, 'matched'>,
-) => {
-  const currentPath = route.matched.at(-1)?.path;
+export const routeMenuItems = (records: readonly RouteRecordRaw[]) => records.reduce<RouteMenuItem[]>((items, record) => {
+  if (!record.meta?.title) return items;
 
-  return records.reduce<RouteMenuItem[]>((items, record) => {
-    if (!record.meta?.title) return items;
+  items.push({ label: record.meta.title, to: record.path });
 
-    items.push({ label: record.meta.title, to: record.path, isCurrent: record.path === currentPath });
-
-    return items;
-  }, []);
-};
+  return items;
+}, []);
 
 /**
  * Pages next to the current one: menu items of the children of its parent route, and the parent title.
@@ -44,19 +33,19 @@ export const useSiblingRoutes = () => {
 
   const parentTitle = computed(() => parent.value?.meta.title ?? '');
 
-  const items = computed(() => routeMenuItems(parent.value?.children ?? [], route));
+  const items = computed(() => routeMenuItems(parent.value?.children ?? []));
 
   return { parentTitle, items };
 };
 
 /**
- * Top-level pages of the app: menu items of the top-level routes of the router.
+ * Top-level pages of the app: menu items of the top-level routes of the router. The routes are fixed, so the
+ * items are built once.
  */
 export const useTopLevelRoutes = () => {
-  const route = useRoute();
   const router = useRouter();
 
-  const items = computed(() => routeMenuItems(router.options.routes, route));
+  const items = routeMenuItems(router.options.routes);
 
   return { items };
 };

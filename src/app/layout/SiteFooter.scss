@@ -1,6 +1,7 @@
 @use 'styles/colors';
 @use 'styles/typography';
 @use 'styles/media';
+@use 'separator';
 
 // Footer width from which both link groups fit in one line.
 $links-row-min-width: 600px;
@@ -13,12 +14,6 @@ $links-row-min-width: 600px;
   padding: 12px 16px;
   background: colors.$surface-1;
   border-block-start: 1px solid colors.$border-subtle;
-}
-
-@mixin -separator {
-  content: '·' / '';
-  padding-inline: 8px;
-  color: colors.$text-tertiary;
 }
 
 .links {
@@ -45,7 +40,8 @@ $links-row-min-width: 600px;
 
   @container (width >= #{$links-row-min-width}) {
     &:not(:first-child)::before {
-      @include -separator;
+      @include separator.separator;
+      padding-inline: 8px;
     }
   }
 }
@@ -54,7 +50,8 @@ $links-row-min-width: 600px;
   white-space: nowrap;
 
   &:not(:first-child)::before {
-    @include -separator;
+    @include separator.separator;
+    padding-inline: 8px;
   }
 }
 

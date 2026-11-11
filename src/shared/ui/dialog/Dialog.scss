@@ -90,6 +90,11 @@
   overflow-y: auto;
   // The body scrolls on its own, so sticky content in it sticks to its top edge, not under the site header.
   --sticky-inset-block-start: 0px;
+
+  // On a phone the dialog takes the whole screen, and so does its body: content can fill the height left under the header.
+  @include media.phone {
+    flex: 1;
+  }
 }
 
 .visuallyHidden {

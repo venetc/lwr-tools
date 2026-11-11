@@ -3,8 +3,8 @@ import { Dialog } from '@shared/ui/dialog';
 
 import type { UnitCard } from '../model/unit-cards';
 import { useUnitLoadout } from '../model/unit-loadout';
-import LoadoutEditor from './LoadoutEditor.vue';
 import LoadoutTiles from './LoadoutTiles.vue';
+import SlotLocker from './SlotLocker.vue';
 
 interface Props {
   /** Unit whose Loadout is shown and edited. */
@@ -13,7 +13,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { isOpen, slotId, openSlot } = useUnitLoadout(() => props.card.isOutdated);
+const { isOpen, tile, title, openSlot, close } = useUnitLoadout(() => props.card.isOutdated);
 </script>
 
 <template>
@@ -25,9 +25,14 @@ const { isOpen, slotId, openSlot } = useUnitLoadout(() => props.card.isOutdated)
 
   <Dialog
     v-model:open="isOpen"
-    title="Loadout"
+    :title="title"
     width="wide"
   >
-    <LoadoutEditor :card="props.card" :initial-slot-id="slotId" />
+    <SlotLocker
+      v-if="tile"
+      :card="props.card"
+      :tile="tile"
+      @close="close"
+    />
   </Dialog>
 </template>

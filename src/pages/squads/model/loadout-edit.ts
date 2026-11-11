@@ -83,7 +83,7 @@ const slotCountNote = (name: string, before: number, after: number) => (before =
 
 /**
  * Brings a changed Loadout to the rules with `fitLoadout`: a new armor, MEC exoskeleton, SHIV type or primary weapon
- * counts the Module and utility slots again, in INVENTORY order, and a removed Module takes off the items that need it.
+ * counts the Module and utility slots again, in slot order, and a removed Module takes off the items that need it.
  *
  * @param before Loadout before the change.
  * @param changed Loadout after the change.

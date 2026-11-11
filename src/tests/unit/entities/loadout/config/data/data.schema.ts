@@ -236,7 +236,10 @@ const shivTypeContentSchema: z.ZodType<ShivTypeContent> = z.strictObject({
   grants: uniqueListSchema(abilityIdSchema).optional(),
 });
 
-const weaponTierSchema = z.enum(['ballistic', 'laser', 'arc', 'gauss', 'pulse', 'plasma']);
+const weaponTierSchema = z.enum(['ballistic', 'laser', 'gauss', 'pulse', 'plasma']);
+
+/** Types of the Arc weapons, the only weapons without a tier. */
+const ARC_WEAPON_TYPES: readonly string[] = ['arc-rifle', 'stun-rifle', 'arc-pistol'];
 
 const primaryWeaponTypeSchema = z.enum([
   'assault-rifle',
@@ -279,7 +282,7 @@ const weaponContentSchema: z.ZodType<WeaponContent> = z.strictObject({
   code: z.int().min(1),
   unit: unitIdSchema,
   name: z.string().min(1),
-  tier: weaponTierSchema,
+  tier: weaponTierSchema.optional(),
   type: z.enum([...primaryWeaponTypeSchema.options, 'pistol', 'autopistol', 'arc-pistol', 'sawed-off-shotgun', 'rocket-launcher']),
   slot: z.enum(['primary', 'secondary']),
   classes: z.array(biosoldierClassIdSchema).min(1).refine(ids => new Set(ids).size === ids.length, { error: 'Repeated class id' }).optional(),
@@ -304,7 +307,7 @@ const weaponContentSchema: z.ZodType<WeaponContent> = z.strictObject({
   }).optional(),
   info: z.string().min(1),
   grants: uniqueListSchema(abilityIdSchema).optional(),
-});
+}).refine(weapon => !weapon.tier === ARC_WEAPON_TYPES.includes(weapon.type), { error: 'An Arc weapon has no tier, any other weapon has one', path: ['tier'] });
 
 /**
  * Schema of all Loadout content JSON: record shapes, unit, ability, class and Module references, categories, slots, code ranges, uniqueness and order.

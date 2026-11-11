@@ -32,7 +32,7 @@ const armorMock = (content: Pick<ArmorContent, 'code' | 'unit' | 'name'> & Parti
  *
  * @param content fields that differ from the empty record.
  */
-const weaponMock = (content: Pick<WeaponContent, 'code' | 'unit' | 'name' | 'tier' | 'type' | 'slot'> & Partial<WeaponContent>): WeaponContent => ({
+const weaponMock = (content: Pick<WeaponContent, 'code' | 'unit' | 'name' | 'type' | 'slot'> & Partial<WeaponContent>): WeaponContent => ({
   damage: 0,
   penetration: 0,
   crit: 0,
@@ -95,7 +95,7 @@ export const WEAPON_CONTENT_MOCK: Record<string, WeaponContent> = {
   'pistol': weaponMock({ code: 13, unit: 'biosoldier', name: 'Pistol', tier: 'ballistic', type: 'pistol', slot: 'secondary', classes: ['sniper', 'scout', 'assault'] }),
   'rocket-launcher': weaponMock({ code: 16, unit: 'biosoldier', name: 'Launcher', tier: 'ballistic', type: 'rocket-launcher', slot: 'secondary', classes: ['rocketeer'] }),
   'laser-rifle': weaponMock({ code: 17, unit: 'biosoldier', name: 'Laser', tier: 'laser', type: 'assault-rifle', slot: 'primary' }),
-  'stun-rifle': weaponMock({ code: 31, unit: 'biosoldier', name: 'Stun', tier: 'arc', type: 'stun-rifle', slot: 'primary', utilitySlots: -1 }),
+  'stun-rifle': weaponMock({ code: 31, unit: 'biosoldier', name: 'Stun', type: 'stun-rifle', slot: 'primary', utilitySlots: -1 }),
 };
 
 export const EQUIPMENT_CONTENT_MOCK: Record<string, EquipmentContent> = {

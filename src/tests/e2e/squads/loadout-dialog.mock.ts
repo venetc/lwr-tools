@@ -10,6 +10,8 @@ export const ARMOR_TILE = 'Armor: Tactical Vest';
 
 export const PRIMARY_TILE = 'Primary: Assault Rifle';
 
+export const PRIMARY_CAPTION = 'Primary';
+
 export const SECONDARY_TILE = 'Secondary: Empty';
 
 export const EMPTY_UTILITY_TILE = 'Utility: Empty';
@@ -23,20 +25,38 @@ export const ARCHANGEL_TILE = 'Armor: Archangel Armor';
 export const LASER_RIFLE_TILE = 'Primary: Laser Rifle';
 
 export const ARMOR_LOCKER = `
-- list "Locker":
-  - listitem:
-    - button "Tactical Vest, Equipped"
-  - listitem:
-    - button "Archangel Armor"
-  - listitem:
-    - button "Seraph Armor, Needs officer"
-  - listitem:
-    - button "Ghost Armor, Needs Gene mod"
-  - listitem:
-    - button "Aurora Armor, Needs Psionic ability"
-  - listitem:
-    - button "Vortex Armor, Needs Psionic ability"
+- region "Locker":
+  - heading "Light armor" [level=4]
+  - list "Light armor":
+    - listitem:
+      - button "Tactical Vest, Equipped"
+  - heading "Heavy armor" [level=4]
+  - list "Heavy armor":
+    - listitem:
+      - button "Archangel Armor"
+  - heading "Unavailable" [level=4]
+  - list "Unavailable":
+    - listitem:
+      - button "Seraph Armor, Needs officer"
+    - listitem:
+      - button "Ghost Armor, Needs Gene mod"
+    - listitem:
+      - button "Aurora Armor, Needs Psionic ability"
+    - listitem:
+      - button "Vortex Armor, Needs Psionic ability"
 `;
+
+export const UTILITY_GROUPS = ['Utility item', 'Passive gear', 'Unavailable'];
+
+export const GEAR_SLOT_GROUPS = ['Passive gear', 'Unavailable'];
+
+export const UNAVAILABLE = 'Unavailable';
+
+export const NO_TIER = 'No tier';
+
+export const ASSAULT = 'Assault';
+
+export const ARC_RIFLE = 'Arc Rifle';
 
 export const EQUIPPED_VEST = 'Tactical Vest, Equipped';
 
@@ -45,8 +65,6 @@ export const GHOST_BLOCKED = 'Ghost Armor, Needs Gene mod';
 export const GHOST = 'Ghost Armor';
 
 export const HE_GRENADE = 'HE Grenade';
-
-export const HE_GRENADE_EQUIPPED = 'HE Grenade, Equipped';
 
 export const HE_GRENADE_TWICE = 'HE Grenade, MAX 1 PER SOLDIER';
 
@@ -69,8 +87,6 @@ export const CHITIN_REASONS = `
 export const SCANNER_CARRIERS = 'Carriers Scout';
 
 export const PISTOL = 'Pistol';
-
-export const PISTOL_EQUIPPED = 'Pistol, Equipped';
 
 export const LMG = 'LMG';
 
@@ -156,3 +172,8 @@ export const PISTOL_SNIPER: SeededUnit = {
 };
 
 export const PISTOL_TILE = 'Secondary: Pistol';
+
+/** End of the long description of Archangel Armor. */
+export const ARCHANGEL_INFO = 'Provides immunity to strangulation. Heavy armor set.';
+
+export const EMPTY_DETAILS = 'Select an item to see its details.';

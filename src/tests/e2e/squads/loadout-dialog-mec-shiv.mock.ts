@@ -8,28 +8,22 @@ export const JAEGER = 'Jaeger';
 
 export const SHIV = 'SHIV';
 
-export const PALADIN_TILE = 'MEC exoskeleton: MEC1 \'Paladin\'';
+export const EXOSKELETON_CAPTION = 'MEC exoskeleton';
 
-export const DAUNTLESS_TILE = 'MEC exoskeleton: HMEC3 \'Dauntless\'';
+export const SHIV_TYPE_CAPTION = 'SHIV type';
+
+export const PALADIN_TILE = 'MEC exoskeleton: MEC1 \'Paladin\'';
 
 export const DAUNTLESS = 'HMEC3 \'Dauntless\'';
 
 export const EMPTY_MODULE_TILE = 'Module: Empty';
 
-export const EMPTY_UTILITY_TILE = 'Utility: Empty';
+export const EXOSKELETON_GROUPS = ['Standard armor', 'Heavy armor', 'Light armor', 'Ultra-Heavy armor', 'Ultra-Light armor'];
 
-export const DAUNTLESS_INVENTORY = `
-- region "Inventory":
-  - 'button "MEC exoskeleton: HMEC3 ''Dauntless''"'
-  - 'button "Primary: Minigun"'
-  - 'button "Module: Empty"'
-  - 'button "Module: Empty"'
-  - 'button "Module: Empty"'
-  - paragraph: HMEC3 'Dauntless' 3 = 3 Utility slots.
-  - 'button "Utility: Empty"'
-  - 'button "Utility: Empty"'
-  - 'button "Utility: Empty"'
-`;
+/** Name of the item list of a Locker without group names. */
+export const UNTITLED_GROUP = 'Locker';
+
+export const EMPTY_UTILITY_TILE = 'Utility: Empty';
 
 export const DAUNTLESS_TILES = `
 - list "Loadout":
@@ -70,6 +64,8 @@ export const ALLOY_SHIV_TILE = 'SHIV type: Alloy SHIV';
 
 export const SHIV_TYPE = 'SHIV';
 
+export const HOVER_SHIV = 'Hover SHIV';
+
 export const SHIV_TYPE_TILE = 'SHIV type: SHIV';
 
 export const SHIV_TYPE_EQUIPPED = 'SHIV, Equipped';
@@ -90,12 +86,6 @@ export const SHIV_TILES = `
 `;
 
 export const SHIV_SHRUNK_TOAST = 'Utility slots: 4 → 2. Heavy Mags removed: slot removed. SCOPE removed: slot removed.';
-
-export const DAUNTLESS_JAEGER: SeededUnit = {
-  id: 'dauntless',
-  build: { kind: 'mec', id: 'default-jaeger' },
-  loadout: { armor: 18, primary: 10, secondary: null, utility: [null, null, null], modules: [null, null, null] },
-};
 
 export const LAUNCHER_JAEGER: SeededUnit = {
   id: 'launcher',

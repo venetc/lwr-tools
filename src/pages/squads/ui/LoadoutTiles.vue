@@ -8,7 +8,7 @@ import type { LoadoutTile } from '../model/loadout-tiles';
 import SlotCaption from './SlotCaption.vue';
 
 interface Props {
-  /** Tiles of the Loadout in inventory order. */
+  /** Tiles of the Loadout in slot order. */
   tiles: readonly LoadoutTile[]
   /** Whether the tiles open nothing: the Loadout is frozen. */
   disabled?: boolean

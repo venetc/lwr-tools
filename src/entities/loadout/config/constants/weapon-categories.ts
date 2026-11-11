@@ -1,5 +1,5 @@
-/** Weapon technology tiers in game order; `arc` is the electric tier (Arc Rifle, Stun Rifle, Arc Pistol). */
-export const WEAPON_TIERS = ['ballistic', 'laser', 'arc', 'gauss', 'pulse', 'plasma'] as const;
+/** Weapon technology tiers in game order; Arc weapons (Arc Rifle, Stun Rifle, Arc Pistol) have none. */
+export const WEAPON_TIERS = ['ballistic', 'laser', 'gauss', 'pulse', 'plasma'] as const;
 
 /** Weapon types as the game groups weapons of every tier. */
 export const WEAPON_TYPES = [

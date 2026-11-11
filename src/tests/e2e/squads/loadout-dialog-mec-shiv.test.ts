@@ -3,9 +3,10 @@ import { expect, test } from '@playwright/test';
 import {
   addSavedUnit,
   itemDetails,
+  locker,
+  lockerGroup,
   lockerItem,
   notifications,
-  openLoadoutDialog,
   openLocker,
   openSquads,
   seedSquad,
@@ -15,17 +16,17 @@ import {
   ADVANCED_LAUNCHER_STACKED,
   ALLOY_SHIV_TILE,
   DAUNTLESS,
-  DAUNTLESS_INVENTORY,
-  DAUNTLESS_JAEGER,
-  DAUNTLESS_TILE,
   DAUNTLESS_TILES,
   DAUNTLESS_TOAST,
   EMPTY_MODULE_TILE,
   EMPTY_UTILITY_TILE,
   EQUIPPED_ALLOY_SHIV,
+  EXOSKELETON_CAPTION,
   EXOSKELETON_CARRIERS,
+  EXOSKELETON_GROUPS,
   HEAVY_MAGS,
   HEAVY_MAGS_CARRIERS,
+  HOVER_SHIV,
   INCINERATOR_BLOCKED,
   JAEGER,
   LAUNCHER_JAEGER,
@@ -36,20 +37,40 @@ import {
   SHIV_SHRUNK_TOAST,
   SHIV_TILES,
   SHIV_TYPE,
+  SHIV_TYPE_CAPTION,
   SHIV_TYPE_CARRIERS,
   SHIV_TYPE_EQUIPPED,
   SHIV_TYPE_TILE,
   THUMPER_BLOCKED,
+  UNTITLED_GROUP,
 } from './loadout-dialog-mec-shiv.mock';
 
-test.describe('Loadout dialog of a MEC', () => {
-  test('lists the Module slots and utility slots of the exoskeleton in INVENTORY', async ({ page }) => {
-    await seedSquad(page, [DAUNTLESS_JAEGER]);
+test.describe('Locker dialog of a MEC', () => {
+  test('is titled MEC exoskeleton for the exoskeleton slot', async ({ page }) => {
     await openSquads(page);
+    await addSavedUnit(page, MEC_BUILDS, JAEGER);
 
-    const dialog = await openLoadoutDialog(page, unitCards(page, JAEGER), DAUNTLESS_TILE);
+    await openLocker(page, unitCards(page, JAEGER), PALADIN_TILE);
 
-    await expect(dialog).toMatchAriaSnapshot(DAUNTLESS_INVENTORY);
+    await expect(page.getByRole('dialog', { name: EXOSKELETON_CAPTION, exact: true })).toBeVisible();
+  });
+
+  test('groups exoskeletons by armor category', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, MEC_BUILDS, JAEGER);
+
+    const dialog = await openLocker(page, unitCards(page, JAEGER), PALADIN_TILE);
+
+    await expect(locker(dialog).getByRole('heading')).toHaveText(EXOSKELETON_GROUPS);
+  });
+
+  test('lists the Modules that fit without a group name', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, MEC_BUILDS, JAEGER);
+
+    const dialog = await openLocker(page, unitCards(page, JAEGER), EMPTY_MODULE_TILE);
+
+    await expect(lockerGroup(dialog, UNTITLED_GROUP)).toBeVisible();
   });
 
   test('counts the slots again for a new exoskeleton', async ({ page }) => {
@@ -58,7 +79,6 @@ test.describe('Loadout dialog of a MEC', () => {
     const dialog = await openLocker(page, unitCards(page, JAEGER), PALADIN_TILE);
 
     await lockerItem(dialog, DAUNTLESS).dblclick();
-    await page.keyboard.press('Escape');
 
     await expect(unitCards(page, JAEGER)).toMatchAriaSnapshot(DAUNTLESS_TILES);
   });
@@ -69,7 +89,6 @@ test.describe('Loadout dialog of a MEC', () => {
     const dialog = await openLocker(page, unitCards(page, JAEGER), PALADIN_TILE);
 
     await lockerItem(dialog, DAUNTLESS).dblclick();
-    await page.keyboard.press('Escape');
 
     await expect(notifications(page)).toContainText(DAUNTLESS_TOAST);
   });
@@ -122,14 +141,41 @@ test.describe('Loadout dialog of a MEC', () => {
   });
 });
 
-test.describe('Loadout dialog of a SHIV', () => {
+test.describe('Locker dialog of a SHIV', () => {
+  test('is titled SHIV type for the SHIV type slot', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, SHIV_BUILDS, SHIV);
+
+    await openLocker(page, unitCards(page, SHIV), SHIV_TYPE_TILE);
+
+    await expect(page.getByRole('dialog', { name: SHIV_TYPE_CAPTION, exact: true })).toBeVisible();
+  });
+
+  test('lists the SHIV types that fit without a group name', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, SHIV_BUILDS, SHIV);
+
+    const dialog = await openLocker(page, unitCards(page, SHIV), SHIV_TYPE_TILE);
+
+    await expect(lockerGroup(dialog, UNTITLED_GROUP)).toBeVisible();
+  });
+
+  test('keeps Equip in view for a SHIV type with a long description', async ({ page }) => {
+    await openSquads(page);
+    await addSavedUnit(page, SHIV_BUILDS, SHIV);
+    const dialog = await openLocker(page, unitCards(page, SHIV), SHIV_TYPE_TILE);
+
+    await lockerItem(dialog, HOVER_SHIV).click();
+
+    await expect(dialog.getByRole('button', { name: 'Equip', exact: true })).toBeInViewport();
+  });
+
   test('removes the items of the slots a smaller SHIV type lacks', async ({ page }) => {
     await seedSquad(page, [EQUIPPED_ALLOY_SHIV]);
     await openSquads(page);
     const dialog = await openLocker(page, unitCards(page, SHIV), ALLOY_SHIV_TILE);
 
     await lockerItem(dialog, SHIV_TYPE).dblclick();
-    await page.keyboard.press('Escape');
 
     await expect(unitCards(page, SHIV)).toMatchAriaSnapshot(SHIV_TILES);
   });
@@ -140,7 +186,6 @@ test.describe('Loadout dialog of a SHIV', () => {
     const dialog = await openLocker(page, unitCards(page, SHIV), ALLOY_SHIV_TILE);
 
     await lockerItem(dialog, SHIV_TYPE).dblclick();
-    await page.keyboard.press('Escape');
 
     await expect(notifications(page)).toContainText(SHIV_SHRUNK_TOAST);
   });

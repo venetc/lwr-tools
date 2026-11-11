@@ -266,7 +266,7 @@ const equipmentReasons = (item: LoadoutItemId, slot: Extract<LoadoutSlot, { inde
   ].filter(id => id !== null);
   const primary = WEAPON_BY_ID.get(loadout.primary);
   const slotKind = slot.kind === 'utility' ? utilityKinds[slot.index] ?? 'regular' : 'regular';
-  const isTierSupported = equipment.primaryTiers === null || (primary ? equipment.primaryTiers.includes(primary.tier) : false);
+  const isTierSupported = equipment.primaryTiers === null || (primary?.tier ? equipment.primaryTiers.includes(primary.tier) : false);
   const isTypeSupported = equipment.primaryTypes === null || (primary ? equipment.primaryTypes.includes(primary.type) : false);
 
   return heldReasons([

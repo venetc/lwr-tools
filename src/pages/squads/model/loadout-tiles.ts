@@ -78,7 +78,7 @@ const createTile = (id: string, slot: LoadoutSlot, caption: string, item: Loadou
 };
 
 /**
- * Tiles of the Loadout of a Unit card in inventory order: armor (MEC exoskeleton, SHIV type), primary weapon,
+ * Tiles of the Loadout of a Unit card in slot order: armor (MEC exoskeleton, SHIV type), primary weapon,
  * secondary weapon if the Unit has the slot, Module slots, utility slots with their Gear Slots and Psi Slots last.
  *
  * @param loadout Loadout of the Unit.

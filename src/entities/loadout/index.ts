@@ -1,4 +1,5 @@
 export { LOADOUT_UNITS } from './config/constants/loadout-units';
+export { WEAPON_TIERS } from './config/constants/weapon-categories';
 export type { Armor, ArmorCategory, ArmorId } from './model/armors';
 export { itemCarriers } from './model/carriers';
 export type { CarriedItem } from './model/carriers';

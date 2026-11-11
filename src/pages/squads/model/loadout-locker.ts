@@ -15,14 +15,17 @@ import type {
   ShivType,
   UtilitySlotKind,
   Weapon,
+  WeaponTier,
+  WeaponType,
 } from '@entities/loadout';
-import { blockReasons, findLoadoutItem, itemCarriers, itemRules, slotItemId, slotItems } from '@entities/loadout';
+import { blockReasons, findLoadoutItem, itemCarriers, itemRules, slotItemId, slotItems, WEAPON_TIERS } from '@entities/loadout';
 import type { DeepReadonly } from '@shared/lib/object';
 import type { ImagePlaceholder } from '@shared/ui/loading-image';
 
 import {
   ALTERNATIVE_SEPARATOR,
   ARMOR_CATEGORY_NAME,
+  ARMOR_GROUP_WORD,
   ARMOR_SLOT_CAPTION,
   BLOCK_REASON_LABEL,
   DETAIL_SEPARATOR,
@@ -32,8 +35,10 @@ import {
   LIST_SEPARATOR,
   MODULE_SLOT_CAPTION,
   NEEDS_WORD,
+  NO_TIER_GROUP_NAME,
   NUMBER_WORDS,
   STAT_NAME,
+  UNAVAILABLE_GROUP_NAME,
   UPGRADE_WORD,
   UTILITY_ITEM_TYPE,
   UTILITY_SLOT_CAPTION,
@@ -67,6 +72,57 @@ export interface LockerItem {
   /** Accessible name: the name with the equipped mark or the first reason, such as `Ghost Armor, Needs Gene mod`. */
   label: string
 }
+
+/**
+ * Row of the weapon matrix: a weapon type with its weapons by tier.
+ */
+export interface LockerRow {
+  /** Weapon type name. */
+  name: string
+  /** Label of the first reason of the first weapon when no weapon of the type fits; null for a row that fits. */
+  reason: string | null
+  /** Weapon of the type in each column of the matrix; null where the type has no weapon of the tier. */
+  cells: (LockerItem | null)[]
+}
+
+/**
+ * Group of the Locker of a slot.
+ */
+export interface LockerGroup {
+  /** Group name; null for the items that fit a Locker listed without groups, and for the matrix rows that fit. */
+  title: string | null
+  /** Rows of the weapon matrix, shown before the items; empty in a Locker listed. */
+  rows: LockerRow[]
+  /** Items of the group, in catalog order. */
+  items: LockerItem[]
+}
+
+/**
+ * What the Locker of a slot shows.
+ */
+export interface LockerContents {
+  /** Names of the Weapon tiers of the matrix columns, in tier order; empty for a Locker listed without a matrix. */
+  tiers: string[]
+  /** Groups in their order. */
+  groups: LockerGroup[]
+}
+
+/**
+ * Group of the items that fit, with its place among the other groups.
+ */
+interface FitGroup {
+  /** Group name; null for a Locker listed without groups. */
+  title: string | null
+  /** Place of the group: groups go up by it, and groups of one place keep the order of their first items. */
+  rank: number
+  /** Items of the group, in catalog order. */
+  items: LockerItem[]
+}
+
+/**
+ * Name and place of the group an item that fits goes to.
+ */
+type FitGroupPlace = Omit<FitGroup, 'items'>;
 
 /**
  * What the details under the Locker tell about an item.
@@ -228,6 +284,19 @@ const describeShivType = (shivType: DeepReadonly<ShivType>): ItemDescription => 
 });
 
 /**
+ * Type of a weapon with its tier, or the type alone for an Arc weapon, which has no tier.
+ *
+ * @param weapon weapon.
+ */
+const weaponTypeText = (weapon: DeepReadonly<Weapon>) => {
+  const typeName = WEAPON_TYPE_NAME[weapon.type];
+
+  if (!weapon.tier) return typeName;
+
+  return [typeName, WEAPON_TIER_NAME[weapon.tier]].join(DETAIL_SEPARATOR);
+};
+
+/**
  * Description of a weapon.
  *
  * @param weapon weapon.
@@ -236,7 +305,7 @@ const describeWeapon = (weapon: DeepReadonly<Weapon>): ItemDescription => ({
   name: weapon.name,
   icon: weapon.icon,
   iconPlaceholder: weapon.iconPlaceholder,
-  type: [WEAPON_TYPE_NAME[weapon.type], WEAPON_TIER_NAME[weapon.tier]].join(DETAIL_SEPARATOR),
+  type: weaponTypeText(weapon),
   stats: statLine([
     [STAT_NAME.damage, weapon.damage, upgraded(weapon.damage, weapon.damageUpgrade), true],
     [STAT_NAME.penetration, weapon.penetration, `${weapon.penetration}`, false],
@@ -371,43 +440,237 @@ const blockReasonLabel = (reason: LoadoutBlockReason, id: LoadoutItemId, unit: L
 };
 
 /**
- * Locker of a slot: items that fit first, then those that do not, each group in catalog order; items of other unit
- * types or slots are left out.
+ * Item of the Locker with what tells it fits the slot and its mark.
+ *
+ * @param found item with its catalog.
+ * @param reasons why the item does not fit the slot.
+ * @param isEquipped whether the item is the one in the slot.
+ * @param unit unit type that carries the Loadout.
+ */
+const lockerItem = (found: LoadoutCatalogItem, reasons: LoadoutBlockReason[], isEquipped: boolean, unit: LoadoutUnitId): LockerItem => {
+  const description = describeItem(found);
+  const [firstReason] = reasons;
+  const reasonLabel = firstReason ? blockReasonLabel(firstReason, found.item.id, unit) : null;
+  const mark = isEquipped ? EQUIPPED_LABEL : reasonLabel;
+
+  return {
+    id: found.item.id,
+    name: description.name,
+    icon: description.icon,
+    iconPlaceholder: description.iconPlaceholder,
+    summary: description.stats.map(stat => (stat.value ? `${stat.name} ${stat.value}` : stat.name)).join(DETAIL_SEPARATOR),
+    reasons,
+    reasonLabel,
+    isEquipped,
+    mark,
+    label: mark ? `${description.name}${LIST_SEPARATOR}${mark}` : description.name,
+  };
+};
+
+/**
+ * Group a weapon that fits goes to: that of its tier, or `No tier` after every tier for an Arc weapon.
+ *
+ * @param tier tier of the weapon; null for an Arc weapon.
+ */
+const weaponGroupOf = (tier: WeaponTier | null): FitGroupPlace => {
+  if (!tier) return { title: NO_TIER_GROUP_NAME, rank: WEAPON_TIERS.length };
+
+  return { title: WEAPON_TIER_NAME[tier], rank: WEAPON_TIERS.indexOf(tier) };
+};
+
+/**
+ * Group an item that fits goes to: a weapon by its tier, after every tier if it has none; armor by its
+ * category; utility equipment by whether it is passive; SHIV types and Modules in one group without a name.
+ *
+ * @param found item with its catalog.
+ */
+const fitGroupOf = (found: LoadoutCatalogItem): FitGroupPlace => {
+  if (found.kind === 'weapon') return weaponGroupOf(found.item.tier);
+
+  if (found.kind === 'armor') return { title: `${ARMOR_CATEGORY_NAME[found.item.category]} ${ARMOR_GROUP_WORD}`, rank: 0 };
+
+  if (found.kind === 'equipment' && found.item.slot === 'utility') return { title: equipmentType(found.item), rank: 0 };
+
+  return { title: null, rank: 0 };
+};
+
+/**
+ * Item of the Locker with the catalog item it shows.
+ */
+interface LockerEntry {
+  /** Catalog item. */
+  found: LoadoutCatalogItem
+  /** What the Locker shows of it. */
+  item: LockerItem
+}
+
+/**
+ * Items of the Locker of a slot in catalog order; items of other unit types are left out.
  *
  * @param slot slot of the Loadout.
  * @param loadout Loadout of the unit.
  * @param wearer unit that carries the Loadout.
  */
-export const lockerItems = (slot: LoadoutSlot, loadout: Loadout, wearer: LoadoutWearer): LockerItem[] => {
+const lockerEntries = (slot: LoadoutSlot, loadout: Loadout, wearer: LoadoutWearer) => {
   const equippedId = slotItemId(loadout, slot);
+  const entries: LockerEntry[] = [];
 
-  const items = slotItems(slot, wearer.unit).flatMap((found): LockerItem[] => {
-    const id = found.item.id;
-    const reasons = blockReasons(id, slot, loadout, wearer);
+  slotItems(slot, wearer.unit).forEach((found) => {
+    const reasons = blockReasons(found.item.id, slot, loadout, wearer);
 
-    if (reasons.includes('wrong-unit')) return [];
+    if (reasons.includes('wrong-unit')) return;
 
-    const description = describeItem(found);
-    const [firstReason] = reasons;
-    const reasonLabel = firstReason ? blockReasonLabel(firstReason, id, wearer.unit) : null;
-    const isEquipped = id === equippedId;
-    const mark = isEquipped ? EQUIPPED_LABEL : reasonLabel;
-
-    return [{
-      id,
-      name: description.name,
-      icon: description.icon,
-      iconPlaceholder: description.iconPlaceholder,
-      summary: description.stats.map(stat => (stat.value ? `${stat.name} ${stat.value}` : stat.name)).join(DETAIL_SEPARATOR),
-      reasons,
-      reasonLabel,
-      isEquipped,
-      mark,
-      label: mark ? `${description.name}${LIST_SEPARATOR}${mark}` : description.name,
-    }];
+    entries.push({ found, item: lockerItem(found, reasons, found.item.id === equippedId, wearer.unit) });
   });
 
-  return [...items.filter(item => item.reasons.length === 0), ...items.filter(item => item.reasons.length > 0)];
+  return entries;
+};
+
+/**
+ * Groups of a Locker listed: those of the items that fit, then `Unavailable` with the rest; every group keeps the catalog
+ * order.
+ *
+ * @param entries items of the Locker.
+ */
+const listGroups = (entries: LockerEntry[]): LockerGroup[] => {
+  const fitGroups = new Map<string | null, FitGroup>();
+  const unavailable: LockerItem[] = [];
+
+  entries.forEach(({ found, item }) => {
+    if (item.reasons.length) {
+      unavailable.push(item);
+
+      return;
+    }
+
+    const { title, rank } = fitGroupOf(found);
+    const group = fitGroups.get(title);
+
+    if (group) {
+      group.items.push(item);
+
+      return;
+    }
+
+    fitGroups.set(title, { title, rank, items: [item] });
+  });
+
+  const groups: LockerGroup[] = [...fitGroups.values()]
+    .sort((left, right) => left.rank - right.rank)
+    .map(group => ({ title: group.title, rows: [], items: group.items }));
+
+  if (unavailable.length) groups.push({ title: UNAVAILABLE_GROUP_NAME, rows: [], items: unavailable });
+
+  return groups;
+};
+
+/**
+ * Weapon tiers of the matrix columns: those of the items of the Locker, in tier order.
+ *
+ * @param entries items of the Locker.
+ * @returns the tiers; empty when the items have fewer than two tiers, and the Locker is listed.
+ */
+const matrixTiers = (entries: LockerEntry[]) => {
+  const tiers = WEAPON_TIERS.filter(tier => entries.some(({ found }) => found.kind === 'weapon' && found.item.tier === tier));
+
+  if (tiers.length < 2) return [];
+
+  return tiers;
+};
+
+/**
+ * Weapon of a type with what the Locker shows of it.
+ */
+interface TypeWeapon {
+  /** Weapon. */
+  weapon: DeepReadonly<Weapon>
+  /** What the Locker shows of it. */
+  item: LockerItem
+}
+
+/**
+ * Row of the weapon matrix of a weapon type.
+ *
+ * @param type weapon type.
+ * @param weapons weapons of the type, in catalog order.
+ * @param tiers Weapon tiers of the matrix columns.
+ * @param reason label of the first reason of the first weapon when no weapon of the type fits; null if one fits.
+ */
+const matrixRow = (type: WeaponType, weapons: TypeWeapon[], tiers: WeaponTier[], reason: string | null): LockerRow => ({
+  name: WEAPON_TYPE_NAME[type],
+  reason,
+  cells: tiers.map(tier => weapons.find(({ weapon }) => weapon.tier === tier)?.item ?? null),
+});
+
+/**
+ * Groups of a weapon Locker shown as a matrix: the rows of the types that fit, then `No tier` with the Arc weapons that fit,
+ * then `Unavailable` with the rows of the other types and the other Arc weapons; a group without rows or items is left out.
+ *
+ * @param entries items of the Locker.
+ * @param tiers Weapon tiers of the matrix columns.
+ */
+const matrixGroups = (entries: LockerEntry[], tiers: WeaponTier[]): LockerGroup[] => {
+  const types = new Map<WeaponType, TypeWeapon[]>();
+  const fitArcItems: LockerItem[] = [];
+  const blockedArcItems: LockerItem[] = [];
+
+  entries.forEach(({ found, item }) => {
+    if (found.kind !== 'weapon') return;
+
+    if (!found.item.tier) {
+      const arcItems = item.reasons.length ? blockedArcItems : fitArcItems;
+
+      arcItems.push(item);
+
+      return;
+    }
+
+    const weapons = types.get(found.item.type);
+
+    if (weapons) {
+      weapons.push({ weapon: found.item, item });
+
+      return;
+    }
+
+    types.set(found.item.type, [{ weapon: found.item, item }]);
+  });
+
+  const fitRows: LockerRow[] = [];
+  const blockedRows: LockerRow[] = [];
+
+  types.forEach((weapons, type) => {
+    if (weapons.some(({ item }) => !item.reasons.length)) {
+      fitRows.push(matrixRow(type, weapons, tiers, null));
+
+      return;
+    }
+
+    blockedRows.push(matrixRow(type, weapons, tiers, weapons[0]?.item.reasonLabel ?? null));
+  });
+
+  const groups: LockerGroup[] = [
+    { title: null, rows: fitRows, items: [] },
+    { title: NO_TIER_GROUP_NAME, rows: [], items: fitArcItems },
+    { title: UNAVAILABLE_GROUP_NAME, rows: blockedRows, items: blockedArcItems },
+  ];
+
+  return groups.filter(group => group.rows.length || group.items.length);
+};
+
+/**
+ * Contents of the Locker of a slot: a weapon matrix when the weapons have two tiers or more, and the groups.
+ *
+ * @param slot slot of the Loadout.
+ * @param loadout Loadout of the unit.
+ * @param wearer unit that carries the Loadout.
+ */
+export const lockerContents = (slot: LoadoutSlot, loadout: Loadout, wearer: LoadoutWearer): LockerContents => {
+  const entries = lockerEntries(slot, loadout, wearer);
+  const tiers = matrixTiers(entries);
+  const groups = tiers.length ? matrixGroups(entries, tiers) : listGroups(entries);
+
+  return { tiers: tiers.map(tier => WEAPON_TIER_NAME[tier]), groups };
 };
 
 /**

@@ -28,7 +28,7 @@ export interface UnitCard {
   wearer: LoadoutWearer
   /** Loadout of the Unit brought to the rules of its Build. */
   loadout: Loadout
-  /** Loadout tiles in inventory order. */
+  /** Loadout tiles in slot order. */
   tiles: LoadoutTile[]
   /** What closing the Build dialog takes off the Units of the Build: its line of the Unit check toast; null if nothing. */
   closeNote: string | null

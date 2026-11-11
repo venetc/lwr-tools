@@ -35,7 +35,7 @@ vi.mock('@entities/loadout', async () => ({
 }));
 
 describe('loadoutTiles', () => {
-  it('lists the slots of a biosoldier in inventory order', () => {
+  it('lists the slots of a biosoldier in slot order', () => {
     vi.mocked(loadoutSlots).mockReturnValue(BIOSOLDIER_SLOTS);
 
     const tiles = loadoutTiles(createLoadoutMock(), ASSAULT);

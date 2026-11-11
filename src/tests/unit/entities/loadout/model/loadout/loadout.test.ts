@@ -421,6 +421,18 @@ describe('blockReasons', () => {
     expect(reasons).toEqual([]);
   });
 
+  it('keeps equipment of some tiers off a primary weapon without a tier', () => {
+    const reasons = blockReasons('reaper-ammo', { kind: 'utility', index: 0 }, createLoadoutMock({ armor: 'phalanx-armor', primary: 'stun-rifle' }), ASSAULT);
+
+    expect(reasons).toEqual(['unsupported-weapon']);
+  });
+
+  it('lets equipment of any tier work with a primary weapon without a tier', () => {
+    const reasons = blockReasons('scope', { kind: 'utility', index: 0 }, createLoadoutMock({ armor: 'phalanx-armor', primary: 'stun-rifle' }), ASSAULT);
+
+    expect(reasons).toEqual([]);
+  });
+
   it('keeps equipment off a primary weapon of another type', () => {
     const reasons = blockReasons('drum-mags', { kind: 'utility', index: 0 }, createLoadoutMock({ primary: 'strike-rifle' }), SCOUT);
 

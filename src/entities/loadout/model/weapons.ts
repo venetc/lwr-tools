@@ -39,8 +39,8 @@ export interface WeaponContent {
   unit: string
   /** Weapon name. */
   name: string
-  /** Technology tier. */
-  tier: string
+  /** Technology tier; absent for an Arc weapon. */
+  tier?: string
   /** Weapon type. */
   type: string
   /** Loadout slot. */
@@ -91,8 +91,8 @@ export interface Weapon extends Required<Omit<WeaponContent, 'unit' | 'tier' | '
   id: WeaponId
   /** Id of the unit type that uses the weapon. */
   unit: LoadoutUnitId
-  /** Technology tier. */
-  tier: WeaponTier
+  /** Technology tier; null for an Arc weapon. */
+  tier: WeaponTier | null
   /** Weapon type. */
   type: WeaponType
   /** Loadout slot. */
@@ -145,14 +145,17 @@ export const isWeaponSlot = (slot: string): slot is WeaponSlot => (WEAPON_SLOTS 
  */
 export const weaponsFromEntry = (entry: [WeaponId, WeaponContent]): Weapon[] => {
   const [id, content] = entry;
+  const tier = content.tier ?? null;
 
-  if (!isLoadoutUnitId(content.unit) || !isWeaponTier(content.tier) || !isWeaponType(content.type) || !isWeaponSlot(content.slot)) return [];
+  if (!isLoadoutUnitId(content.unit) || !isWeaponType(content.type) || !isWeaponSlot(content.slot)) return [];
+
+  if (tier !== null && !isWeaponTier(tier)) return [];
 
   return [{
     ...content,
     id,
     unit: content.unit,
-    tier: content.tier,
+    tier,
     type: content.type,
     slot: content.slot,
     classes: content.classes ?? null,

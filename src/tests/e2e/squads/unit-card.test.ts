@@ -27,7 +27,7 @@ import {
 } from './unit-card.mock';
 
 test.describe('Unit card', () => {
-  test('shows the Default Loadout of a biosoldier in inventory order', async ({ page }) => {
+  test('shows the Default Loadout of a biosoldier in slot order', async ({ page }) => {
     await openSquads(page);
 
     await addSavedUnit(page, BIOSOLDIER_BUILDS, SNIPER);

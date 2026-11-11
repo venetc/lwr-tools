@@ -23,7 +23,6 @@ import {
   JAEGER,
   JAEGER_OUTDATED_STEP,
   JAEGER_UNIT,
-  LOADOUT_DIALOG,
   LONE_WOLF_STEP,
   MEC_STORAGE_PREFIX,
   OUTDATED_CAPTION,
@@ -115,12 +114,12 @@ test.describe('Unit of an Outdated build', () => {
     await expect(loadoutTile(unitCards(page, SNIPER), SERAPH_TILE)).toHaveAttribute('aria-disabled', 'true');
   });
 
-  test('opens no Loadout dialog from a tile', async ({ page }) => {
+  test('opens no Locker dialog from a tile', async ({ page }) => {
     await openSeededSquad(page, [SERAPH_SNIPER]);
 
     await loadoutTile(unitCards(page, SNIPER), SERAPH_TILE).click({ force: true });
 
-    await expect(page.getByRole('dialog', { name: LOADOUT_DIALOG })).toHaveCount(0);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 
   test('is not told by the Unit check', async ({ page }) => {

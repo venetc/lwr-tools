@@ -698,7 +698,6 @@
     "code": 30,
     "unit": "biosoldier",
     "name": "Arc Rifle",
-    "tier": "arc",
     "type": "arc-rifle",
     "slot": "primary",
     "classes": [
@@ -733,7 +732,6 @@
     "code": 31,
     "unit": "biosoldier",
     "name": "Stun Rifle",
-    "tier": "arc",
     "type": "stun-rifle",
     "slot": "primary",
     "classes": [
@@ -761,7 +759,6 @@
     "code": 32,
     "unit": "biosoldier",
     "name": "Arc Pistol",
-    "tier": "arc",
     "type": "arc-pistol",
     "slot": "secondary",
     "classes": [

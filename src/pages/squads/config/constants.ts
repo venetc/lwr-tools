@@ -188,7 +188,6 @@ export const ARMOR_CATEGORY_NAME = {
 export const WEAPON_TIER_NAME = {
   ballistic: 'Ballistic',
   laser: 'Laser',
-  arc: 'Arc',
   gauss: 'Gauss',
   pulse: 'Pulse',
   plasma: 'Plasma',
@@ -222,6 +221,18 @@ export const UTILITY_ITEM_TYPE = {
   active: 'Utility item',
   passive: 'Passive gear',
 } as const;
+
+/** Word after the armor category in the name of a Locker group: `Light armor`. */
+export const ARMOR_GROUP_WORD = 'armor';
+
+/** Name of the Locker group of weapons without a tier: Arc weapons. */
+export const NO_TIER_GROUP_NAME = 'No tier';
+
+/** Accessible name of the Locker and of its items when they are listed without groups. */
+export const LOCKER_NAME = 'Locker';
+
+/** Name of the last Locker group: items that do not fit the slot. */
+export const UNAVAILABLE_GROUP_NAME = 'Unavailable';
 
 /** Separator of the parts of a Locker summary and an item type: `Assault Rifle · Laser`. */
 export const DETAIL_SEPARATOR = ' · ';

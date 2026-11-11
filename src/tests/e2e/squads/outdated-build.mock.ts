@@ -57,8 +57,6 @@ export const SNIPER_CAPTION = 'Biosoldier · Sniper';
 
 export const SERAPH_TILE = 'Armor: Seraph Armor';
 
-export const LOADOUT_DIALOG = 'Loadout';
-
 export const TACTICAL_VEST_TILE = 'Armor: Tactical Vest';
 
 export const TOAST_TITLE = 'Loadouts updated';
